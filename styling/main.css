@@ -16,14 +16,20 @@
     cursor: default;
 }
 
-.command, .command-input{
-    font: 20px "Cascadia Mono";
-    color: #CCCCCC;
+html, body{
+    height: 100%;
+    margin: 0px;
 }
 
 .command-input{
+    font: 20px "Cascadia Mono";
+    color: #CCCCCC;
     background-color: transparent;
     outline: none;
     border: 0px;
     padding: 0px;
+    width: 100%;
+    height: 100%;
+    resize: none;
+    overflow: hidden;
 }

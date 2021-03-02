@@ -4,18 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="styling/main.css">
     <title>We do be testing though</title>
 </head>
 <body>
-    <div name="Console">
-        <form>
-            <label name="Header" class="command">
-                Microsoft Windows [Version 10.0.18363.1379]<br>
-                (c) 2019 Microsoft Corporation. All rights reserved.<br><br>
-                C:\Users\user><input type="text" autocomplete="off" spellcheck="false" autofocus="autofocus" class="command-input">
-            </label>
-        </form>
-    </div>
+    <textarea id="myInput" class="command-input" oninput="input(event)" autocomplete="off" spellcheck="false" autofocus="autofocus"></textarea>
+
+    <script src="commandline.js"></script>
+
 </body>
 </html>
+
