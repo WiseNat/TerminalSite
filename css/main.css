@@ -1,0 +1,29 @@
+@font-face{
+    font-family: "Cascadia Mono";
+    src: url("CascadiaMono.ttf")
+}
+
+::selection{
+    color: #E5E5E5;
+    background: #858585;
+}
+
+:root{
+    background-color:black;
+}
+
+*{
+    cursor: default;
+}
+
+.command, .command-input{
+    font: 20px "Cascadia Mono";
+    color: #CCCCCC;
+}
+
+.command-input{
+    background-color: transparent;
+    outline: none;
+    border: 0px;
+    padding: 0px;
+}
