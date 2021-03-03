@@ -21,19 +21,20 @@ function input(event) {
         inpType instead of 'insertLineBreak')
     */ 
     if (inpType == "insertLineBreak" || (char == null && inpType == "insertText")) {
-        consoleVal = consoleVal.replace(/(\r\n|\n|\r)(?!.*(\r\n|\n|\r))/, "") + prefix;
+        // Getting cursor position to remove newline (may not work on Unix or Mac, need to test)
+        var cursorPosition = document.getElementById("myInput").selectionStart;
+        consoleVal = consoleVal.slice(0, cursorPosition - 1) + consoleVal.slice(cursorPosition) + prefix;
+        
+        document.getElementById("myInput").value = consoleVal;
         stdout = consoleVal;
         stdoutBuffer = consoleVal;
     }
     // If console was modified, revert change made by user
     else if (!regex.test(consoleVal)) {
-        consoleVal = stdoutBuffer;
+        document.getElementById("myInput").value = stdoutBuffer;
     }
     // No command inputted, no modified stdout, save current command progress
     else {
         stdoutBuffer = consoleVal;
     }
-
-    // Applying relevant changes
-    document.getElementById("myInput").value = consoleVal;
 }
