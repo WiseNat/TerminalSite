@@ -16,11 +16,15 @@ function input(event) {
     var regex = new RegExp("^" + escapeRegEx(stdout));
     var consoleVal = document.getElementById("myInput").value;
     
+    // If console was modified, revert change made by user
+    if (!regex.test(consoleVal)) {
+        document.getElementById("myInput").value = stdoutBuffer;
+    }
     /*  If Enter key pressed
         Second condition to remedy Chrome bug where entering <char><Enter>, only for the first input, counts as 'insertText'
         inpType instead of 'insertLineBreak')
     */ 
-    if (inpType == "insertLineBreak" || (char == null && inpType == "insertText")) {
+    else if (inpType == "insertLineBreak" || (char == null && inpType == "insertText")) {
         // Getting cursor position to remove newline (may not work on Unix or Mac, need to test)
         var cursorPosition = document.getElementById("myInput").selectionStart;
         consoleVal = consoleVal.slice(0, cursorPosition - 1) + consoleVal.slice(cursorPosition) + prefix;
@@ -28,10 +32,6 @@ function input(event) {
         document.getElementById("myInput").value = consoleVal;
         stdout = consoleVal;
         stdoutBuffer = consoleVal;
-    }
-    // If console was modified, revert change made by user
-    else if (!regex.test(consoleVal)) {
-        document.getElementById("myInput").value = stdoutBuffer;
     }
     // No command inputted, no modified stdout, save current command progress
     else {
