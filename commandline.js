@@ -1,8 +1,8 @@
 // Initialise Console
 var prefix = "\nC:\\Users\\user>";
-var base = "Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n" + prefix;
-var stdoutBuffer = base;
-document.getElementById("myInput").value = base;
+var stdout = "Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n" + prefix;
+var stdoutBuffer = stdout;
+document.getElementById("myInput").value = stdout;
 
 // Regex Safe String Generator
 function escapeRegEx(s) {
@@ -13,26 +13,27 @@ function escapeRegEx(s) {
 function input(event) {
     var char = event.data;
     var inpType = event.inputType;
-    var regex = new RegExp("^" + escapeRegEx(base));
-    var stdout = document.getElementById("myInput").value;
+    var regex = new RegExp("^" + escapeRegEx(stdout));
+    var consoleVal = document.getElementById("myInput").value;
     
     /*  If Enter key pressed
         Second condition to remedy Chrome bug where entering <char><Enter>, only for the first input, counts as 'insertText'
         inpType instead of 'insertLineBreak')
     */ 
     if (inpType == "insertLineBreak" || (char == null && inpType == "insertText")) {
-        stdout = stdout.replace(/(\r\n|\n|\r)(?!.*(\r\n|\n|\r))/,"") + prefix
-        base = stdout;
+        consoleVal = consoleVal.replace(/(\r\n|\n|\r)(?!.*(\r\n|\n|\r))/, "") + prefix;
+        stdout = consoleVal;
+        stdoutBuffer = consoleVal;
     }
-    // If stdout was modified, revert change made by user
-    else if (!regex.test(stdout)) {
-        stdout = stdoutBuffer;
+    // If console was modified, revert change made by user
+    else if (!regex.test(consoleVal)) {
+        consoleVal = stdoutBuffer;
     }
     // No command inputted, no modified stdout, save current command progress
     else {
-        stdoutBuffer = stdout;
+        stdoutBuffer = consoleVal;
     }
 
     // Applying relevant changes
-    document.getElementById("myInput").value = stdout;
+    document.getElementById("myInput").value = consoleVal;
 }
