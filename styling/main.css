@@ -4,12 +4,12 @@
 }
 
 ::selection{
-    color: #E5E5E5;
-    background: #858585;
+    color: black;
+    background: #FEDBA9;
 }
 
 :root{
-    background-color:black;
+    background-color:#012456;
 }
 
 *{
@@ -23,7 +23,7 @@ html, body{
 
 .command-input{
     font: 20px "Cascadia Mono";
-    color: #CCCCCC;
+    color: white;
     background-color: transparent;
     outline: none;
     border: 0px;

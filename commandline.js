@@ -1,6 +1,6 @@
 // Initialise Console
-var prefix = "\nC:\\Users\\user>";
-var base = "Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n" + prefix;
+var prefix = "\nPS C:\\Users\\user>";
+var base = "Windows PowerShell\nCopyright (C) Microsoft Corporation. All rights reserved.\n\nTry the new cross-platform PowerShell https://aka.ms/pscore6\n\n" + prefix;
 document.getElementById("myInput").value = base;
 
 // Regex Safe String Generator
