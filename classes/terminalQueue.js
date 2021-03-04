@@ -23,4 +23,8 @@ class TerminalQueue extends Array {
         if (this.length == 0) return null;
         return this[this.length - 1];
     }
+
+    clear(){
+        this.length = 0;
+    }
 }

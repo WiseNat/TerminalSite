@@ -5,7 +5,7 @@ maxOutChars - max amount of output characters per line that can be displayed
 
 prefix - comes before each user input
 initial - temp var for the text right at the top (if applicable)
-stdoutBuffer - constantly updates to keep track of valid user input and entire console
+stdout - constantly updates to keep track of valid user input and entire console
 consoleStdoutArr - holds 25 lines of valid contents of console {"out":"str", "cmd": "str"}. Updates every time a command is sent (Enter) 
 */
 var maxLines = 30;
@@ -13,8 +13,8 @@ var maxInpChars = 150;
 var maxOutChars = 900;
 
 var prefix = "\n\nC:\\Users\\user>";
-var initial = "Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n" + prefix;
-var stdoutBuffer = initial;
+var initial = `Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n${prefix}`;
+var stdout = initial;
 
 var consoleStdoutArr = new TerminalQueue();
 consoleStdoutArr.addElement(initial);
@@ -39,32 +39,17 @@ function escapeRegEx(s) {
 }
 
 
-// Converts command string to command object, uppercases base command, preserves args
-function toCommand(s) {
-    var arr = s.split(" ");
-
-    // Getting arg values
-    var arg = "";
-    if (arr.length > 1) arg = arr.slice(1, arr.length);
-
-    return {
-        "base": arr[0].toUpperCase(),
-        "args": arg
-    }
-}
-
-
 // TODO Make more efficient - store last position as index?
 function input(event) {
     var char = event.data;
     var inpType = event.inputType;
     var consoleLiteral = document.getElementById("myInput").value;
 
-    var regex = new RegExp("^" + escapeRegEx(consoleStdoutArr.joinAll()));
+    var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
 
     // If console was modified, revert change made by user. 32768 chars max for Regex
     if (!regex.test(consoleLiteral)) {
-        document.getElementById("myInput").value = stdoutBuffer;
+        document.getElementById("myInput").value = stdout;
     }
     /*  If Enter key pressed
         Second condition to remedy Chrome bug where entering <char><Enter>, only for the first input, counts as 'insertText'
@@ -76,40 +61,23 @@ function input(event) {
         consoleLiteral = consoleLiteral.slice(0, cursorPosition - 1) + consoleLiteral.slice(cursorPosition);
 
         // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
-        var stringCommand = findDiff(consoleStdoutArr.joinAll(), consoleLiteral);
-        var command = toCommand(stringCommand);
-        var out = "";
-        switch (command.base) {
-            case "ECHO":
-                out = command.args.join(" ")
-        }
-
-        if (out.length > maxOutChars) {
-            out = out.substring(0, maxOutChars);
-            console.log(out);
-        }
-
-        out = stringCommand + "\n" + out;
-
-        // Updating final element to include command and adding the new prefix
-        consoleStdoutArr.last().cmd = out;
-        consoleStdoutArr.addElement(prefix);
+        var final = commandOutput(findDiff(consoleStdoutArr.joinAll(), consoleLiteral))
 
         // Setting the console to the new saved console and resetting the stdoutBuffer
-        document.getElementById("myInput").value = consoleStdoutArr.joinAll();
-        stdoutBuffer = consoleStdoutArr.joinAll();
+        document.getElementById("myInput").value = final;
+        stdout = final;
     }
     // No command inputted, no modified stdout, save current command progress
     else {
         var currentOut = findDiff(consoleStdoutArr.joinAll(), consoleLiteral);
 
-        // Checking if length exceeds maxInpChars, cutting of chars that exceed that value
+        // Input char limit (maxInpChars), cutting of chars that exceed that value
         if (currentOut.length > maxInpChars) {
             consoleLiteral = consoleStdoutArr.joinAll() + currentOut.substring(0, maxInpChars);
             document.getElementById("myInput").value = consoleLiteral;
         }
 
-        stdoutBuffer = consoleLiteral;
+        stdout = consoleLiteral;
     }
 
 }
