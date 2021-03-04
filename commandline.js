@@ -73,6 +73,13 @@ function input(event) {
     else {
         var currentOut = findDiff(consoleStdoutArr.joinAll(), consoleLiteral);
 
+        // Disable Newline pasting
+        var currentOutNoNewline = currentOut.replace(/[\r\n]+/gm, "");
+        if (currentOut != currentOutNoNewline) {
+            consoleLiteral = consoleStdoutArr.joinAll() + currentOutNoNewline;
+            document.getElementById("myInput").value = consoleLiteral;
+        }
+
         // Input char limit (maxInpChars), cutting of chars that exceed that value
         if (currentOut.length > maxInpChars) {
             consoleLiteral = consoleStdoutArr.joinAll() + currentOut.substring(0, maxInpChars);
