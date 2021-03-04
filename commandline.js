@@ -85,9 +85,18 @@ function input(event) {
 }
 
 
-// Command Up and Down
 function keydown(event) {
+    // Disable Bookmark tab and save site
     if (event.ctrlKey) {
+        switch (event.key) {
+            case "d":
+            case "s":
+                event.preventDefault();
+                break
+        }
+    }
+    // Command Up and Down
+    else {
         switch (event.key) {
             case "ArrowUp":
                 event.preventDefault();
@@ -102,11 +111,6 @@ function keydown(event) {
                     commandPos -= 1;
                     document.getElementById("myInput").value = consoleStdoutArr.joinAll() + consoleStdoutArr[consoleStdoutArr.length - 1 - commandPos].inp;
                 }
-                break
-            // Disable Bookmark tab and save site
-            case "d":
-            case "s":
-                event.preventDefault();
                 break
         }
     }
