@@ -1,6 +1,6 @@
 class TerminalQueue extends Array {
     addElement(output, input = "") {
-        if (this.length == 5) { // CHANGE TO 25
+        if (this.length == maxLines) { // CHANGE TO 25
             this.shift();
         }
         this.push({

@@ -8,11 +8,11 @@ initial - temp var for the text right at the top (if applicable)
 stdoutBuffer - constantly updates to keep track of valid user input and entire console
 consoleStdoutArr - holds 25 lines of valid contents of console {"out":"str", "cmd": "str"}. Updates every time a command is sent (Enter) 
 */
-var maxLines = 5;
-var maxInpChars = 10;
-var maxOutChars = 20;
+var maxLines = 30;
+var maxInpChars = 150;
+var maxOutChars = 900;
 
-var prefix = "\nC:\\Users\\user>";
+var prefix = "\n\nC:\\Users\\user>";
 var initial = "Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n" + prefix;
 var stdoutBuffer = initial;
 
@@ -39,6 +39,21 @@ function escapeRegEx(s) {
 }
 
 
+// Converts command string to command object, uppercases base command, preserves args
+function toCommand(s) {
+    var arr = s.split(" ");
+
+    // Getting arg values
+    var arg = "";
+    if (arr.length > 1) arg = arr.slice(1, arr.length);
+
+    return {
+        "base": arr[0].toUpperCase(),
+        "args": arg
+    }
+}
+
+
 // TODO Make more efficient - store last position as index?
 function input(event) {
     var char = event.data;
@@ -61,10 +76,23 @@ function input(event) {
         consoleLiteral = consoleLiteral.slice(0, cursorPosition - 1) + consoleLiteral.slice(cursorPosition);
 
         // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
-        var command = findDiff(consoleStdoutArr.joinAll(), consoleLiteral);
+        var stringCommand = findDiff(consoleStdoutArr.joinAll(), consoleLiteral);
+        var command = toCommand(stringCommand);
+        var out = "";
+        switch (command.base) {
+            case "ECHO":
+                out = command.args.join(" ")
+        }
+
+        if (out.length > maxOutChars) {
+            out = out.substring(0, maxOutChars);
+            console.log(out);
+        }
+
+        out = stringCommand + "\n" + out;
 
         // Updating final element to include command and adding the new prefix
-        consoleStdoutArr.last().cmd = command;
+        consoleStdoutArr.last().cmd = out;
         consoleStdoutArr.addElement(prefix);
 
         // Setting the console to the new saved console and resetting the stdoutBuffer
