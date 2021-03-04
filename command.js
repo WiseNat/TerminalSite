@@ -15,10 +15,10 @@ function toCommand(s) {
 // Command logic
 function commandOutput(sc) {
     var command = toCommand(sc);
-    var out = "";
+    var out = "\n";
     switch (command.base) {
         case "ECHO":
-            out = command.args.join(" ");
+            out += command.args.join(" ");
             break
         case "CLS":
             consoleStdoutArr.clear()
@@ -31,10 +31,9 @@ function commandOutput(sc) {
         out = out.substring(0, maxOutChars);
     }
 
-    out = `${sc}\n${out}`;
-
     // Updating final element to include command and adding the new prefix
-    consoleStdoutArr.last().cmd = out;
+    consoleStdoutArr.last().inp = sc;
+    consoleStdoutArr.last().out = out;
     consoleStdoutArr.addElement(prefix);
 
     return consoleStdoutArr.joinAll();

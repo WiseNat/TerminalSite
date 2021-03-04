@@ -6,7 +6,7 @@ maxOutChars - max amount of output characters per line that can be displayed
 prefix - comes before each user input
 initial - temp var for the text right at the top (if applicable)
 stdout - constantly updates to keep track of valid user input and entire console
-consoleStdoutArr - holds 25 lines of valid contents of console {"out":"str", "cmd": "str"}. Updates every time a command is sent (Enter) 
+consoleStdoutArr - holds 25 lines of valid contents of console {"out":"str", "inp": "str"}. Updates every time a command is sent (Enter) 
 */
 var maxLines = 30;
 var maxInpChars = 150;
@@ -15,6 +15,7 @@ var maxOutChars = 900;
 var prefix = "\n\nC:\\Users\\user>";
 var initial = `Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n${prefix}`;
 var stdout = initial;
+var commandPos = 0;
 
 var consoleStdoutArr = new TerminalQueue();
 consoleStdoutArr.addElement(initial);
@@ -66,6 +67,7 @@ function input(event) {
         // Setting the console to the new saved console and resetting the stdoutBuffer
         document.getElementById("myInput").value = final;
         stdout = final;
+        commandPos = 0;
     }
     // No command inputted, no modified stdout, save current command progress
     else {
@@ -80,4 +82,32 @@ function input(event) {
         stdout = consoleLiteral;
     }
 
+}
+
+
+// Command Up and Down
+function keydown(event) {
+    if (event.ctrlKey) {
+        switch (event.key) {
+            case "ArrowUp":
+                event.preventDefault();
+                if (commandPos != consoleStdoutArr.length - 1) {
+                    commandPos += 1;
+                    document.getElementById("myInput").value = consoleStdoutArr.joinAll() + consoleStdoutArr[consoleStdoutArr.length - 1 - commandPos].inp;
+                }
+                break
+            case "ArrowDown":
+                event.preventDefault();
+                if (commandPos != 0) {
+                    commandPos -= 1;
+                    document.getElementById("myInput").value = consoleStdoutArr.joinAll() + consoleStdoutArr[consoleStdoutArr.length - 1 - commandPos].inp;
+                }
+                break
+            // Disable Bookmark tab and save site
+            case "d":
+            case "s":
+                event.preventDefault();
+                break
+        }
+    }
 }

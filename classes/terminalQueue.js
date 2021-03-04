@@ -1,22 +1,23 @@
 class TerminalQueue extends Array {
-    addElement(output, input = "") {
-        if (this.length == maxLines) { // CHANGE TO 25
+    addElement(prefix, input = "", output = "") {
+        if (this.length == maxLines) {
             this.shift();
         }
         this.push({
-            "out": output,
-            "cmd": input
+            "pre": prefix,
+            "inp": input,
+            "out": output
         });
     }
 
     joinAll() {
         var res = [];
-        this.forEach(ele => res.push(ele.out + ele.cmd));
+        this.forEach(ele => res.push(ele.pre + ele.inp + ele.out));
         return res.join("");
     }
 
     joinEle(index) {
-        return this[index].out + this[index].cmd;
+        return this[index].pre + this[index].inp + this[index].out;
     }
 
     last() {
@@ -24,7 +25,7 @@ class TerminalQueue extends Array {
         return this[this.length - 1];
     }
 
-    clear(){
+    clear() {
         this.length = 0;
     }
 }
