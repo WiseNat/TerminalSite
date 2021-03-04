@@ -6,7 +6,11 @@ maxOutChars - max amount of output characters per line that can be displayed
 prefix - comes before each user input
 initial - temp var for the text right at the top (if applicable)
 stdout - constantly updates to keep track of valid user input and entire console
-consoleStdoutArr - holds 25 lines of valid contents of console {"out":"str", "inp": "str"}. Updates every time a command is sent (Enter) 
+
+commandQueue - holds the last (maxLines) amount of inputs sent to the console
+commandPos - keeps track of the command position in commandQueue. For when the users presses the Up and Down arrow 
+
+consoleStdoutArr - holds 25 lines of valid contents of console {"pre":"", "inp": "", "out":""}. Updates every time a command is sent (Enter) 
 */
 var maxLines = 30;
 var maxInpChars = 150;
@@ -15,7 +19,9 @@ var maxOutChars = 900;
 var prefix = "\n\nC:\\Users\\user>";
 var initial = `Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n${prefix}`;
 var stdout = initial;
-var commandPos = 0;
+
+var commandQueue = new Queue();
+var commandPos = -1;
 
 var consoleStdoutArr = new TerminalQueue();
 consoleStdoutArr.addElement(initial);
@@ -50,7 +56,11 @@ function input(event) {
 
     // If console was modified, revert change made by user. 32768 chars max for Regex
     if (!regex.test(consoleLiteral)) {
+        if (char != null) {
+            stdout += char;
+        }
         document.getElementById("myInput").value = stdout;
+
     }
     /*  If Enter key pressed
         Second condition to remedy Chrome bug where entering <char><Enter>, only for the first input, counts as 'insertText'
@@ -67,7 +77,7 @@ function input(event) {
         // Setting the console to the new saved console and resetting the stdoutBuffer
         document.getElementById("myInput").value = final;
         stdout = final;
-        commandPos = 0;
+        commandPos = -1;
     }
     // No command inputted, no modified stdout, save current command progress
     else {
@@ -107,16 +117,21 @@ function keydown(event) {
         switch (event.key) {
             case "ArrowUp":
                 event.preventDefault();
-                if (commandPos != consoleStdoutArr.length - 1) {
+                if (commandPos < commandQueue.length - 1) {
                     commandPos += 1;
-                    document.getElementById("myInput").value = consoleStdoutArr.joinAll() + consoleStdoutArr[consoleStdoutArr.length - 1 - commandPos].inp;
+                    document.getElementById("myInput").value = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
                 }
                 break
             case "ArrowDown":
                 event.preventDefault();
-                if (commandPos != 0) {
+                if (commandPos > 0) {
                     commandPos -= 1;
-                    document.getElementById("myInput").value = consoleStdoutArr.joinAll() + consoleStdoutArr[consoleStdoutArr.length - 1 - commandPos].inp;
+                    document.getElementById("myInput").value = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                }
+                // Back to no input
+                else if (commandPos == 0) {
+                    commandPos -= 1;
+                    document.getElementById("myInput").value = consoleStdoutArr.joinAll();
                 }
                 break
         }

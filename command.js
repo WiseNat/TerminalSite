@@ -14,6 +14,7 @@ function toCommand(s) {
 
 // Command logic
 function commandOutput(sc) {
+    commandQueue.addElement(sc);
     var command = toCommand(sc);
     var out = "\n";
     switch (command.base) {
