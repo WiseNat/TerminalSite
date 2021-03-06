@@ -1,3 +1,5 @@
+var maxLines = 30;
+
 class Queue extends Array {
     addElement(s) {
         if (this.length == maxLines) {
@@ -38,3 +40,5 @@ class TerminalQueue extends Queue {
         return this[index].pre + this[index].inp + this[index].out;
     }
 }
+
+export { Queue,TerminalQueue };

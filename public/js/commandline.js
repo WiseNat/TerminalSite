@@ -1,3 +1,5 @@
+import { Queue, TerminalQueue } from "/js/TerminalQueue.js";
+
 /*
 maxLines - amount of lines in terminal before deletion occurs
 maxInpChars - max amount of characters allowed for user input per line
@@ -12,7 +14,6 @@ commandPos - keeps track of the command position in commandQueue. For when the u
 
 consoleStdoutArr - holds 25 lines of valid contents of console {"pre":"", "inp": "", "out":""}. Updates every time a command is sent (Enter) 
 */
-var maxLines = 30;
 var maxInpChars = 150;
 var maxOutChars = 900;
 
@@ -27,7 +28,15 @@ var consoleStdoutArr = new TerminalQueue();
 consoleStdoutArr.addElement(initial);
 
 // Setting console to initial output
-document.getElementById("myInput").value = initial;
+document.getElementById("terminal").value = initial;
+document.getElementById("terminal").addEventListener("input", input);
+document.getElementById("terminal").addEventListener("keydown", keydown);
+
+
+// Removes newlines
+function removeNewline(str){
+    return str.replace(/[\r\n]+/gm, "");
+}
 
 
 // Returns the difference of two strings
@@ -46,11 +55,55 @@ function escapeRegEx(s) {
 }
 
 
+// Converts command string to command object, uppercases base command, preserves args
+function toCommand(s) {
+    var arr = s.split(" ");
+
+    // Getting arg values
+    var arg = [];
+    if (arr.length > 1) arg = arr.slice(1, arr.length);
+
+    return {
+        "base": arr[0].toUpperCase(),
+        "args": arg
+    };
+}
+
+
+// Command Logic
+function commandOutput(sc){
+    commandQueue.addElement(sc);
+    var command = toCommand(sc);
+    var out = "\n";
+    switch (command.base) {
+    case "ECHO":
+        out += command.args.join(" ");
+        break;
+    case "CLS":
+        consoleStdoutArr.clear();
+        consoleStdoutArr.addElement(prefix);
+        return consoleStdoutArr.joinAll();
+    }
+
+    // Output char limit (maxOutChars), cutting of chars that exceed that value
+    if (out.length > maxOutChars) {
+        out = out.substring(0, maxOutChars);
+    }
+
+    // Updating final element to include command and adding the new prefix
+    consoleStdoutArr.last().inp = sc;
+    consoleStdoutArr.last().out = out;
+    consoleStdoutArr.addElement(prefix);
+
+    return consoleStdoutArr.joinAll();
+}
+
+
 // TODO Make more efficient - store last position as index?
 function input(event) {
     var char = event.data;
     var inpType = event.inputType;
-    var consoleLiteral = document.getElementById("myInput").value;
+    var consoleLiteral = document.getElementById("terminal").value;
 
     var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
 
@@ -59,7 +112,7 @@ function input(event) {
         if (char != null) {
             stdout += char;
         }
-        document.getElementById("myInput").value = stdout;
+        document.getElementById("terminal").value = stdout;
 
     }
     /*  If Enter key pressed
@@ -68,14 +121,14 @@ function input(event) {
     */
     else if (inpType == "insertLineBreak" || (char == null && inpType == "insertText")) {
         // Getting cursor position to remove newline (may not work on Unix or Mac, need to test)
-        var cursorPosition = document.getElementById("myInput").selectionStart;
+        var cursorPosition = document.getElementById("terminal").selectionStart;
         consoleLiteral = consoleLiteral.slice(0, cursorPosition - 1) + consoleLiteral.slice(cursorPosition);
 
         // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
         var final = commandOutput(findDiff(consoleStdoutArr.joinAll(), consoleLiteral))
 
         // Setting the console to the new saved console and resetting the stdoutBuffer
-        document.getElementById("myInput").value = final;
+        document.getElementById("terminal").value = final;
         stdout = final;
         commandPos = -1;
     }
@@ -84,16 +137,16 @@ function input(event) {
         var currentOut = findDiff(consoleStdoutArr.joinAll(), consoleLiteral);
 
         // Disable Newline pasting
-        var currentOutNoNewline = currentOut.replace(/[\r\n]+/gm, "");
+        var currentOutNoNewline = removeNewline(currentOut);
         if (currentOut != currentOutNoNewline) {
             consoleLiteral = consoleStdoutArr.joinAll() + currentOutNoNewline;
-            document.getElementById("myInput").value = consoleLiteral;
+            document.getElementById("terminal").value = consoleLiteral;
         }
 
         // Input char limit (maxInpChars), cutting of chars that exceed that value
         if (currentOut.length > maxInpChars) {
-            consoleLiteral = consoleStdoutArr.joinAll() + currentOut.substring(0, maxInpChars);
-            document.getElementById("myInput").value = consoleLiteral;
+            consoleLiteral = consoleStdoutArr.joinAll() + removeNewline(currentOut.substring(0, maxInpChars));
+            document.getElementById("terminal").value = consoleLiteral;
         }
 
         stdout = consoleLiteral;
@@ -106,34 +159,34 @@ function keydown(event) {
     // Disable Bookmark tab and save site
     if (event.ctrlKey) {
         switch (event.key) {
-            case "d":
-            case "s":
-                event.preventDefault();
-                break
+        case "d":
+        case "s":
+            event.preventDefault();
+            break;
         }
     }
     // Command Up and Down
     else {
         switch (event.key) {
-            case "ArrowUp":
-                event.preventDefault();
-                if (commandPos < commandQueue.length - 1) {
-                    commandPos += 1;
-                    document.getElementById("myInput").value = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
-                }
-                break
-            case "ArrowDown":
-                event.preventDefault();
-                if (commandPos > 0) {
-                    commandPos -= 1;
-                    document.getElementById("myInput").value = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
-                }
-                // Back to no input
-                else if (commandPos == 0) {
-                    commandPos -= 1;
-                    document.getElementById("myInput").value = consoleStdoutArr.joinAll();
-                }
-                break
+        case "ArrowUp":
+            event.preventDefault();
+            if (commandPos < commandQueue.length - 1) {
+                commandPos += 1;
+                document.getElementById("terminal").value = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+            }
+            break;
+        case "ArrowDown":
+            event.preventDefault();
+            if (commandPos > 0) {
+                commandPos -= 1;
+                document.getElementById("terminal").value = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+            }
+            // Back to no input
+            else if (commandPos == 0) {
+                commandPos -= 1;
+                document.getElementById("terminal").value = consoleStdoutArr.joinAll();
+            }
+            break;
         }
     }
 }
