@@ -51,7 +51,7 @@ function findDiff(str1, str2) {
 
 // Regex Safe String Generator
 function escapeRegEx(s) {
-    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+    return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
 
 
