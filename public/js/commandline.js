@@ -14,15 +14,18 @@ commandPos - keeps track of the command position in commandQueue. For when the u
 
 consoleStdoutArr - holds 25 lines of valid contents of console {"pre":"", "inp": "", "out":""}. Updates every time a command is sent (Enter) 
 */
-var maxInpChars = 150;
-var maxOutChars = 900;
+const maxInpChars = 150;
+const maxOutChars = 900;
 
-var prefix = "\n\nC:\\Users\\user>";
-var initial = `Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n${prefix}`;
+const staticPrefix = "\n\nC:\\Users\\user>";
+var prefix = staticPrefix;
+const initial = `Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n${prefix}`;
 var stdout = initial;
 
 var commandQueue = new Queue();
 var commandPos = -1;
+
+var actualDir = "";
 
 var consoleStdoutArr = new TerminalQueue();
 consoleStdoutArr.addElement(initial);
@@ -32,6 +35,11 @@ document.getElementById("terminal").value = initial;
 document.getElementById("terminal").addEventListener("input", input);
 document.getElementById("terminal").addEventListener("keydown", keydown);
 
+
+// Gets JSON Data
+function getJSON(path) {
+    return fetch(path).then(response => response.json());
+}
 
 // Removes newlines
 function removeNewline(str){
@@ -71,7 +79,7 @@ function toCommand(s) {
 
 
 // Command Logic
-function commandOutput(sc){
+async function commandOutput(sc){
     commandQueue.addElement(sc);
     var command = toCommand(sc);
     var out = "\n";
@@ -83,6 +91,53 @@ function commandOutput(sc){
         consoleStdoutArr.clear();
         consoleStdoutArr.addElement(prefix);
         return consoleStdoutArr.joinAll();
+    case "CD":
+        var currentDir = actualDir;
+        var splitArgs = command.args.join(" ").split("/");
+        splitArgs = splitArgs.filter(function (el) {
+            return el != null;
+        });
+        splitArgs = splitArgs.filter(function (el) {
+            return el != "";
+        });
+        
+        // Creating directory path without any ".."s
+        splitArgs.forEach(function(e) {
+            if (e == ".."){
+                if (currentDir != "") {
+                    currentDir = currentDir.split("-");
+                    currentDir.pop();
+                    currentDir = currentDir.join("-");
+                }
+            }
+            else {
+                if (currentDir == "") currentDir = e;
+                else currentDir += "-" + e;
+            }
+        });
+
+        // Checking if dir exists
+        var exists = true;
+        var jsonDir = await getJSON("../dir_structure.json");
+        currentDir.split("-").forEach(function(e){
+            if (e == "") return;
+            if (jsonDir[e] && e != "files") {
+                jsonDir = jsonDir[e];
+            }
+            else {
+                exists = false;
+                return;
+            }
+        });
+
+        // Outputs
+        if (exists == false) out += "Directory doesn't exist";
+        else if (currentDir == "") prefix = staticPrefix;
+        else {
+            prefix = `${staticPrefix.slice(0, -1)}\\${currentDir.replace("-", "\\")}>`;
+            actualDir = currentDir;
+        }
+        break;
     }
 
     // Output char limit (maxOutChars), cutting of chars that exceed that value
@@ -100,7 +155,7 @@ function commandOutput(sc){
 
 
 // TODO Make more efficient - store last position as index?
-function input(event) {
+async function input(event) {
     var char = event.data;
     var inpType = event.inputType;
     var consoleLiteral = document.getElementById("terminal").value;
@@ -125,7 +180,7 @@ function input(event) {
         consoleLiteral = consoleLiteral.slice(0, cursorPosition - 1) + consoleLiteral.slice(cursorPosition);
 
         // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
-        var final = commandOutput(findDiff(consoleStdoutArr.joinAll(), consoleLiteral))
+        var final = await commandOutput(findDiff(consoleStdoutArr.joinAll(), consoleLiteral));
 
         // Setting the console to the new saved console and resetting the stdoutBuffer
         document.getElementById("terminal").value = final;
