@@ -41,4 +41,7 @@ class TerminalQueue extends Queue {
     }
 }
 
-export { Queue,TerminalQueue };
+export {
+    Queue,
+    TerminalQueue
+};
