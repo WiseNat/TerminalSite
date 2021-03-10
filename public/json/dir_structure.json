@@ -12,7 +12,7 @@
         "GCSE": {
             "files": ["grades.txt"]
         },
-        "A-Level": {
+        "A Levels": {
             "files": ["grades.txt", "coursework.txt"]
         }
     }

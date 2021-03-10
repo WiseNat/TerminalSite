@@ -40,15 +40,24 @@ terminal.value = initial;
 terminal.addEventListener("input", input);
 terminal.addEventListener("keydown", keydown);
 
+// Get File Data (txt)
+async function getFile(path){
+    return fetch(path).then(response => response.status === 200 ? response.text() : null);
+}
 
 // Gets JSON Data
-function getJSON(path) {
+async function getJSON(path) {
     return fetch(path).then(response => response.json());
 }
 
 // Removes newlines
 function removeNewline(str) {
     return str.replace(/[\r\n]+/gm, "");
+}
+
+// Remove pesky \r
+function removeCarriage(str) {
+    return str.replace(/[\r]+/gm, "");
 }
 
 
@@ -69,15 +78,19 @@ function escapeRegEx(s) {
 
 
 // Converts command string to command object, uppercases base command, preserves args
-function toCommand(s) {
+function toCommand(s, upper=true) {
     var arr = s.split(" ");
 
     // Getting arg values
     var arg = [];
     if (arr.length > 1) arg = arr.slice(1, arr.length);
 
+    if (upper == true && arr.length > 0){
+        arr[0] = arr[0].toUpperCase();
+    }
+
     return {
-        "base": arr[0].toUpperCase(),
+        "base": arr[0],
         "args": arg
     };
 }
@@ -88,6 +101,8 @@ async function commandOutput(sc) {
     commandQueue.addElement(sc);
     var command = toCommand(sc);
     var out = "\n";
+    var currentDir = actualDir;
+
     switch (command.base) {
         case "ECHO":
             out += command.args.join(" ");
@@ -97,7 +112,6 @@ async function commandOutput(sc) {
             consoleStdoutArr.addElement(prefix);
             return consoleStdoutArr.joinAll();
         case "CD":
-            var currentDir = actualDir;
             var splitArgs = command.args.join(" ").split("/");
             splitArgs = splitArgs.filter(function (el) {
                 return el != null;
@@ -143,6 +157,22 @@ async function commandOutput(sc) {
                 actualDir = currentDir;
             }
             break;
+        default:
+            // Keeping the case for command.base
+            command = toCommand(sc, false);
+
+            // File Request
+            if (currentDir != "") currentDir += "-";
+            currentDir += command.base + command.args.join(" ");
+            var fileData = await getFile(`../data/${currentDir}`);
+            // Check if input is a file
+            if (fileData != null){
+                out += fileData;
+            }
+            // Not a file... return help output
+            else {
+                out += "Run the help command";
+            }
     }
 
     // Output char limit (maxOutChars), cutting of chars that exceed that value
@@ -152,14 +182,13 @@ async function commandOutput(sc) {
 
     // Updating final element to include command and adding the new prefix
     consoleStdoutArr.last().inp = sc;
-    consoleStdoutArr.last().out = out;
+    consoleStdoutArr.last().out = removeCarriage(out);
     consoleStdoutArr.addElement(prefix);
 
     return consoleStdoutArr.joinAll();
 }
 
 
-// TODO Make more efficient - store last position as index?
 async function input(event) {
     var char = event.data;
     var inpType = event.inputType;
