@@ -114,10 +114,7 @@ async function commandOutput(sc) {
         case "CD":
             var splitArgs = command.args.join(" ").split("/");
             splitArgs = splitArgs.filter(function (el) {
-                return el != null;
-            });
-            splitArgs = splitArgs.filter(function (el) {
-                return el != "";
+                return el != null && el != "";
             });
 
             // Creating directory path without any ".."s
@@ -139,12 +136,8 @@ async function commandOutput(sc) {
             var jsonDir = await getJSON("../json/dir_structure.json");
             currentDir.split("-").forEach(function (e) {
                 if (e == "") return;
-                if (jsonDir[e] && e != "files") {
-                    jsonDir = jsonDir[e];
-                } else {
-                    exists = false;
-                    return;
-                }
+                if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
+                else exists = false;
             });
 
             // Outputs
@@ -156,6 +149,34 @@ async function commandOutput(sc) {
                 prefix = `${staticPrefix.slice(0, -1)}\\${currentDir.replace("-", "\\")}>`;
                 actualDir = currentDir;
             }
+            break;
+        case "DIR":
+            // Getting to current dir in JSON object
+            var jsonDir = await getJSON("../json/dir_structure.json");
+            if (actualDir != "") {
+                actualDir.split("-").forEach(e => {
+                    if (e == "") return;
+                    if (jsonDir[e] && e != "files") jsonDir = jsonDir[e]
+                })
+            }
+
+            // Appending output
+            var filecount = 0;
+            var dircount = 0;
+            Object.keys(jsonDir).forEach(e => {
+                if (e == "files") {
+                    filecount += 1;
+                    out += `\t${jsonDir[e].join("\nF ")}\n`;
+                }
+                else {
+                    dircount += 1;
+                    out += `<DIR>\t${e}\n`;
+                }
+                
+            });
+
+            out = `${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`;
+
             break;
         default:
             // Keeping the case for command.base
