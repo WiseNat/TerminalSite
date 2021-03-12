@@ -1,0 +1,5 @@
+Something something deep vision.
+
+You give the bot an image and a model name, it runs the model.
+
+Face detection? Sure. Human pose estimation? Sure. Skynet? Soon.

@@ -1,0 +1,19 @@
+{   
+    "files": ["skills.txt"],
+    "Projects": {
+        "Finished": {
+            "files": ["alwaysAI.txt", "QuoteBot.txt"]
+        },
+        "Work in Progress": {
+            "files": ["portfolio.txt"]
+        }
+    },
+    "Education": {
+        "GCSE": {
+            "files": ["grades.txt"]
+        },
+        "A Levels": {
+            "files": ["grades.txt", "coursework.txt"]
+        }
+    }
+}

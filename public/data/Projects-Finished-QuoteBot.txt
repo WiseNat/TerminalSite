@@ -1,0 +1,8 @@
+Quote bot.
+
+Discord bot.
+
+REALLY basic
+Just returned a reformatted quote for a random message sent in a channel
+
+FIX THIS FILE
