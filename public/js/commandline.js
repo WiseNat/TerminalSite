@@ -96,6 +96,42 @@ function toCommand(s, upper=true) {
 }
 
 
+// Generates a tree from a given Object
+function recursiveDepthTree(tree, output = "", precursor = "") {
+    const term = "└";
+    const link = "├";
+    const hori = "───";
+
+    var treeArray = Object.keys(tree);
+    const final = treeArray.length - 1;
+
+    treeArray.forEach(key => {
+        // If the key is "files", add them all
+        if (key == "files") {
+            tree[key].forEach(e => {
+                var connector = link;
+                if (e == tree[treeArray[final]][tree[treeArray[final]].length - 1]) connector = term;
+                output +=  precursor + connector + hori + e + "\n";
+            });
+        }
+        // Else the key is a directory...
+        else {
+            // Directory Connector
+            var connector = link;
+            if (key == treeArray[final]) connector = term;
+            output += precursor + connector + hori + key + "\n";
+            
+            // Precursor logic for final node
+            if (tree[key] != tree[treeArray[final]]) {
+                output = recursiveDepthTree(tree[key], output, precursor + "│   ");
+            }
+            else output = recursiveDepthTree(tree[key], output, precursor + "    ");
+        }
+    });
+    return output;
+}
+
+
 // Command Logic
 async function commandOutput(sc) {
     commandQueue.addElement(sc);
@@ -104,14 +140,16 @@ async function commandOutput(sc) {
     var currentDir = actualDir;
 
     switch (command.base) {
-        case "ECHO":
+        case "ECHO": {
             out += command.args.join(" ");
             break;
-        case "CLS":
+        }
+        case "CLS": {
             consoleStdoutArr.clear();
             consoleStdoutArr.addElement(prefix);
             return consoleStdoutArr.joinAll();
-        case "CD":
+        }
+        case "CD": {
             var splitArgs = command.args.join(" ").split("/");
             splitArgs = splitArgs.filter(function (el) {
                 return el != null && el != "";
@@ -150,14 +188,15 @@ async function commandOutput(sc) {
                 actualDir = currentDir;
             }
             break;
-        case "DIR":
+        }
+        case "DIR": {
             // Getting to current dir in JSON object
             var jsonDir = await getJSON("../json/dir_structure.json");
             if (actualDir != "") {
                 actualDir.split("-").forEach(e => {
                     if (e == "") return;
-                    if (jsonDir[e] && e != "files") jsonDir = jsonDir[e]
-                })
+                    if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
+                });
             }
 
             // Appending output
@@ -178,7 +217,35 @@ async function commandOutput(sc) {
             out = `${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`;
 
             break;
-        default:
+        }
+        case "TREE": {
+            // Get object of current directory location
+            var jsonDir = await getJSON("../json/dir_structure.json");
+            var header = "";
+            if (actualDir != "") {
+                var splitDir = actualDir.split("-");
+                header = splitDir[splitDir.length - 1];
+                
+                splitDir.forEach(e => {
+                    if (e == "") return;
+                    if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
+                });
+            }
+            else header = "C.";
+
+            // Generate the tree, remove final newline and add to the output
+            out += header + "\n" + recursiveDepthTree(jsonDir).replace(/\n$/, "");
+            break;
+        }
+        case "HELP": {
+            out += ["ECHO <message> - outputs your message",
+                "CLS - clears the screen",
+                "CD <path> - navigates you to that path. Use '..' to get back",
+                "DIR - shows file names and folders under the current directory",
+                "TREE - shows a tree of EVERY file and folder under the current directory"].join("\n");
+            break;
+        }
+        default: {
             // Keeping the case for command.base
             command = toCommand(sc, false);
 
@@ -194,6 +261,7 @@ async function commandOutput(sc) {
             else {
                 out += "Run the help command";
             }
+        }
     }
 
     // Output char limit (maxOutChars), cutting of chars that exceed that value

@@ -1,6 +1,5 @@
-alwaysAI woop
-This is a test
-It better work
+Something something deep vision.
 
-If it doesn't work as I expect I'll be disappointed!
-:)
+You give the bot an image and a model name, it runs the model.
+
+Face detection? Sure. Human pose estimation? Sure. Skynet? Soon.
