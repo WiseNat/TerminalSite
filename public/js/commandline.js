@@ -238,11 +238,43 @@ async function commandOutput(sc) {
             break;
         }
         case "HELP": {
-            out += ["ECHO <message> - outputs your message",
-                "CLS - clears the screen",
-                "CD <path> - navigates you to that path. Use '..' to get back",
-                "DIR - shows file names and folders under the current directory",
-                "TREE - shows a tree of EVERY file and folder under the current directory"].join("\n");
+            var messages = {
+                "ECHO": [
+                    "Displays a message.",
+                    "   ECHO [message]",
+                    "\nExample: ECHO Hello, World!"
+                ],
+                "CLS": [
+                    "Clears the screen.",
+                    "   CLS"
+                ],
+                "CD": [
+                    "Changes the current directory.",
+                    "   CD [path]\n   CD [..]",
+                    "\nUse '..' inside of a path to navigate back a directory",
+                    "Example: CD Projects/Finished/../Work in Progress"
+                ],
+                "DIR": [
+                    "Displays a list of files and subdirectories in a directory.",
+                    "   DIR"
+                ],
+                "TREE": [
+                    "Graphically displays the directory structure of the current path.",
+                    "   TREE"
+                ]
+
+            };
+            var keys = Object.keys(messages);
+            if (command.args.length != 0) command.args[0] = command.args[0].toUpperCase();
+            
+            // Logic for wich commands hep to show
+            if (keys.indexOf(command.args[0]) != -1 ) {
+                messages[command.args[0]].forEach(e => {
+                    out += `${e}\n`;
+                });
+            }
+            else keys.forEach(e => out += `${e}\t${messages[e][0]}\n`);
+            out = out.replace(/\n$/, "");
             break;
         }
         default: {
