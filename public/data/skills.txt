@@ -1,7 +1,26 @@
-HTML, CSS, JS, Node JS
+Languages:
+• Python
+• Kotlin
 
-There's more but yeah not going to list them right now. Oh I wish TREE and DIR worked so I don't have to check dir_structure.json when testing...
+Version Control:
+• Git
+• GitHub
 
-^ They do now :))))
+Web Technologies:
+• HTML/CSS
+• JS
+• Node JS
+• Flask
+• BeautifulSoup
 
-FIX THIS FILE
+Software:
+• VSCode
+• Atom
+• Pycharm
+• GitKraken
+• Android Studio
+
+Other:
+• SQLite3
+• JSON
+• alwaysAI

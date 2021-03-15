@@ -1,5 +1,13 @@
-Not going to do this right now
 
-Need to find bugs first
+Subject             |   Grade   |   Board
+---------------------------------------------
+Maths               |   9       |   Edexcel
+Computer Science    |   8       |   OCR
+Physics             |   8       |   OCR
+Chemistry           |   8       |   OCR
+Biology             |   7       |   OCR
+Geography           |   6       |   AQA
+English Literature  |   6       |   AQA
+English Language    |   5       |   AQA
 
-FIX THIS FILE
+DOUBLE CHECK EXAM BOARDS

@@ -1,5 +1,8 @@
-Uuuuh. Not finished these yet but..
 
-Last report was all A-A* bandings so yeah
+Subject             |   Predicted Grade |   Board
+-----------------------------------------------------
+Computer Science    |   A-A*            |   OCR
+Further Maths       |   A-A*            |   Edexcel
+Maths               |   A-A*            |   Edexcel
 
-FIX THIS FILE
+DOUBLE CHECK EXAM BOARDS

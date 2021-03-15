@@ -1,0 +1,14 @@
+
+Well, what you're currently looking at is still a work in progress.
+There's a lot of things to do still listed on the Trello and I
+probably won't get through all of them because there's some fairly
+difficult ones:
+
+• Stopping it send that Error 404 with fetch
+• Dynamically generating dir_structure.json
+• Resolving losing connection
+• Terminal themes
+• Cookies for those terminal themes
+• Mobile support
+• Larger browser support (except EI. Nobody likes EI)
+• Markdown for this thing right here. Currently it's only text based

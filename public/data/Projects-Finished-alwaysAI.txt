@@ -1,5 +1,11 @@
-Something something deep vision.
 
-You give the bot an image and a model name, it runs the model.
+For 3 months, I lead-developed a Discord bot for alwaysAI. This bot
+allows users to run alwaysAI’s deep vision models from within
+Discord. It can also search the documentation and view model
+information using the bot.
 
-Face detection? Sure. Human pose estimation? Sure. Skynet? Soon.
+A blog post about it from alwaysAI was created at:
+https://alwaysai.co/blog/computer-vision-alwaysai-discord-bot-creators.
+
+The GitHub repository can be viewed here:
+https://github.com/DiggidyDev/alwaysAI.
