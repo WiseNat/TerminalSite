@@ -36,7 +36,7 @@ consoleStdoutArr.addElement(initial);
 var terminal = document.getElementById("terminal");
 
 // Setting console to initial output
-terminal.value = initial;
+terminal.innerText = initial;
 terminal.addEventListener("input", input);
 terminal.addEventListener("keydown", keydown);
 
@@ -74,6 +74,18 @@ function findDiff(str1, str2) {
 // Regex Safe String Generator
 function escapeRegEx(s) {
     return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+}
+
+
+// Moves cursor to the end of the element
+function cursorToEnd(el) {
+    var selection = window.getSelection();
+    var range = document.createRange();
+    selection.removeAllRanges();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    selection.addRange(range);
+    el.focus();
 }
 
 
@@ -139,6 +151,8 @@ async function commandOutput(sc) {
     var out = "\n";
     var currentDir = actualDir;
 
+    console.log(sc);
+
     switch (command.base) {
         case "ECHO": {
             out += command.args.join(" ");
@@ -179,7 +193,7 @@ async function commandOutput(sc) {
             });
 
             // Outputs
-            if (exists == false) out += "Directory doesn't exist";
+            if (exists == false || actualDir == currentDir) out += "Directory doesn't exist";
             else if (currentDir == "") {
                 prefix = staticPrefix;
                 actualDir = currentDir;
@@ -214,7 +228,7 @@ async function commandOutput(sc) {
                 
             });
 
-            out = `${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`;
+            out = `\n${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`;
 
             break;
         }
@@ -234,7 +248,7 @@ async function commandOutput(sc) {
             else header = "C.";
 
             // Generate the tree, remove final newline and add to the output
-            out += header + "\n" + recursiveDepthTree(jsonDir).replace(/\n$/, "");
+            out += `\n${header}\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
             break;
         }
         case "HELP": {
@@ -313,7 +327,7 @@ async function commandOutput(sc) {
 async function input(event) {
     var char = event.data;
     var inpType = event.inputType;
-    var consoleLiteral = terminal.value;
+    var consoleLiteral = terminal.innerText;
 
     var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
 
@@ -322,29 +336,32 @@ async function input(event) {
         if (char != null) {
             stdout += char;
         }
-        terminal.value = stdout;
+        terminal.innerText = stdout;
+
+        // Set cursor to end
+        cursorToEnd(terminal);
 
     }
     /*  If Enter key pressed
         Second condition to remedy Chrome bug where entering <char><Enter>, only for the first input, counts as 'insertText'
         event.inputType instead of 'insertLineBreak')
     */
-    else if (inpType == "insertLineBreak" || (char == null && inpType == "insertText")) {
+    else if (char == null && ["insertText", "insertLineBreak", "insertParagraph"].includes(inpType)) {
         // Getting cursor position to remove newline (may not work on Unix or Mac, need to test)
-        var cursorPosition = terminal.selectionStart;
-        consoleLiteral = consoleLiteral.slice(0, cursorPosition - 1) + consoleLiteral.slice(cursorPosition);
+        // var cursorPosition = terminal.selectionStart;
+        // consoleLiteral = consoleLiteral.slice(0, cursorPosition - 1) + consoleLiteral.slice(cursorPosition);
 
         // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
-        var final = await commandOutput(findDiff(consoleStdoutArr.joinAll(), consoleLiteral));
+        var final = await commandOutput(removeNewline(findDiff(consoleStdoutArr.joinAll(), consoleLiteral)));
 
         // Setting the console to the new saved console and resetting the stdoutBuffer
-        terminal.value = final;
+        terminal.innerText = final;
         stdout = final;
         commandPos = -1;
 
         // Scrolling to bottom
         terminal.scrollTo(0, terminal.scrollHeight);
-
+        cursorToEnd(terminal);
 
     }
     // No command inputted, no modified stdout, save current command progress
@@ -355,13 +372,13 @@ async function input(event) {
         var currentOutNoNewline = removeNewline(currentOut);
         if (currentOut != currentOutNoNewline) {
             consoleLiteral = consoleStdoutArr.joinAll() + currentOutNoNewline;
-            terminal.value = consoleLiteral;
+            terminal.innerText = consoleLiteral;
         }
 
         // Input char limit (maxInpChars), cutting of chars that exceed that value
         if (currentOut.length > maxInpChars) {
             consoleLiteral = consoleStdoutArr.joinAll() + removeNewline(currentOut.substring(0, maxInpChars));
-            terminal.value = consoleLiteral;
+            terminal.innerText = consoleLiteral;
         }
 
         stdout = consoleLiteral;
@@ -387,21 +404,27 @@ function keydown(event) {
                 event.preventDefault();
                 if (commandPos < commandQueue.length - 1) {
                     commandPos += 1;
-                    terminal.value = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                    terminal.innerText = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
                 }
+                terminal.scrollTo(0, terminal.scrollHeight);
+                cursorToEnd(terminal);
                 break;
             case "ArrowDown":
                 event.preventDefault();
                 if (commandPos > 0) {
                     commandPos -= 1;
-                    terminal.value = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                    terminal.innerText = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
                 }
                 // Back to no input
                 else if (commandPos == 0) {
                     commandPos -= 1;
-                    terminal.value = consoleStdoutArr.joinAll();
+                    terminal.innerText = consoleStdoutArr.joinAll();
                 }
+                terminal.scrollTo(0, terminal.scrollHeight);
+                cursorToEnd(terminal);
                 break;
         }
     }
 }
+
+cursorToEnd(terminal);
