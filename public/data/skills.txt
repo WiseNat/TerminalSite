@@ -1,0 +1,26 @@
+Languages:
+• Python
+• Kotlin
+
+Version Control:
+• Git
+• GitHub
+
+Web Technologies:
+• HTML/CSS
+• JS
+• Node JS
+• Flask
+• BeautifulSoup
+
+Software:
+• VSCode
+• Atom
+• Pycharm
+• GitKraken
+• Android Studio
+
+Other:
+• SQLite3
+• JSON
+• alwaysAI

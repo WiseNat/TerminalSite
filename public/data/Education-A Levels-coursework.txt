@@ -1,0 +1,13 @@
+
+For my A-level computer science coursework, I made a remote
+controlled camera that is controlled with an Android app. This app
+can contro the camera on a multi-axis servo mount linked up to a
+Raspberry Pi 4B. 
+
+The features the app provides are:
+• Pitch and Yaw servo rotation
+• Face Detection servo rotation
+• Take photo - sends the photo to the users phone
+• Timed photo - waits a set amount of time before taking a photo
+• Share latest photo
+• Open photo gallery
