@@ -36,7 +36,7 @@ consoleStdoutArr.addElement(initial);
 var terminal = document.getElementById("terminal");
 
 // Setting console to initial output
-terminal.value = initial;
+terminal.innerText = initial;
 terminal.addEventListener("input", input);
 terminal.addEventListener("keydown", keydown);
 
@@ -139,6 +139,7 @@ async function commandOutput(sc) {
     var out = "\n";
     var currentDir = actualDir;
 
+    console.log(command);
     switch (command.base) {
         case "ECHO": {
             out += command.args.join(" ");
@@ -313,7 +314,7 @@ async function commandOutput(sc) {
 async function input(event) {
     var char = event.data;
     var inpType = event.inputType;
-    var consoleLiteral = terminal.value;
+    var consoleLiteral = terminal.innerText;
 
     var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
 
@@ -322,7 +323,7 @@ async function input(event) {
         if (char != null) {
             stdout += char;
         }
-        terminal.value = stdout;
+        terminal.innerText = stdout;
 
     }
     /*  If Enter key pressed
@@ -338,7 +339,7 @@ async function input(event) {
         var final = await commandOutput(findDiff(consoleStdoutArr.joinAll(), consoleLiteral));
 
         // Setting the console to the new saved console and resetting the stdoutBuffer
-        terminal.value = final;
+        terminal.innerText = final;
         stdout = final;
         commandPos = -1;
 
@@ -355,13 +356,13 @@ async function input(event) {
         var currentOutNoNewline = removeNewline(currentOut);
         if (currentOut != currentOutNoNewline) {
             consoleLiteral = consoleStdoutArr.joinAll() + currentOutNoNewline;
-            terminal.value = consoleLiteral;
+            terminal.innerText = consoleLiteral;
         }
 
         // Input char limit (maxInpChars), cutting of chars that exceed that value
         if (currentOut.length > maxInpChars) {
             consoleLiteral = consoleStdoutArr.joinAll() + removeNewline(currentOut.substring(0, maxInpChars));
-            terminal.value = consoleLiteral;
+            terminal.innerText = consoleLiteral;
         }
 
         stdout = consoleLiteral;
@@ -387,19 +388,19 @@ function keydown(event) {
                 event.preventDefault();
                 if (commandPos < commandQueue.length - 1) {
                     commandPos += 1;
-                    terminal.value = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                    terminal.innerText = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
                 }
                 break;
             case "ArrowDown":
                 event.preventDefault();
                 if (commandPos > 0) {
                     commandPos -= 1;
-                    terminal.value = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                    terminal.innerText = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
                 }
                 // Back to no input
                 else if (commandPos == 0) {
                     commandPos -= 1;
-                    terminal.value = consoleStdoutArr.joinAll();
+                    terminal.innerText = consoleStdoutArr.joinAll();
                 }
                 break;
         }
