@@ -25,20 +25,20 @@ var prefix = staticPrefix;
 const initial = `Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n${prefix}`;
 var stdout = initial;
 
+// Setting console to initial output
+var terminal = document.getElementById("terminal");
+terminal.innerHTML = initial;
+terminal.addEventListener("input", input);
+terminal.addEventListener("keydown", keydown);
+
 var commandQueue = new Queue();
 var commandPos = -1;
 
 var actualDir = "";
 
 var consoleStdoutArr = new TerminalQueue();
-consoleStdoutArr.addElement(initial);
+consoleStdoutArr.addElement(terminal.innerHTML);
 
-var terminal = document.getElementById("terminal");
-
-// Setting console to initial output
-terminal.innerText = initial;
-terminal.addEventListener("input", input);
-terminal.addEventListener("keydown", keydown);
 
 // Get File Data (txt)
 async function getFile(path){
@@ -74,6 +74,12 @@ function findDiff(str1, str2) {
 // Regex Safe String Generator
 function escapeRegEx(s) {
     return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+}
+
+
+// Removes <div><br></div>
+function noOddHTML(s) {
+    return s.replace("<div><br></div>", "");    
 }
 
 
@@ -150,8 +156,6 @@ async function commandOutput(sc) {
     var command = toCommand(sc);
     var out = "\n";
     var currentDir = actualDir;
-
-    console.log(sc);
 
     switch (command.base) {
         case "ECHO": {
@@ -305,7 +309,8 @@ async function commandOutput(sc) {
             }
             // Not a file... return help output
             else {
-                out += "Run the help command";
+                // eslint-disable-next-line quotes
+                out += `<span style="color: tomato">Run the help command</span>`;
             }
         }
     }
@@ -320,14 +325,17 @@ async function commandOutput(sc) {
     consoleStdoutArr.last().out = removeCarriage(out);
     consoleStdoutArr.addElement(prefix);
 
-    return consoleStdoutArr.joinAll();
+    return [consoleStdoutArr.joinAll()];
 }
 
 
 async function input(event) {
     var char = event.data;
     var inpType = event.inputType;
-    var consoleLiteral = terminal.innerText;
+    var consoleLiteral = terminal.innerHTML;
+
+    console.log(`LITERAL: ${consoleLiteral}`);
+    console.log(`SAVED: ${consoleStdoutArr.joinAll()}`);
 
     var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
 
@@ -336,7 +344,7 @@ async function input(event) {
         if (char != null) {
             stdout += char;
         }
-        terminal.innerText = stdout;
+        terminal.innerHTML = stdout;
 
         // Set cursor to end
         cursorToEnd(terminal);
@@ -347,15 +355,11 @@ async function input(event) {
         event.inputType instead of 'insertLineBreak')
     */
     else if (char == null && ["insertText", "insertLineBreak", "insertParagraph"].includes(inpType)) {
-        // Getting cursor position to remove newline (may not work on Unix or Mac, need to test)
-        // var cursorPosition = terminal.selectionStart;
-        // consoleLiteral = consoleLiteral.slice(0, cursorPosition - 1) + consoleLiteral.slice(cursorPosition);
-
         // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
-        var final = await commandOutput(removeNewline(findDiff(consoleStdoutArr.joinAll(), consoleLiteral)));
+        var final = await commandOutput(noOddHTML(findDiff(consoleStdoutArr.joinAll(), consoleLiteral)));
 
         // Setting the console to the new saved console and resetting the stdoutBuffer
-        terminal.innerText = final;
+        terminal.innerHTML = final;
         stdout = final;
         commandPos = -1;
 
@@ -372,13 +376,13 @@ async function input(event) {
         var currentOutNoNewline = removeNewline(currentOut);
         if (currentOut != currentOutNoNewline) {
             consoleLiteral = consoleStdoutArr.joinAll() + currentOutNoNewline;
-            terminal.innerText = consoleLiteral;
+            terminal.innerHTML = consoleLiteral;
         }
 
         // Input char limit (maxInpChars), cutting of chars that exceed that value
         if (currentOut.length > maxInpChars) {
             consoleLiteral = consoleStdoutArr.joinAll() + removeNewline(currentOut.substring(0, maxInpChars));
-            terminal.innerText = consoleLiteral;
+            terminal.innerHTML = consoleLiteral;
         }
 
         stdout = consoleLiteral;
@@ -404,7 +408,7 @@ function keydown(event) {
                 event.preventDefault();
                 if (commandPos < commandQueue.length - 1) {
                     commandPos += 1;
-                    terminal.innerText = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                    terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
                 }
                 terminal.scrollTo(0, terminal.scrollHeight);
                 cursorToEnd(terminal);
@@ -413,12 +417,12 @@ function keydown(event) {
                 event.preventDefault();
                 if (commandPos > 0) {
                     commandPos -= 1;
-                    terminal.innerText = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                    terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
                 }
                 // Back to no input
                 else if (commandPos == 0) {
                     commandPos -= 1;
-                    terminal.innerText = consoleStdoutArr.joinAll();
+                    terminal.innerHTML = consoleStdoutArr.joinAll();
                 }
                 terminal.scrollTo(0, terminal.scrollHeight);
                 cursorToEnd(terminal);
