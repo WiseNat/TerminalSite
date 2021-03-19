@@ -321,9 +321,7 @@ async function commandOutput(sc) {
     }
 
     // Updating final element to include command and adding the new prefix
-    console.warn(sc);   
-    consoleStdoutArr[0].inp = sc;
-    console.warn(consoleStdoutArr);
+    consoleStdoutArr.last().inp = sc;
     consoleStdoutArr.last().out = removeCarriage(out);
     consoleStdoutArr.addElement(prefix);
 
@@ -334,13 +332,12 @@ async function commandOutput(sc) {
 async function input(event) {
     var char = event.data;
     var inpType = event.inputType;
-    var consoleLiteral = terminal.innerHTML;
+    var consoleLiteral = noOddHTML(terminal.innerHTML).replaceAll("&gt;", ">");
 
     console.log(`LITERAL: ${consoleLiteral}`);
     console.log(`SAVED: ${consoleStdoutArr.joinAll()}`);
 
-    console.warn(he.decode(consoleStdoutArr.joinAll()));
-    var regex = new RegExp(`^${escapeRegEx(he.decode(consoleStdoutArr.joinAll()))}`);
+    var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
 
     // If console was modified, revert change made by user. 32768 chars max for Regex
     if (!regex.test(consoleLiteral)) {
@@ -359,7 +356,7 @@ async function input(event) {
     */
     else if (char == null && ["insertText", "insertLineBreak", "insertParagraph"].includes(inpType)) {
         // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
-        var final = await commandOutput(he.decode(noOddHTML(findDiff(consoleStdoutArr.joinAll(), consoleLiteral))));
+        var final = await commandOutput(noOddHTML(findDiff(consoleStdoutArr.joinAll(), consoleLiteral)));
 
         // Setting the console to the new saved console and resetting the stdoutBuffer
         terminal.innerHTML = final;
