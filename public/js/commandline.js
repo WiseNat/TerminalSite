@@ -37,7 +37,7 @@ var commandPos = -1;
 var actualDir = "";
 
 var consoleStdoutArr = new TerminalQueue();
-consoleStdoutArr.addElement(terminal.innerHTML);
+consoleStdoutArr.addElement(initial);
 
 
 // Get File Data (txt)
@@ -305,7 +305,7 @@ async function commandOutput(sc) {
             var fileData = await getFile(`../data/${currentDir}`);
             // Check if input is a file
             if (fileData != null){
-                out += fileData;
+                out += fileData.replace(/(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm, `<a contenteditable="false" target="_blank" style="color: blue; cursor: pointer;" href="$1">$2</a>`);
             }
             // Not a file... return help output
             else {
@@ -321,11 +321,13 @@ async function commandOutput(sc) {
     }
 
     // Updating final element to include command and adding the new prefix
-    consoleStdoutArr.last().inp = sc;
+    console.warn(sc);   
+    consoleStdoutArr[0].inp = sc;
+    console.warn(consoleStdoutArr);
     consoleStdoutArr.last().out = removeCarriage(out);
     consoleStdoutArr.addElement(prefix);
 
-    return [consoleStdoutArr.joinAll()];
+    return consoleStdoutArr.joinAll();
 }
 
 
@@ -337,7 +339,8 @@ async function input(event) {
     console.log(`LITERAL: ${consoleLiteral}`);
     console.log(`SAVED: ${consoleStdoutArr.joinAll()}`);
 
-    var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
+    console.warn(he.decode(consoleStdoutArr.joinAll()));
+    var regex = new RegExp(`^${escapeRegEx(he.decode(consoleStdoutArr.joinAll()))}`);
 
     // If console was modified, revert change made by user. 32768 chars max for Regex
     if (!regex.test(consoleLiteral)) {
@@ -356,7 +359,7 @@ async function input(event) {
     */
     else if (char == null && ["insertText", "insertLineBreak", "insertParagraph"].includes(inpType)) {
         // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
-        var final = await commandOutput(noOddHTML(findDiff(consoleStdoutArr.joinAll(), consoleLiteral)));
+        var final = await commandOutput(he.decode(noOddHTML(findDiff(consoleStdoutArr.joinAll(), consoleLiteral))));
 
         // Setting the console to the new saved console and resetting the stdoutBuffer
         terminal.innerHTML = final;
@@ -387,6 +390,8 @@ async function input(event) {
 
         stdout = consoleLiteral;
     }
+    console.log(`LITERAL: ${consoleLiteral}`);
+    console.log(`SAVED: ${consoleStdoutArr.joinAll()}`);
 
 }
 

@@ -54,24 +54,26 @@ class TerminalQueue extends Queue {
             this.shift();
         }
         this.push({
-            "pre": htmlfy(prefix),
-            "inp": htmlfy(input),
+            "pre": prefix,
+            "inp": input,
             "out": output
         });
     }
 
     joinAll() {
         var res = [];
-        this.forEach(ele => res.push(htmlfy(ele.pre) + htmlfy(ele.inp) + ele.out));
+        this.forEach(ele => res.push(ele.pre + ele.inp + ele.out));
         return res.join("");
     }
 
     joinEle(index) {
-        return htmlfy(this[index].pre) + htmlfy(this[index].inp) + this[index].out;
+        return this[index].pre + this[index].inp + this[index].out;
     }
 }
 
 export {
     Queue,
-    TerminalQueue
+    TerminalQueue,
+    htmlfy,
+    datafy
 };

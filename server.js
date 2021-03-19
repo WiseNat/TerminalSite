@@ -1,10 +1,11 @@
 const express = require("express");
 const path = require("path");
 
-const port = 3000;
+const port = 8000;
 
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/bower_components",  express.static(__dirname + "/bower_components"));
 
 
 app.get("/", (req, res) => {
@@ -12,6 +13,7 @@ app.get("/", (req, res) => {
     console.log("User connected: " + req.ip.split(":").pop());
 });
 
-app.listen(process.env.port || port, function() {
+// 10.198.96.65:8000
+app.listen(process.env.port || port, "0.0.0.0", function() {
     console.log(`Server listening on http://localhost:${port}`);
 });
