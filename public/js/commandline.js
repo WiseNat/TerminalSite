@@ -260,26 +260,26 @@ async function commandOutput(sc) {
             var messages = {
                 "ECHO": [
                     "Displays a message.",
-                    "   ECHO [message]",
+                    "ECHO [message]",
                     "\nExample: ECHO Hello, World!"
                 ],
                 "CLS": [
                     "Clears the screen.",
-                    "   CLS"
+                    "CLS"
                 ],
                 "CD": [
                     "Changes the current directory.",
-                    "   CD [path]\n   CD [..]",
+                    "CD [path]\nCD [..]",
                     "\nUse '..' inside of a path to navigate back a directory",
                     "Example: CD Projects/Finished/../Work in Progress"
                 ],
                 "DIR": [
                     "Displays a list of files and subdirectories in a directory.",
-                    "   DIR"
+                    "DIR"
                 ],
                 "TREE": [
                     "Graphically displays the directory structure of the current path.",
-                    "   TREE"
+                    "TREE"
                 ]
 
             };
@@ -288,9 +288,7 @@ async function commandOutput(sc) {
             
             // Logic for wich commands hep to show
             if (keys.indexOf(command.args[0]) != -1 ) {
-                messages[command.args[0]].forEach(e => {
-                    out += `${e}\n`;
-                });
+                messages[command.args[0]].forEach(e => out += `${e}\n`);
             }
             else keys.forEach(e => out += `${e}\t${messages[e][0]}\n`);
             out = out.replace(/\n$/, "");
