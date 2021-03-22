@@ -79,7 +79,7 @@ function escapeRegEx(s) {
 
 // Removes <div><br></div>
 function noOddHTML(s) {
-    return s.replace("<div><br></div>", "");    
+    return s.replaceAll(/<div>|<\/div>|<br>/gm, "");     
 }
 
 
@@ -157,6 +157,7 @@ async function commandOutput(sc) {
     var out = "\n";
     var currentDir = actualDir;
 
+    console.log(command);
     switch (command.base) {
         case "ECHO": {
             out += command.args.join(" ");
@@ -227,7 +228,7 @@ async function commandOutput(sc) {
                 }
                 else {
                     dircount += 1;
-                    out += `<DIR>\t${e}\n`;
+                    out += `&lt;DIR&gt;\t${e}\n`;
                 }
                 
             });
@@ -350,10 +351,7 @@ async function input(event) {
         cursorToEnd(terminal);
 
     }
-    /*  If Enter key pressed
-        Second condition to remedy Chrome bug where entering <char><Enter>, only for the first input, counts as 'insertText'
-        event.inputType instead of 'insertLineBreak')
-    */
+    // If Enter key pressed
     else if (char == null && ["insertText", "insertLineBreak", "insertParagraph"].includes(inpType)) {
         // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
         var final = await commandOutput(noOddHTML(findDiff(consoleStdoutArr.joinAll(), consoleLiteral)));
@@ -366,7 +364,6 @@ async function input(event) {
         // Scrolling to bottom
         terminal.scrollTo(0, terminal.scrollHeight);
         cursorToEnd(terminal);
-
     }
     // No command inputted, no modified stdout, save current command progress
     else {
@@ -384,7 +381,6 @@ async function input(event) {
             consoleLiteral = consoleStdoutArr.joinAll() + removeNewline(currentOut.substring(0, maxInpChars));
             terminal.innerHTML = consoleLiteral;
         }
-
         stdout = consoleLiteral;
     }
     console.log(`LITERAL: ${consoleLiteral}`);
