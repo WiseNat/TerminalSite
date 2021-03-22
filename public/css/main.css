@@ -21,11 +21,25 @@ html, body{
     width: 100%;
     margin: 0px;
     scrollbar-width: none;
+    --font-color: #CCCCCC;
+    --font-family: 20px "Cascadia Mono";
+    --link-color: #4843ff;
+}
+
+a{
+    cursor: pointer;
+    font: 20px "Cascadia Mono";
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover{
+    text-decoration: underline;
 }
 
 .command-input{
-    font: 20px "Cascadia Mono";
-    color: #CCCCCC;
+    font: var(--font-family);
+    color: var(--font-color);
     background-color: transparent;
     outline: none;
     border: 0px;

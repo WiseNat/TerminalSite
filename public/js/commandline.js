@@ -160,7 +160,8 @@ async function commandOutput(sc) {
     console.log(command);
     switch (command.base) {
         case "ECHO": {
-            out += command.args.join(" ");
+            // eslint-disable-next-line quotes
+            out += `<span style="color: #A3FD62">${command.args.join(" ")}</span>`;
             break;
         }
         case "CLS": {
@@ -217,18 +218,17 @@ async function commandOutput(sc) {
                     if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
                 });
             }
-
             // Appending output
             var filecount = 0;
             var dircount = 0;
             Object.keys(jsonDir).forEach(e => {
                 if (e == "files") {
-                    filecount += 1;
-                    out += `\t${jsonDir[e].join("\nF ")}\n`;
+                    filecount = jsonDir[e].length;
+                    out += `F ${jsonDir[e].join("\nF ")}\n`;
                 }
                 else {
                     dircount += 1;
-                    out += `&lt;DIR&gt;\t${e}\n`;
+                    out += `&lt;DIR>\t${e}\n`;
                 }
                 
             });
@@ -306,7 +306,7 @@ async function commandOutput(sc) {
             var fileData = await getFile(`../data/${currentDir}`);
             // Check if input is a file
             if (fileData != null){
-                out += fileData.replace(/(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm, `<a contenteditable="false" target="_blank" style="color: blue; cursor: pointer;" href="$1">$2</a>`);
+                out += fileData.replace(/(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm, `<a contenteditable="false" target="_blank" href="$1">$2</a>`);
             }
             // Not a file... return help output
             else {
