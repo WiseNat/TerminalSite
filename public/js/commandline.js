@@ -18,7 +18,7 @@ commandPos - keeps track of the command position in commandQueue. For when the u
 consoleStdoutArr - holds 25 lines of valid contents of console {"pre":"", "inp": "", "out":""}. Updates every time a command is sent (Enter) 
 */
 const maxInpChars = 150;
-const maxOutChars = 900;
+const maxOutChars = 1400;
 
 const staticPrefix = "\n\nC:\\Users\\user>";
 var prefix = staticPrefix;

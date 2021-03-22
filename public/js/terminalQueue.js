@@ -1,4 +1,4 @@
-var maxLines = 30;
+var maxLines = 20;
 
 
 // HTML -> String
