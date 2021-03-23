@@ -1,5 +1,5 @@
 {   
-    "files": ["skills.txt"],
+    "files": ["skills.txt", "test.txt"],
     "Projects": {
         "Finished": {
             "files": ["alwaysAI.txt", "QuoteBot.txt"]

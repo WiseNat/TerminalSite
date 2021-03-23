@@ -11,3 +11,5 @@ The features the app provides are:
 • Timed photo - waits a set amount of time before taking a photo
 • Share latest photo
 • Open photo gallery
+
+[Test](Test2)
