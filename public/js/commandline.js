@@ -21,9 +21,9 @@ consoleStdoutArr - holds 25 lines of valid contents of console {"pre":"", "inp":
 const maxInpChars = 150;
 const maxOutChars = 1400;
 
-const staticPrefix = he.escape("\n\nC:\\Users\\user>");
+const staticPrefix = escape("\n\nC:\\Users\\user>");
 var prefix = staticPrefix;
-const initial = he.escape("Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n") + prefix;
+const initial = escape("Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n") + prefix;
 var stdout = initial;
 
 // Setting console to initial output
@@ -40,6 +40,11 @@ var actualDir = "";
 var consoleStdoutArr = new TerminalQueue();
 consoleStdoutArr.addElement(initial);
 
+
+// Replaces < and > symbols with named references
+function escape(s) {
+    return s.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
 
 // Get File Data (txt)
 async function getFile(path) {
@@ -204,7 +209,7 @@ async function commandOutput(sc) {
                 prefix = staticPrefix;
                 actualDir = currentDir;
             } else {
-                prefix = he.escape(`${staticPrefix.slice(0, -4)}\\${currentDir.replace("-", "\\")}>`);
+                prefix = escape(`${staticPrefix.slice(0, -4)}\\${currentDir.replace("-", "\\")}>`);
                 actualDir = currentDir;
             }
             break;
@@ -231,7 +236,7 @@ async function commandOutput(sc) {
                 }
             });
 
-            out = he.escape(`\n${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`);
+            out = escape(`\n${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`);
             break;
         }
         case "TREE": {
@@ -304,7 +309,7 @@ async function commandOutput(sc) {
             var fileData = await getFile(`../data/${currentDir}`);
             // Check if input is a file
             if (fileData != null) {
-                out += fileData.replace("<", "&lt;").replace(">", "&gt;").replace(
+                out += escape(fileData).replace(
                     /(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm, `<a contenteditable="false" target="_blank" href="$1">$2</a>`
                 );
             }
@@ -330,7 +335,6 @@ async function commandOutput(sc) {
 }
 
 
-// TODO: fix this up with HE integration for the love of god 
 async function input(event) {
     var char = event.data;
     var inpType = event.inputType;
@@ -341,7 +345,6 @@ async function input(event) {
 
     var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
 
-    // TODO: Look into ways of breaking this part
     // If console was modified, revert change made by user. 32768 chars max for Regex
     if (!regex.test(consoleLiteral)) {
         if (char != null) {
@@ -353,7 +356,6 @@ async function input(event) {
         cursorToEnd(terminal);
 
     }
-    // TODO: Fix up existing "fixes" for the HTML issues and then find ways to break this afterwards
     // If Enter key pressed
     else if (char == null && ["insertText", "insertLineBreak", "insertParagraph"].includes(inpType)) {
         // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
@@ -368,7 +370,6 @@ async function input(event) {
         terminal.scrollTo(0, terminal.scrollHeight);
         cursorToEnd(terminal);
     }
-    // TODO: Look into ways of this breaking
     // No command inputted, no modified stdout, save current command progress
     else {
         var currentOut = findDiff(consoleStdoutArr.joinAll(), consoleLiteral);
