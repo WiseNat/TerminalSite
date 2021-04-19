@@ -340,14 +340,15 @@ async function input(event) {
     var inpType = event.inputType;
     var consoleLiteral = noOddHTML(terminal.innerHTML);
 
-    console.log(`LITERAL: ${consoleLiteral}`);
+    console.warn(`LITERAL: ${consoleLiteral}`);
     console.log(`SAVED: ${consoleStdoutArr.joinAll()}`);
 
     var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
 
     // If console was modified, revert change made by user. 32768 chars max for Regex
     if (!regex.test(consoleLiteral)) {
-        if (char != null) {
+        // Add the character inputted into console if it isn't null and it won't make the current input exceed the max allowed input
+        if (char != null && findDiff(consoleStdoutArr.joinAll(), consoleLiteral).length <= maxInpChars) {
             stdout += char;
         }
         terminal.innerHTML = stdout;
@@ -385,6 +386,7 @@ async function input(event) {
         if (currentOut.length > maxInpChars) {
             consoleLiteral = consoleStdoutArr.joinAll() + removeNewline(currentOut.substring(0, maxInpChars));
             terminal.innerHTML = consoleLiteral;
+            cursorToEnd(terminal);
         }
         stdout = consoleLiteral;
     }
