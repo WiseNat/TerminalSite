@@ -164,6 +164,11 @@ async function commandOutput(sc) {
 
     switch (command.base) {
         // Broke
+        case "SOURCE": {
+            out += "You can access the source code at this ";
+            out += `<a contenteditable="false" target="_blank" href="https://github.com/WiseNat/TerminalSite">GitHub repository</a>`
+            break;
+        }
         case "ECHO": {
             // eslint-disable-next-line quotes
             out += `<span style="color: #A3FD62">${command.args.join(" ")}</span>`;
@@ -259,6 +264,10 @@ async function commandOutput(sc) {
         }
         case "HELP": {
             var messages = {
+                "SOURCE": [
+                    "Returns a URL for the source code",
+                    "SOURCE"
+                ],
                 "ECHO": [
                     "Displays a message.",
                     "ECHO [message]",
@@ -340,6 +349,7 @@ async function input(event) {
     var inpType = event.inputType;
     var consoleLiteral = noOddHTML(terminal.innerHTML);
 
+    // TODO: Remove these in final product
     console.warn(`LITERAL: ${consoleLiteral}`);
     console.log(`SAVED: ${consoleStdoutArr.joinAll()}`);
 
