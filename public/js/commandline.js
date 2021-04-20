@@ -40,6 +40,7 @@ var actualDir = "";
 var consoleStdoutArr = new TerminalQueue();
 consoleStdoutArr.addElement(initial);
 
+var files = {};
 
 // Replaces < and > symbols with named references
 function escape(s) {
@@ -165,7 +166,6 @@ async function commandOutput(sc) {
     var jsonDir = await getJSON("../json/dir_structure.json");
 
     switch (command.base) {
-        // Broke
         case "SOURCE": {
             out += "You can access the source code at this ";
             out += '<a contenteditable="false" target="_blank" href="https://github.com/WiseNat/TerminalSite">GitHub repository</a>';
@@ -333,7 +333,17 @@ async function commandOutput(sc) {
             // File Request
             if (currentDir != "") currentDir += "-";
             currentDir += command.base + command.args.join(" ");
-            var fileData = await getFile(`../data/${currentDir}`);
+            
+            const path = `../data/${currentDir}`;
+            var fileData = "";
+
+            if (path in files) {
+                fileData = files[path];
+            } else {
+                fileData = await getFile(path);
+                files[path] = fileData;
+            }
+            
             // Check if input is a file
             if (fileData != null) {
                 out += escape(fileData).replace(
