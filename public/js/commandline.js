@@ -17,12 +17,13 @@ commandPos - keeps track of the command position in commandQueue. For when the u
 
 consoleStdoutArr - holds 25 lines of valid contents of console {"pre":"", "inp": "", "out":""}. Updates every time a command is sent (Enter) 
 */
+
 const maxInpChars = 150;
 const maxOutChars = 1400;
 
-const staticPrefix = "\n\nC:\\Users\\user>";
+const staticPrefix = escape("\n\nC:\\Users\\user>");
 var prefix = staticPrefix;
-const initial = `Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n${prefix}`;
+const initial = escape("Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n") + prefix;
 var stdout = initial;
 
 // Setting console to initial output
@@ -39,9 +40,15 @@ var actualDir = "";
 var consoleStdoutArr = new TerminalQueue();
 consoleStdoutArr.addElement(initial);
 
+var files = {};
+
+// Replaces < and > symbols with named references
+function escape(s) {
+    return s.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
 
 // Get File Data (txt)
-async function getFile(path){
+async function getFile(path) {
     return fetch(path).then(response => response.status === 200 ? response.text() : null);
 }
 
@@ -79,7 +86,7 @@ function escapeRegEx(s) {
 
 // Removes <div><br></div>
 function noOddHTML(s) {
-    return s.replaceAll(/<div>|<\/div>|<br>/gm, "");     
+    return s.replaceAll(/<div>|<\/div>|<br>/gm, "");
 }
 
 
@@ -96,14 +103,14 @@ function cursorToEnd(el) {
 
 
 // Converts command string to command object, uppercases base command, preserves args
-function toCommand(s, upper=true) {
+function toCommand(s, upper = true) {
     var arr = s.split(" ");
 
     // Getting arg values
     var arg = [];
     if (arr.length > 1) arg = arr.slice(1, arr.length);
 
-    if (upper == true && arr.length > 0){
+    if (upper == true && arr.length > 0) {
         arr[0] = arr[0].toUpperCase();
     }
 
@@ -129,7 +136,7 @@ function recursiveDepthTree(tree, output = "", precursor = "") {
             tree[key].forEach(e => {
                 var connector = link;
                 if (e == tree[treeArray[final]][tree[treeArray[final]].length - 1]) connector = term;
-                output +=  precursor + connector + hori + e + "\n";
+                output += precursor + connector + hori + e + "\n";
             });
         }
         // Else the key is a directory...
@@ -138,12 +145,11 @@ function recursiveDepthTree(tree, output = "", precursor = "") {
             var connector = link;
             if (key == treeArray[final]) connector = term;
             output += precursor + connector + hori + key + "\n";
-            
+
             // Precursor logic for final node
             if (tree[key] != tree[treeArray[final]]) {
                 output = recursiveDepthTree(tree[key], output, precursor + "│   ");
-            }
-            else output = recursiveDepthTree(tree[key], output, precursor + "    ");
+            } else output = recursiveDepthTree(tree[key], output, precursor + "    ");
         }
     });
     return output;
@@ -157,8 +163,14 @@ async function commandOutput(sc) {
     var out = "\n";
     var currentDir = actualDir;
 
-    console.log(command);
+    var jsonDir = await getJSON("../json/dir_structure.json");
+
     switch (command.base) {
+        case "SOURCE": {
+            out += "You can access the source code at this ";
+            out += '<a contenteditable="false" target="_blank" href="https://github.com/WiseNat/TerminalSite">GitHub repository</a>';
+            break;
+        }
         case "ECHO": {
             // eslint-disable-next-line quotes
             out += `<span style="color: #A3FD62">${command.args.join(" ")}</span>`;
@@ -182,7 +194,7 @@ async function commandOutput(sc) {
                         currentDir = currentDir.split("-");
                         currentDir.pop();
                         currentDir = currentDir.join("-");
-                    }
+                    }   
                 } else {
                     if (currentDir == "") currentDir = e;
                     else currentDir += "-" + e;
@@ -191,7 +203,6 @@ async function commandOutput(sc) {
 
             // Checking if dir exists
             var exists = true;
-            var jsonDir = await getJSON("../json/dir_structure.json");
             currentDir.split("-").forEach(function (e) {
                 if (e == "") return;
                 if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
@@ -204,14 +215,13 @@ async function commandOutput(sc) {
                 prefix = staticPrefix;
                 actualDir = currentDir;
             } else {
-                prefix = `${staticPrefix.slice(0, -1)}\\${currentDir.replace("-", "\\")}>`;
+                prefix = escape(`${staticPrefix.slice(0, -4)}\\${currentDir.replace("-", "\\")}>`);
                 actualDir = currentDir;
             }
             break;
         }
         case "DIR": {
             // Getting to current dir in JSON object
-            var jsonDir = await getJSON("../json/dir_structure.json");
             if (actualDir != "") {
                 actualDir.split("-").forEach(e => {
                     if (e == "") return;
@@ -224,73 +234,95 @@ async function commandOutput(sc) {
             Object.keys(jsonDir).forEach(e => {
                 if (e == "files") {
                     filecount = jsonDir[e].length;
-                    out += `F ${jsonDir[e].join("\nF ")}\n`;
-                }
-                else {
+                    out += `<F>\t${jsonDir[e].join("\n<F>\t")}\n`;
+                } else {
                     dircount += 1;
-                    out += `&lt;DIR>\t${e}\n`;
+                    out += `<DIR>\t${e}\n`;
                 }
-                
             });
 
-            out = `\n${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`;
-
+            out = escape(`\n${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`);
             break;
         }
         case "TREE": {
             // Get object of current directory location
-            var jsonDir = await getJSON("../json/dir_structure.json");
             var header = "";
             if (actualDir != "") {
                 var splitDir = actualDir.split("-");
                 header = splitDir[splitDir.length - 1];
-                
+
                 splitDir.forEach(e => {
                     if (e == "") return;
                     if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
                 });
-            }
-            else header = "C.";
+            } else header = "C.";
 
             // Generate the tree, remove final newline and add to the output
             out += `\n${header}\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
             break;
         }
+        case "CV": {
+            out += "You can download my CV at ";
+            out += '<a contenteditable="false" href="CV.pdf" download="">this link</a>';
+            break;
+        }
         case "HELP": {
             var messages = {
+                "SOURCE": [
+                    "Returns a URL for the source code of the site",
+                    "\nSOURCE",
+                    "\nEx. SOURCE"
+                ],
                 "ECHO": [
-                    "Displays a message.",
-                    "ECHO [message]",
-                    "\nExample: ECHO Hello, World!"
+                    "Displays a given message",
+                    "\nECHO [*message]",
+                    "\tmessage: the message you want to returned",
+                    "\nEx. ECHO Hello, World!"
                 ],
                 "CLS": [
-                    "Clears the screen.",
-                    "CLS"
+                    "Clears the screen",
+                    "\nCLS",
+                    "\nEx. CLS"
                 ],
                 "CD": [
-                    "Changes the current directory.",
-                    "CD [path]\nCD [..]",
-                    "\nUse '..' inside of a path to navigate back a directory",
-                    "Example: CD Projects/Finished/../Work in Progress"
+                    "Changes the current directory",
+                    "\nCD [path]",
+                    "\tpath: a path to the directory you want to navigate to",
+                    "\tUse '..' inside of a path to navigate back a directory",
+                    "\nEx. CD Projects/Finished/../Work in Progress"
                 ],
                 "DIR": [
-                    "Displays a list of files and subdirectories in a directory.",
-                    "DIR"
+                    "Displays a list of files and subdirectories in the current directory",
+                    "\nDIR",
+                    "\nEx. DIR"
                 ],
                 "TREE": [
-                    "Graphically displays the directory structure of the current path.",
-                    "TREE"
+                    "Graphically displays the directory structure of the current path",
+                    "\nTREE",
+                    "\nEx. TREE"
+                ],
+                "CV": [
+                    "Sends a link to download my current CV",
+                    "\nCV",
+                    "\nEx. CV"
+                ],
+                "HELP": [
+                    "Provides help information for the available commands",
+                    "\nHELP [command]",
+                    "\tcommand: OPTIONAL, the command you want help for. If no command is given",
+                    "\tthen a list of all commands will be shown",
+                    "\nEx. HELP tree"
                 ]
 
             };
             var keys = Object.keys(messages);
             if (command.args.length != 0) command.args[0] = command.args[0].toUpperCase();
-            
+
             // Logic for wich commands hep to show
-            if (keys.indexOf(command.args[0]) != -1 ) {
+            out += "\n";
+            if (keys.indexOf(command.args[0]) != -1) {
                 messages[command.args[0]].forEach(e => out += `${e}\n`);
-            }
-            else keys.forEach(e => out += `${e}\t${messages[e][0]}\n`);
+            } else keys.forEach(e => out += `${e}\t${messages[e][0]}\n`);
             out = out.replace(/\n$/, "");
             break;
         }
@@ -301,10 +333,23 @@ async function commandOutput(sc) {
             // File Request
             if (currentDir != "") currentDir += "-";
             currentDir += command.base + command.args.join(" ");
-            var fileData = await getFile(`../data/${currentDir}`);
+            
+            const path = `../data/${currentDir}`;
+            var fileData = "";
+
+            if (path in files) {
+                fileData = files[path];
+            } else {
+                fileData = await getFile(path);
+                files[path] = fileData;
+            }
+            
             // Check if input is a file
-            if (fileData != null){
-                out += fileData.replace(/(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm, `<a contenteditable="false" target="_blank" href="$1">$2</a>`);
+            if (fileData != null) {
+                out += escape(fileData).replace(
+                    /(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm,
+                    '<a contenteditable="false" target="_blank" href="$1">$2</a>'
+                );
             }
             // Not a file... return help output
             else {
@@ -331,16 +376,18 @@ async function commandOutput(sc) {
 async function input(event) {
     var char = event.data;
     var inpType = event.inputType;
-    var consoleLiteral = noOddHTML(terminal.innerHTML).replaceAll("&gt;", ">");
+    var consoleLiteral = noOddHTML(terminal.innerHTML);
 
-    console.log(`LITERAL: ${consoleLiteral}`);
+    // TODO: Remove these in final product
+    console.warn(`LITERAL: ${consoleLiteral}`);
     console.log(`SAVED: ${consoleStdoutArr.joinAll()}`);
 
     var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
 
     // If console was modified, revert change made by user. 32768 chars max for Regex
     if (!regex.test(consoleLiteral)) {
-        if (char != null) {
+        // Add the character inputted into console if it isn't null and it won't make the current input exceed the max allowed input
+        if (char != null && findDiff(consoleStdoutArr.joinAll(), consoleLiteral).length <= maxInpChars) {
             stdout += char;
         }
         terminal.innerHTML = stdout;
@@ -378,12 +425,10 @@ async function input(event) {
         if (currentOut.length > maxInpChars) {
             consoleLiteral = consoleStdoutArr.joinAll() + removeNewline(currentOut.substring(0, maxInpChars));
             terminal.innerHTML = consoleLiteral;
+            cursorToEnd(terminal);
         }
         stdout = consoleLiteral;
     }
-    console.log(`LITERAL: ${consoleLiteral}`);
-    console.log(`SAVED: ${consoleStdoutArr.joinAll()}`);
-
 }
 
 

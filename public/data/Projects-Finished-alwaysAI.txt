@@ -4,8 +4,5 @@ allows users to run alwaysAI’s deep vision models from within
 Discord. It can also search the documentation and view model
 information using the bot.
 
-A blog post about it from alwaysAI was created at:
-https://alwaysai.co/blog/computer-vision-alwaysai-discord-bot-creators.
-
-The GitHub repository can be viewed here:
-https://github.com/DiggidyDev/alwaysAI.
+A [https://alwaysai.co/blog/computer-vision-alwaysai-discord-bot-creators](blog post) was created by alwaysAI.
+You can also view the [https://github.com/DiggidyDev/alwaysAI](GitHub repository).
