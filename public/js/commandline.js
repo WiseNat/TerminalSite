@@ -162,11 +162,13 @@ async function commandOutput(sc) {
     var out = "\n";
     var currentDir = actualDir;
 
+    var jsonDir = await getJSON("../json/dir_structure.json");
+
     switch (command.base) {
         // Broke
         case "SOURCE": {
             out += "You can access the source code at this ";
-            out += `<a contenteditable="false" target="_blank" href="https://github.com/WiseNat/TerminalSite">GitHub repository</a>`
+            out += '<a contenteditable="false" target="_blank" href="https://github.com/WiseNat/TerminalSite">GitHub repository</a>';
             break;
         }
         case "ECHO": {
@@ -201,7 +203,6 @@ async function commandOutput(sc) {
 
             // Checking if dir exists
             var exists = true;
-            var jsonDir = await getJSON("../json/dir_structure.json");
             currentDir.split("-").forEach(function (e) {
                 if (e == "") return;
                 if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
@@ -221,7 +222,6 @@ async function commandOutput(sc) {
         }
         case "DIR": {
             // Getting to current dir in JSON object
-            var jsonDir = await getJSON("../json/dir_structure.json");
             if (actualDir != "") {
                 actualDir.split("-").forEach(e => {
                     if (e == "") return;
@@ -246,7 +246,6 @@ async function commandOutput(sc) {
         }
         case "TREE": {
             // Get object of current directory location
-            var jsonDir = await getJSON("../json/dir_structure.json");
             var header = "";
             if (actualDir != "") {
                 var splitDir = actualDir.split("-");
@@ -262,39 +261,57 @@ async function commandOutput(sc) {
             out += `\n${header}\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
             break;
         }
+        case "CV": {
+            out += "You can download my CV at ";
+            out += '<a contenteditable="false" href="CV.pdf" download="">this link</a>';
+            break;
+        }
         case "HELP": {
             var messages = {
                 "SOURCE": [
-                    "Returns a URL for the source code",
-                    "SOURCE"
+                    "Returns a URL for the source code of the site",
+                    "\nSOURCE",
+                    "\nEx. SOURCE"
                 ],
                 "ECHO": [
-                    "Displays a message.",
-                    "ECHO [message]",
-                    "\nExample: ECHO Hello, World!"
+                    "Displays a given message",
+                    "\nECHO [*message]",
+                    "\tmessage: the message you want to returned",
+                    "\nEx. ECHO Hello, World!"
                 ],
                 "CLS": [
-                    "Clears the screen.",
-                    "CLS"
+                    "Clears the screen",
+                    "\nCLS",
+                    "\nEx. CLS"
                 ],
                 "CD": [
-                    "Changes the current directory.",
-                    "CD [path]\nCD [..]",
-                    "\nUse '..' inside of a path to navigate back a directory",
-                    "Example: CD Projects/Finished/../Work in Progress"
+                    "Changes the current directory",
+                    "\nCD [path]",
+                    "\tpath: a path to the directory you want to navigate to",
+                    "\tUse '..' inside of a path to navigate back a directory",
+                    "\nEx. CD Projects/Finished/../Work in Progress"
                 ],
                 "DIR": [
-                    "Displays a list of files and subdirectories in a directory.",
-                    "DIR"
+                    "Displays a list of files and subdirectories in the current directory",
+                    "\nDIR",
+                    "\nEx. DIR"
                 ],
                 "TREE": [
-                    "Graphically displays the directory structure of the current path.",
-                    "TREE"
+                    "Graphically displays the directory structure of the current path",
+                    "\nTREE",
+                    "\nEx. TREE"
+                ],
+                "CV": [
+                    "Sends a link to download my current CV",
+                    "\nCV",
+                    "\nEx. CV"
                 ],
                 "HELP": [
                     "Provides help information for the available commands",
-                    "HELP\nHELP [command]",
-                    "Example: HELP echo"
+                    "\nHELP [command]",
+                    "\tcommand: OPTIONAL, the command you want help for. If no command is given",
+                    "\tthen a list of all commands will be shown",
+                    "\nEx. HELP tree"
                 ]
 
             };
@@ -302,6 +319,7 @@ async function commandOutput(sc) {
             if (command.args.length != 0) command.args[0] = command.args[0].toUpperCase();
 
             // Logic for wich commands hep to show
+            out += "\n";
             if (keys.indexOf(command.args[0]) != -1) {
                 messages[command.args[0]].forEach(e => out += `${e}\n`);
             } else keys.forEach(e => out += `${e}\t${messages[e][0]}\n`);
@@ -319,7 +337,8 @@ async function commandOutput(sc) {
             // Check if input is a file
             if (fileData != null) {
                 out += escape(fileData).replace(
-                    /(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm, `<a contenteditable="false" target="_blank" href="$1">$2</a>`
+                    /(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm,
+                    '<a contenteditable="false" target="_blank" href="$1">$2</a>'
                 );
             }
             // Not a file... return help output
