@@ -274,6 +274,9 @@ async function commandOutput(sc) {
                 prefix = escape(`${staticPrefix.slice(0, -4)}\\${currentDir.replace("-", "\\")}>`);
                 actualDir = currentDir;
             }
+
+            // Preventing the extra newline
+            out = "";
             break;
         }
         case "DIR": {
@@ -303,7 +306,7 @@ async function commandOutput(sc) {
                 }
             });
     
-            out = escape(`\n${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`);
+            out = escape(`${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`);
             break;
         }
         case "TREE": {
@@ -325,7 +328,7 @@ async function commandOutput(sc) {
             } else header = "C.";
     
             // Generate the tree, remove final newline and add to the output
-            out += `\n${header}\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
+            out += `${header}\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
             break;
         }
         case "CV": {
@@ -386,7 +389,6 @@ async function commandOutput(sc) {
             if (command.args.length != 0) command.args[0] = command.args[0].toUpperCase();
     
             // Logic for which commands help to show
-            out += "\n";
             if (keys.indexOf(command.args[0]) != -1) {
                 messages[command.args[0]].forEach(e => out += `${e}\n`);
             } else keys.forEach(e => out += `${e}\t${messages[e][0]}\n`);
@@ -482,7 +484,7 @@ async function input(event) {
         terminal.scrollTo(0, terminal.scrollHeight);
         cursorToEnd(terminal);
     }
-    
+
     // No command inputted, no modified stdout, save current command progress
     else {
         var currentOut = findDiff(consoleStdoutArr.joinAll(), consoleLiteral);
