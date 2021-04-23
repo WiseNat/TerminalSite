@@ -84,6 +84,13 @@ async function getJSON(path) {
 }
 
 
+// Title cases a given string
+function titleCase(s) {
+    return s.toLowerCase().split(" ").map(function(word) {
+        return (word.charAt(0).toUpperCase() + word.slice(1));
+    }).join(" ");
+}
+
 // Replaces < and > symbols with named references
 function escape(s) {
     return s.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
@@ -233,6 +240,7 @@ async function commandOutput(sc) {
 
             // Reformatting the given directory (user input)
             var splitArgs = command.args.join(" ").split("/");
+            splitArgs = splitArgs.map(titleCase);
             splitArgs = splitArgs.filter(function (el) {
                 return el != null && el != "";
             });
