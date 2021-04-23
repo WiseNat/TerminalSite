@@ -112,12 +112,6 @@ function findDiff(str1, str2) {
 }
 
 
-// Regex Safe String Generator
-function escapeRegEx(s) {
-    return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
-}
-
-
 // Removes <div><br></div>
 function noOddHTML(s) {
     return s.replaceAll(/<div>|<\/div>|<br>/gm, "");
@@ -467,13 +461,11 @@ async function input(event) {
     var consoleLiteral = noOddHTML(terminal.innerHTML);
 
     // TODO: Remove these in final product
-    console.warn(`LITERAL: ${consoleLiteral}`);
-    console.log(`SAVED: ${consoleStdoutArr.joinAll()}`);
+    console.warn(`LITERAL:\n${consoleLiteral}`);
+    console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
 
-    var regex = new RegExp(`^${escapeRegEx(consoleStdoutArr.joinAll())}`);
-
-    // If console was modified, revert change made by user. 32768 chars max for Regex
-    if (!regex.test(consoleLiteral)) {
+    // If console was modified, revert change made by user.
+    if (!consoleLiteral.startsWith(consoleStdoutArr.joinAll())) {
         // Add the character inputted into console if it isn't null and it won't make the current input exceed the max allowed input
         if (char != null && findDiff(consoleStdoutArr.joinAll(), consoleLiteral).length <= maxInpChars) {
             stdout += char;
