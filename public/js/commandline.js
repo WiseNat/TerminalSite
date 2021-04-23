@@ -157,9 +157,9 @@ function toCommand(s, upper = true) {
 
 // Generates a tree from a given Object
 function recursiveDepthTree(tree, output = "", precursor = "") {
-    const term = "└";
-    const link = "├";
     const hori = "───";
+    const link = "├";
+    const term = "└";
 
     var treeArray = Object.keys(tree);
     const final = treeArray.length - 1;
@@ -316,19 +316,17 @@ async function commandOutput(sc) {
             }
 
             // Get object of current directory location
-            var header = "";
             if (actualDir != "") {
                 var splitDir = actualDir.split("-");
-                header = splitDir[splitDir.length - 1];
     
                 splitDir.forEach(e => {
                     if (e == "") return;
                     if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
                 });
-            } else header = "C.";
+            }
     
             // Generate the tree, remove final newline and add to the output
-            out += `${header}\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
+            out += `C:.\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
             break;
         }
         case "CV": {
@@ -339,49 +337,70 @@ async function commandOutput(sc) {
         case "HELP": {
             var messages = {
                 "SOURCE": [
-                    "Returns a URL for the source code of the site",
-                    "\nSOURCE",
-                    "\nEx. SOURCE"
+                    "<b>Usage:</b>",
+                    "  source",
+                    "\n<b>Arguments</b>",
+                    "  None",
+                    "\n<b>Info:</b>",
+                    "  Returns a URL for the source code of the site",
                 ],
                 "ECHO": [
-                    "Displays a given message",
-                    "\nECHO [*message]",
-                    "\tmessage: the message you want to returned",
-                    "\nEx. ECHO Hello, World!"
+                    "<b>Usage:</b>",
+                    "  echo *message",
+                    "\n<b>Arguments</b>",
+                    "  *message\tthe message you want returned to the console",
+                    "\n<b>Info:</b>",
+                    "  Displays a given message",
                 ],
                 "CLS": [
-                    "Clears the screen",
-                    "\nCLS",
-                    "\nEx. CLS"
+                    "<b>Usage:</b>",
+                    "  cls",
+                    "\n<b>Arguments</b>",
+                    "  None",
+                    "\n<b>Info:</b>",
+                    "  Clears the console",
                 ],
                 "CD": [
-                    "Changes the current directory",
-                    "\nCD [path]",
-                    "\tpath: a path to the directory you want to navigate to",
-                    "\tUse '..' inside of a path to navigate back a directory",
-                    "\nEx. CD Projects/Finished/../Work in Progress"
+                    "<b>Usage:</b>",
+                    "  cd path",
+                    "  cd ..",
+                    "\n<b>Arguments</b>",
+                    "  path\t\tthe path to the directory. Use '..' as a directory name to navigate backwards",
+                    "\n<b>Info:</b>",
+                    "  Changes the current directory",
                 ],
                 "DIR": [
-                    "Displays a list of files and subdirectories in the current directory",
-                    "\nDIR",
-                    "\nEx. DIR"
+                    "<b>Usage:</b>",
+                    "  dir",
+                    "\n<b>Arguments</b>",
+                    "  None",
+                    "\n<b>Info:</b>",
+                    "  Displays a list of files and subdirectories in the current directory",
                 ],
                 "TREE": [
-                    "Graphically displays the directory structure of the current path",
-                    "\nTREE",
-                    "\nEx. TREE"
+                    "<b>Usage:</b>",
+                    "  tree",
+                    "\n<b>Arguments</b>",
+                    "  None",
+                    "\n<b>Info:</b>",
+                    "  Graphically displays the directory structure of the current path",
                 ],
                 "CV": [
-                    "Sends a link to download my current CV",
-                    "\nCV",
-                    "\nEx. CV"
+                    "<b>Usage:</b>",
+                    "  cv",
+                    "\n<b>Arguments</b>",
+                    "  None",
+                    "\n<b>Info:</b>",
+                    "  Sends a link to download my current CV",
                 ],
                 "HELP": [
-                    "Provides help information for the available commands",
-                    "\nHELP [command]",
-                    "\tcommand: OPTIONAL, the command you want help for. If no command is given",
-                    "\tthen a list of all commands will be shown",
-                    "\nEx. HELP tree"
+                    "<b>Usage:</b>",
+                    "  help",
+                    "  help command",
+                    "\n<b>Arguments</b>",
+                    "  command\tthe command you want more specific information on",
+                    "\n<b>Info:</b>",
+                    "  Provides help information for the available commands",
                 ]
     
             };
@@ -391,7 +410,7 @@ async function commandOutput(sc) {
             // Logic for which commands help to show
             if (keys.indexOf(command.args[0]) != -1) {
                 messages[command.args[0]].forEach(e => out += `${e}\n`);
-            } else keys.forEach(e => out += `${e}\t${messages[e][0]}\n`);
+            } else keys.forEach(e => out += `${e}\t${messages[e][messages[e].length - 1]}\n`);
             out = out.replace(/\n$/, "");
             break;
         }
@@ -412,7 +431,7 @@ async function commandOutput(sc) {
             else if (fileData != null) {
                 filesCache[path] = fileData;
             } 
-                
+            
             // Check if input is a file
             if (fileData != null) {
                 out += escape(fileData).replace(
@@ -428,7 +447,6 @@ async function commandOutput(sc) {
         }
     }
     
-
     // Output char limit (maxOutChars), cutting of chars that exceed that value
     if (out.length > maxOutChars) {
         out = out.substring(0, maxOutChars);
