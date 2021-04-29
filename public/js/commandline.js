@@ -483,7 +483,6 @@ filesCache - holds the last updated file data of each requested file in case of 
                         "\n<b>Info:</b>",
                         "  Provides help information for the available commands",
                     ]
-        
                 };
                 var keys = Object.keys(messages);
                 if (command.args.length != 0) command.args[0] = command.args[0].toUpperCase();
@@ -491,7 +490,15 @@ filesCache - holds the last updated file data of each requested file in case of 
                 // Logic for which commands help to show
                 if (keys.indexOf(command.args[0]) != -1) {
                     messages[command.args[0]].forEach(e => out += `${e}\n`);
-                } else keys.forEach(e => out += `${e}\t${messages[e][messages[e].length - 1]}\n`);
+                }
+                // Show list of commands (tab for every 8th chars)
+                else {
+                    const maxTabs =  Math.floor(Math.max(...(keys.map(el => el.length))) / 8) + 2;
+                    keys.forEach(e => {
+                        const tabs = "\t".repeat(maxTabs - Math.floor(e.length / 8));
+                        out += `${e}${tabs}${messages[e][messages[e].length - 1]}\n`;
+                    });
+                }
                 out = out.replace(/\n$/, "");
                 break;
             }
@@ -549,7 +556,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         var consoleLiteral = noOddHTML(terminal.innerHTML);
 
         // TODO: Remove these in final product
-        // console.warn(`LITERAL:\n${consoleLiteral}`);
+        console.warn(`LITERAL:\n${consoleLiteral}`);
         // console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
 
         // If console was modified, revert change made by user.
