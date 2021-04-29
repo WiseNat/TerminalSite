@@ -1,0 +1,13 @@
+
+Subject             |   Grade   |   Board
+---------------------------------------------
+Maths               |   9       |   Edexcel
+Computer Science    |   8       |   OCR
+Physics             |   8       |   OCR
+Chemistry           |   8       |   OCR
+Biology             |   7       |   OCR
+Geography           |   6       |   AQA
+English Literature  |   6       |   AQA
+English Language    |   5       |   AQA
+
+DOUBLE CHECK EXAM BOARDS

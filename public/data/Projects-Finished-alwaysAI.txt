@@ -1,0 +1,8 @@
+
+For 3 months, I lead-developed a Discord bot for alwaysAI. This bot
+allows users to run alwaysAI’s deep vision models from within
+Discord. It can also search the documentation and view model
+information using the bot.
+
+A [https://alwaysai.co/blog/computer-vision-alwaysai-discord-bot-creators](blog post) was created by alwaysAI.
+You can also view the [https://github.com/DiggidyDev/alwaysAI](GitHub repository).
