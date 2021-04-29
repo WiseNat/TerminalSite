@@ -3,13 +3,25 @@
     src: url("CascadiaMono.ttf")
 }
 
+@font-face{
+    font-family: "Ubuntu Mono";
+    src: url("UbuntuMono.ttf")
+}
+
 ::selection{
     color: #E5E5E5;
     background: #858585;
 }
 
 :root{
-    background-color:black;
+    --background:black;
+    --font-color: #CCCCCC;
+    --font-family: 20px "Cascadia Mono";
+    --selection-background: #858585;
+    --selection-color: #E5E5E5;
+    --link-color: #4843ff;
+
+    background-color: var(--background);
 }
 
 *{
@@ -21,9 +33,6 @@ html, body{
     width: 100%;
     margin: 0px;
     scrollbar-width: none;
-    --font-color: #CCCCCC;
-    --font-family: 20px "Cascadia Mono";
-    --link-color: #4843ff;
 }
 
 a{

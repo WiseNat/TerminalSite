@@ -29,9 +29,25 @@ filesCache - holds the last updated file data of each requested file in case of 
 const maxInpChars = 150;
 const maxOutChars = 1400;
 
-const staticPrefix = escape("\n\nC:\\Users\\user>");
-var prefix = staticPrefix;
-const initial = escape("Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n") + prefix;
+var themeCSS = await getJSON("../terminals/command prompt.json")
+var theme = "COMMAND PROMPT";
+changeTheme(themeCSS["theme"])
+
+const pathPlaceholder = "[PATH]";
+
+var staticPrefix = themeCSS["text"]["prefix"];
+if (themeCSS["text"]["prefix-escape"]) {
+    staticPrefix = escape(staticPrefix);
+}
+
+var prefix = staticPrefix.replace(pathPlaceholder, "");
+
+var initial = themeCSS["text"]["initial"];
+if (themeCSS["text"]["initial-escape"]) {
+    initial = escape(initial);
+}
+initial = initial + prefix;
+
 var stdout = initial;
 
 // Setting console to initial output
@@ -125,6 +141,14 @@ function noOddHTML(s) {
 }
 
 
+// Changes the current terminal CSS theme
+function changeTheme(dat) {
+    for (const key in dat) {
+        document.documentElement.style.setProperty(`--${key}`, dat[key]);
+    }
+}
+
+
 // Moves cursor to the end of the element
 function cursorToEnd(el) {
     var selection = window.getSelection();
@@ -153,6 +177,26 @@ function toCommand(s, upper = true) {
         "base": arr[0],
         "args": arg
     };
+}
+
+
+// Generates a prefix from a LOT of args
+function generatePathPrefix(staticPrefix, directory, themeName, themeCSS){
+    // Determining whether a separator is needed before the path or not
+    var seperator = "";
+    if (directory != "") {
+        seperator = themeCSS["text"]["cd"];
+    }
+    
+    // Logic for path positioning in prefix based on current terminal theme
+    switch (themeName) {
+        case "EXAMPLE THEME": {
+            return `${staticPrefix}~~${directory.replace("-", "\\")}> `;
+        }
+        default: {
+            return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replace("-", seperator)}`);
+        }
+    }
 }
 
 
@@ -268,17 +312,19 @@ async function commandOutput(sc) {
             });
     
             // Outputs
-            if (exists == false || actualDir == currentDir) out += "Directory doesn't exist";
-            else if (currentDir == "") {
-                prefix = staticPrefix;
-                actualDir = currentDir;
-            } else {
-                prefix = escape(`${staticPrefix.slice(0, -4)}\\${currentDir.replace("-", "\\")}>`);
-                actualDir = currentDir;
+            if (exists == false || actualDir == currentDir) {
+                out += "Directory doesn't exist";
             }
+            else {
+                // Preventing the extra newline
+                out = "";
 
-            // Preventing the extra newline
-            out = "";
+                // Setting the actual directory to the current one
+                actualDir = currentDir;
+
+                // Generating prefix
+                prefix = generatePathPrefix(staticPrefix, currentDir, theme, themeCSS);
+            }
             break;
         }
         case "DIR": {
@@ -336,12 +382,37 @@ async function commandOutput(sc) {
             out += '<a contenteditable="false" href="CV.pdf" download="">this link</a>';
             break;
         }
+        case "TERMINAL": {
+            const userInput = command.args.join(" ");
+            const terminal = await getJSON(`../terminals/${userInput}.json`)
+            
+            // No terminal theme found
+            if (terminal == null) { 
+                out += `Terminal theme <span style="color: violet">${titleCase(userInput)}</span> does not exist`
+                break;
+            }
+
+            // Terminal theme found
+            changeTheme(terminal["theme"]);
+            theme = userInput.toUpperCase();
+
+            staticPrefix = terminal["text"]["prefix"];
+            if (terminal["text"]["prefix-escape"]) {
+                staticPrefix = escape(staticPrefix);
+            }
+
+            prefix = generatePathPrefix(staticPrefix, actualDir, theme, terminal)
+            themeCSS = terminal;
+
+            out += `Changed the terminal to <span style="color: violet">${titleCase(userInput)}</span>`;
+            break;
+        }
         case "HELP": {
             var messages = {
                 "SOURCE": [
                     "<b>Usage:</b>",
                     "  source",
-                    "\n<b>Arguments</b>",
+                    "\n<b>Arguments:</b>",
                     "  None",
                     "\n<b>Info:</b>",
                     "  Returns a URL for the source code of the site",
@@ -349,7 +420,7 @@ async function commandOutput(sc) {
                 "ECHO": [
                     "<b>Usage:</b>",
                     "  echo *message",
-                    "\n<b>Arguments</b>",
+                    "\n<b>Arguments:</b>",
                     "  *message\tthe message you want returned to the console",
                     "\n<b>Info:</b>",
                     "  Displays a given message",
@@ -357,7 +428,7 @@ async function commandOutput(sc) {
                 "CLS": [
                     "<b>Usage:</b>",
                     "  cls",
-                    "\n<b>Arguments</b>",
+                    "\n<b>Arguments:</b>",
                     "  None",
                     "\n<b>Info:</b>",
                     "  Clears the console",
@@ -366,7 +437,7 @@ async function commandOutput(sc) {
                     "<b>Usage:</b>",
                     "  cd path",
                     "  cd ..",
-                    "\n<b>Arguments</b>",
+                    "\n<b>Arguments:</b>",
                     "  path\t\tthe path to the directory. Use '..' as a directory name to navigate backwards",
                     "\n<b>Info:</b>",
                     "  Changes the current directory",
@@ -374,7 +445,7 @@ async function commandOutput(sc) {
                 "DIR": [
                     "<b>Usage:</b>",
                     "  dir",
-                    "\n<b>Arguments</b>",
+                    "\n<b>Arguments:</b>",
                     "  None",
                     "\n<b>Info:</b>",
                     "  Displays a list of files and subdirectories in the current directory",
@@ -382,7 +453,7 @@ async function commandOutput(sc) {
                 "TREE": [
                     "<b>Usage:</b>",
                     "  tree",
-                    "\n<b>Arguments</b>",
+                    "\n<b>Arguments:</b>",
                     "  None",
                     "\n<b>Info:</b>",
                     "  Graphically displays the directory structure of the current path",
@@ -390,16 +461,24 @@ async function commandOutput(sc) {
                 "CV": [
                     "<b>Usage:</b>",
                     "  cv",
-                    "\n<b>Arguments</b>",
+                    "\n<b>Arguments:</b>",
                     "  None",
                     "\n<b>Info:</b>",
                     "  Sends a link to download my current CV",
+                ],
+                "TERMINAL": [
+                    "<b>Usage:</b>",
+                    "  terminal name",
+                    "\n<b>Arguments:</b>",
+                    "  name\tname of the terminal you want to change to",
+                    "\n<b>Info:</b>",
+                    "  Changes your current emulated terminal to another",
                 ],
                 "HELP": [
                     "<b>Usage:</b>",
                     "  help",
                     "  help command",
-                    "\n<b>Arguments</b>",
+                    "\n<b>Arguments:</b>",
                     "  command\tthe command you want more specific information on",
                     "\n<b>Info:</b>",
                     "  Provides help information for the available commands",
@@ -455,6 +534,7 @@ async function commandOutput(sc) {
     }
 
     // Updating final element to include command and adding the new prefix
+    out += "\n\n";
     consoleStdoutArr.last().inp = sc;
     consoleStdoutArr.last().out = removeCarriage(out);
     consoleStdoutArr.addElement(prefix);
