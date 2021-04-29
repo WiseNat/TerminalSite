@@ -284,11 +284,10 @@ async function commandOutput(sc) {
 
             // Reformatting the given directory (user input)
             var splitArgs = command.args.join(" ").split("/");
-            splitArgs = splitArgs.map(titleCase);
             splitArgs = splitArgs.filter(function (el) {
                 return el != null && el != "";
             });
-    
+
             // Creating directory path without any ".."s
             splitArgs.forEach(function (e) {
                 if (e == "..") {
@@ -302,7 +301,7 @@ async function commandOutput(sc) {
                     else currentDir += "-" + e;
                 }
             });
-    
+
             // Checking if dir exists
             var exists = true;
             currentDir.split("-").forEach(function (e) {
@@ -549,8 +548,8 @@ async function input(event) {
     var consoleLiteral = noOddHTML(terminal.innerHTML);
 
     // TODO: Remove these in final product
-    console.warn(`LITERAL:\n${consoleLiteral}`);
-    console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
+    // console.warn(`LITERAL:\n${consoleLiteral}`);
+    // console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
 
     // If console was modified, revert change made by user.
     if (!consoleLiteral.startsWith(consoleStdoutArr.joinAll())) {
