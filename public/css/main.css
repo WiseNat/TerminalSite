@@ -1,0 +1,69 @@
+@font-face{
+    font-family: "Cascadia Mono";
+    src: url("CascadiaMono.ttf")
+}
+
+@font-face{
+    font-family: "Ubuntu Mono";
+    src: url("UbuntuMono.ttf")
+}
+
+::selection{
+    color: var(--selection-color);
+    background: var(--selection-background);
+}
+
+:root{
+    --background:black;
+    --font-color: #CCCCCC;
+    --font-family: 20px "Cascadia Mono";
+    --selection-background: #858585;
+    --selection-color: #E5E5E5;
+    --link-color: #4843ff;
+
+    background-color: var(--background);
+}
+
+*{
+    cursor: default;
+}
+
+html, body{
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    scrollbar-width: none;
+}
+
+a{
+    cursor: pointer;
+    font: var(--font-family);
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover{
+    text-decoration: underline;
+}
+
+.command-input{
+    font: var(--font-family);
+    color: var(--font-color);
+    background-color: transparent;
+    outline: none;
+    border: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+    resize: none;
+    white-space:pre;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.command-input::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
