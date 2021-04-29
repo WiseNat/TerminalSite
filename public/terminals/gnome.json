@@ -14,13 +14,14 @@
         "prefix-escape": false
     },
     "commands": {
-        "SOURCE": "source",
-        "ECHO": "echo",
-        "CLS": "clear",
-        "CD": "cd",
-        "DIR": "dir",
-        "TREE": "tree",
-        "CV": "cv",
-        "HELP": "help"
+        "SOURCE": "SOURCE",
+        "ECHO": "ECHO",
+        "CLS": "CLEAR",
+        "CD": "CD",
+        "DIR": "DIR",
+        "TREE": "TREE",
+        "CV": "CV",
+        "TERMINAL": "TERMINAL",
+        "HELP": "HELP"
     }
 }

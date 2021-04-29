@@ -21,6 +21,7 @@
         "DIR": "DIR",
         "TREE": "TREE",
         "CV": "CV",
+        "TERMINAL": "TERMINAL",
         "HELP": "HELP"
     }
 }

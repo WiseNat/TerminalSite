@@ -261,23 +261,24 @@ filesCache - holds the last updated file data of each requested file in case of 
         }
 
         // Massive command switch case for output logic
+        const commands = themeCSS["commands"];
         switch (command.base) {
-            case "SOURCE": {
+            case commands["SOURCE"]: {
                 out += "You can access the source code at this ";
                 out += "<a contenteditable=\"false\" target=\"_blank\" href=\"https://github.com/WiseNat/TerminalSite\">GitHub repository</a>";
                 break;
             }
-            case "ECHO": {
+            case commands["ECHO"]: {
                 // eslint-disable-next-line quotes
                 out += `<span style="color: #A3FD62">${command.args.join(" ")}</span>`;
                 break;
             }
-            case "CLS": {
+            case commands["CLS"]: {
                 consoleStdoutArr.clear();
                 consoleStdoutArr.addElement(prefix);
                 return consoleStdoutArr.joinAll();
             }
-            case "CD": {
+            case commands["CD"]: {
                 // Cancelling if jsonDir is unavailable
                 if (jsonDir == null) {
                     break;
@@ -327,7 +328,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 }
                 break;
             }
-            case "DIR": {
+            case commands["DIR"]: {
                 // Cancelling if jsonDir is unavailable
                 if (jsonDir == null) {
                     break;
@@ -357,7 +358,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 out = escape(`${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`);
                 break;
             }
-            case "TREE": {
+            case commands["TREE"]: {
                 // Cancelling if jsonDir is unavailable
                 if (jsonDir == null) {
                     break;
@@ -377,12 +378,12 @@ filesCache - holds the last updated file data of each requested file in case of 
                 out += `C:.\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
                 break;
             }
-            case "CV": {
+            case commands["CV"]: {
                 out += "You can download my CV at ";
                 out += "<a contenteditable=\"false\" href=\"CV.pdf\" download=\"\">this link</a>";
                 break;
             }
-            case "TERMINAL": {
+            case commands["TERMINAL"]: {
                 const userInput = command.args.join(" ");
                 const terminal = await getJSON(`../terminals/${userInput}.json`);
                 
@@ -407,77 +408,77 @@ filesCache - holds the last updated file data of each requested file in case of 
                 out += `Changed the terminal to <span style="color: violet">${titleCase(userInput)}</span>`;
                 break;
             }
-            case "HELP": {
+            case commands["HELP"]: {
                 var messages = {
-                    "SOURCE": [
+                    [commands["SOURCE"]]: [
                         "<b>Usage:</b>",
-                        "  source",
+                        `  ${commands["SOURCE"]}`,
                         "\n<b>Arguments:</b>",
                         "  None",
                         "\n<b>Info:</b>",
                         "  Returns a URL for the source code of the site",
                     ],
-                    "ECHO": [
+                    [commands["ECHO"]]: [
                         "<b>Usage:</b>",
-                        "  echo *message",
+                        `  ${commands["ECHO"]} *message`,
                         "\n<b>Arguments:</b>",
                         "  *message\tthe message you want returned to the console",
                         "\n<b>Info:</b>",
                         "  Displays a given message",
                     ],
-                    "CLS": [
+                    [commands["CLS"]]: [
                         "<b>Usage:</b>",
-                        "  cls",
+                        `  ${commands["CLS"]}`,
                         "\n<b>Arguments:</b>",
                         "  None",
                         "\n<b>Info:</b>",
                         "  Clears the console",
                     ],
-                    "CD": [
+                    [commands["CD"]]: [
                         "<b>Usage:</b>",
-                        "  cd path",
-                        "  cd ..",
+                        `  ${commands["CD"]} path`,
+                        `  ${commands["CD"]} ..`,
                         "\n<b>Arguments:</b>",
                         "  path\t\tthe path to the directory. Use '..' as a directory name to navigate backwards",
                         "\n<b>Info:</b>",
                         "  Changes the current directory",
                     ],
-                    "DIR": [
+                    [commands["DIR"]]: [
                         "<b>Usage:</b>",
-                        "  dir",
+                        `  ${commands["DIR"]}`,
                         "\n<b>Arguments:</b>",
                         "  None",
                         "\n<b>Info:</b>",
                         "  Displays a list of files and subdirectories in the current directory",
                     ],
-                    "TREE": [
+                    [commands["TREE"]]: [
                         "<b>Usage:</b>",
-                        "  tree",
+                        `  ${commands["TREE"]}`,
                         "\n<b>Arguments:</b>",
                         "  None",
                         "\n<b>Info:</b>",
                         "  Graphically displays the directory structure of the current path",
                     ],
-                    "CV": [
+                    [commands["CV"]]: [
                         "<b>Usage:</b>",
-                        "  cv",
+                        `  ${commands["CV"]}`,
                         "\n<b>Arguments:</b>",
                         "  None",
                         "\n<b>Info:</b>",
                         "  Sends a link to download my current CV",
                     ],
-                    "TERMINAL": [
+                    [commands["TERMINAL"]]: [
                         "<b>Usage:</b>",
-                        "  terminal name",
+                        `  ${commands["TERMINAL"]} name`,
                         "\n<b>Arguments:</b>",
                         "  name\tname of the terminal you want to change to",
                         "\n<b>Info:</b>",
                         "  Changes your current emulated terminal to another",
                     ],
-                    "HELP": [
+                    [commands["HELP"]]: [
                         "<b>Usage:</b>",
-                        "  help",
-                        "  help command",
+                        `  ${commands["HELP"]}`,
+                        `  ${commands["HELP"]} command`,
                         "\n<b>Arguments:</b>",
                         "  command\tthe command you want more specific information on",
                         "\n<b>Info:</b>",
