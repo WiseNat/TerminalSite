@@ -9,8 +9,8 @@
 }
 
 ::selection{
-    color: #E5E5E5;
-    background: #858585;
+    color: var(--selection-color);
+    background: var(--selection-background);
 }
 
 :root{
@@ -37,7 +37,7 @@ html, body{
 
 a{
     cursor: pointer;
-    font: 20px "Cascadia Mono";
+    font: var(--font-family);
     color: var(--link-color);
     text-decoration: none;
 }
