@@ -248,7 +248,7 @@ filesCache - holds the last updated file data of each requested file in case of 
             var jsonDir = await getJSON("../json/dir_structure.json");
             if (jsonDir == null && jsonDirCache == null) {
                 console.warn("No jsonDir or backupDir enabled");
-                out += '<span style="color: tomato">Failed to fetch jsonDir. The web server might be down!</span>';
+                out += "<span style=\"color: tomato\">Failed to fetch jsonDir. The web server might be down!</span>";
             }
             else if (jsonDir == null && jsonDirCache != null) { 
                 console.warn("jsonDir recovered from backup");
@@ -264,7 +264,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         switch (command.base) {
             case "SOURCE": {
                 out += "You can access the source code at this ";
-                out += '<a contenteditable="false" target="_blank" href="https://github.com/WiseNat/TerminalSite">GitHub repository</a>';
+                out += "<a contenteditable=\"false\" target=\"_blank\" href=\"https://github.com/WiseNat/TerminalSite\">GitHub repository</a>";
                 break;
             }
             case "ECHO": {
@@ -379,16 +379,16 @@ filesCache - holds the last updated file data of each requested file in case of 
             }
             case "CV": {
                 out += "You can download my CV at ";
-                out += '<a contenteditable="false" href="CV.pdf" download="">this link</a>';
+                out += "<a contenteditable=\"false\" href=\"CV.pdf\" download=\"\">this link</a>";
                 break;
             }
             case "TERMINAL": {
                 const userInput = command.args.join(" ");
-                const terminal = await getJSON(`../terminals/${userInput}.json`)
+                const terminal = await getJSON(`../terminals/${userInput}.json`);
                 
                 // No terminal theme found
                 if (terminal == null) { 
-                    out += `Terminal theme <span style="color: violet">${titleCase(userInput)}</span> does not exist`
+                    out += `Terminal theme <span style="color: violet">${titleCase(userInput)}</span> does not exist`;
                     break;
                 }
 
@@ -401,7 +401,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                     staticPrefix = escape(staticPrefix);
                 }
 
-                prefix = generatePathPrefix(staticPrefix, actualDir, theme, terminal)
+                prefix = generatePathPrefix(staticPrefix, actualDir, theme, terminal);
                 themeCSS = terminal;
 
                 out += `Changed the terminal to <span style="color: violet">${titleCase(userInput)}</span>`;
@@ -517,7 +517,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 if (fileData != null) {
                     out += escape(fileData).replace(
                         /(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm,
-                        '<a contenteditable="false" target="_blank" href="$1">$2</a>'
+                        "<a contenteditable=\"false\" target=\"_blank\" href=\"$1\">$2</a>"
                     );
                 }
                 // Not a valid filename... return help output
