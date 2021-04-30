@@ -38,7 +38,7 @@ filesCache - holds the last updated file data of each requested file in case of 
     } else {
         themeCSS = await getJSON(`../terminals/${theme}.json`);
     }
-    
+
     changeTheme(themeCSS["theme"], theme);
 
     const pathPlaceholder = "[PATH]";
@@ -55,6 +55,20 @@ filesCache - holds the last updated file data of each requested file in case of 
         initial = escape(initial);
     }
     initial = initial + prefix;
+
+    var consentMode = false;
+    var cookieConsent = getCookie("consent");
+    
+    // Hasn't decided on allowing cookies or not
+    if (cookieConsent == null) {
+        consentMode = true;
+        initial = `So, basically, in order to actually use my site you need to agree to letting me use Cookies. \
+        \nIt just made the entirety of the backend a lot easier. \
+        \n\n\nEssentially the site uses two Cookies: \
+        \n<span style="color: gray">Consent</span> - flag for whether you consent or not, only exists as true after you consent\
+        \n<span style="color: gray">Terminal Theme</span> - stores the terminal theme you used last so that it persists when you open the page up again \
+        \n\n\nDo you consent to the use of these cookies [<span style="color: #A3FD62">Y</span>/<span style="color: tomato">N</span>]?\n\n${escape(">>>")} `;
+    }
 
     var stdout = initial;
 
@@ -120,6 +134,7 @@ filesCache - holds the last updated file data of each requested file in case of 
     }
 
 
+    // Josh was here and wants a cookie
     // Gets a cookie
     function getCookie(name) {
         var nameEQ = name + "=";
@@ -145,6 +160,7 @@ filesCache - holds the last updated file data of each requested file in case of 
             return (word.charAt(0).toUpperCase() + word.slice(1));
         }).join(" ");
     }
+
 
     // Replaces < and > symbols with named references
     function escape(s) {
@@ -596,13 +612,13 @@ filesCache - holds the last updated file data of each requested file in case of 
         var consoleLiteral = noOddHTML(terminal.innerHTML);
 
         // TODO: Remove these in final product
-        console.warn(`LITERAL:\n${consoleLiteral}`);
+        // console.warn(`LITERAL:\n${consoleLiteral}`);
         // console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
 
         // If console was modified, revert change made by user.
         if (!consoleLiteral.startsWith(consoleStdoutArr.joinAll())) {
             // Add the character inputted into console if it isn't null and it won't make the current input exceed the max allowed input
-            if (char != null && findDiff(consoleStdoutArr.joinAll(), consoleLiteral).length <= maxInpChars) {
+            if (char != null && findDiff(consoleStdoutArr.joinAll(), consoleLiteral).length <= maxInpChars && !consentMode) {
                 stdout += char;
             }
             terminal.innerHTML = stdout;
@@ -639,6 +655,25 @@ filesCache - holds the last updated file data of each requested file in case of 
             if (currentOut != currentOutNoNewline) {
                 consoleLiteral = consoleStdoutArr.joinAll() + currentOutNoNewline;
                 terminal.innerHTML = consoleLiteral;
+            }
+
+            if (consentMode) {
+                currentOut = currentOut.toUpperCase();
+                // Consent
+                if (currentOut == "Y") {
+                    setCookie("consent", "true");
+                    window.location.reload();
+                }
+                // No consent
+                else if (currentOut == "N") {
+                    window.location.reload();
+                }
+                // Invalid Char
+                else {
+                    terminal.innerHTML = stdout;
+                    cursorToEnd(terminal);
+                }
+                return;
             }
 
             // Input char limit (maxInpChars), cutting of chars that exceed that value
@@ -691,6 +726,7 @@ filesCache - holds the last updated file data of each requested file in case of 
             }
         }
     }
+
 
     function paste(event) {
         event.preventDefault();
