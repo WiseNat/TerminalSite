@@ -30,9 +30,16 @@ filesCache - holds the last updated file data of each requested file in case of 
     const maxInpChars = 150;
     const maxOutChars = 1400;
 
-    var themeCSS = await getJSON("../terminals/command prompt.json");
-    var theme = "COMMAND PROMPT";
-    changeTheme(themeCSS["theme"]);
+    var theme = getCookie("terminal_theme");
+    // No saved terminal theme, default to command prompt
+    if (theme == null) {
+        theme = "COMMAND PROMPT";
+        var themeCSS = await getJSON("../terminals/command prompt.json");
+    } else {
+        themeCSS = await getJSON(`../terminals/${theme}.json`);
+    }
+    
+    changeTheme(themeCSS["theme"], theme);
 
     const pathPlaceholder = "[PATH]";
 
@@ -101,6 +108,37 @@ filesCache - holds the last updated file data of each requested file in case of 
     }
 
 
+    // Sets a cookie
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = `; expires=${date.toUTCString()}`;
+        }
+        document.cookie = `${name}=${(value || "")}${expires}; path=/`;
+    }
+
+
+    // Gets a cookie
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(";");
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==" ") c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+
+
+    // Removes a cookie
+    function eraseCookie(name) {   
+        document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+    }
+
+
     // Title cases a given string
     function titleCase(s) {
         return s.toLowerCase().split(" ").map(function(word) {
@@ -143,10 +181,11 @@ filesCache - holds the last updated file data of each requested file in case of 
 
 
     // Changes the current terminal CSS theme
-    function changeTheme(dat) {
+    function changeTheme(dat, name) {
         for (const key in dat) {
             document.documentElement.style.setProperty(`--${key}`, dat[key]);
         }
+        setCookie("terminal_theme", name.toLowerCase());
     }
 
 
@@ -270,7 +309,7 @@ filesCache - holds the last updated file data of each requested file in case of 
             }
             case commands["ECHO"]: {
                 // eslint-disable-next-line quotes
-                out += `<span style="color: #A3FD62">${command.args.join(" ")}</span>`;
+                out += command.args.join(" ");
                 break;
             }
             case commands["CLS"]: {
@@ -394,8 +433,8 @@ filesCache - holds the last updated file data of each requested file in case of 
                 }
 
                 // Terminal theme found
-                changeTheme(terminal["theme"]);
                 theme = userInput.toUpperCase();
+                changeTheme(terminal["theme"], theme);
 
                 staticPrefix = terminal["text"]["prefix"];
                 if (terminal["text"]["prefix-escape"]) {
