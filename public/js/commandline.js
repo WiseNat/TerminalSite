@@ -298,8 +298,10 @@ filesCache - holds the last updated file data of each requested file in case of 
         var out = "\n";
         var currentDir = actualDir;
 
+        const commands = themeCSS["commands"];
+
         // jsonDir and jsonDirCache logic
-        if (["CD", "DIR", "TREE"].indexOf(command.base) >= 0) {
+        if ([commands["CD"], commands["DIR"], commands["TREE"]].indexOf(command.base) >= 0) {
             var jsonDir = await getJSON("../json/dir_structure.json");
             if (jsonDir == null && jsonDirCache == null) {
                 console.warn("No jsonDir or backupDir enabled");
@@ -314,7 +316,6 @@ filesCache - holds the last updated file data of each requested file in case of 
         }
 
         // Massive command switch case for output logic
-        const commands = themeCSS["commands"];
         switch (command.base) {
             case commands["SOURCE"]: {
                 out += "You can access the source code at this ";
@@ -411,6 +412,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 break;
             }
             case commands["TREE"]: {
+                console.log(jsonDir);
                 // Cancelling if jsonDir is unavailable
                 if (jsonDir == null) {
                     break;
@@ -441,7 +443,7 @@ filesCache - holds the last updated file data of each requested file in case of 
 
                 // No terminal theme found
                 if (terminal == null) {
-                    out += `Terminal theme <span style="color: violet">${titleCase(userInput)}</span> does not exist`;
+                    out += `Terminal theme <span style="color: #BF00BF">${titleCase(userInput)}</span> does not exist`;
                     break;
                 }
 
@@ -457,7 +459,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 prefix = generatePathPrefix(staticPrefix, actualDir, theme, terminal);
                 themeCSS = terminal;
 
-                out += `Changed the terminal to <span style="color: violet">${titleCase(userInput)}</span>`;
+                out += `Changed the terminal to <span style="color: #BF00BF">${titleCase(userInput)}</span>`;
                 break;
             }
             case commands["REFRESH"]: {
@@ -525,9 +527,9 @@ filesCache - holds the last updated file data of each requested file in case of 
                     ],
                     [commands["TERMINAL"]]: [
                         "<b>Usage:</b>",
-                        `  ${commands["TERMINAL"]} name`,
+                        `  ${commands["TERMINAL"]} *name`,
                         "\n<b>Arguments:</b>",
-                        "  name\tname of the terminal you want to change to",
+                        "  *name\tname of the terminal you want to change to",
                         "\n<b>Info:</b>",
                         "  Changes your current emulated terminal to another",
                     ],

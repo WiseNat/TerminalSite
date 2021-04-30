@@ -10,7 +10,7 @@
         "initial": "Windows PowerShell\nCopyright (C) Microsoft Corporation. All rights reserved.\n\nTry the new cross-platform PowerShell https://aka.ms/pscore6\n\n",
         "prefix": "PS C:\\Users\\user[PATH]>",
         "cd": "\\",
-        "initial-escape": true,
+        "initial-escape": false,
         "prefix-escape": true
     },
     "commands": {
