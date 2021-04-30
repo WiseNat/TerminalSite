@@ -6,7 +6,7 @@
         "selection-background": "#FEDBA9",
         "selection-color": "black"
     },
-    "text" : {
+    "text": {
         "initial": "Windows PowerShell\nCopyright (C) Microsoft Corporation. All rights reserved.\n\nTry the new cross-platform PowerShell https://aka.ms/pscore6\n\n",
         "prefix": "PS C:\\Users\\user[PATH]>",
         "cd": "\\",
@@ -21,6 +21,8 @@
         "DIR": "DIR",
         "TREE": "TREE",
         "CV": "CV",
+        "TERMINAL": "TERMINAL",
+        "REFRESH": "REFRESH",
         "HELP": "HELP"
     }
 }

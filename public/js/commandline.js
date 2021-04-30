@@ -58,7 +58,7 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     var consentMode = false;
     var cookieConsent = getCookie("consent");
-    
+
     // Hasn't decided on allowing cookies or not
     if (cookieConsent == null) {
         consentMode = true;
@@ -127,7 +127,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         var expires = "";
         if (days) {
             var date = new Date();
-            date.setTime(date.getTime() + (days*24*60*60*1000));
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
             expires = `; expires=${date.toUTCString()}`;
         }
         document.cookie = `${name}=${(value || "")}${expires}; path=/`;
@@ -139,24 +139,24 @@ filesCache - holds the last updated file data of each requested file in case of 
     function getCookie(name) {
         var nameEQ = name + "=";
         var ca = document.cookie.split(";");
-        for(var i=0;i < ca.length;i++) {
+        for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
-            while (c.charAt(0)==" ") c = c.substring(1,c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            while (c.charAt(0) == " ") c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
         }
         return null;
     }
 
 
     // Removes a cookie
-    function eraseCookie(name) {   
+    function eraseCookie(name) {
         document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
     }
 
 
     // Title cases a given string
     function titleCase(s) {
-        return s.toLowerCase().split(" ").map(function(word) {
+        return s.toLowerCase().split(" ").map(function (word) {
             return (word.charAt(0).toUpperCase() + word.slice(1));
         }).join(" ");
     }
@@ -237,13 +237,13 @@ filesCache - holds the last updated file data of each requested file in case of 
 
 
     // Generates a prefix from a LOT of args
-    function generatePathPrefix(staticPrefix, directory, themeName, themeCSS){
+    function generatePathPrefix(staticPrefix, directory, themeName, themeCSS) {
         // Determining whether a separator is needed before the path or not
         var seperator = "";
         if (directory != "") {
             seperator = themeCSS["text"]["cd"];
         }
-        
+
         // Logic for path positioning in prefix based on current terminal theme
         switch (themeName) {
             case "EXAMPLE THEME": {
@@ -304,12 +304,10 @@ filesCache - holds the last updated file data of each requested file in case of 
             if (jsonDir == null && jsonDirCache == null) {
                 console.warn("No jsonDir or backupDir enabled");
                 out += "<span style=\"color: tomato\">Failed to fetch jsonDir. The web server might be down!</span>";
-            }
-            else if (jsonDir == null && jsonDirCache != null) { 
+            } else if (jsonDir == null && jsonDirCache != null) {
                 console.warn("jsonDir recovered from backup");
                 jsonDir = jsonDirCache;
-            }
-            else if (jsonDir != null) {
+            } else if (jsonDir != null) {
                 console.warn("backupJsonDir updated");
                 jsonDirCache = jsonDir;
             }
@@ -352,7 +350,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                             currentDir = currentDir.split("-");
                             currentDir.pop();
                             currentDir = currentDir.join("-");
-                        }   
+                        }
                     } else {
                         if (currentDir == "") currentDir = e;
                         else currentDir += "-" + e;
@@ -366,12 +364,11 @@ filesCache - holds the last updated file data of each requested file in case of 
                     if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
                     else exists = false;
                 });
-        
+
                 // Outputs
                 if (exists == false || actualDir == currentDir) {
                     out += "Directory doesn't exist";
-                }
-                else {
+                } else {
                     // Preventing the extra newline
                     out = "";
 
@@ -388,7 +385,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 if (jsonDir == null) {
                     break;
                 }
-                
+
                 // Getting to current dir in JSON object
                 if (actualDir != "") {
                     actualDir.split("-").forEach(e => {
@@ -409,7 +406,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                         out += `<DIR>\t${e}\n`;
                     }
                 });
-        
+
                 out = escape(`${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`);
                 break;
             }
@@ -422,13 +419,13 @@ filesCache - holds the last updated file data of each requested file in case of 
                 // Get object of current directory location
                 if (actualDir != "") {
                     var splitDir = actualDir.split("-");
-        
+
                     splitDir.forEach(e => {
                         if (e == "") return;
                         if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
                     });
                 }
-        
+
                 // Generate the tree, remove final newline and add to the output
                 out += `C:.\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
                 break;
@@ -441,9 +438,9 @@ filesCache - holds the last updated file data of each requested file in case of 
             case commands["TERMINAL"]: {
                 const userInput = command.args.join(" ");
                 const terminal = await getJSON(`../terminals/${userInput}.json`);
-                
+
                 // No terminal theme found
-                if (terminal == null) { 
+                if (terminal == null) {
                     out += `Terminal theme <span style="color: violet">${titleCase(userInput)}</span> does not exist`;
                     break;
                 }
@@ -461,6 +458,10 @@ filesCache - holds the last updated file data of each requested file in case of 
                 themeCSS = terminal;
 
                 out += `Changed the terminal to <span style="color: violet">${titleCase(userInput)}</span>`;
+                break;
+            }
+            case commands["REFRESH"]: {
+                window.location.reload();
                 break;
             }
             case commands["HELP"]: {
@@ -530,6 +531,14 @@ filesCache - holds the last updated file data of each requested file in case of 
                         "\n<b>Info:</b>",
                         "  Changes your current emulated terminal to another",
                     ],
+                    [commands["REFRESH"]]: [
+                        "<b>Usage:</b>",
+                        `  ${commands["REFRESH"]}`,
+                        "\n<b>Arguments:</b>",
+                        "  None",
+                        "\n<b>Info:</b>",
+                        "  Refresh the web page. If you want to use this instead of pressing F5 then go ahead",
+                    ],
                     [commands["HELP"]]: [
                         "<b>Usage:</b>",
                         `  ${commands["HELP"]}`,
@@ -542,14 +551,14 @@ filesCache - holds the last updated file data of each requested file in case of 
                 };
                 var keys = Object.keys(messages);
                 if (command.args.length != 0) command.args[0] = command.args[0].toUpperCase();
-        
+
                 // Logic for which commands help to show
                 if (keys.indexOf(command.args[0]) != -1) {
                     messages[command.args[0]].forEach(e => out += `${e}\n`);
                 }
                 // Show list of commands (tab for every 8th chars)
                 else {
-                    const maxTabs =  Math.floor(Math.max(...(keys.map(el => el.length))) / 8) + 2;
+                    const maxTabs = Math.floor(Math.max(...(keys.map(el => el.length))) / 8) + 2;
                     keys.forEach(e => {
                         const tabs = "\t".repeat(maxTabs - Math.floor(e.length / 8));
                         out += `${e}${tabs}${messages[e][messages[e].length - 1]}\n`;
@@ -561,21 +570,20 @@ filesCache - holds the last updated file data of each requested file in case of 
             default: {
                 // Keeping the case for command.base
                 command = toCommand(sc, false);
-        
+
                 // File Request
                 if (currentDir != "") currentDir += "-";
                 currentDir += command.base + command.args.join(" ");
-                    
+
                 const path = `../data/${currentDir}`;
                 var fileData = await getFile(path);
 
                 if (fileData == null && path in filesCache) {
                     fileData = filesCache[path];
-                }
-                else if (fileData != null) {
+                } else if (fileData != null) {
                     filesCache[path] = fileData;
-                } 
-                
+                }
+
                 // Check if input is a file
                 if (fileData != null) {
                     out += escape(fileData).replace(
@@ -590,7 +598,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 }
             }
         }
-        
+
         // Output char limit (maxOutChars), cutting of chars that exceed that value
         if (out.length > maxOutChars) {
             out = out.substring(0, maxOutChars);
@@ -730,10 +738,10 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     function paste(event) {
         event.preventDefault();
-        
+
         // Get text representation of clipboard
         var text = (event.originalEvent || event).clipboardData.getData("text/plain");
-        
+
         // Insert text manually
         document.execCommand("insertHTML", false, text);
     }

@@ -6,7 +6,7 @@
         "selection-background": "#858585",
         "selection-color": "#E5E5E5"
     },
-    "text" : {
+    "text": {
         "initial": "Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n\n",
         "prefix": "C:\\Users\\user[PATH]>",
         "cd": "\\",
@@ -22,6 +22,7 @@
         "TREE": "TREE",
         "CV": "CV",
         "TERMINAL": "TERMINAL",
+        "REFRESH": "REFRESH",
         "HELP": "HELP"
     }
 }

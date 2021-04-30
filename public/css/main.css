@@ -1,20 +1,20 @@
-@font-face{
+@font-face {
     font-family: "Cascadia Mono";
     src: url("CascadiaMono.ttf")
 }
 
-@font-face{
+@font-face {
     font-family: "Ubuntu Mono";
     src: url("UbuntuMono.ttf")
 }
 
-::selection{
+::selection {
     color: var(--selection-color);
     background: var(--selection-background);
 }
 
-:root{
-    --background:black;
+:root {
+    --background: black;
     --font-color: #CCCCCC;
     --font-family: 20px "Cascadia Mono";
     --selection-background: #858585;
@@ -24,29 +24,30 @@
     background-color: var(--background);
 }
 
-*{
+* {
     cursor: default;
 }
 
-html, body{
+html,
+body {
     height: 100%;
     width: 100%;
     margin: 0px;
     scrollbar-width: none;
 }
 
-a{
+a {
     cursor: pointer;
     font: var(--font-family);
     color: var(--link-color);
     text-decoration: none;
 }
 
-a:hover{
+a:hover {
     text-decoration: underline;
 }
 
-.command-input{
+.command-input {
     font: var(--font-family);
     color: var(--font-color);
     background-color: transparent;
@@ -56,7 +57,7 @@ a:hover{
     width: 100%;
     height: 100%;
     resize: none;
-    white-space:pre;
+    white-space: pre;
     overflow-y: scroll;
     scrollbar-width: none;
     -ms-overflow-style: none;

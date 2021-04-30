@@ -6,10 +6,10 @@
         "selection-background": "white",
         "selection-color": "#300A24"
     },
-    "text" : {
+    "text": {
         "initial": "",
         "prefix": "<span style=\"color: #4E970C\">user@pc</span>:<span style=\"color: #3465A4\">~[PATH]</span>$ ",
-        "cd": "/", 
+        "cd": "/",
         "initial-escape": false,
         "prefix-escape": false
     },
@@ -22,6 +22,7 @@
         "TREE": "TREE",
         "CV": "CV",
         "TERMINAL": "TERMINAL",
+        "REFRESH": "REFRESH",
         "HELP": "HELP"
     }
 }
