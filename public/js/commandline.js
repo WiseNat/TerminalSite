@@ -65,8 +65,8 @@ filesCache - holds the last updated file data of each requested file in case of 
         initial = `So, basically, in order to actually use my site you need to agree to letting me use Cookies. \
         \nIt just made the entirety of the backend a lot easier. \
         \n\n\nEssentially the site uses two Cookies: \
-        \n<span style="color: gray">Consent</span> - flag for whether you consent or not, only exists as true after you consent\
-        \n<span style="color: gray">Terminal Theme</span> - stores the terminal theme you used last so that it persists when you open the page up again \
+        \n<span style="color: darkcyan">Consent</span> - flag for whether you consent or not, only exists as true after you consent\
+        \n<span style="color: darkcyan">Terminal Theme</span> - stores the terminal theme you used last so that it persists when you open the page up again \
         \n\n\nDo you consent to the use of these cookies [<span style="color: #A3FD62">Y</span>/<span style="color: tomato">N</span>]?\n\n${escape(">>>")} `;
     }
 
@@ -529,7 +529,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                         "<b>Usage:</b>",
                         `  ${commands["TERMINAL"]} *name`,
                         "\n<b>Arguments:</b>",
-                        "  *name\tname of the terminal you want to change to",
+                        "  *name\t\tname of the terminal you want to change to",
                         "\n<b>Info:</b>",
                         "  Changes your current emulated terminal to another",
                     ],
@@ -639,7 +639,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         }
 
         // If Enter key pressed
-        else if (char == null && ["insertText", "insertLineBreak", "insertParagraph"].includes(inpType)) {
+        else if (char == null && ["insertText", "insertLineBreak", "insertParagraph"].includes(inpType) && !consentMode) {
             terminal.contentEditable = false;
 
             // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
