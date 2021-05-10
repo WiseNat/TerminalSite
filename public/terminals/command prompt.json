@@ -1,0 +1,29 @@
+{
+    "theme": {
+        "background": "black",
+        "font-color": "#CCCCCC",
+        "font-family": "20px \"Cascadia Mono\"",
+        "selection-background": "#858585",
+        "selection-color": "#E5E5E5"
+    },
+    "text": {
+        "initial": "Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n\n",
+        "prefix": "C:\\Users\\user[PATH]>",
+        "cd": "\\",
+        "initial-escape": true,
+        "prefix-escape": true
+    },
+    "commands": {
+        "SOURCE": "SOURCE",
+        "ECHO": "ECHO",
+        "CLS": "CLS",
+        "CD": "CD",
+        "DIR": "DIR",
+        "TREE": "TREE",
+        "CV": "CV",
+        "TERMINAL": "TERMINAL",
+        "TERMLIST": "TERMLIST",
+        "REFRESH": "REFRESH",
+        "HELP": "HELP"
+    }
+}

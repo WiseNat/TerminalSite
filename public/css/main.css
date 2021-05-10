@@ -1,43 +1,58 @@
-@font-face{
+@font-face {
     font-family: "Cascadia Mono";
     src: url("CascadiaMono.ttf")
 }
 
-::selection{
-    color: #E5E5E5;
-    background: #858585;
+@font-face {
+    font-family: "Ubuntu Mono";
+    src: url("UbuntuMono.ttf")
 }
 
-:root{
-    background-color:black;
+@font-face {
+    font-family: "Commodore 64";
+    src: url("CBM64.TTF");
 }
 
-*{
+::selection {
+    color: var(--selection-color);
+    background: var(--selection-background);
+}
+
+:root {
+    --background: black;
+    --font-color: #CCCCCC;
+    --font-family: 20px "Cascadia Mono";
+    --selection-background: #858585;
+    --selection-color: #E5E5E5;
+    --link-color: #4843ff;
+
+    background-color: var(--background);
+}
+
+* {
     cursor: default;
 }
 
-html, body{
+html,
+body {
     height: 100%;
     width: 100%;
     margin: 0px;
     scrollbar-width: none;
-    --font-color: #CCCCCC;
-    --font-family: 20px "Cascadia Mono";
-    --link-color: #4843ff;
 }
 
-a{
+a {
     cursor: pointer;
-    font: 20px "Cascadia Mono";
+    font: var(--font-family);
     color: var(--link-color);
     text-decoration: none;
 }
 
-a:hover{
+a:hover {
     text-decoration: underline;
 }
 
-.command-input{
+.command-input {
     font: var(--font-family);
     color: var(--font-color);
     background-color: transparent;
@@ -47,7 +62,7 @@ a:hover{
     width: 100%;
     height: 100%;
     resize: none;
-    white-space:pre;
+    white-space: pre;
     overflow-y: scroll;
     scrollbar-width: none;
     -ms-overflow-style: none;

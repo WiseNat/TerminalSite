@@ -1,0 +1,29 @@
+{
+    "theme": {
+        "background": "#300A24",
+        "font-color": "white",
+        "font-family": "23px \"Ubuntu Mono\"",
+        "selection-background": "white",
+        "selection-color": "#300A24"
+    },
+    "text": {
+        "initial": "",
+        "prefix": "<span style=\"color: #4E970C\">user@pc</span>:<span style=\"color: #3465A4\">~[PATH]</span>$ ",
+        "cd": "/",
+        "initial-escape": false,
+        "prefix-escape": false
+    },
+    "commands": {
+        "SOURCE": "SOURCE",
+        "ECHO": "ECHO",
+        "CLS": "CLEAR",
+        "CD": "CD",
+        "DIR": "DIR",
+        "TREE": "TREE",
+        "CV": "CV",
+        "TERMINAL": "TERMINAL",
+        "TERMLIST": "TERMLIST",
+        "REFRESH": "REFRESH",
+        "HELP": "HELP"
+    }
+}

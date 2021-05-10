@@ -1,0 +1,29 @@
+{
+    "theme": {
+        "background": "#012456",
+        "font-color": "white",
+        "font-family": "20px \"Cascadia Mono\"",
+        "selection-background": "#FEDBA9",
+        "selection-color": "black"
+    },
+    "text": {
+        "initial": "Windows PowerShell\nCopyright (C) Microsoft Corporation. All rights reserved.\n\nTry the new cross-platform PowerShell https://aka.ms/pscore6\n\n",
+        "prefix": "PS C:\\Users\\user[PATH]>",
+        "cd": "\\",
+        "initial-escape": false,
+        "prefix-escape": true
+    },
+    "commands": {
+        "SOURCE": "SOURCE",
+        "ECHO": "ECHO",
+        "CLS": "CLS",
+        "CD": "CD",
+        "DIR": "DIR",
+        "TREE": "TREE",
+        "CV": "CV",
+        "TERMINAL": "TERMINAL",
+        "TERMLIST": "TERMLIST", 
+        "REFRESH": "REFRESH",
+        "HELP": "HELP"
+    }
+}

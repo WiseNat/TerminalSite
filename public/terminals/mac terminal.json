@@ -1,0 +1,29 @@
+{
+    "theme": {
+        "background": "white",
+        "font-color": "black",
+        "font-family": "20px \"Cascadia Mono\"",
+        "selection-background": "black",
+        "selection-color": "white"
+    },
+    "text": {
+        "initial": "\n",
+        "prefix": "userpc:[PATH] Macbook-Pro$ ",
+        "cd": "/",
+        "initial-escape": false,
+        "prefix-escape": true
+    },
+    "commands": {
+        "SOURCE": "SOURCE",
+        "ECHO": "ECHO",
+        "CLS": "CLEAR",
+        "CD": "CD",
+        "DIR": "LS",
+        "TREE": "TREE",
+        "CV": "CV",
+        "TERMINAL": "TERMINAL",
+        "TERMLIST": "TERMLIST",
+        "REFRESH": "REFRESH",
+        "HELP": "HELP"
+    }
+}
