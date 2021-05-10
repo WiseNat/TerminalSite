@@ -3,6 +3,19 @@ import {
     TerminalQueue
 } from "/js/TerminalQueue.js";
 
+import {
+    getFile,
+    getJSON,
+    setCookie,
+    getCookie,
+    titleCase,
+    escape,
+    removeNewline,
+    removeCarriage,
+    findDiff,
+    noOddHTML
+} from "/js/functions.js";
+
 /*
 maxLines - amount of lines in terminal before deletion occurs
 maxInpChars - max amount of characters allowed for user input per line
@@ -90,111 +103,6 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     var filesCache = {};
 
-    // Get File Data (txt)
-    async function getFile(path) {
-        return fetch(path)
-            .then(response => {
-                if (response.ok) {
-                    return response.text();
-                }
-                return null;
-            })
-            .catch(error => {
-                console.error(error);
-                return null;
-            });
-    }
-
-
-    // Gets JSON Data
-    async function getJSON(path) {
-        return fetch(path)
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return null;
-            })
-            .catch(error => {
-                console.error(error);
-                return null;
-            });
-    }
-
-
-    // Sets a cookie
-    function setCookie(name, value, days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = `; expires=${date.toUTCString()}`;
-        }
-        document.cookie = `${name}=${(value || "")}${expires}; path=/`;
-    }
-
-
-    // Josh was here and wants a cookie
-    // Gets a cookie
-    function getCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(";");
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == " ") c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-        }
-        return null;
-    }
-
-
-    // Removes a cookie
-    function eraseCookie(name) {
-        document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-    }
-
-
-    // Title cases a given string
-    function titleCase(s) {
-        return s.toLowerCase().split(" ").map(function (word) {
-            return (word.charAt(0).toUpperCase() + word.slice(1));
-        }).join(" ");
-    }
-
-
-    // Replaces < and > symbols with named references
-    function escape(s) {
-        return s.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-    }
-
-
-    // Removes newlines
-    function removeNewline(str) {
-        return str.replace(/[\r\n]+/gm, "");
-    }
-
-
-    // Remove pesky \r
-    function removeCarriage(str) {
-        return str.replace(/[\r]+/gm, "");
-    }
-
-
-    // Returns the difference of two strings
-    function findDiff(str1, str2) {
-        let diff = "";
-        str2.split("").forEach(function (val, i) {
-            if (val != str1.charAt(i)) diff += val;
-        });
-        return diff;
-    }
-
-
-    // Removes <div><br></div>
-    function noOddHTML(s) {
-        return s.replaceAll(/<div>|<\/div>|<br>/gm, "");
-    }
-
 
     // Changes the current terminal CSS theme
     function changeTheme(dat, name) {
@@ -237,7 +145,7 @@ filesCache - holds the last updated file data of each requested file in case of 
 
 
     // Generates a prefix from a LOT of args
-    function generatePathPrefix(staticPrefix, directory, themeName, themeCSS) {
+    function generatePathPrefix(staticPrefix, directory, themeCSS) {
         // Determining whether a separator is needed before the path or not
         var seperator = "";
         if (directory != "") {
@@ -245,14 +153,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         }
 
         // Logic for path positioning in prefix based on current terminal theme
-        switch (themeName) {
-            case "EXAMPLE THEME": {
-                return `${staticPrefix}~~${directory.replace("-", "\\")}> `;
-            }
-            default: {
-                return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replace("-", seperator)}`);
-            }
-        }
+        return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replace("-", seperator)}`);
     }
 
 
@@ -377,7 +278,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                     actualDir = currentDir;
 
                     // Generating prefix
-                    prefix = generatePathPrefix(staticPrefix, currentDir, theme, themeCSS);
+                    prefix = generatePathPrefix(staticPrefix, currentDir, themeCSS);
                 }
                 break;
             }
@@ -412,7 +313,6 @@ filesCache - holds the last updated file data of each requested file in case of 
                 break;
             }
             case commands["TREE"]: {
-                console.log(jsonDir);
                 // Cancelling if jsonDir is unavailable
                 if (jsonDir == null) {
                     break;
@@ -456,7 +356,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                     staticPrefix = escape(staticPrefix);
                 }
 
-                prefix = generatePathPrefix(staticPrefix, actualDir, theme, terminal);
+                prefix = generatePathPrefix(staticPrefix, actualDir, terminal);
                 themeCSS = terminal;
 
                 out += `Changed the terminal to <span style="color: #BF00BF">${titleCase(userInput)}</span>`;
