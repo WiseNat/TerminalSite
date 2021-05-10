@@ -462,6 +462,16 @@ filesCache - holds the last updated file data of each requested file in case of 
                 out += `Changed the terminal to <span style="color: #BF00BF">${titleCase(userInput)}</span>`;
                 break;
             }
+            case commands["TERMLIST"]: {
+                const term = await getJSON("/terminals");
+                term["terminals"].forEach((el, ind, arr) => {
+                    out += `--${titleCase(el)}`;
+                    if (arr.length - 1 != ind) {
+                        out += "\n";
+                    }
+                });
+                break;
+            }
             case commands["REFRESH"]: {
                 window.location.reload();
                 break;
@@ -532,6 +542,15 @@ filesCache - holds the last updated file data of each requested file in case of 
                         "  *name\t\tname of the terminal you want to change to",
                         "\n<b>Info:</b>",
                         "  Changes your current emulated terminal to another",
+                    ],
+                    [commands["TERMLIST"]]: [
+                        "<b>Usage:</b>",
+                        `  ${commands["TERMLIST"]}`,
+                        "\n<b>Arguments:</b>",
+                        "  None",
+                        "\n<b>Info:</b>",
+                        "  Returns all the available terminals used in the TERMINAL command",
+
                     ],
                     [commands["REFRESH"]]: [
                         "<b>Usage:</b>",

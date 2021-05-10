@@ -8,6 +8,11 @@
     src: url("UbuntuMono.ttf")
 }
 
+@font-face {
+    font-family: "Commodore 64";
+    src: url("CBM64.TTF");
+}
+
 ::selection {
     color: var(--selection-color);
     background: var(--selection-background);
