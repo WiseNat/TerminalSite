@@ -3,8 +3,8 @@
         "background": "black",
         "font-color": "#BFBFBF",
         "font-family": "20px \"Lucida Console\"",
-        "selection-background": "#FEDBA9",
-        "selection-color": "black"
+        "selection-background": "white",
+        "selection-color": "#300A24"
     },
     "text": {
         "initial": "\n",
