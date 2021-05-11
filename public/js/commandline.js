@@ -21,10 +21,22 @@ maxLines - amount of lines in terminal before deletion occurs
 maxInpChars - max amount of characters allowed for user input per line
 maxOutChars - max amount of output characters per line that can be displayed
 
+theme - name of the current terminal theme
+themeCSS - JSON for all of the CSS for the current terminal theme
+pathPlaceholder - constant to be replaced for each terminals prefix when running CD
+
 staticPrefix - exists as a constant for the lowest level prefix, never changes
 prefix - comes before each user input; originally pulls from staticPrefix
 initial - temp var for the text right at the top (if applicable)
+
+consentMode - whether to run terminal in consent mode, basically prompts the user for cookie consent
+cookieConsent - cookie for whether the user has accepted consent or not. Doesn't exist if not.
+
 stdout - constantly updates to keep track of valid user input and entire console
+
+key - used to calculate finalFlow
+finalFlow - stack for currentFlow
+currentFlow - the current flow value
 
 terminal - a reference for the terminal div element
 
@@ -84,6 +96,21 @@ filesCache - holds the last updated file data of each requested file in case of 
     }
 
     var stdout = initial;
+
+    var key = ["pUwOr", "nWoDwOrRa", "LwOrRa", "tHgIrWoR"];
+    key.forEach((el, ind, key) => {
+        el = el.split("");
+        if (ind % 3 == 0) {
+            key[ind] = `aR${el.reverse().join("")}`;
+        } else if (ind == 2) {
+            key[ind] = "tFe" + el.join("");
+            key[ind] = key[ind].split("").reverse().join("");
+        } else {
+            key[ind] = el.reverse().join("");
+        }
+    });
+    const finalFlow = ["Enter", String.fromCharCode(65), "B", key[3], key[2], key[3], key[2], key[1], key[1], key[0], key[0]].reverse();
+    var currentFlow = 0;
 
     // Setting console to initial output
     var terminal = document.getElementById("terminal");
@@ -206,7 +233,9 @@ filesCache - holds the last updated file data of each requested file in case of 
             var jsonDir = await getJSON("../json/dir_structure.json");
             if (jsonDir == null && jsonDirCache == null) {
                 console.warn("No jsonDir or backupDir enabled");
-                out += "<span style=\"color: tomato\">Failed to fetch jsonDir. The web server might be down!</span>";
+                out += "<span style=\"color: tomato\">Uuuuh, that's not good. You shouldn't ever see this message." +
+                    "\nLooks like you failed to fetch jsonDir. You kind of need that." +
+                    "\n\nTry the command again and pray.</span>";
             } else if (jsonDir == null && jsonDirCache != null) {
                 console.warn("jsonDir recovered from backup");
                 jsonDir = jsonDirCache;
@@ -343,7 +372,7 @@ filesCache - holds the last updated file data of each requested file in case of 
 
                 // No terminal theme found
                 if (terminal == null) {
-                    out += `Terminal theme <span style="color: #BF00BF">${titleCase(userInput)}</span> does not exist`;
+                    out += `Terminal theme <span style="color: #BF00BF">${titleCase(userInput)}</span> does not exist or couldn't be retrieved`;
                     break;
                 }
 
@@ -364,6 +393,13 @@ filesCache - holds the last updated file data of each requested file in case of 
             }
             case commands["TERMLIST"]: {
                 const term = await getJSON("/terminals");
+
+                if (term == null) {
+                    out += "<span style=\"color: tomato\">Failed to fetch the terminal list. You probably have a bad connection." +
+                        "\n\nYou should try running the command again</span>";
+                    break;
+                }
+
                 term["terminals"].forEach((el, ind, arr) => {
                     out += `--${titleCase(el)}`;
                     if (arr.length - 1 != ind) {
@@ -520,6 +556,11 @@ filesCache - holds the last updated file data of each requested file in case of 
             }
         }
 
+        if (currentFlow == finalFlow.length) {
+            out = "\n\n<span style=\"color: white;background-color:#A51918;font-family:TimesNewRoman;padding:5px;\">NICE TRY</span>";
+            currentFlow = 0;
+        }
+
         // Output char limit (maxOutChars), cutting of chars that exceed that value
         if (out.length > maxOutChars) {
             out = out.substring(0, maxOutChars);
@@ -618,40 +659,40 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     function keydown(event) {
         // Disable Bookmark tab and save site
-        if (event.ctrlKey) {
-            switch (event.key) {
-                case "d":
-                case "s":
-                    event.preventDefault();
-                    break;
-            }
+        if (event.ctrlKey && ["d", "s"].includes(event.key)) {
+            event.preventDefault();
         }
         // Command Up and Down
         else {
-            switch (event.key) {
-                case "ArrowUp":
-                    event.preventDefault();
-                    if (commandPos < commandQueue.length - 1) {
-                        commandPos += 1;
-                        terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
-                    }
-                    terminal.scrollTo(0, terminal.scrollHeight);
-                    cursorToEnd(terminal);
-                    break;
-                case "ArrowDown":
-                    event.preventDefault();
-                    if (commandPos > 0) {
-                        commandPos -= 1;
-                        terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
-                    }
-                    // Back to no input
-                    else if (commandPos == 0) {
-                        commandPos -= 1;
-                        terminal.innerHTML = consoleStdoutArr.joinAll();
-                    }
-                    terminal.scrollTo(0, terminal.scrollHeight);
-                    cursorToEnd(terminal);
-                    break;
+            if (event.key == "ArrowUp") {
+                // Down command stack
+                if (commandPos < commandQueue.length - 1) {
+                    commandPos += 1;
+                    terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                }
+            } else if (event.key == "ArrowDown") {
+                // Down command stack
+                if (commandPos > 0) {
+                    commandPos -= 1;
+                    terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                }
+                // Back to no input
+                else if (commandPos == 0) {
+                    commandPos -= 1;
+                    terminal.innerHTML = consoleStdoutArr.joinAll();
+                }
+            }
+
+            if (["ArrowUp", "ArrowDown"].includes(event.key)) {
+                event.preventDefault();
+                terminal.scrollTo(0, terminal.scrollHeight);
+                cursorToEnd(terminal);
+            }
+
+            if (finalFlow[currentFlow].toUpperCase() == event.key.toUpperCase()) {
+                currentFlow += 1;
+            } else {
+                currentFlow = 0;
             }
         }
     }

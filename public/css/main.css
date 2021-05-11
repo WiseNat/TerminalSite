@@ -4,13 +4,18 @@
 }
 
 @font-face {
-    font-family: "Ubuntu Mono";
-    src: url("UbuntuMono.ttf")
+    font-family: "Commodore 64";
+    src: url("CBM64.TTF");
 }
 
 @font-face {
-    font-family: "Commodore 64";
-    src: url("CBM64.TTF");
+    font-family: "TimesNewRoman";
+    src: url("TimesNewRoman.ttf");
+}
+
+@font-face {
+    font-family: "Ubuntu Mono";
+    src: url("UbuntuMono.ttf")
 }
 
 ::selection {
