@@ -8,6 +8,7 @@ import {
     getJSON,
     setCookie,
     getCookie,
+    eraseCookie,
     titleCase,
     escape,
     removeNewline,
@@ -412,6 +413,12 @@ filesCache - holds the last updated file data of each requested file in case of 
                 window.location.reload();
                 break;
             }
+            case commands["CLSCOOKIE"]: {
+                eraseCookie("consent");
+                eraseCookie("terminal_theme");
+                out += "Cleared <b style=\"color: tomato\">ALL</b> cookies";
+                break;
+            }
             case commands["HELP"]: {
                 var messages = {
                     [commands["SOURCE"]]: [
@@ -495,6 +502,14 @@ filesCache - holds the last updated file data of each requested file in case of 
                         "  None",
                         "\n<b>Info:</b>",
                         "  Refresh the web page. If you want to use this instead of pressing F5 then go ahead",
+                    ],
+                    [commands["CLSCOOKIE"]]: [
+                        "<b>Usage:</b>",
+                        `  ${commands["CLSCOOKIE"]}`,
+                        "\n<b>Arguments:</b>",
+                        "  None",
+                        "\n<b>Info:</b>",
+                        "  Clears all cookies; including the consent cookie",
                     ],
                     [commands["HELP"]]: [
                         "<b>Usage:</b>",
