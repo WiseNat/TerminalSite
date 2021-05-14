@@ -181,7 +181,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         }
 
         // Logic for path positioning in prefix based on current terminal theme
-        return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replace("-", seperator)}`);
+        return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replaceAll("-", seperator)}`);
     }
 
 
