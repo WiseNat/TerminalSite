@@ -32,6 +32,10 @@ async function getJSON(path) {
 
 // Sets a cookie
 function setCookie(name, value, days) {
+    var secure = "";
+    if (navigator.userAgent.search("Firefox") > -1) {
+        secure = " Secure;";
+    }
     if (name == "consent" || getCookie("consent") != null) {
         var expires = "";
         if (days) {
@@ -39,7 +43,7 @@ function setCookie(name, value, days) {
             date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
             expires = `; expires=${date.toUTCString()}`;
         }
-        document.cookie = `${name}=${(value || "")}${expires}; path=/; Secure`;
+        document.cookie = `${name}=${(value || "")}${expires}; path=/;${secure}`;
     }
 }
 
@@ -60,7 +64,11 @@ function getCookie(name) {
 
 // Removes a cookie
 function eraseCookie(name) {
-    document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Secure`;
+    var secure = "";
+    if (navigator.userAgent.search("Firefox") > -1) {
+        secure = " Secure;";
+    }
+    document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;${secure}`;
 }
 
 

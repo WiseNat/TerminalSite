@@ -9,5 +9,3 @@ Biology             |   7       |   OCR
 Geography           |   6       |   AQA
 English Literature  |   6       |   AQA
 English Language    |   5       |   AQA
-
-DOUBLE CHECK EXAM BOARDS

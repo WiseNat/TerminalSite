@@ -203,6 +203,41 @@ filesCache - holds the last updated file data of each requested file in case of 
         return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replaceAll("-", seperator)}`);
     }
 
+    function generateDir(dir, currentDir, jsonDir) {
+        // Reformatting the given directory (user input)
+        var splitArgs = dir.split("/");
+        splitArgs = splitArgs.filter(function (el) {
+            return el != null && el != "";
+        });
+        
+        // Creating directory path without any ".."s
+        splitArgs.forEach(function (e) {
+            if (e == "..") {
+                if (currentDir != "") {
+                    currentDir = currentDir.split("-");
+                    currentDir.pop();
+                    currentDir = currentDir.join("-");
+                }
+            } else {
+                if (currentDir == "") currentDir = e;
+                else currentDir += "-" + e;
+            }
+        });
+        
+        // Checking if dir exists
+        var exists = true;
+        currentDir.split("-").forEach(function (e) {
+            if (e == "") return;
+            if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
+            else exists = false;
+        });
+
+        if (exists == false) {
+            return null;
+        }
+        return currentDir;
+    }
+
 
     // Generates a tree from a given Object
     function recursiveDepthTree(tree, output = "", precursor = "") {
@@ -288,36 +323,10 @@ filesCache - holds the last updated file data of each requested file in case of 
                     break;
                 }
 
-                // Reformatting the given directory (user input)
-                var splitArgs = command.args.join(" ").split("/");
-                splitArgs = splitArgs.filter(function (el) {
-                    return el != null && el != "";
-                });
-
-                // Creating directory path without any ".."s
-                splitArgs.forEach(function (e) {
-                    if (e == "..") {
-                        if (currentDir != "") {
-                            currentDir = currentDir.split("-");
-                            currentDir.pop();
-                            currentDir = currentDir.join("-");
-                        }
-                    } else {
-                        if (currentDir == "") currentDir = e;
-                        else currentDir += "-" + e;
-                    }
-                });
-
-                // Checking if dir exists
-                var exists = true;
-                currentDir.split("-").forEach(function (e) {
-                    if (e == "") return;
-                    if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
-                    else exists = false;
-                });
+                currentDir = generateDir(command.args.join(" "), currentDir, jsonDir);
 
                 // Outputs
-                if (exists == false || actualDir == currentDir) {
+                if (currentDir == null || actualDir == currentDir) {
                     out += "Directory doesn't exist";
                 } else {
                     // Preventing the extra newline
@@ -367,9 +376,14 @@ filesCache - holds the last updated file data of each requested file in case of 
                     break;
                 }
 
+                const dir = generateDir(command.args.join(" "), currentDir, jsonDir);
+                if (dir != null) {
+                    currentDir = dir;
+                }
+
                 // Get object of current directory location
-                if (actualDir != "") {
-                    var splitDir = actualDir.split("-");
+                if (currentDir != "") {
+                    var splitDir = currentDir.split("-");
 
                     splitDir.forEach(e => {
                         if (e == "") return;
@@ -378,7 +392,11 @@ filesCache - holds the last updated file data of each requested file in case of 
                 }
 
                 // Generate the tree, remove final newline and add to the output
-                out += `C:.\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
+                out += `C:.\n${recursiveDepthTree(jsonDir, ).replace(/\n$/, "")}`;
+
+                if (dir == null) {
+                    out += "\n\nDirectory doesn't exist. Defaulting to <span style=\"color: #BF00BF\">current</span> directory.";
+                }
                 break;
             }
             case commands["CV"]: {
@@ -492,8 +510,10 @@ filesCache - holds the last updated file data of each requested file in case of 
                     [commands["TREE"]]: [
                         "<b>Usage:</b>",
                         `  ${commands["TREE"]}`,
+                        `  ${commands["TREE"]} path`,
+                        `  ${commands["TREE"]} ..`,
                         "\n<b>Arguments:</b>",
-                        "  None",
+                        "  path\t\tthe path to the directory. Use '..' as a directory name to navigate backwards",
                         "\n<b>Info:</b>",
                         "  Graphically displays the directory structure of the current path",
                     ],
