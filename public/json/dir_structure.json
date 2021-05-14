@@ -1,19 +1,31 @@
-{   
-    "files": ["skills.txt", "test.txt"],
-    "Projects": {
-        "Finished": {
-            "files": ["alwaysAI.txt", "QuoteBot.txt"]
+{
+    "Education": {
+        "A Levels": {
+            "files": [
+                "coursework.txt",
+                "grades.txt"
+            ]
         },
-        "Work in Progress": {
-            "files": ["this.txt"]
+        "GCSE": {
+            "files": [
+                "grades.txt"
+            ]
         }
     },
-    "Education": {
-        "GCSE": {
-            "files": ["grades.txt"]
+    "Projects": {
+        "Finished": {
+            "files": [
+                "alwaysAI.txt",
+                "QuoteBot.txt"
+            ]
         },
-        "A Levels": {
-            "files": ["grades.txt", "coursework.txt"]
+        "Work in Progress": {
+            "files": [
+                "this.txt"
+            ]
         }
-    }
+    },
+    "files": [
+        "skills.txt"
+    ]
 }

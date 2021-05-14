@@ -3,15 +3,41 @@ import {
     TerminalQueue
 } from "/js/TerminalQueue.js";
 
+import {
+    getFile,
+    getJSON,
+    setCookie,
+    getCookie,
+    eraseCookie,
+    titleCase,
+    escape,
+    removeNewline,
+    removeCarriage,
+    findDiff,
+    noOddHTML
+} from "/js/functions.js";
+
 /*
 maxLines - amount of lines in terminal before deletion occurs
 maxInpChars - max amount of characters allowed for user input per line
 maxOutChars - max amount of output characters per line that can be displayed
 
+theme - name of the current terminal theme
+themeCSS - JSON for all of the CSS for the current terminal theme
+pathPlaceholder - constant to be replaced for each terminals prefix when running CD
+
 staticPrefix - exists as a constant for the lowest level prefix, never changes
 prefix - comes before each user input; originally pulls from staticPrefix
 initial - temp var for the text right at the top (if applicable)
+
+consentMode - whether to run terminal in consent mode, basically prompts the user for cookie consent
+cookieConsent - cookie for whether the user has accepted consent or not. Doesn't exist if not.
+
 stdout - constantly updates to keep track of valid user input and entire console
+
+key - used to calculate finalFlow
+finalFlow - stack for currentFlow
+currentFlow - the current flow value
 
 terminal - a reference for the terminal div element
 
@@ -64,13 +90,29 @@ filesCache - holds the last updated file data of each requested file in case of 
         consentMode = true;
         initial = `So, basically, in order to actually use my site you need to agree to letting me use Cookies. \
         \nIt just made the entirety of the backend a lot easier. \
-        \n\n\nEssentially the site uses two Cookies: \
+        \n\nSo, you can either <span style="color: #A3FD62">agree</span> to them or <span style="color: tomato">not</span> use the site - there's no alternative.
+        \n\nEssentially the site uses two Cookies: \
         \n<span style="color: darkcyan">Consent</span> - flag for whether you consent or not, only exists as true after you consent\
         \n<span style="color: darkcyan">Terminal Theme</span> - stores the terminal theme you used last so that it persists when you open the page up again \
         \n\n\nDo you consent to the use of these cookies [<span style="color: #A3FD62">Y</span>/<span style="color: tomato">N</span>]?\n\n${escape(">>>")} `;
     }
 
     var stdout = initial;
+
+    var key = ["pUwOr", "nWoDwOrRa", "LwOrRa", "tHgIrWoR"];
+    key.forEach((el, ind, key) => {
+        el = el.split("");
+        if (ind % 3 == 0) {
+            key[ind] = `aR${el.reverse().join("")}`;
+        } else if (ind == 2) {
+            key[ind] = "tFe" + el.join("");
+            key[ind] = key[ind].split("").reverse().join("");
+        } else {
+            key[ind] = el.reverse().join("");
+        }
+    });
+    const finalFlow = ["Enter", String.fromCharCode(65), "B", key[3], key[2], key[3], key[2], key[1], key[1], key[0], key[0]].reverse();
+    var currentFlow = 0;
 
     // Setting console to initial output
     var terminal = document.getElementById("terminal");
@@ -89,111 +131,6 @@ filesCache - holds the last updated file data of each requested file in case of 
     consoleStdoutArr.addElement(initial);
 
     var filesCache = {};
-
-    // Get File Data (txt)
-    async function getFile(path) {
-        return fetch(path)
-            .then(response => {
-                if (response.ok) {
-                    return response.text();
-                }
-                return null;
-            })
-            .catch(error => {
-                console.error(error);
-                return null;
-            });
-    }
-
-
-    // Gets JSON Data
-    async function getJSON(path) {
-        return fetch(path)
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return null;
-            })
-            .catch(error => {
-                console.error(error);
-                return null;
-            });
-    }
-
-
-    // Sets a cookie
-    function setCookie(name, value, days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = `; expires=${date.toUTCString()}`;
-        }
-        document.cookie = `${name}=${(value || "")}${expires}; path=/`;
-    }
-
-
-    // Josh was here and wants a cookie
-    // Gets a cookie
-    function getCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(";");
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == " ") c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-        }
-        return null;
-    }
-
-
-    // Removes a cookie
-    function eraseCookie(name) {
-        document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-    }
-
-
-    // Title cases a given string
-    function titleCase(s) {
-        return s.toLowerCase().split(" ").map(function (word) {
-            return (word.charAt(0).toUpperCase() + word.slice(1));
-        }).join(" ");
-    }
-
-
-    // Replaces < and > symbols with named references
-    function escape(s) {
-        return s.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-    }
-
-
-    // Removes newlines
-    function removeNewline(str) {
-        return str.replace(/[\r\n]+/gm, "");
-    }
-
-
-    // Remove pesky \r
-    function removeCarriage(str) {
-        return str.replace(/[\r]+/gm, "");
-    }
-
-
-    // Returns the difference of two strings
-    function findDiff(str1, str2) {
-        let diff = "";
-        str2.split("").forEach(function (val, i) {
-            if (val != str1.charAt(i)) diff += val;
-        });
-        return diff;
-    }
-
-
-    // Removes <div><br></div>
-    function noOddHTML(s) {
-        return s.replaceAll(/<div>|<\/div>|<br>/gm, "");
-    }
 
 
     // Changes the current terminal CSS theme
@@ -217,6 +154,24 @@ filesCache - holds the last updated file data of each requested file in case of 
     }
 
 
+    // Check for consent
+    function consentCheck(char) {
+        if (char == "Y") {
+            setCookie("consent", "true");
+            window.location.reload();
+        }
+        // No consent
+        else if (char == "N") {
+            window.location.reload();
+        }
+        // Invalid Char
+        else {
+            terminal.innerHTML = stdout;
+            cursorToEnd(terminal);
+        }
+    }
+
+
     // Converts command string to command object, uppercases base command, preserves args
     function toCommand(s, upper = true) {
         var arr = s.split(" ");
@@ -237,7 +192,7 @@ filesCache - holds the last updated file data of each requested file in case of 
 
 
     // Generates a prefix from a LOT of args
-    function generatePathPrefix(staticPrefix, directory, themeName, themeCSS) {
+    function generatePathPrefix(staticPrefix, directory, themeCSS) {
         // Determining whether a separator is needed before the path or not
         var seperator = "";
         if (directory != "") {
@@ -245,14 +200,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         }
 
         // Logic for path positioning in prefix based on current terminal theme
-        switch (themeName) {
-            case "EXAMPLE THEME": {
-                return `${staticPrefix}~~${directory.replace("-", "\\")}> `;
-            }
-            default: {
-                return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replace("-", seperator)}`);
-            }
-        }
+        return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replaceAll("-", seperator)}`);
     }
 
 
@@ -305,7 +253,9 @@ filesCache - holds the last updated file data of each requested file in case of 
             var jsonDir = await getJSON("../json/dir_structure.json");
             if (jsonDir == null && jsonDirCache == null) {
                 console.warn("No jsonDir or backupDir enabled");
-                out += "<span style=\"color: tomato\">Failed to fetch jsonDir. The web server might be down!</span>";
+                out += "<span style=\"color: tomato\">Uuuuh, that's not good. You shouldn't ever see this message." +
+                    "\nLooks like you failed to fetch jsonDir. You kind of need that." +
+                    "\n\nTry the command again and pray.</span>";
             } else if (jsonDir == null && jsonDirCache != null) {
                 console.warn("jsonDir recovered from backup");
                 jsonDir = jsonDirCache;
@@ -377,7 +327,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                     actualDir = currentDir;
 
                     // Generating prefix
-                    prefix = generatePathPrefix(staticPrefix, currentDir, theme, themeCSS);
+                    prefix = generatePathPrefix(staticPrefix, currentDir, themeCSS);
                 }
                 break;
             }
@@ -412,7 +362,6 @@ filesCache - holds the last updated file data of each requested file in case of 
                 break;
             }
             case commands["TREE"]: {
-                console.log(jsonDir);
                 // Cancelling if jsonDir is unavailable
                 if (jsonDir == null) {
                     break;
@@ -443,7 +392,7 @@ filesCache - holds the last updated file data of each requested file in case of 
 
                 // No terminal theme found
                 if (terminal == null) {
-                    out += `Terminal theme <span style="color: #BF00BF">${titleCase(userInput)}</span> does not exist`;
+                    out += `Terminal theme <span style="color: #BF00BF">${titleCase(userInput)}</span> does not exist or couldn't be retrieved`;
                     break;
                 }
 
@@ -456,7 +405,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                     staticPrefix = escape(staticPrefix);
                 }
 
-                prefix = generatePathPrefix(staticPrefix, actualDir, theme, terminal);
+                prefix = generatePathPrefix(staticPrefix, actualDir, terminal);
                 themeCSS = terminal;
 
                 out += `Changed the terminal to <span style="color: #BF00BF">${titleCase(userInput)}</span>`;
@@ -464,6 +413,13 @@ filesCache - holds the last updated file data of each requested file in case of 
             }
             case commands["TERMLIST"]: {
                 const term = await getJSON("/terminals");
+
+                if (term == null) {
+                    out += "<span style=\"color: tomato\">Failed to fetch the terminal list. You probably have a bad connection." +
+                        "\n\nYou should try running the command again</span>";
+                    break;
+                }
+
                 term["terminals"].forEach((el, ind, arr) => {
                     out += `--${titleCase(el)}`;
                     if (arr.length - 1 != ind) {
@@ -474,6 +430,12 @@ filesCache - holds the last updated file data of each requested file in case of 
             }
             case commands["REFRESH"]: {
                 window.location.reload();
+                break;
+            }
+            case commands["CLSCOOKIE"]: {
+                eraseCookie("consent");
+                eraseCookie("terminal_theme");
+                out += "Cleared <b style=\"color: tomato\">ALL</b> cookies";
                 break;
             }
             case commands["HELP"]: {
@@ -560,6 +522,14 @@ filesCache - holds the last updated file data of each requested file in case of 
                         "\n<b>Info:</b>",
                         "  Refresh the web page. If you want to use this instead of pressing F5 then go ahead",
                     ],
+                    [commands["CLSCOOKIE"]]: [
+                        "<b>Usage:</b>",
+                        `  ${commands["CLSCOOKIE"]}`,
+                        "\n<b>Arguments:</b>",
+                        "  None",
+                        "\n<b>Info:</b>",
+                        "  Clears all cookies; including the consent cookie",
+                    ],
                     [commands["HELP"]]: [
                         "<b>Usage:</b>",
                         `  ${commands["HELP"]}`,
@@ -620,6 +590,11 @@ filesCache - holds the last updated file data of each requested file in case of 
             }
         }
 
+        if (currentFlow == finalFlow.length) {
+            out = "\n\n<span style=\"color: white;background-color:#A51918;font-family:TimesNewRoman;padding:5px;\">NICE TRY</span>";
+            currentFlow = 0;
+        }
+
         // Output char limit (maxOutChars), cutting of chars that exceed that value
         if (out.length > maxOutChars) {
             out = out.substring(0, maxOutChars);
@@ -647,8 +622,16 @@ filesCache - holds the last updated file data of each requested file in case of 
         // If console was modified, revert change made by user.
         if (!consoleLiteral.startsWith(consoleStdoutArr.joinAll())) {
             // Add the character inputted into console if it isn't null and it won't make the current input exceed the max allowed input
-            if (char != null && findDiff(consoleStdoutArr.joinAll(), consoleLiteral).length <= maxInpChars && !consentMode) {
-                stdout += char;
+            if (char != null && findDiff(consoleStdoutArr.joinAll(), stdout + char).length <= maxInpChars) {
+                // Consent mode char addition override
+                if (consentMode) {
+                    console.warn(char.toUpperCase());
+                    consentCheck(char.toUpperCase());
+                }
+                // Inp -> Stdin
+                else {
+                    stdout += char;
+                }
             }
             terminal.innerHTML = stdout;
 
@@ -689,19 +672,7 @@ filesCache - holds the last updated file data of each requested file in case of 
             if (consentMode) {
                 currentOut = currentOut.toUpperCase();
                 // Consent
-                if (currentOut == "Y") {
-                    setCookie("consent", "true");
-                    window.location.reload();
-                }
-                // No consent
-                else if (currentOut == "N") {
-                    window.location.reload();
-                }
-                // Invalid Char
-                else {
-                    terminal.innerHTML = stdout;
-                    cursorToEnd(terminal);
-                }
+                consentCheck(currentOut);
                 return;
             }
 
@@ -718,40 +689,40 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     function keydown(event) {
         // Disable Bookmark tab and save site
-        if (event.ctrlKey) {
-            switch (event.key) {
-                case "d":
-                case "s":
-                    event.preventDefault();
-                    break;
-            }
+        if (event.ctrlKey && ["d", "s"].includes(event.key)) {
+            event.preventDefault();
         }
         // Command Up and Down
         else {
-            switch (event.key) {
-                case "ArrowUp":
-                    event.preventDefault();
-                    if (commandPos < commandQueue.length - 1) {
-                        commandPos += 1;
-                        terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
-                    }
-                    terminal.scrollTo(0, terminal.scrollHeight);
-                    cursorToEnd(terminal);
-                    break;
-                case "ArrowDown":
-                    event.preventDefault();
-                    if (commandPos > 0) {
-                        commandPos -= 1;
-                        terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
-                    }
-                    // Back to no input
-                    else if (commandPos == 0) {
-                        commandPos -= 1;
-                        terminal.innerHTML = consoleStdoutArr.joinAll();
-                    }
-                    terminal.scrollTo(0, terminal.scrollHeight);
-                    cursorToEnd(terminal);
-                    break;
+            if (event.key == "ArrowUp") {
+                // Down command stack
+                if (commandPos < commandQueue.length - 1) {
+                    commandPos += 1;
+                    terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                }
+            } else if (event.key == "ArrowDown") {
+                // Down command stack
+                if (commandPos > 0) {
+                    commandPos -= 1;
+                    terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
+                }
+                // Back to no input
+                else if (commandPos == 0) {
+                    commandPos -= 1;
+                    terminal.innerHTML = consoleStdoutArr.joinAll();
+                }
+            }
+
+            if (["ArrowUp", "ArrowDown"].includes(event.key)) {
+                event.preventDefault();
+                terminal.scrollTo(0, terminal.scrollHeight);
+                cursorToEnd(terminal);
+            }
+
+            if (finalFlow[currentFlow].toUpperCase() == event.key.toUpperCase()) {
+                currentFlow += 1;
+            } else {
+                currentFlow = 0;
             }
         }
     }

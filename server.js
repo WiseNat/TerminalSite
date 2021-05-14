@@ -1,12 +1,50 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const util = require("util");
 
 const port = 8000;
 const terminalDir = path.join(__dirname, "public", "terminals");
+const dataDir = path.join(__dirname, "public", "data");
 
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
+
+function generateJsonDir(){
+    var jsonDir = {};
+    fs.readdir(dataDir, (err, files) => {
+        files.forEach((el) => {
+            var filePath = el.split("-");
+            var currentPath = jsonDir;
+
+            filePath.forEach((el, ind, filePath) => {
+                // Final element: file name
+                if (ind == filePath.length - 1) {
+                    if ("files" in currentPath) {
+                        currentPath["files"].push(el);
+                    } else {
+                        currentPath["files"] = [el];
+                    }
+                }
+                // Path
+                else {
+                    if (!(el in currentPath)) {
+                        currentPath[el] = {};
+                        currentPath = currentPath[el];
+                    } else {
+                        currentPath = currentPath[el];
+                    }
+                }
+            });
+        });
+        jsonDir = JSON.stringify(jsonDir, null, 4);
+        fs.writeFile(path.join(__dirname, "public", "json", "dir_structure.json"), jsonDir, "utf8", err => {
+            if (err) {
+                console.log(err);
+            }
+        });
+    });
+}
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
@@ -29,4 +67,5 @@ app.get("/terminals", (req, res) => {
 // 10.198.96.65:8000
 app.listen(process.env.port || port, "0.0.0.0", function() {
     console.log(`Server listening on http://localhost:${port}`);
+    generateJsonDir();
 });

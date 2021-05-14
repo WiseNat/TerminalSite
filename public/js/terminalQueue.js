@@ -4,29 +4,29 @@ var maxLines = 20;
 // HTML -> String
 function datafy(s) {
     return s
-        .replace(/<(?!br|\/br).+?>/gm, "")    //  strip tags
-        .replace(/<br>/g, "\n")               //  <br> -> \n
-        .replace(/&lt;/g, "<")                //  &lt; -> <span
-        .replace(/&gt;/g, ">")                //  &gt; -> >
-        .replace(/&amp;/g, "&")               //  &amp; -> &
-        .replace(/&quot;/g, "\"")              //  &quot -> "
-        .replace(/&apos;/g, "'")              //  &apos -> '
-        .replace(/&#x2F/g, "/")               //  &#x2F -> /
-        .replace(/&nbsp;/g, " ");             //  &nbsp; -> ' '
+        .replace(/<(?!br|\/br).+?>/gm, "") //  strip tags
+        .replace(/<br>/g, "\n") //  <br> -> \n
+        .replace(/&lt;/g, "<") //  &lt; -> <span
+        .replace(/&gt;/g, ">") //  &gt; -> >
+        .replace(/&amp;/g, "&") //  &amp; -> &
+        .replace(/&quot;/g, "\"") //  &quot -> "
+        .replace(/&apos;/g, "'") //  &apos -> '
+        .replace(/&#x2F/g, "/") //  &#x2F -> /
+        .replace(/&nbsp;/g, " "); //  &nbsp; -> ' '
 }
-  
+
 
 // String -> HTML
 function htmlfy(s) {
     return s
         // .replace(/&/g, "&amp;")    //       & -> &amp;
-        .replace(/</g, "&lt;")     //       < -> &lt;
-        .replace(/>/g, "&gt;")     //       > -> &gt;
-        .replace(/"/g, "&quot;")   //       " -> &quot;
-        .replace(/'/g, "&apos;")   //       ' -> &apos;
-        .replace(/\//g, "&#x2F;")  //       / -> &#x2F;
-        // .replace(/\n/g, "<br>")    //      \n -> <br>
-        // .replace( / /g, "&nbsp;"); //     ' ' -> &nbsp;
+        .replace(/</g, "&lt;") //       < -> &lt;
+        .replace(/>/g, "&gt;") //       > -> &gt;
+        .replace(/"/g, "&quot;") //       " -> &quot;
+        .replace(/'/g, "&apos;") //       ' -> &apos;
+        .replace(/\//g, "&#x2F;"); //       / -> &#x2F;
+    // .replace(/\n/g, "<br>")    //      \n -> <br>
+    // .replace( / /g, "&nbsp;"); //     ' ' -> &nbsp;
 }
 
 

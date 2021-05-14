@@ -1,7 +1,0 @@
-Something
-
-[https://regex101.com/](Regex 101)
-
-<>" '`
-
-Something
