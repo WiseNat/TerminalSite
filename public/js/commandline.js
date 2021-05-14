@@ -383,7 +383,7 @@ filesCache - holds the last updated file data of each requested file in case of 
             }
             case commands["CV"]: {
                 out += "You can download my CV at ";
-                out += "<a contenteditable=\"false\" href=\"CV.pdf\" download=\"\">this link</a>";
+                out += "<a href=\"downloadables/CV.pdf\" download=\"\" contenteditable=\"false\">this link</a>";
                 break;
             }
             case commands["TERMINAL"]: {
@@ -392,7 +392,15 @@ filesCache - holds the last updated file data of each requested file in case of 
 
                 // No terminal theme found
                 if (terminal == null) {
-                    out += `Terminal theme <span style="color: #BF00BF">${titleCase(userInput)}</span> does not exist or couldn't be retrieved`;
+                    if (userInput.trim() == "") {
+                        var term = await getJSON("/terminals");
+                        term = term["terminals"];
+                        const themeToTry = term[Math.floor(Math.random() * term.length)]; 
+                        out += `You didn't enter a terminal theme.
+                        \nTry <span style="color: #BF00BF">terminal ${themeToTry}</span>\nThat's a nice one`;
+                    } else {
+                        out += `Terminal theme <span style="color: #BF00BF">${titleCase(userInput)}</span> does not exist or couldn't be retrieved`;
+                    }
                     break;
                 }
 
@@ -578,7 +586,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 // Check if input is a file
                 if (fileData != null) {
                     out += escape(fileData).replace(
-                        /(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm,
+                        /\[(.*?)\]\((.*?)\)/gm,
                         "<a contenteditable=\"false\" target=\"_blank\" href=\"$1\">$2</a>"
                     );
                 }
@@ -618,6 +626,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         // TODO: Remove these in final product
         // console.warn(`LITERAL:\n${consoleLiteral}`);
         // console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
+        // console.error(findDiff(consoleStdoutArr.joinAll(), consoleLiteral));
 
         // If console was modified, revert change made by user.
         if (!consoleLiteral.startsWith(consoleStdoutArr.joinAll())) {
@@ -625,7 +634,6 @@ filesCache - holds the last updated file data of each requested file in case of 
             if (char != null && findDiff(consoleStdoutArr.joinAll(), stdout + char).length <= maxInpChars) {
                 // Consent mode char addition override
                 if (consentMode) {
-                    console.warn(char.toUpperCase());
                     consentCheck(char.toUpperCase());
                 }
                 // Inp -> Stdin
