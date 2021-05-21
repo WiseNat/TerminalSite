@@ -1,7 +1,7 @@
 import {
     Queue,
     TerminalQueue
-} from "/js/TerminalQueue.js";
+} from "/js/terminalQueue.js";
 
 import {
     getFile,
@@ -292,10 +292,10 @@ filesCache - holds the last updated file data of each requested file in case of 
                     "\nLooks like you failed to fetch jsonDir. You kind of need that." +
                     "\n\nTry the command again and pray.</span>";
             } else if (jsonDir == null && jsonDirCache != null) {
-                console.warn("jsonDir recovered from backup");
+                console.log("jsonDir recovered from backup");
                 jsonDir = jsonDirCache;
             } else if (jsonDir != null) {
-                console.warn("backupJsonDir updated");
+                console.log("backupJsonDir updated");
                 jsonDirCache = jsonDir;
             }
         }
