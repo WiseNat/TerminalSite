@@ -27,6 +27,11 @@ if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv:11\./)) { // IE
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        alert(msgs[Math.floor(Math.random() * msgs.length)]);
+        do {
+            var alertMsg = msgs[Math.floor(Math.random() * msgs.length)];
+        } while ((alertMsg == alertMsgBuffer));
+        
+        var alertMsgBuffer = alertMsg;
+        alert(alertMsg);
     }
 }

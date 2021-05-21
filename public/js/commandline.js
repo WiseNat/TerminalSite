@@ -1,7 +1,7 @@
 import {
     Queue,
     TerminalQueue
-} from "/js/TerminalQueue.js";
+} from "/js/terminalQueue.js";
 
 import {
     getFile,
@@ -203,6 +203,41 @@ filesCache - holds the last updated file data of each requested file in case of 
         return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replaceAll("-", seperator)}`);
     }
 
+    function generateDir(dir, currentDir, jsonDir) {
+        // Reformatting the given directory (user input)
+        var splitArgs = dir.split("/");
+        splitArgs = splitArgs.filter(function (el) {
+            return el != null && el != "";
+        });
+        
+        // Creating directory path without any ".."s
+        splitArgs.forEach(function (e) {
+            if (e == "..") {
+                if (currentDir != "") {
+                    currentDir = currentDir.split("-");
+                    currentDir.pop();
+                    currentDir = currentDir.join("-");
+                }
+            } else {
+                if (currentDir == "") currentDir = e;
+                else currentDir += "-" + e;
+            }
+        });
+        
+        // Checking if dir exists
+        var exists = true;
+        currentDir.split("-").forEach(function (e) {
+            if (e == "") return;
+            if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
+            else exists = false;
+        });
+
+        if (exists == false) {
+            return null;
+        }
+        return currentDir;
+    }
+
 
     // Generates a tree from a given Object
     function recursiveDepthTree(tree, output = "", precursor = "") {
@@ -257,10 +292,10 @@ filesCache - holds the last updated file data of each requested file in case of 
                     "\nLooks like you failed to fetch jsonDir. You kind of need that." +
                     "\n\nTry the command again and pray.</span>";
             } else if (jsonDir == null && jsonDirCache != null) {
-                console.warn("jsonDir recovered from backup");
+                console.log("jsonDir recovered from backup");
                 jsonDir = jsonDirCache;
             } else if (jsonDir != null) {
-                console.warn("backupJsonDir updated");
+                console.log("backupJsonDir updated");
                 jsonDirCache = jsonDir;
             }
         }
@@ -288,36 +323,10 @@ filesCache - holds the last updated file data of each requested file in case of 
                     break;
                 }
 
-                // Reformatting the given directory (user input)
-                var splitArgs = command.args.join(" ").split("/");
-                splitArgs = splitArgs.filter(function (el) {
-                    return el != null && el != "";
-                });
-
-                // Creating directory path without any ".."s
-                splitArgs.forEach(function (e) {
-                    if (e == "..") {
-                        if (currentDir != "") {
-                            currentDir = currentDir.split("-");
-                            currentDir.pop();
-                            currentDir = currentDir.join("-");
-                        }
-                    } else {
-                        if (currentDir == "") currentDir = e;
-                        else currentDir += "-" + e;
-                    }
-                });
-
-                // Checking if dir exists
-                var exists = true;
-                currentDir.split("-").forEach(function (e) {
-                    if (e == "") return;
-                    if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
-                    else exists = false;
-                });
+                currentDir = generateDir(command.args.join(" "), currentDir, jsonDir);
 
                 // Outputs
-                if (exists == false || actualDir == currentDir) {
+                if (currentDir == null || actualDir == currentDir) {
                     out += "Directory doesn't exist";
                 } else {
                     // Preventing the extra newline
@@ -367,9 +376,14 @@ filesCache - holds the last updated file data of each requested file in case of 
                     break;
                 }
 
+                const dir = generateDir(command.args.join(" "), currentDir, jsonDir);
+                if (dir != null) {
+                    currentDir = dir;
+                }
+
                 // Get object of current directory location
-                if (actualDir != "") {
-                    var splitDir = actualDir.split("-");
+                if (currentDir != "") {
+                    var splitDir = currentDir.split("-");
 
                     splitDir.forEach(e => {
                         if (e == "") return;
@@ -378,12 +392,16 @@ filesCache - holds the last updated file data of each requested file in case of 
                 }
 
                 // Generate the tree, remove final newline and add to the output
-                out += `C:.\n${recursiveDepthTree(jsonDir).replace(/\n$/, "")}`;
+                out += `C:.\n${recursiveDepthTree(jsonDir, ).replace(/\n$/, "")}`;
+
+                if (dir == null) {
+                    out += "\n\nDirectory doesn't exist. Defaulting to <span style=\"color: #BF00BF\">current</span> directory.";
+                }
                 break;
             }
             case commands["CV"]: {
                 out += "You can download my CV at ";
-                out += "<a contenteditable=\"false\" href=\"CV.pdf\" download=\"\">this link</a>";
+                out += "<a href=\"downloadables/CV.pdf\" download=\"\" contenteditable=\"false\">this link</a>";
                 break;
             }
             case commands["TERMINAL"]: {
@@ -392,7 +410,15 @@ filesCache - holds the last updated file data of each requested file in case of 
 
                 // No terminal theme found
                 if (terminal == null) {
-                    out += `Terminal theme <span style="color: #BF00BF">${titleCase(userInput)}</span> does not exist or couldn't be retrieved`;
+                    if (userInput.trim() == "") {
+                        var term = await getJSON("/terminals");
+                        term = term["terminals"];
+                        const themeToTry = term[Math.floor(Math.random() * term.length)]; 
+                        out += `You didn't enter a terminal theme.
+                        \nTry <span style="color: #BF00BF">terminal ${themeToTry}</span>\nThat's a nice one`;
+                    } else {
+                        out += `Terminal theme <span style="color: #BF00BF">${titleCase(userInput)}</span> does not exist or couldn't be retrieved`;
+                    }
                     break;
                 }
 
@@ -484,8 +510,10 @@ filesCache - holds the last updated file data of each requested file in case of 
                     [commands["TREE"]]: [
                         "<b>Usage:</b>",
                         `  ${commands["TREE"]}`,
+                        `  ${commands["TREE"]} path`,
+                        `  ${commands["TREE"]} ..`,
                         "\n<b>Arguments:</b>",
-                        "  None",
+                        "  path\t\tthe path to the directory. Use '..' as a directory name to navigate backwards",
                         "\n<b>Info:</b>",
                         "  Graphically displays the directory structure of the current path",
                     ],
@@ -578,7 +606,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 // Check if input is a file
                 if (fileData != null) {
                     out += escape(fileData).replace(
-                        /(?:__|[*#])|\[(.*?)\]\((.*?)\)/gm,
+                        /\[(.*?)\]\((.*?)\)/gm,
                         "<a contenteditable=\"false\" target=\"_blank\" href=\"$1\">$2</a>"
                     );
                 }
@@ -618,6 +646,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         // TODO: Remove these in final product
         // console.warn(`LITERAL:\n${consoleLiteral}`);
         // console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
+        // console.error(findDiff(consoleStdoutArr.joinAll(), consoleLiteral));
 
         // If console was modified, revert change made by user.
         if (!consoleLiteral.startsWith(consoleStdoutArr.joinAll())) {
@@ -625,7 +654,6 @@ filesCache - holds the last updated file data of each requested file in case of 
             if (char != null && findDiff(consoleStdoutArr.joinAll(), stdout + char).length <= maxInpChars) {
                 // Consent mode char addition override
                 if (consentMode) {
-                    console.warn(char.toUpperCase());
                     consentCheck(char.toUpperCase());
                 }
                 // Inp -> Stdin
