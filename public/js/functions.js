@@ -33,7 +33,7 @@ async function getJSON(path) {
 // Sets a cookie
 function setCookie(name, value, days) {
     var secure = "";
-    if (navigator.userAgent.search("Firefox") > -1) {
+    if (navigator.userAgent.search("Firefox") > -1 && location.protocol !== "https:") {
         secure = " Secure;";
     }
     if (name == "consent" || getCookie("consent") != null) {
