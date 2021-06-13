@@ -29,7 +29,8 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "dir_structure.json"
+      "dir_structure.json",
+      "public/dir_structure.json"
     ]
   }
 }
