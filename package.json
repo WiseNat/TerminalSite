@@ -31,6 +31,7 @@
     "ignore": [
       "dir_structure.json",
       "public/dir_structure.json"
-    ]
+    ],
+    "verbose": "True"
   }
 }
