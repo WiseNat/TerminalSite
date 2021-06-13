@@ -31,18 +31,15 @@ async function getJSON(path) {
 
 
 // Sets a cookie
-function setCookie(name, value, days) {
+function setCookie(name, value) {
     var secure = "";
     if (navigator.userAgent.search("Firefox") > -1 && window.location.protocol != "http:") {
         secure = " Secure;";
     }
     if (name == "consent" || getCookie("consent") != null) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = `; expires=${date.toUTCString()}`;
-        }
+        var date = new Date();
+        date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
+        const expires = `; expires=${date.toUTCString()}`;
         document.cookie = `${name}=${(value || "")}${expires}; SameSite=Lax; path=/;${secure}`;
     }
 }
