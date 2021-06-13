@@ -644,9 +644,9 @@ filesCache - holds the last updated file data of each requested file in case of 
         var consoleLiteral = noOddHTML(terminal.innerHTML);
 
         // TODO: Remove these in final product
-        console.warn(`LITERAL:\n${consoleLiteral}`);
-        console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
-        console.error(findDiff(consoleStdoutArr.joinAll(), consoleLiteral));
+        // console.warn(`LITERAL:\n${consoleLiteral}`);
+        // console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
+        // console.error(findDiff(consoleStdoutArr.joinAll(), consoleLiteral));
 
         // If console was modified, revert change made by user.
         if (!consoleLiteral.startsWith(consoleStdoutArr.joinAll())) {
