@@ -458,7 +458,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 window.location.reload();
                 break;
             }
-            case commands["CLSCOOKIE"]: {
+            case commands["CLSCOOKIES"]: {
                 eraseCookie("consent");
                 eraseCookie("terminal_theme");
                 out += "Cleared <b style=\"color: tomato\">ALL</b> cookies";
@@ -550,9 +550,9 @@ filesCache - holds the last updated file data of each requested file in case of 
                         "\n<b>Info:</b>",
                         "  Refresh the web page. If you want to use this instead of pressing F5 then go ahead",
                     ],
-                    [commands["CLSCOOKIE"]]: [
+                    [commands["CLSCOOKIES"]]: [
                         "<b>Usage:</b>",
-                        `  ${commands["CLSCOOKIE"]}`,
+                        `  ${commands["CLSCOOKIES"]}`,
                         "\n<b>Arguments:</b>",
                         "  None",
                         "\n<b>Info:</b>",
