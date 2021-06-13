@@ -304,7 +304,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         switch (command.base) {
             case commands["SOURCE"]: {
                 out += "You can access the source code at this ";
-                out += "<a contenteditable=\"false\" target=\"_blank\" href=\"https://github.com/WiseNat/TerminalSite\">GitHub repository</a>";
+                out += "<a target=\"_blank\" href=\"https://github.com/WiseNat/TerminalSite\" contenteditable=\"false\">GitHub repository</a>";
                 break;
             }
             case commands["ECHO"]: {
@@ -644,9 +644,9 @@ filesCache - holds the last updated file data of each requested file in case of 
         var consoleLiteral = noOddHTML(terminal.innerHTML);
 
         // TODO: Remove these in final product
-        // console.warn(`LITERAL:\n${consoleLiteral}`);
-        // console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
-        // console.error(findDiff(consoleStdoutArr.joinAll(), consoleLiteral));
+        console.warn(`LITERAL:\n${consoleLiteral}`);
+        console.log(`SAVED:\n${consoleStdoutArr.joinAll()}`);
+        console.error(findDiff(consoleStdoutArr.joinAll(), consoleLiteral));
 
         // If console was modified, revert change made by user.
         if (!consoleLiteral.startsWith(consoleStdoutArr.joinAll())) {
