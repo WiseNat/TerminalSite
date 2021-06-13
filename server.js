@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 
-const port = 8000;
+const port = 8080;
 const terminalDir = path.join(__dirname, "public", "terminals");
 const dataDir = path.join(__dirname, "public", "data");
 
@@ -64,7 +64,9 @@ app.get("/terminals", (req, res) => {
 
 
 // 10.198.96.65:8000
-app.listen(process.env.port || port, "0.0.0.0", function() {
-    console.log(`Server listening on http://localhost:${port}`);
+var server = app.listen(process.env.port || port, "0.0.0.0", function() {
+    var host = server.address().address;
+    var port = server.address().port;
+    console.log(`Server listening on at http://${host}:${port}"`);
     generateJsonDir();
 });
