@@ -12,6 +12,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(requestIp.mw());
 
 function generateJsonDir(){
+    var dir = "public/json";
+
+    if (!fs.existsSync(dir)){
+        console.log("doesnt exist");
+        fs.mkdirSync(dir);
+    }
+
     var jsonDir = {};
     fs.readdir(dataDir, (err, files) => {
         files.forEach((el) => {
