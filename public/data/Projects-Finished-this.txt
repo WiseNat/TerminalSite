@@ -1,0 +1,18 @@
+
+Well, this is technically a finished project at the end of the day.
+
+Sure I could add some more features like:
+• Custom terminal theme
+• Proper Markdown support for files
+• Image files (ASCII char output generated using the image)
+• Bug report command
+• Feedback command
+
+Wait... that last one is actually a good idea. Maybe I'll do that
+soon.
+
+The thing is though, I still classify this project as finished
+because it met all of the requirements I set it out to meet.
+
+So yeah, hope you're enjoying this thing so far.
+Also, Konami is nice.
