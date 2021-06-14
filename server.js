@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const requestIp = require("request-ip");
 
 const port = 8080;
 const terminalDir = path.join(__dirname, "public", "terminals");
@@ -8,6 +9,7 @@ const dataDir = path.join(__dirname, "public", "data");
 
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
+app.use(requestIp.mw());
 
 function generateJsonDir(){
     var dir = "public/json";
@@ -52,13 +54,15 @@ function generateJsonDir(){
     });
 }
 
+// req.ip.split(":").pop()
+
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
-    console.log(`User connected: ${req.ip.split(":").pop()}`);
+    console.log(`User connected: ${req.clientIp}`);
 });
 
 app.get("/terminals", (req, res) => {
-    console.log(`Sending file list to ${req.ip.split(":").pop()}`);
+    console.log(`Sending file list to ${req.clientIp}`);
     fs.readdir(terminalDir, (err, files) => {
         if (err) {
             console.error(err);
