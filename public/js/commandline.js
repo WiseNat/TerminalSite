@@ -94,7 +94,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         \n\nEssentially the site uses two Cookies: \
         \n<span style="color: darkcyan">Consent</span> - flag for whether you consent or not, only exists as true after you consent\
         \n<span style="color: darkcyan">Terminal Theme</span> - stores the terminal theme you used last so that it persists when you open the page up again \
-        \n\n\nDo you consent to the use of these cookies [<span style="color: #A3FD62">Y</span>/<span style="color: tomato">N</span>]?\n\n${escape(">>>")} `;
+        \n\n\nDo you consent to the use of these cookies [<span style="color: #A3FD62">Y</span>/<span style="color: tomato">N</span>]?\n\nType in your response below\n${escape(">>>")} `;
     }
 
     var stdout = initial;
@@ -577,6 +577,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 }
                 // Show list of commands (tab for every 8th chars)
                 else {
+                    out += "Type \"HELP command\" to find out more about each command\n\n";
                     const maxTabs = Math.floor(Math.max(...(keys.map(el => el.length))) / 8) + 2;
                     keys.forEach(e => {
                         const tabs = "\t".repeat(maxTabs - Math.floor(e.length / 8));
