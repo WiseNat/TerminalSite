@@ -78,6 +78,6 @@ app.get("/terminals", (req, res) => {
 var server = app.listen(process.env.port || port, "0.0.0.0", function() {
     var host = server.address().address;
     var port = server.address().port;
-    console.log(`Server listening on at http://${host}:${port}"`);
+    console.log(`Server listening on at http://${host}:${port}`);
     generateJsonDir();
 });
