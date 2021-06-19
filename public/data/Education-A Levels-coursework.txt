@@ -1,4 +1,3 @@
-
 For my A-level computer science coursework, I made a remote
 controlled camera that is controlled with an Android app. This app
 can contro the camera on a multi-axis servo mount linked up to a

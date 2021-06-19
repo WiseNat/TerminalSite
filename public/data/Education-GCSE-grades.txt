@@ -1,4 +1,3 @@
-
 Subject             |   Grade   |   Board
 ---------------------------------------------
 Maths               |   9       |   Edexcel

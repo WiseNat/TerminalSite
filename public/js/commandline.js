@@ -606,7 +606,7 @@ filesCache - holds the last updated file data of each requested file in case of 
 
                 // Check if input is a file
                 if (fileData != null) {
-                    out += escape(fileData).replace(
+                    out += "\n" + escape(fileData).replace(
                         /\[(.*?)\]\((.*?)\)/gm,
                         "<a contenteditable=\"false\" target=\"_blank\" href=\"$1\">$2</a>"
                     );

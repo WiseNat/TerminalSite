@@ -1,4 +1,3 @@
-
 In my spare time I created a Discord bot that takes a random
 message’s content from a specified channel and reposts that content
 with text formatting. If no channel is given it uses the channel the

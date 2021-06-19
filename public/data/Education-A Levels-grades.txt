@@ -1,4 +1,3 @@
-
 Subject             |   Predicted Grade |   Board
 -----------------------------------------------------
 Computer Science    |   A-A*            |   OCR
