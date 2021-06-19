@@ -1,4 +1,6 @@
 const express = require("express");
+const helmet = require("helmet");
+const contentLength = require("express-content-length-validator");
 const path = require("path");
 const fs = require("fs");
 const requestIp = require("request-ip");
@@ -9,6 +11,8 @@ const dataDir = path.join(__dirname, "public", "data");
 
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
+app.use(helmet({contentSecurityPolicy: false}));
+app.use(contentLength.validateMax());
 app.use(requestIp.mw());
 
 function generateJsonDir(){
