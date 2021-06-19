@@ -1,0 +1,30 @@
+{
+    "theme": {
+        "background": "#5B44AB",
+        "font-color": "#957FDF",
+        "font-family": "17px \"Commodore 64\"",
+        "selection-background": "#957FDF",
+        "selection-color": "#5B44AB"
+    },
+    "text": {
+        "initial": "\n    **** COMMODORE 64 BASIC V2 ****\n 64K RAM SYSTEM  38911 BASIC BYTES FREE\n\nREADY.\n",
+        "prefix": "[PATH]>",
+        "cd": "/",
+        "initial-escape": false,
+        "prefix-escape": true
+    },
+    "commands": {
+        "SOURCE": "SOURCE",
+        "ECHO": "ECHO",
+        "CLS": "CLS",
+        "CD": "CD",
+        "DIR": "DIR",
+        "TREE": "TREE",
+        "CV": "CV",
+        "TERMINAL": "TERMINAL",
+        "TERMLIST": "TERMLIST",
+        "REFRESH": "REFRESH",
+        "CLSCOOKIES": "CLSCOOKIES",
+        "HELP": "HELP"
+    }
+}

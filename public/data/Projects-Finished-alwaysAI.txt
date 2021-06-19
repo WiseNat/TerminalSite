@@ -1,4 +1,3 @@
-
 For 3 months, I lead-developed a Discord bot for alwaysAI. This bot
 allows users to run alwaysAI’s deep vision models from within
 Discord. It can also search the documentation and view model

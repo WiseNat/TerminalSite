@@ -1,0 +1,26 @@
+
+Alright. You're stuck. The thing is though, you managed to make it to
+this file. Surely this means you're smart enough to navigate the rest
+of the site?
+
+If not then I'll give you some tips.
+
+Run "HELP" to get a list of commands and then "HELP command" for info
+on that command. For example "HELP cd" is always a good start. You
+also don't have to worry about caps at all. Try "hELp cD" if you
+want.
+
+The "TREE", "DIR" and "CD" commands are the most useful. I'd
+recommend learning how these all work. Try the following list of
+commands if they're still confusing you:
+
+TREE
+CD Education
+DIR
+CD ..
+DIR
+TREE Education
+DIR
+
+The rest is a lot easier so I'll leave that to you to figure out.
+Good luck.

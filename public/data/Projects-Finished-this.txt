@@ -1,4 +1,3 @@
-
 Well, this is technically a finished project at the end of the day.
 
 Sure I could add some more features like:
