@@ -505,7 +505,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                         "\n<b>Arguments:</b>",
                         "  None",
                         "\n<b>Info:</b>",
-                        "  Displays a list of files and subdirectories in the current directory",
+                        "  Lists files and subdirectories in the current directory",
                     ],
                     [commands["TREE"]]: [
                         "<b>Usage:</b>",
@@ -548,7 +548,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                         "\n<b>Arguments:</b>",
                         "  None",
                         "\n<b>Info:</b>",
-                        "  Refresh the web page. If you want to use this instead of pressing F5 then go ahead",
+                        "  Why does this exist? No idea. Use F5 instead.",
                     ],
                     [commands["CLSCOOKIES"]]: [
                         "<b>Usage:</b>",
