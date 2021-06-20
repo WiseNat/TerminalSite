@@ -24,7 +24,7 @@
         "TERMINAL": "TERMINAL",
         "TERMLIST": "TERMLIST",
         "REFRESH": "REFRESH",
-        "CLSCOOKIES": "CLSCOOKIES",
+        "CLSCOOKIES": "CLEARCOOKIES",
         "HELP": "HELP"
     }
 }
