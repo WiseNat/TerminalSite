@@ -1,7 +1,7 @@
 import {
     Queue,
     TerminalQueue
-} from "/js/terminalQueue.js";
+} from "/js/terminal-queue.js";
 
 import {
     getFile,
@@ -405,7 +405,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 break;
             }
             case commands["TERMINAL"]: {
-                const userInput = command.args.join(" ");
+                const userInput = command.args.join(" ").toLowerCase();
                 const terminal = await getJSON(`../terminals/${userInput}.json`);
 
                 // No terminal theme found
