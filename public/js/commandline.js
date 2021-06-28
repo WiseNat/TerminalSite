@@ -1,7 +1,7 @@
 import {
     Queue,
     TerminalQueue
-} from "/js/terminalQueue.js";
+} from "/js/terminal-queue.js";
 
 import {
     getFile,
