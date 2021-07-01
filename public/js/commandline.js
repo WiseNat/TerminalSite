@@ -56,7 +56,7 @@ filesCache - holds the last updated file data of each requested file in case of 
     const maxInpChars = 150;
     const maxOutChars = 1400;
 
-    var theme = getCookie("terminal_theme");
+    var theme = getCookie("terminal-theme");
     // No saved terminal theme, default to command prompt
     if (theme == null) {
         theme = "COMMAND PROMPT";
@@ -138,7 +138,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         for (const key in dat) {
             document.documentElement.style.setProperty(`--${key}`, dat[key]);
         }
-        setCookie("terminal_theme", name.toLowerCase());
+        setCookie("terminal-theme", name.toLowerCase());
     }
 
 
@@ -458,9 +458,19 @@ filesCache - holds the last updated file data of each requested file in case of 
                 window.location.reload();
                 break;
             }
+            case commands["COOKIESLIST"]: {
+                const cookies = ["consent", "terminal-theme"];
+                const maxTabs = Math.floor(Math.max(...(cookies.map(el => el.length))) / 8) + 2;
+                cookies.forEach(e => {
+                    const tabs = "\t".repeat(maxTabs - Math.floor(e.length / 8));
+                    out += `${e}${tabs}"${getCookie(e)}"\n`;
+                });
+                out = out.replace(/\n$/, "");
+                break;
+            }
             case commands["CLSCOOKIES"]: {
                 eraseCookie("consent");
-                eraseCookie("terminal_theme");
+                eraseCookie("terminal-theme");
                 out += "Cleared <b style=\"color: tomato\">ALL</b> cookies";
                 break;
             }
