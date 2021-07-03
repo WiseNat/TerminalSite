@@ -560,6 +560,14 @@ filesCache - holds the last updated file data of each requested file in case of 
                         "\n<b>Info:</b>",
                         "  Why does this exist? No idea. Use F5 instead.",
                     ],
+                    [commands["COOKIESLIST"]]: [
+                        "<b>Usage:</b>",
+                        `  ${commands["COOKIESLIST"]}`,
+                        "\n<b>Arguments:</b>",
+                        "  None",
+                        "\n<b>Info:</b>",
+                        "  Lists all cookies. That's it.",
+                    ],
                     [commands["CLSCOOKIES"]]: [
                         "<b>Usage:</b>",
                         `  ${commands["CLSCOOKIES"]}`,
