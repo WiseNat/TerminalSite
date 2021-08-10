@@ -1,5 +1,5 @@
-Subject             |   Predicted Grade |   Board
------------------------------------------------------
-Computer Science    |   A-A*            |   OCR
-Further Maths       |   A-A*            |   Edexcel
-Maths               |   A-A*            |   Edexcel
+Subject             |   Grade   |   Board
+-----------------------------------------------
+Computer Science    |   A*      |   OCR
+Further Maths       |   A       |   Edexcel
+Maths               |   B       |   Edexcel
