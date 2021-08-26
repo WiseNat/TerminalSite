@@ -203,26 +203,35 @@ filesCache - holds the last updated file data of each requested file in case of 
         return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replaceAll("-", seperator)}`);
     }
 
-    function generateDir(dir, currentDir, jsonDir) {
+    function compressDir(dir, c = "/") {
         // Reformatting the given directory (user input)
         var splitArgs = dir.split("/");
         splitArgs = splitArgs.filter(function (el) {
             return el != null && el != "";
         });
+
+        var dirBuffer = ""; 
         
         // Creating directory path without any ".."s
         splitArgs.forEach(function (e) {
             if (e == "..") {
-                if (currentDir != "") {
-                    currentDir = currentDir.split("-");
-                    currentDir.pop();
-                    currentDir = currentDir.join("-");
+                if (dirBuffer != "") {
+                    dirBuffer = dirBuffer.split(c);
+                    dirBuffer.pop();
+                    dirBuffer = dirBuffer.join(c);
                 }
             } else {
-                if (currentDir == "") currentDir = e;
-                else currentDir += "-" + e;
+                if (dirBuffer == "") dirBuffer = e;
+                else dirBuffer += c + e;
             }
         });
+
+        return dirBuffer;
+    }
+
+    function generateDir(dir, currentDir, jsonDir) {
+        // Reformatting the given directory (user input)
+        currentDir = compressDir(dir, "-");
         
         // Checking if dir exists
         var exists = true;
@@ -613,7 +622,8 @@ filesCache - holds the last updated file data of each requested file in case of 
                 if (currentDir != "") currentDir += "-";
                 currentDir += command.base + command.args.join(" ");
 
-                const path = `../data/${currentDir}`;
+                const path = "../data/" + compressDir(currentDir);
+                console.log(path);
                 var fileData = await getFile(path);
 
                 if (fileData == null && path in filesCache) {
