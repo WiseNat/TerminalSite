@@ -604,7 +604,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 }
                 // Show list of commands (tab for every 8th chars)
                 else {
-                    out += "Type \"HELP command\" to find out more about each command\n\n";
+                    out += "Type \"HELP command\" to find out more about each command\nType a full filename to view it, e.g. \"help.txt\"\n\n";
                     const maxTabs = Math.floor(Math.max(...(keys.map(el => el.length))) / 8) + 2;
                     keys.forEach(e => {
                         const tabs = "\t".repeat(maxTabs - Math.floor(e.length / 8));
