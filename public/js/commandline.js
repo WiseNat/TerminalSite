@@ -160,10 +160,6 @@ filesCache - holds the last updated file data of each requested file in case of 
             setCookie("consent", "true");
             window.location.reload();
         }
-        // No consent
-        else if (char == "N") {
-            window.location.reload();
-        }
         // Invalid Char
         else {
             terminal.innerHTML = stdout;
