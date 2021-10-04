@@ -30,7 +30,8 @@
 :root {
     --background: black;
     --font-color: #CCCCCC;
-    --font-family: 20px "Cascadia Mono";
+    --font-family: "Cascadia Mono";
+    --font-size: 20px;
     --selection-background: #858585;
     --selection-color: #E5E5E5;
     --link-color: #4843ff;
@@ -52,17 +53,28 @@ body {
 
 a {
     cursor: pointer;
-    font: var(--font-family);
+    font-family: var(--font-family);
+    font-size: var(--font-family);
     color: var(--link-color);
     text-decoration: none;
 }
+
+a[target="_blank"] {
+    background-image: url("external.svg");
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: calc(var(--font-size) / 2);
+    padding-right: 0.7em;
+}
+
 
 a:hover {
     text-decoration: underline;
 }
 
 .command-input {
-    font: var(--font-family);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
     color: var(--font-color);
     background-color: transparent;
     outline: none;

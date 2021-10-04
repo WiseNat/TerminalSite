@@ -2,7 +2,8 @@
     "theme": {
         "background": "#300A24",
         "font-color": "white",
-        "font-family": "23px \"Ubuntu Mono\"",
+        "font-family": "\"Ubuntu Mono\"",
+        "font-size": "23px",
         "selection-background": "white",
         "selection-color": "#300A24"
     },

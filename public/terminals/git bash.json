@@ -2,7 +2,8 @@
     "theme": {
         "background": "black",
         "font-color": "#BFBFBF",
-        "font-family": "20px \"Lucida Console\"",
+        "font-family": "\"Lucida Console\"",
+        "font-size": "20px",
         "selection-background": "white",
         "selection-color": "#300A24"
     },
