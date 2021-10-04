@@ -748,11 +748,14 @@ filesCache - holds the last updated file data of each requested file in case of 
         // Disable Bookmark tab and save site
         if (event.ctrlKey && ["d", "s"].includes(event.key)) {
             event.preventDefault();
+        // Disable command stack for highlighting
+        } else if (event.shiftKey && ["ArrowUp", "ArrowDown"].includes(event.key)) {
+            return;
         }
         // Command Up and Down
         else {
             if (event.key == "ArrowUp") {
-                // Down command stack
+                // Up command stack
                 if (commandPos < commandQueue.length - 1) {
                     commandPos += 1;
                     terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
