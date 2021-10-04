@@ -57,12 +57,12 @@ filesCache - holds the last updated file data of each requested file in case of 
     const maxOutChars = 1400;
 
     var theme = getCookie("terminal-theme");
+    var themeCSS = await getJSON(`../terminals/${theme}.json`);
+
     // No saved terminal theme, default to command prompt
-    if (theme == null) {
+    if (theme == null || themeCSS == null) {
         theme = "COMMAND PROMPT";
-        var themeCSS = await getJSON("../terminals/command prompt.json");
-    } else {
-        themeCSS = await getJSON(`../terminals/${theme}.json`);
+        themeCSS = await getJSON("../terminals/command prompt.json");
     }
 
     changeTheme(themeCSS["theme"], theme);
