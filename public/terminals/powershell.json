@@ -2,7 +2,8 @@
     "theme": {
         "background": "#012456",
         "font-color": "white",
-        "font-family": "20px \"Cascadia Mono\"",
+        "font-family": "\"Cascadia Mono\"",
+        "font-size": "20px",
         "selection-background": "#FEDBA9",
         "selection-color": "black"
     },

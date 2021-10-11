@@ -57,12 +57,12 @@ filesCache - holds the last updated file data of each requested file in case of 
     const maxOutChars = 1400;
 
     var theme = getCookie("terminal-theme");
+    var themeCSS = await getJSON(`../terminals/${theme}.json`);
+
     // No saved terminal theme, default to command prompt
-    if (theme == null) {
+    if (theme == null || themeCSS == null) {
         theme = "COMMAND PROMPT";
-        var themeCSS = await getJSON("../terminals/command prompt.json");
-    } else {
-        themeCSS = await getJSON(`../terminals/${theme}.json`);
+        themeCSS = await getJSON("../terminals/command prompt.json");
     }
 
     changeTheme(themeCSS["theme"], theme);
@@ -158,10 +158,6 @@ filesCache - holds the last updated file data of each requested file in case of 
     function consentCheck(char) {
         if (char == "Y") {
             setCookie("consent", "true");
-            window.location.reload();
-        }
-        // No consent
-        else if (char == "N") {
             window.location.reload();
         }
         // Invalid Char
@@ -604,7 +600,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 }
                 // Show list of commands (tab for every 8th chars)
                 else {
-                    out += "Type \"HELP command\" to find out more about each command\n\n";
+                    out += "Type \"HELP command\" to find out more about each command\nType a full filename to view it, e.g. \"help.txt\"\n\n";
                     const maxTabs = Math.floor(Math.max(...(keys.map(el => el.length))) / 8) + 2;
                     keys.forEach(e => {
                         const tabs = "\t".repeat(maxTabs - Math.floor(e.length / 8));
@@ -748,11 +744,14 @@ filesCache - holds the last updated file data of each requested file in case of 
         // Disable Bookmark tab and save site
         if (event.ctrlKey && ["d", "s"].includes(event.key)) {
             event.preventDefault();
+        // Disable command stack for highlighting
+        } else if (event.shiftKey && ["ArrowUp", "ArrowDown"].includes(event.key)) {
+            return;
         }
         // Command Up and Down
         else {
             if (event.key == "ArrowUp") {
-                // Down command stack
+                // Up command stack
                 if (commandPos < commandQueue.length - 1) {
                     commandPos += 1;
                     terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];

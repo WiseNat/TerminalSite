@@ -2,7 +2,8 @@
     "theme": {
         "background": "#5B44AB",
         "font-color": "#957FDF",
-        "font-family": "17px \"Commodore 64\"",
+        "font-family": "\"Commodore 64\"",
+        "font-size": "17px",
         "selection-background": "#957FDF",
         "selection-color": "#5B44AB"
     },
