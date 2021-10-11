@@ -19,7 +19,7 @@
         "ECHO": "ECHO",
         "CLS": "CLEAR",
         "CD": "CD",
-        "DIR": "DIR",
+        "DIR": "LS",
         "TREE": "TREE.COM",
         "CV": "CV",
         "TERMINAL": "TERMINAL",

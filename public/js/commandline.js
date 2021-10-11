@@ -88,9 +88,9 @@ filesCache - holds the last updated file data of each requested file in case of 
     // Hasn't decided on allowing cookies or not
     if (cookieConsent == null) {
         consentMode = true;
-        initial = `So, basically, in order to actually use my site you need to agree to letting me use Cookies. \
-        \nIt just made the entirety of the backend a lot easier. \
-        \n\nSo, you can either <span style="color: #A3FD62">agree</span> to them or <span style="color: tomato">not</span> use the site - there's no alternative.
+        initial = `So, basically, if you want Terminal themes to save when you come back to the webpage or refresh you'll need to enable cookies \
+        \nIf you type <span style="color: tomato">N</span>, it'll just opt you out of the terminal theme cookie. \
+        \nThis just made the entire backend easier. \
         \n\nEssentially the site uses two Cookies: \
         \n<span style="color: darkcyan">Consent</span> - flag for whether you consent or not, only exists as true after you consent\
         \n<span style="color: darkcyan">Terminal Theme</span> - stores the terminal theme you used last so that it persists when you open the page up again \
@@ -138,7 +138,10 @@ filesCache - holds the last updated file data of each requested file in case of 
         for (const key in dat) {
             document.documentElement.style.setProperty(`--${key}`, dat[key]);
         }
-        setCookie("terminal-theme", name.toLowerCase());
+        const consent = getCookie("consent");
+        if (consent == "true") {
+            setCookie("terminal-theme", name.toLowerCase());
+        }
     }
 
 
@@ -162,8 +165,8 @@ filesCache - holds the last updated file data of each requested file in case of 
         }
         // Invalid Char
         else {
-            terminal.innerHTML = stdout;
-            cursorToEnd(terminal);
+            setCookie("consent", "false");
+            window.location.reload();
         }
     }
 
@@ -619,7 +622,6 @@ filesCache - holds the last updated file data of each requested file in case of 
                 currentDir += command.base + command.args.join(" ");
 
                 const path = "../data/" + compressDir(currentDir);
-                console.log(path);
                 var fileData = await getFile(path);
 
                 if (fileData == null && path in filesCache) {
