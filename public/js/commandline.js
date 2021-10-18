@@ -41,9 +41,10 @@ currentFlow - the current flow value
 
 terminal - a reference for the terminal div element
 
-commandQueue - holds the last (maxLines) amount of inputs sent to the console
+commandQueue - holds the last <maxLines> inputs sent to the console
 commandPos - keeps track of the command position in commandQueue. For when the users presses the Up and Down arrow 
 
+currentDir - ??
 actualDir - the current, actual directory the user is in (has "-"s instead of "/"s)
 jsonDirCache - used to hold the last updated version of jsonDir in case of a loss of connection
 
@@ -123,12 +124,15 @@ filesCache - holds the last updated file data of each requested file in case of 
             initial = escape(initial);
         }
         initial = initial + prefix;
+
+        var consent = getCookie("consent");
+        if (consent != null) {
+            consentMode = false;
+        }
     
         // Hasn't decided on allowing cookies or not
         if (consentMode == true) {
-            initial = `So, basically, if you want Terminal themes to save when you come back to the webpage or refresh you'll need to enable cookies \
-            \nIf you type <span style="color: tomato">N</span>, it'll just opt you out of the terminal theme cookie. \
-            \nThis just made the entire backend easier. \
+            initial = `If you want Terminal themes to save when you come back to the webpage or refresh you'll need to consent to cookies \
             \n\nEssentially the site uses two Cookies: \
             \n<span style="color: darkcyan">Consent</span> - flag for whether you consent or not, only exists as true after you consent\
             \n<span style="color: darkcyan">Terminal Theme</span> - stores the terminal theme you used last so that it persists when you open the page up again \
