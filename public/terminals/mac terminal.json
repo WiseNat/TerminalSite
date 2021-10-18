@@ -5,7 +5,8 @@
         "font-family": "\"Cascadia Mono\"",
         "font-size": "20px",
         "selection-background": "black",
-        "selection-color": "white"
+        "selection-color": "white",
+        "link-color": "#888888"
     },
     "text": {
         "initial": "",

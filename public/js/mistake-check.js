@@ -20,7 +20,7 @@ const msgs = [
 
 if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv:11\./)) { // IE
     document.title = "Internet Explorer is Bad";
-    
+
     alert("Stop using this relic of a browser");
     alert("At least use Edge...");
 
@@ -29,7 +29,7 @@ if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv:11\./)) { // IE
         do {
             var alertMsg = msgs[Math.floor(Math.random() * msgs.length)];
         } while ((alertMsg == alertMsgBuffer));
-        
+
         var alertMsgBuffer = alertMsg;
         alert(alertMsg);
     }

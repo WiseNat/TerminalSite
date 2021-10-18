@@ -11,14 +11,16 @@ const dataDir = path.join(__dirname, "public", "data");
 
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
-app.use(helmet({contentSecurityPolicy: false}));
+app.use(helmet({
+    contentSecurityPolicy: false
+}));
 app.use(contentLength.validateMax());
 app.use(requestIp.mw());
 
-function generateJsonDir(){
+function generateJsonDir() {
     var dir = "public/json";
 
-    if (!fs.existsSync(dir)){
+    if (!fs.existsSync(dir)) {
         console.log("doesnt exist");
         fs.mkdirSync(dir);
     }
@@ -71,15 +73,19 @@ app.get("/terminals", (req, res) => {
         if (err) {
             console.error(err);
         } else {
-            files.forEach((el, ind) => { files[ind] = el.replace(".json", ""); });
-            res.json({terminals: files});
+            files.forEach((el, ind) => {
+                files[ind] = el.replace(".json", "");
+            });
+            res.json({
+                terminals: files
+            });
         }
     });
 });
 
 
 // 10.198.96.65:8000
-var server = app.listen(process.env.port || port, "0.0.0.0", function() {
+var server = app.listen(process.env.port || port, "0.0.0.0", function () {
     var host = server.address().address;
     var port = server.address().port;
     console.log(`Server listening on at http://${host}:${port}`);
