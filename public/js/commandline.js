@@ -8,6 +8,7 @@ import {
     getJSON,
     setCookie,
     getCookie,
+    getAllCookies,
     eraseCookie,
     titleCase,
     escape,
@@ -31,7 +32,6 @@ prefix - comes before each user input; originally pulls from staticPrefix
 initial - temp var for the text right at the top (if applicable)
 
 consentMode - whether to run terminal in consent mode, basically prompts the user for cookie consent
-cookieConsent - cookie for whether the user has accepted consent or not. Doesn't exist if not.
 
 stdout - constantly updates to keep track of valid user input and entire console
 
@@ -41,9 +41,10 @@ currentFlow - the current flow value
 
 terminal - a reference for the terminal div element
 
-commandQueue - holds the last (maxLines) amount of inputs sent to the console
+commandQueue - holds the last <maxLines> inputs sent to the console
 commandPos - keeps track of the command position in commandQueue. For when the users presses the Up and Down arrow 
 
+currentDir - ??
 actualDir - the current, actual directory the user is in (has "-"s instead of "/"s)
 jsonDirCache - used to hold the last updated version of jsonDir in case of a loss of connection
 
@@ -53,51 +54,24 @@ filesCache - holds the last updated file data of each requested file in case of 
 */
 
 (async () => {
+    // Var declaration
     const maxInpChars = 150;
     const maxOutChars = 1400;
-
-    var theme = getCookie("terminal-theme");
-    var themeCSS = await getJSON(`../terminals/${theme}.json`);
-
-    // No saved terminal theme, default to command prompt
-    if (theme == null || themeCSS == null) {
-        theme = "COMMAND PROMPT";
-        themeCSS = await getJSON("../terminals/command prompt.json");
-    }
-
-    changeTheme(themeCSS["theme"], theme);
-
     const pathPlaceholder = "[PATH]";
-
-    var staticPrefix = themeCSS["text"]["prefix"];
-    if (themeCSS["text"]["prefix-escape"]) {
-        staticPrefix = escape(staticPrefix);
-    }
-
-    var prefix = staticPrefix.replace(pathPlaceholder, "");
-
-    var initial = themeCSS["text"]["initial"];
-    if (themeCSS["text"]["initial-escape"]) {
-        initial = escape(initial);
-    }
-    initial = initial + prefix;
-
-    var consentMode = false;
-    var cookieConsent = getCookie("consent");
-
-    // Hasn't decided on allowing cookies or not
-    if (cookieConsent == null) {
-        consentMode = true;
-        initial = `So, basically, in order to actually use my site you need to agree to letting me use Cookies. \
-        \nIt just made the entirety of the backend a lot easier. \
-        \n\nSo, you can either <span style="color: #A3FD62">agree</span> to them or <span style="color: tomato">not</span> use the site - there's no alternative.
-        \n\nEssentially the site uses two Cookies: \
-        \n<span style="color: darkcyan">Consent</span> - flag for whether you consent or not, only exists as true after you consent\
-        \n<span style="color: darkcyan">Terminal Theme</span> - stores the terminal theme you used last so that it persists when you open the page up again \
-        \n\n\nDo you consent to the use of these cookies [<span style="color: #A3FD62">Y</span>/<span style="color: tomato">N</span>]?\n\nType in your response below\n${escape(">>>")} `;
-    }
-
-    var stdout = initial;
+    var commandQueue;
+    var commandPos;
+    var actualDir;
+    var filesCache;
+    var jsonDirCache;
+    var theme;
+    var themeCSS;
+    var staticPrefix;
+    var prefix;
+    var initial;
+    var consentMode = true;
+    var stdout;
+    var terminal = document.getElementById("terminal");
+    var consoleStdoutArr;
 
     var key = ["pUwOr", "nWoDwOrRa", "LwOrRa", "tHgIrWoR"];
     key.forEach((el, ind, key) => {
@@ -114,23 +88,69 @@ filesCache - holds the last updated file data of each requested file in case of 
     const finalFlow = ["Enter", String.fromCharCode(65), "B", key[3], key[2], key[3], key[2], key[1], key[1], key[0], key[0]].reverse();
     var currentFlow = 0;
 
-    // Setting console to initial output
-    var terminal = document.getElementById("terminal");
-    terminal.innerHTML = initial;
-    terminal.addEventListener("input", input);
-    terminal.addEventListener("keydown", keydown);
-    terminal.addEventListener("paste", paste);
+    
 
-    var commandQueue = new Queue();
-    var commandPos = -1;
+    //foobar
+    init();
 
-    var actualDir = "";
-    var jsonDirCache = null;
+    // Initialising the terminal
+    async function init(){
+        commandQueue = new Queue();
+        commandPos = -1;
+        actualDir = "";
+        filesCache = {};
+        jsonDirCache = null;
 
-    var consoleStdoutArr = new TerminalQueue();
-    consoleStdoutArr.addElement(initial);
+        theme = getCookie("terminal-theme");
+        themeCSS = await getJSON(`../terminals/${theme}.json`);
+    
+        // No saved terminal theme, default to command prompt
+        if (theme == null || themeCSS == null) {
+            theme = "COMMAND PROMPT";
+            themeCSS = await getJSON("../terminals/command prompt.json");
+        }
+    
+        changeTheme(themeCSS["theme"], theme);
+    
+        staticPrefix = themeCSS["text"]["prefix"];
+        if (themeCSS["text"]["prefix-escape"]) {
+            staticPrefix = escape(staticPrefix);
+        }
+    
+        prefix = staticPrefix.replace(pathPlaceholder, "");
+    
+        initial = themeCSS["text"]["initial"];
+        if (themeCSS["text"]["initial-escape"]) {
+            initial = escape(initial);
+        }
+        initial = initial + prefix;
 
-    var filesCache = {};
+        var consent = getCookie("consent");
+        if (consent != null) {
+            consentMode = false;
+        }
+    
+        // Hasn't decided on allowing cookies or not
+        if (consentMode == true) {
+            initial = `If you want Terminal themes to save when you come back to the webpage or refresh you'll need to consent to cookies \
+            \n\nEssentially the site uses two Cookies: \
+            \n<span style="color: darkcyan">Consent</span> - flag for whether you consent or not, only exists as true after you consent\
+            \n<span style="color: darkcyan">Terminal Theme</span> - stores the terminal theme you used last so that it persists when you open the page up again \
+            \n\n\nDo you consent to the use of these cookies [<span style="color: #A3FD62">Y</span>/<span style="color: tomato">N</span>]?\n\nType in your response below\n${escape(">>>")} `;
+        }
+    
+        stdout = initial;
+    
+        // Setting console to initial output
+        terminal.innerHTML = initial;
+        terminal.addEventListener("input", input);
+        terminal.addEventListener("keydown", keydown);
+        terminal.addEventListener("paste", paste);
+    
+        consoleStdoutArr = new TerminalQueue();
+        consoleStdoutArr.addElement(initial);
+    
+    }
 
 
     // Changes the current terminal CSS theme
@@ -138,7 +158,10 @@ filesCache - holds the last updated file data of each requested file in case of 
         for (const key in dat) {
             document.documentElement.style.setProperty(`--${key}`, dat[key]);
         }
-        setCookie("terminal-theme", name.toLowerCase());
+        const consent = getCookie("consent");
+        if (consent == "true") {
+            setCookie("terminal-theme", name.toLowerCase());
+        }
     }
 
 
@@ -156,14 +179,23 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     // Check for consent
     function consentCheck(char) {
-        if (char == "Y") {
-            setCookie("consent", "true");
-            window.location.reload();
-        }
-        // Invalid Char
-        else {
-            terminal.innerHTML = stdout;
-            cursorToEnd(terminal);
+        switch (char) {
+            case "Y": {
+                setCookie("consent", "true");
+                consentMode = false;
+                init();
+                break;
+            }
+            // eslint-disable-next-line no-fallthrough
+            case "N": {
+                consentMode = false;
+                init();
+                break;
+            }   
+            default: {
+                terminal.innerHTML = stdout;
+                cursorToEnd(terminal);
+            }
         }
     }
 
@@ -227,8 +259,8 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     function generateDir(dir, currentDir, jsonDir) {
         // Reformatting the given directory (user input)
-        currentDir = compressDir(dir, "-");
-        
+        currentDir = compressDir(`${currentDir}/${dir}`, "-");
+
         // Checking if dir exists
         var exists = true;
         currentDir.split("-").forEach(function (e) {
@@ -464,13 +496,18 @@ filesCache - holds the last updated file data of each requested file in case of 
                 break;
             }
             case commands["COOKIESLIST"]: {
-                const cookies = ["consent", "terminal-theme"];
-                const maxTabs = Math.floor(Math.max(...(cookies.map(el => el.length))) / 8) + 2;
-                cookies.forEach(e => {
-                    const tabs = "\t".repeat(maxTabs - Math.floor(e.length / 8));
-                    out += `${e}${tabs}"${getCookie(e)}"\n`;
-                });
-                out = out.replace(/\n$/, "");
+                const cookies = getAllCookies();
+                const keys = Object.keys(cookies);
+                const maxTabs = Math.floor(Math.max(...(keys.map(el => el.length))) / 8) + 2;
+                if (keys.length == 0) {
+                    out += "<span style=\"color: tomato\">No cookies stored</span>";
+                } else {
+                    keys.forEach(e => {
+                        const tabs = "\t".repeat(maxTabs - Math.floor(e.length / 8));
+                        out += `${e}${tabs}"${cookies[e]}"\n`;
+                    });
+                    out = out.replace(/\n$/, "");    
+                }
                 break;
             }
             case commands["CLSCOOKIES"]: {
@@ -619,7 +656,6 @@ filesCache - holds the last updated file data of each requested file in case of 
                 currentDir += command.base + command.args.join(" ");
 
                 const path = "../data/" + compressDir(currentDir);
-                console.log(path);
                 var fileData = await getFile(path);
 
                 if (fileData == null && path in filesCache) {
@@ -775,7 +811,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 cursorToEnd(terminal);
             }
 
-            if (finalFlow[currentFlow].toUpperCase() == event.key.toUpperCase()) {
+            if (consentMode == false && finalFlow[currentFlow].toUpperCase() == event.key.toUpperCase()) {
                 currentFlow += 1;
             } else {
                 currentFlow = 0;

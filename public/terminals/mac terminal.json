@@ -8,7 +8,7 @@
         "selection-color": "white"
     },
     "text": {
-        "initial": "\n",
+        "initial": "",
         "prefix": "userpc:[PATH] Macbook-Pro$ ",
         "cd": "/",
         "initial-escape": false,
