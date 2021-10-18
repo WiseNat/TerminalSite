@@ -8,7 +8,7 @@
         "selection-color": "#300A24"
     },
     "text": {
-        "initial": "\n",
+        "initial": "",
         "prefix": "<span style=\"color: #00BF00\">user@pc</span> <span style=\"color: #BF00BF\">MINGW64</span> <span style=\"color: #BFBF00\">~[PATH]</span>\n$ ",
         "cd": "/",
         "initial-escape": false,

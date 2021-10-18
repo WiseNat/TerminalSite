@@ -259,8 +259,8 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     function generateDir(dir, currentDir, jsonDir) {
         // Reformatting the given directory (user input)
-        currentDir = compressDir(dir, "-");
-        
+        currentDir = compressDir(`${currentDir}/${dir}`, "-");
+
         // Checking if dir exists
         var exists = true;
         currentDir.split("-").forEach(function (e) {
