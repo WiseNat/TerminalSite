@@ -5,7 +5,8 @@
         "font-family": "\"Cascadia Mono\"",
         "font-size": "20px",
         "selection-background": "#858585",
-        "selection-color": "#E5E5E5"
+        "selection-color": "#E5E5E5",
+        "link-color": "#3462D8"
     },
     "text": {
         "initial": "Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n\n",

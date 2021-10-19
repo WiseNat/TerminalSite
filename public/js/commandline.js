@@ -88,13 +88,13 @@ filesCache - holds the last updated file data of each requested file in case of 
     const finalFlow = ["Enter", String.fromCharCode(65), "B", key[3], key[2], key[3], key[2], key[1], key[1], key[0], key[0]].reverse();
     var currentFlow = 0;
 
-    
+
 
     //foobar
     init();
 
     // Initialising the terminal
-    async function init(){
+    async function init() {
         commandQueue = new Queue();
         commandPos = -1;
         actualDir = "";
@@ -103,22 +103,22 @@ filesCache - holds the last updated file data of each requested file in case of 
 
         theme = getCookie("terminal-theme");
         themeCSS = await getJSON(`../terminals/${theme}.json`);
-    
+
         // No saved terminal theme, default to command prompt
         if (theme == null || themeCSS == null) {
             theme = "COMMAND PROMPT";
             themeCSS = await getJSON("../terminals/command prompt.json");
         }
-    
+
         changeTheme(themeCSS["theme"], theme);
-    
+
         staticPrefix = themeCSS["text"]["prefix"];
         if (themeCSS["text"]["prefix-escape"]) {
             staticPrefix = escape(staticPrefix);
         }
-    
+
         prefix = staticPrefix.replace(pathPlaceholder, "");
-    
+
         initial = themeCSS["text"]["initial"];
         if (themeCSS["text"]["initial-escape"]) {
             initial = escape(initial);
@@ -129,7 +129,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         if (consent != null) {
             consentMode = false;
         }
-    
+
         // Hasn't decided on allowing cookies or not
         if (consentMode == true) {
             initial = `If you want Terminal themes to save when you come back to the webpage or refresh you'll need to consent to cookies \
@@ -138,18 +138,18 @@ filesCache - holds the last updated file data of each requested file in case of 
             \n<span style="color: darkcyan">Terminal Theme</span> - stores the terminal theme you used last so that it persists when you open the page up again \
             \n\n\nDo you consent to the use of these cookies [<span style="color: #A3FD62">Y</span>/<span style="color: tomato">N</span>]?\n\nType in your response below\n${escape(">>>")} `;
         }
-    
+
         stdout = initial;
-    
+
         // Setting console to initial output
         terminal.innerHTML = initial;
         terminal.addEventListener("input", input);
         terminal.addEventListener("keydown", keydown);
         terminal.addEventListener("paste", paste);
-    
+
         consoleStdoutArr = new TerminalQueue();
         consoleStdoutArr.addElement(initial);
-    
+
     }
 
 
@@ -191,7 +191,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 consentMode = false;
                 init();
                 break;
-            }   
+            }
             default: {
                 terminal.innerHTML = stdout;
                 cursorToEnd(terminal);
@@ -238,8 +238,8 @@ filesCache - holds the last updated file data of each requested file in case of 
             return el != null && el != "";
         });
 
-        var dirBuffer = ""; 
-        
+        var dirBuffer = "";
+
         // Creating directory path without any ".."s
         splitArgs.forEach(function (e) {
             if (e == "..") {
@@ -450,7 +450,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                     if (userInput.trim() == "") {
                         var term = await getJSON("/terminals");
                         term = term["terminals"];
-                        const themeToTry = term[Math.floor(Math.random() * term.length)]; 
+                        const themeToTry = term[Math.floor(Math.random() * term.length)];
                         out += `You didn't enter a terminal theme.
                         \nTry <span style="color: #BF00BF">terminal ${themeToTry}</span>\nThat's a nice one`;
                     } else {
@@ -506,7 +506,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                         const tabs = "\t".repeat(maxTabs - Math.floor(e.length / 8));
                         out += `${e}${tabs}"${cookies[e]}"\n`;
                     });
-                    out = out.replace(/\n$/, "");    
+                    out = out.replace(/\n$/, "");
                 }
                 break;
             }
@@ -780,7 +780,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         // Disable Bookmark tab and save site
         if (event.ctrlKey && ["d", "s"].includes(event.key)) {
             event.preventDefault();
-        // Disable command stack for highlighting
+            // Disable command stack for highlighting
         } else if (event.shiftKey && ["ArrowUp", "ArrowDown"].includes(event.key)) {
             return;
         }

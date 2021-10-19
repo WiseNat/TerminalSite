@@ -62,12 +62,12 @@ function getAllCookies() {
     if (document.cookie == "") {
         return {};
     }
-    
+
     var ca = document.cookie.split(";");
     var cookies = {};
     for (var i = 0; i < ca.length; i++) {
         var c = ca[i].split("=");
-        cookies[(c[0]+"").trim()] = unescape(c.slice(1).join("="));
+        cookies[(c[0] + "").trim()] = unescape(c.slice(1).join("="));
     }
     console.log(cookies);
     return cookies;

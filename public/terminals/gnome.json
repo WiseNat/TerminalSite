@@ -5,7 +5,8 @@
         "font-family": "\"Ubuntu Mono\"",
         "font-size": "23px",
         "selection-background": "white",
-        "selection-color": "#300A24"
+        "selection-color": "#300A24",
+        "link-color": "#3462D8"
     },
     "text": {
         "initial": "",
