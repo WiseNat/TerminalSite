@@ -511,8 +511,10 @@ filesCache - holds the last updated file data of each requested file in case of 
                 break;
             }
             case commands["CLSCOOKIES"]: {
-                eraseCookie("consent");
-                eraseCookie("terminal-theme");
+                const cookies = Object.keys(getAllCookies());
+                cookies.forEach(e => {
+                    eraseCookie(e);
+                });
                 out += "Cleared <b style=\"color: tomato\">ALL</b> cookies";
                 break;
             }
