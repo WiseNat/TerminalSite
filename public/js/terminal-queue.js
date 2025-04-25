@@ -1,4 +1,4 @@
-var maxLines = 20;
+const maxLines = 20;
 
 
 // HTML -> String
@@ -32,14 +32,14 @@ function htmlfy(s) {
 
 class Queue extends Array {
     addElement(s) {
-        if (this.length == maxLines) {
+        if (this.length === maxLines) {
             this.shift();
         }
         this.push(s);
     }
 
     last() {
-        if (this.length == 0) return null;
+        if (this.length === 0) return null;
         return this[this.length - 1];
     }
 
@@ -61,7 +61,7 @@ class TerminalQueue extends Queue {
     }
 
     joinAll() {
-        var res = [];
+        const res = [];
         this.forEach(ele => res.push(ele.pre + ele.inp + ele.out));
         return res.join("");
     }

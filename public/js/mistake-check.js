@@ -1,5 +1,5 @@
-var ua = window.navigator.userAgent;
-var msie = ua.indexOf("MSIE");
+const ua = window.navigator.userAgent;
+const msie = ua.indexOf("MSIE");
 
 const msgs = [
     "Have you tried Chrome?",
@@ -24,13 +24,8 @@ if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv:11\./)) { // IE
     alert("Stop using this relic of a browser");
     alert("At least use Edge...");
 
-    // eslint-disable-next-line no-constant-condition
     while (true) {
-        do {
-            var alertMsg = msgs[Math.floor(Math.random() * msgs.length)];
-        } while ((alertMsg == alertMsgBuffer));
-
-        var alertMsgBuffer = alertMsg;
+        let alertMsg = msgs[Math.floor(Math.random() * msgs.length)];
         alert(alertMsg);
     }
 }

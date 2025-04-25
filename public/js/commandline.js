@@ -1,21 +1,18 @@
-import {
-    Queue,
-    TerminalQueue
-} from "/js/terminal-queue.js";
+import {Queue, TerminalQueue} from "/js/terminal-queue.js";
 
 import {
+    eraseCookie,
+    escape,
+    findDiff,
+    getAllCookies,
+    getCookie,
     getFile,
     getJSON,
-    setCookie,
-    getCookie,
-    getAllCookies,
-    eraseCookie,
-    titleCase,
-    escape,
-    removeNewline,
+    noOddHTML,
     removeCarriage,
-    findDiff,
-    noOddHTML
+    removeNewline,
+    setCookie,
+    titleCase
 } from "/js/functions.js";
 
 /*
@@ -24,7 +21,7 @@ maxInpChars - max amount of characters allowed for user input per line
 maxOutChars - max amount of output characters per line that can be displayed
 
 theme - name of the current terminal theme
-themeCSS - JSON for all of the CSS for the current terminal theme
+themeCSS - JSON for all the CSS for the current terminal theme
 pathPlaceholder - constant to be replaced for each terminals prefix when running CD
 
 staticPrefix - exists as a constant for the lowest level prefix, never changes
@@ -58,27 +55,27 @@ filesCache - holds the last updated file data of each requested file in case of 
     const maxInpChars = 150;
     const maxOutChars = 1400;
     const pathPlaceholder = "[PATH]";
-    var commandQueue;
-    var commandPos;
-    var actualDir;
-    var filesCache;
-    var jsonDirCache;
-    var theme;
-    var themeCSS;
-    var staticPrefix;
-    var prefix;
-    var initial;
-    var consentMode = true;
-    var stdout;
-    var terminal = document.getElementById("terminal");
-    var consoleStdoutArr;
+    let commandQueue;
+    let commandPos;
+    let actualDir;
+    let filesCache;
+    let jsonDirCache;
+    let theme;
+    let themeCSS;
+    let staticPrefix;
+    let prefix;
+    let initial;
+    let consentMode = true;
+    let stdout;
+    const terminal = document.getElementById("terminal");
+    let consoleStdoutArr;
 
-    var key = ["pUwOr", "nWoDwOrRa", "LwOrRa", "tHgIrWoR"];
+    const key = ["pUwOr", "nWoDwOrRa", "LwOrRa", "tHgIrWoR"];
     key.forEach((el, ind, key) => {
         el = el.split("");
-        if (ind % 3 == 0) {
+        if (ind % 3 === 0) {
             key[ind] = `aR${el.reverse().join("")}`;
-        } else if (ind == 2) {
+        } else if (ind === 2) {
             key[ind] = "tFe" + el.join("");
             key[ind] = key[ind].split("").reverse().join("");
         } else {
@@ -86,12 +83,11 @@ filesCache - holds the last updated file data of each requested file in case of 
         }
     });
     const finalFlow = ["Enter", String.fromCharCode(65), "B", key[3], key[2], key[3], key[2], key[1], key[1], key[0], key[0]].reverse();
-    var currentFlow = 0;
-
+    let currentFlow = 0;
 
 
     //foobar
-    init();
+    await init();
 
     // Initialising the terminal
     async function init() {
@@ -125,13 +121,13 @@ filesCache - holds the last updated file data of each requested file in case of 
         }
         initial = initial + prefix;
 
-        var consent = getCookie("consent");
+        const consent = getCookie("consent");
         if (consent != null) {
             consentMode = false;
         }
 
         // Hasn't decided on allowing cookies or not
-        if (consentMode == true) {
+        if (consentMode === true) {
             initial = `If you want Terminal themes to save when you come back to the webpage or refresh you'll need to consent to cookies \
             \n\nEssentially the site uses two Cookies: \
             \n<span style="color: darkcyan">Consent</span> - flag for whether you consent or not, only exists as true after you consent\
@@ -159,7 +155,7 @@ filesCache - holds the last updated file data of each requested file in case of 
             document.documentElement.style.setProperty(`--${key}`, dat[key]);
         }
         const consent = getCookie("consent");
-        if (consent == "true") {
+        if (consent === "true") {
             setCookie("terminal-theme", name.toLowerCase());
         }
     }
@@ -167,8 +163,8 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     // Moves cursor to the end of the element
     function cursorToEnd(el) {
-        var selection = window.getSelection();
-        var range = document.createRange();
+        const selection = window.getSelection();
+        const range = document.createRange();
         selection.removeAllRanges();
         range.selectNodeContents(el);
         range.collapse(false);
@@ -202,19 +198,18 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     // Converts command string to command object, uppercases base command, preserves args
     function toCommand(s, upper = true) {
-        var arr = s.split(" ");
+        const arr = s.split(" ");
 
         // Getting arg values
-        var arg = [];
+        let arg = [];
         if (arr.length > 1) arg = arr.slice(1, arr.length);
 
-        if (upper == true && arr.length > 0) {
+        if (upper === true && arr.length > 0) {
             arr[0] = arr[0].toUpperCase();
         }
 
         return {
-            "base": arr[0],
-            "args": arg
+            "base": arr[0], "args": arg
         };
     }
 
@@ -222,35 +217,34 @@ filesCache - holds the last updated file data of each requested file in case of 
     // Generates a prefix from a LOT of args
     function generatePathPrefix(staticPrefix, directory, themeCSS) {
         // Determining whether a separator is needed before the path or not
-        var seperator = "";
-        if (directory != "") {
-            seperator = themeCSS["text"]["cd"];
+        let separator = "";
+        if (directory !== "") {
+            separator = themeCSS["text"]["cd"];
         }
 
         // Logic for path positioning in prefix based on current terminal theme
-        return staticPrefix.replace(pathPlaceholder, `${seperator}${directory.replaceAll("-", seperator)}`);
+        return staticPrefix.replace(pathPlaceholder, `${separator}${directory.replaceAll("-", separator)}`);
     }
 
     function compressDir(dir, c = "/") {
         // Reformatting the given directory (user input)
-        var splitArgs = dir.split("/");
+        let splitArgs = dir.split("/");
         splitArgs = splitArgs.filter(function (el) {
-            return el != null && el != "";
+            return el != null && el !== "";
         });
 
-        var dirBuffer = "";
+        let dirBuffer = "";
 
         // Creating directory path without any ".."s
         splitArgs.forEach(function (e) {
-            if (e == "..") {
-                if (dirBuffer != "") {
+            if (e === "..") {
+                if (dirBuffer !== "") {
                     dirBuffer = dirBuffer.split(c);
                     dirBuffer.pop();
                     dirBuffer = dirBuffer.join(c);
                 }
             } else {
-                if (dirBuffer == "") dirBuffer = e;
-                else dirBuffer += c + e;
+                if (dirBuffer === "") dirBuffer = e; else dirBuffer += c + e;
             }
         });
 
@@ -262,14 +256,13 @@ filesCache - holds the last updated file data of each requested file in case of 
         currentDir = compressDir(`${currentDir}/${dir}`, "-");
 
         // Checking if dir exists
-        var exists = true;
+        let exists = true;
         currentDir.split("-").forEach(function (e) {
-            if (e == "") return;
-            if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
-            else exists = false;
+            if (e === "") return;
+            if (jsonDir[e] && e !== "files") jsonDir = jsonDir[e]; else exists = false;
         });
 
-        if (exists == false) {
+        if (exists === false) {
             return null;
         }
         return currentDir;
@@ -282,27 +275,27 @@ filesCache - holds the last updated file data of each requested file in case of 
         const link = "├";
         const term = "└";
 
-        var treeArray = Object.keys(tree);
+        const treeArray = Object.keys(tree);
         const final = treeArray.length - 1;
 
         treeArray.forEach(key => {
             // If the key is "files", add all available file
-            if (key == "files") {
+            if (key === "files") {
                 tree[key].forEach(e => {
-                    var connector = link;
-                    if (e == tree[treeArray[final]][tree[treeArray[final]].length - 1]) connector = term;
+                    let connector = link;
+                    if (e === tree[treeArray[final]][tree[treeArray[final]].length - 1]) connector = term;
                     output += precursor + connector + hori + e + "\n";
                 });
             }
             // Otherwise the key is a directory...
             else {
                 // Directory Connector
-                var connector = link;
-                if (key == treeArray[final]) connector = term;
+                let connector = link;
+                if (key === treeArray[final]) connector = term;
                 output += precursor + connector + hori + key + "\n";
 
                 // Precursor logic for final node in the tree
-                if (tree[key] != tree[treeArray[final]]) {
+                if (tree[key] !== tree[treeArray[final]]) {
                     output = recursiveDepthTree(tree[key], output, precursor + "│   ");
                 } else output = recursiveDepthTree(tree[key], output, precursor + "    ");
             }
@@ -313,21 +306,20 @@ filesCache - holds the last updated file data of each requested file in case of 
 
     // Command Logic
     async function commandOutput(sc) {
+        let jsonDir;
         commandQueue.addElement(sc);
-        var command = toCommand(sc);
-        var out = "\n";
-        var currentDir = actualDir;
+        let command = toCommand(sc);
+        let out = "\n";
+        let currentDir = actualDir;
 
         const commands = themeCSS["commands"];
 
         // jsonDir and jsonDirCache logic
         if ([commands["CD"], commands["DIR"], commands["TREE"]].indexOf(command.base) >= 0) {
-            var jsonDir = await getJSON("../json/dir_structure.json");
+            jsonDir = await getJSON("../json/dir_structure.json");
             if (jsonDir == null && jsonDirCache == null) {
                 console.warn("No jsonDir or backupDir enabled");
-                out += "<span style=\"color: tomato\">Uuuuh, that's not good. You shouldn't ever see this message." +
-                    "\nLooks like you failed to fetch jsonDir. You kind of need that." +
-                    "\n\nTry the command again and pray.</span>";
+                out += "<span style=\"color: tomato\">Uuuuh, that's not good. You shouldn't ever see this message." + "\nLooks like you failed to fetch jsonDir. You kind of need that." + "\n\nTry the command again and pray.</span>";
             } else if (jsonDir == null && jsonDirCache != null) {
                 console.log("jsonDir recovered from backup");
                 jsonDir = jsonDirCache;
@@ -363,7 +355,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 currentDir = generateDir(command.args.join(" "), currentDir, jsonDir);
 
                 // Outputs
-                if (currentDir == null || actualDir == currentDir) {
+                if (currentDir == null || actualDir === currentDir) {
                     out += "Directory doesn't exist";
                 } else {
                     // Preventing the extra newline
@@ -384,27 +376,27 @@ filesCache - holds the last updated file data of each requested file in case of 
                 }
 
                 // Getting to current dir in JSON object
-                if (actualDir != "") {
+                if (actualDir !== "") {
                     actualDir.split("-").forEach(e => {
-                        if (e == "") return;
-                        if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
+                        if (e === "") return;
+                        if (jsonDir[e] && e !== "files") jsonDir = jsonDir[e];
                     });
                 }
 
                 // Appending output
-                var filecount = 0;
-                var dircount = 0;
+                let fileCount = 0;
+                let dirCount = 0;
                 Object.keys(jsonDir).forEach(e => {
-                    if (e == "files") {
-                        filecount = jsonDir[e].length;
+                    if (e === "files") {
+                        fileCount = jsonDir[e].length;
                         out += `<F>\t${jsonDir[e].join("\n<F>\t")}\n`;
                     } else {
-                        dircount += 1;
+                        dirCount += 1;
                         out += `<DIR>\t${e}\n`;
                     }
                 });
 
-                out = escape(`${out.slice(0, out.length - 1)}\n\n${filecount} File(s)\n${dircount} Dir(s)`);
+                out = escape(`${out.slice(0, out.length - 1)}\n\n${fileCount} File(s)\n${dirCount} Dir(s)`);
                 break;
             }
             case commands["TREE"]: {
@@ -419,17 +411,17 @@ filesCache - holds the last updated file data of each requested file in case of 
                 }
 
                 // Get object of current directory location
-                if (currentDir != "") {
-                    var splitDir = currentDir.split("-");
+                if (currentDir !== "") {
+                    const splitDir = currentDir.split("-");
 
                     splitDir.forEach(e => {
-                        if (e == "") return;
-                        if (jsonDir[e] && e != "files") jsonDir = jsonDir[e];
+                        if (e === "") return;
+                        if (jsonDir[e] && e !== "files") jsonDir = jsonDir[e];
                     });
                 }
 
                 // Generate the tree, remove final newline and add to the output
-                out += `C:.\n${recursiveDepthTree(jsonDir, ).replace(/\n$/, "")}`;
+                out += `C:.\n${recursiveDepthTree(jsonDir,).replace(/\n$/, "")}`;
 
                 if (dir == null) {
                     out += "\n\nDirectory doesn't exist. Defaulting to <span style=\"color: #BF00BF\">current</span> directory.";
@@ -447,8 +439,8 @@ filesCache - holds the last updated file data of each requested file in case of 
 
                 // No terminal theme found
                 if (terminal == null) {
-                    if (userInput.trim() == "") {
-                        var term = await getJSON("/terminals");
+                    if (userInput.trim() === "") {
+                        let term = await getJSON("/terminals");
                         term = term["terminals"];
                         const themeToTry = term[Math.floor(Math.random() * term.length)];
                         out += `You didn't enter a terminal theme.
@@ -478,14 +470,13 @@ filesCache - holds the last updated file data of each requested file in case of 
                 const term = await getJSON("/terminals");
 
                 if (term == null) {
-                    out += "<span style=\"color: tomato\">Failed to fetch the terminal list. You probably have a bad connection." +
-                        "\n\nYou should try running the command again</span>";
+                    out += "<span style=\"color: tomato\">Failed to fetch the terminal list. You probably have a bad connection." + "\n\nYou should try running the command again</span>";
                     break;
                 }
 
                 term["terminals"].forEach((el, ind, arr) => {
                     out += `--${titleCase(el)}`;
-                    if (arr.length - 1 != ind) {
+                    if (arr.length - 1 !== ind) {
                         out += "\n";
                     }
                 });
@@ -499,7 +490,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 const cookies = getAllCookies();
                 const keys = Object.keys(cookies);
                 const maxTabs = Math.floor(Math.max(...(keys.map(el => el.length))) / 8) + 2;
-                if (keys.length == 0) {
+                if (keys.length === 0) {
                     out += "<span style=\"color: tomato\">No cookies stored</span>";
                 } else {
                     keys.forEach(e => {
@@ -519,122 +510,28 @@ filesCache - holds the last updated file data of each requested file in case of 
                 break;
             }
             case commands["HELP"]: {
-                var messages = {
-                    [commands["SOURCE"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["SOURCE"]}`,
-                        "\n<b>Arguments:</b>",
-                        "  None",
-                        "\n<b>Info:</b>",
-                        "  Returns a URL for the source code of the site",
-                    ],
-                    [commands["ECHO"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["ECHO"]} *message`,
-                        "\n<b>Arguments:</b>",
-                        "  *message\tthe message you want returned to the console",
-                        "\n<b>Info:</b>",
-                        "  Displays a given message",
-                    ],
-                    [commands["CLS"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["CLS"]}`,
-                        "\n<b>Arguments:</b>",
-                        "  None",
-                        "\n<b>Info:</b>",
-                        "  Clears the console",
-                    ],
-                    [commands["CD"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["CD"]} path`,
-                        `  ${commands["CD"]} ..`,
-                        "\n<b>Arguments:</b>",
-                        "  path\t\tthe path to the directory. Use '..' as a directory name to navigate backwards",
-                        "\n<b>Info:</b>",
-                        "  Changes the current directory",
-                    ],
-                    [commands["DIR"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["DIR"]}`,
-                        "\n<b>Arguments:</b>",
-                        "  None",
-                        "\n<b>Info:</b>",
-                        "  Lists files and subdirectories in the current directory",
-                    ],
-                    [commands["TREE"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["TREE"]}`,
-                        `  ${commands["TREE"]} path`,
-                        `  ${commands["TREE"]} ..`,
-                        "\n<b>Arguments:</b>",
-                        "  path\t\tthe path to the directory. Use '..' as a directory name to navigate backwards",
-                        "\n<b>Info:</b>",
-                        "  Graphically displays the directory structure of the current path",
-                    ],
-                    [commands["CV"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["CV"]}`,
-                        "\n<b>Arguments:</b>",
-                        "  None",
-                        "\n<b>Info:</b>",
-                        "  Sends a link to download my current CV",
-                    ],
-                    [commands["TERMINAL"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["TERMINAL"]} *name`,
-                        "\n<b>Arguments:</b>",
-                        "  *name\t\tname of the terminal you want to change to",
-                        "\n<b>Info:</b>",
-                        "  Changes your current emulated terminal to another",
-                    ],
-                    [commands["TERMLIST"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["TERMLIST"]}`,
-                        "\n<b>Arguments:</b>",
-                        "  None",
-                        "\n<b>Info:</b>",
-                        "  Returns all the available terminals used in the TERMINAL command",
+                const messages = {
+                    [commands["SOURCE"]]: ["<b>Usage:</b>", `  ${commands["SOURCE"]}`, "\n<b>Arguments:</b>", "  None", "\n<b>Info:</b>", "  Returns a URL for the source code of the site",],
+                    [commands["ECHO"]]: ["<b>Usage:</b>", `  ${commands["ECHO"]} *message`, "\n<b>Arguments:</b>", "  *message\tthe message you want returned to the console", "\n<b>Info:</b>", "  Displays a given message",],
+                    [commands["CLS"]]: ["<b>Usage:</b>", `  ${commands["CLS"]}`, "\n<b>Arguments:</b>", "  None", "\n<b>Info:</b>", "  Clears the console",],
+                    [commands["CD"]]: ["<b>Usage:</b>", `  ${commands["CD"]} path`, `  ${commands["CD"]} ..`, "\n<b>Arguments:</b>", "  path\t\tthe path to the directory. Use '..' as a directory name to navigate backwards", "\n<b>Info:</b>", "  Changes the current directory",],
+                    [commands["DIR"]]: ["<b>Usage:</b>", `  ${commands["DIR"]}`, "\n<b>Arguments:</b>", "  None", "\n<b>Info:</b>", "  Lists files and subdirectories in the current directory",],
+                    [commands["TREE"]]: ["<b>Usage:</b>", `  ${commands["TREE"]}`, `  ${commands["TREE"]} path`, `  ${commands["TREE"]} ..`, "\n<b>Arguments:</b>", "  path\t\tthe path to the directory. Use '..' as a directory name to navigate backwards", "\n<b>Info:</b>", "  Graphically displays the directory structure of the current path",],
+                    [commands["CV"]]: ["<b>Usage:</b>", `  ${commands["CV"]}`, "\n<b>Arguments:</b>", "  None", "\n<b>Info:</b>", "  Sends a link to download my current CV",],
+                    [commands["TERMINAL"]]: ["<b>Usage:</b>", `  ${commands["TERMINAL"]} *name`, "\n<b>Arguments:</b>", "  *name\t\tname of the terminal you want to change to", "\n<b>Info:</b>", "  Changes your current emulated terminal to another",],
+                    [commands["TERMLIST"]]: ["<b>Usage:</b>", `  ${commands["TERMLIST"]}`, "\n<b>Arguments:</b>", "  None", "\n<b>Info:</b>", "  Returns all the available terminals used in the TERMINAL command",
 
                     ],
-                    [commands["REFRESH"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["REFRESH"]}`,
-                        "\n<b>Arguments:</b>",
-                        "  None",
-                        "\n<b>Info:</b>",
-                        "  Why does this exist? No idea. Use F5 instead.",
-                    ],
-                    [commands["COOKIESLIST"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["COOKIESLIST"]}`,
-                        "\n<b>Arguments:</b>",
-                        "  None",
-                        "\n<b>Info:</b>",
-                        "  Lists all cookies. That's it.",
-                    ],
-                    [commands["CLSCOOKIES"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["CLSCOOKIES"]}`,
-                        "\n<b>Arguments:</b>",
-                        "  None",
-                        "\n<b>Info:</b>",
-                        "  Clears all cookies; including the consent cookie",
-                    ],
-                    [commands["HELP"]]: [
-                        "<b>Usage:</b>",
-                        `  ${commands["HELP"]}`,
-                        `  ${commands["HELP"]} command`,
-                        "\n<b>Arguments:</b>",
-                        "  command\tthe command you want more specific information on",
-                        "\n<b>Info:</b>",
-                        "  Provides help information for the available commands",
-                    ]
+                    [commands["REFRESH"]]: ["<b>Usage:</b>", `  ${commands["REFRESH"]}`, "\n<b>Arguments:</b>", "  None", "\n<b>Info:</b>", "  Why does this exist? No idea. Use F5 instead.",],
+                    [commands["COOKIESLIST"]]: ["<b>Usage:</b>", `  ${commands["COOKIESLIST"]}`, "\n<b>Arguments:</b>", "  None", "\n<b>Info:</b>", "  Lists all cookies. That's it.",],
+                    [commands["CLSCOOKIES"]]: ["<b>Usage:</b>", `  ${commands["CLSCOOKIES"]}`, "\n<b>Arguments:</b>", "  None", "\n<b>Info:</b>", "  Clears all cookies; including the consent cookie",],
+                    [commands["HELP"]]: ["<b>Usage:</b>", `  ${commands["HELP"]}`, `  ${commands["HELP"]} command`, "\n<b>Arguments:</b>", "  command\tthe command you want more specific information on", "\n<b>Info:</b>", "  Provides help information for the available commands",]
                 };
-                var keys = Object.keys(messages);
-                if (command.args.length != 0) command.args[0] = command.args[0].toUpperCase();
+                const keys = Object.keys(messages);
+                if (command.args.length !== 0) command.args[0] = command.args[0].toUpperCase();
 
                 // Logic for which commands help to show
-                if (keys.indexOf(command.args[0]) != -1) {
+                if (keys.indexOf(command.args[0]) !== -1) {
                     messages[command.args[0]].forEach(e => out += `${e}\n`);
                 }
                 // Show list of commands (tab for every 8th chars)
@@ -654,11 +551,11 @@ filesCache - holds the last updated file data of each requested file in case of 
                 command = toCommand(sc, false);
 
                 // File Request
-                if (currentDir != "") currentDir += "-";
+                if (currentDir !== "") currentDir += "-";
                 currentDir += command.base + command.args.join(" ");
 
                 const path = "../data/" + compressDir(currentDir);
-                var fileData = await getFile(path);
+                let fileData = await getFile(path);
 
                 if (fileData == null && path in filesCache) {
                     fileData = filesCache[path];
@@ -668,10 +565,7 @@ filesCache - holds the last updated file data of each requested file in case of 
 
                 // Check if input is a file
                 if (fileData != null) {
-                    out += "\n" + escape(fileData).replace(
-                        /\[(.*?)\]\((.*?)\)/gm,
-                        "<a contenteditable=\"false\" target=\"_blank\" href=\"$1\">$2</a>"
-                    );
+                    out += "\n" + escape(fileData).replace(/\[(.*?)]\((.*?)\)/gm, "<a contenteditable=\"false\" target=\"_blank\" href=\"$1\">$2</a>");
                 }
                 // Not a valid filename... return help output
                 else {
@@ -681,7 +575,8 @@ filesCache - holds the last updated file data of each requested file in case of 
             }
         }
 
-        if (currentFlow == finalFlow.length) {
+        if (currentFlow === finalFlow.length) {
+            // noinspection CssNoGenericFontName
             out = "\n\n<span style=\"color: white;background-color:#A51918;font-family:TimesNewRoman;padding:5px;\">NICE TRY</span>";
             currentFlow = 0;
         }
@@ -702,9 +597,9 @@ filesCache - holds the last updated file data of each requested file in case of 
 
 
     async function input(event) {
-        var char = event.data;
-        var inpType = event.inputType;
-        var consoleLiteral = noOddHTML(terminal.innerHTML);
+        const char = event.data;
+        const inpType = event.inputType;
+        let consoleLiteral = noOddHTML(terminal.innerHTML);
 
         // TODO: Remove these in final product
         // console.warn(`LITERAL:\n${consoleLiteral}`);
@@ -733,10 +628,10 @@ filesCache - holds the last updated file data of each requested file in case of 
 
         // If Enter key pressed
         else if (char == null && ["insertText", "insertLineBreak", "insertParagraph"].includes(inpType) && !consentMode) {
-            terminal.contentEditable = false;
+            terminal.contentEditable = "false";
 
             // Retrieving command via difference between the consoleLiteral and the saved consoleStdoutArr values
-            var final = await commandOutput(noOddHTML(findDiff(consoleStdoutArr.joinAll(), consoleLiteral)));
+            const final = await commandOutput(noOddHTML(findDiff(consoleStdoutArr.joinAll(), consoleLiteral)));
 
             // Setting the console to the new saved console and resetting the stdoutBuffer
             terminal.innerHTML = final;
@@ -744,18 +639,18 @@ filesCache - holds the last updated file data of each requested file in case of 
             commandPos = -1;
 
             // Scrolling to bottom
-            terminal.contentEditable = true;
+            terminal.contentEditable = "true";
             terminal.scrollTo(0, terminal.scrollHeight);
             cursorToEnd(terminal);
         }
 
         // No command inputted, no modified stdout, save current command progress
         else {
-            var currentOut = findDiff(consoleStdoutArr.joinAll(), consoleLiteral);
+            let currentOut = findDiff(consoleStdoutArr.joinAll(), consoleLiteral);
 
             // Disable Newline pasting
-            var currentOutNoNewline = removeNewline(currentOut);
-            if (currentOut != currentOutNoNewline) {
+            const currentOutNoNewline = removeNewline(currentOut);
+            if (currentOut !== currentOutNoNewline) {
                 consoleLiteral = consoleStdoutArr.joinAll() + currentOutNoNewline;
                 terminal.innerHTML = consoleLiteral;
             }
@@ -784,24 +679,24 @@ filesCache - holds the last updated file data of each requested file in case of 
             event.preventDefault();
             // Disable command stack for highlighting
         } else if (event.shiftKey && ["ArrowUp", "ArrowDown"].includes(event.key)) {
-            return;
+            // Do nothing
         }
         // Command Up and Down
         else {
-            if (event.key == "ArrowUp") {
+            if (event.key === "ArrowUp") {
                 // Up command stack
                 if (commandPos < commandQueue.length - 1) {
                     commandPos += 1;
                     terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
                 }
-            } else if (event.key == "ArrowDown") {
+            } else if (event.key === "ArrowDown") {
                 // Down command stack
                 if (commandPos > 0) {
                     commandPos -= 1;
                     terminal.innerHTML = consoleStdoutArr.joinAll() + commandQueue[commandQueue.length - 1 - commandPos];
                 }
                 // Back to no input
-                else if (commandPos == 0) {
+                else if (commandPos === 0) {
                     commandPos -= 1;
                     terminal.innerHTML = consoleStdoutArr.joinAll();
                 }
@@ -813,7 +708,7 @@ filesCache - holds the last updated file data of each requested file in case of 
                 cursorToEnd(terminal);
             }
 
-            if (consentMode == false && finalFlow[currentFlow].toUpperCase() == event.key.toUpperCase()) {
+            if (consentMode === false && finalFlow[currentFlow].toUpperCase() === event.key.toUpperCase()) {
                 currentFlow += 1;
             } else {
                 currentFlow = 0;
@@ -826,7 +721,7 @@ filesCache - holds the last updated file data of each requested file in case of 
         event.preventDefault();
 
         // Get text representation of clipboard
-        var text = (event.originalEvent || event).clipboardData.getData("text/plain");
+        const text = (event.originalEvent || event).clipboardData.getData("text/plain");
 
         // Insert text manually
         document.execCommand("insertHTML", false, text);

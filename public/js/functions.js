@@ -32,12 +32,12 @@ async function getJSON(path) {
 
 // Sets a cookie
 function setCookie(name, value) {
-    var secure = "";
-    if (navigator.userAgent.search("Firefox") > -1 && window.location.protocol != "http:") {
+    let secure = "";
+    if (navigator.userAgent.search("Firefox") > -1 && window.location.protocol !== "http:") {
         secure = " Secure;";
     }
-    if (name == "consent" || getCookie("consent") != null) {
-        var date = new Date();
+    if (name === "consent" || getCookie("consent") != null) {
+        const date = new Date();
         date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
         const expires = `; expires=${date.toUTCString()}`;
         document.cookie = `${name}=${(value || "")}${expires}; SameSite=Lax; path=/;${secure}`;
@@ -48,25 +48,25 @@ function setCookie(name, value) {
 // Josh was here and wants a cookie
 // Gets a cookie
 function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(";");
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === " ") c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
     }
     return null;
 }
 
 function getAllCookies() {
-    if (document.cookie == "") {
+    if (document.cookie === "") {
         return {};
     }
 
-    var ca = document.cookie.split(";");
-    var cookies = {};
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i].split("=");
+    const ca = document.cookie.split(";");
+    const cookies = {};
+    for (let i = 0; i < ca.length; i++) {
+        const c = ca[i].split("=");
         cookies[(c[0] + "").trim()] = unescape(c.slice(1).join("="));
     }
     console.log(cookies);
@@ -76,7 +76,7 @@ function getAllCookies() {
 
 // Removes a cookie
 function eraseCookie(name) {
-    var secure = "";
+    let secure = "";
     if (navigator.userAgent.search("Firefox") > -1) {
         secure = " Secure;";
     }
@@ -105,7 +105,7 @@ function removeNewline(str) {
 
 // Remove pesky \r
 function removeCarriage(str) {
-    return str.replace(/[\r]+/gm, "");
+    return str.replace(/\r+/gm, "");
 }
 
 
@@ -113,7 +113,7 @@ function removeCarriage(str) {
 function findDiff(str1, str2) {
     let diff = "";
     str2.split("").forEach(function (val, i) {
-        if (val != str1.charAt(i)) diff += val;
+        if (val !== str1.charAt(i)) diff += val;
     });
     return diff;
 }
