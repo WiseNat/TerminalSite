@@ -1,5 +1,0 @@
-Subject             |   Grade   |   Board
------------------------------------------------
-Computer Science    |   A*      |   OCR
-Further Maths       |   A       |   Edexcel
-Maths               |   B       |   Edexcel
