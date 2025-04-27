@@ -6,6 +6,10 @@
     <title>%VITE_SITE_TITLE%</title>
 
     <link rel="icon" href="/terminal.svg" type="image/svg+xml" />
+    <link
+      rel="stylesheet"
+      href="/node_modules/the-new-css-reset/css/reset.css"
+    />
     <link rel="stylesheet" href="/main.css" />
 
     <!-- Primary Meta -->
@@ -34,7 +38,12 @@
     <meta name="twitter:image:alt" content="%VITE_SITE_IMAGE_ALT%" />
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <div
+      id="terminal"
+      class="command-input"
+      contenteditable="true"
+      spellcheck="false"
+      autofocus="autofocus"
+    ></div>
   </body>
 </html>
