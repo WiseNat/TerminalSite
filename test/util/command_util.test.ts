@@ -41,7 +41,9 @@ describe("CommandUtil", () => {
       const mockCommandFile: CommandScript = { run: vi.fn() };
 
       vi.mocked(getCommandScripts).mockReturnValue({
-        "./commands/test.ts": vi.fn().mockResolvedValue(mockCommandFile),
+        "/src/command/scripts/test.ts": vi
+          .fn()
+          .mockResolvedValue({ default: mockCommandFile }),
       });
 
       const commandDetails: CommandDetails = new CommandDetails("test", []);

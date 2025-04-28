@@ -17,17 +17,18 @@ class CommandUtil {
   public static async getCommandScript(
     commandDetails: CommandDetails,
   ): Promise<CommandScript | undefined> {
-    const path = `./commands/${commandDetails.name}.ts`;
+    const path = `/src/command/scripts/${commandDetails.name}.ts`;
 
-    console.info(getCommandScripts());
-    const importer: () => Promise<CommandScript> = getCommandScripts()[path];
+    const importer: () => Promise<{ default: CommandScript }> =
+      getCommandScripts()[path];
 
     if (!importer) {
       console.error(`Command "${commandDetails.name}" not found.`);
       return;
     }
 
-    return await importer();
+    const module = await importer();
+    return module.default;
   }
 }
 
