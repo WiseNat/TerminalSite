@@ -11,7 +11,7 @@ class CommandUtil {
    */
   public static tokenise(command: string): CommandDetails {
     const tokens: string[] = this.split(command);
-    const name: string = tokens.length == 0 ? "" : tokens[0];
+    const name = tokens.length == 0 ? "" : tokens[0];
     const args: string[] =
       tokens.length > 1 ? tokens.slice(1, tokens.length) : [];
 
@@ -19,11 +19,11 @@ class CommandUtil {
   }
 
   private static split(command: string): string[] {
-    const values: string[] = [];
-    let buffer = "";
-
     const quotes = `"'`;
     const whitespace = " \t\n\r";
+
+    const values: string[] = [];
+    let buffer = "";
 
     let insideQuotes = false;
     let currentQuoteChar = "";
@@ -70,8 +70,7 @@ class CommandUtil {
   ): Promise<CommandScript | undefined> {
     const path = `/src/command/scripts/${commandDetails.name}.ts`;
 
-    const importer: () => Promise<{ default: CommandScript }> =
-      getCommandScripts()[path];
+    const importer = getCommandScripts()[path];
 
     if (!importer) {
       console.error(`Command "${commandDetails.name}" not found.`);
