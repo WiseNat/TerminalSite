@@ -10,12 +10,53 @@ class CommandUtil {
    * @returns a new {@link CommandDetails} containing the command tokens.
    */
   public static tokenise(command: string): CommandDetails {
-    const tokens: string[] = command.split(" ");
-    const name: string = tokens[0];
+    const tokens: string[] = this.split(command);
+    const name: string = tokens.length == 0 ? "" : tokens[0];
     const args: string[] =
       tokens.length > 1 ? tokens.slice(1, tokens.length) : [];
 
     return new CommandDetails(name, args);
+  }
+
+  private static split(command: string): string[] {
+    const values: string[] = [];
+    let buffer = "";
+
+    const quotes = `"'`;
+    const whitespace = " \t\n\r";
+
+    let insideQuotes = false;
+    let currentQuoteChar = "";
+
+    for (const char of command) {
+      if (quotes.includes(char)) {
+        if (!insideQuotes) {
+          insideQuotes = true;
+          currentQuoteChar = char;
+          continue;
+        } else if (char === currentQuoteChar) {
+          insideQuotes = false;
+          continue;
+        }
+      }
+
+      if (!insideQuotes && whitespace.includes(char)) {
+        if (buffer.length > 0) {
+          values.push(buffer);
+          buffer = "";
+        }
+
+        continue;
+      }
+
+      buffer += char;
+    }
+
+    if (buffer.length > 0) {
+      values.push(buffer);
+    }
+
+    return values;
   }
 
   /**
