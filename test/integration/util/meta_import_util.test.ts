@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import getCommandScripts from "../../src/util/meta_import_util";
+import getCommandScripts from "../../../src/util/meta_import_util";
 
 // TODO: Define this as an Integration Test
 

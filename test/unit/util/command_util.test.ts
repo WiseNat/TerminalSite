@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from "vitest";
-import CommandUtil from "../../src/util/command_util";
-import { CommandScript } from "../../src/command/command_script";
-import CommandDetails from "../../src/dto/command";
-import getCommandScripts from "../../src/util/meta_import_util";
+import CommandUtil from "../../../src/util/command_util";
+import { CommandScript } from "../../../src/command/command_script";
+import CommandDetails from "../../../src/dto/command";
+import getCommandScripts from "../../../src/util/meta_import_util";
 
 describe("CommandUtil", () => {
   describe("tokenise", () => {
@@ -35,7 +35,7 @@ describe("CommandUtil", () => {
   });
 
   describe("getCommandScripts", () => {
-    vi.mock("../../src/util/meta_import_util");
+    vi.mock("../../../src/util/meta_import_util");
 
     test("should return the command scripts if it exists", async () => {
       const mockCommandFile: CommandScript = { run: vi.fn() };
