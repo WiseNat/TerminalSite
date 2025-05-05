@@ -83,16 +83,14 @@ describe("CommandUtil", () => {
       const mockCommandFile: CommandScript = { run: vi.fn() };
 
       vi.mocked(getCommandScripts).mockReturnValue({
-        "/src/command/scripts/test.ts": vi
-          .fn()
-          .mockResolvedValue({ default: mockCommandFile }),
+        "/src/command/scripts/test.ts": { default: mockCommandFile },
       });
 
       const commandDetails: CommandDetails = new CommandDetails("test", []);
 
       const result = await CommandUtil.getCommandScript(commandDetails);
 
-      expect(result).toBeDefined();
+      expect(result).not.toBeNull();
       expect(result).toBe(mockCommandFile);
     });
 
@@ -103,7 +101,7 @@ describe("CommandUtil", () => {
 
       const result = await CommandUtil.getCommandScript(commandDetails);
 
-      expect(result).toBeUndefined();
+      expect(result).toBeNull();
     });
   });
 });

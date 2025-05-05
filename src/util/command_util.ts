@@ -18,6 +18,16 @@ class CommandUtil {
     return new CommandDetails(name, args);
   }
 
+  /**
+   * Splits the given command String into a list of strings using whitespace as a delimiter. This takes into account
+   * quotations and will ensure values encased in quotations retain whitespace.
+   * <p>
+   * E.g. passing "git commit -m 'foo bar'" will return ["git", "commit", "-m", "foo bar"]
+   *
+   * @param command string to split
+   * @return split command strings
+   * @private
+   */
   private static split(command: string): string[] {
     const quotes = `"'`;
     const whitespace = " \t\n\r";
@@ -63,22 +73,22 @@ class CommandUtil {
    * Gets the command script with a name that resolves to the {@link CommandDetails} name.
    *
    * @param commandDetails details of the command.
-   * @returns the {@link CommandScript} if it is found, {@link undefined} otherwise.
+   * @returns the {@link CommandScript} if it is found, null otherwise.
    */
-  public static async getCommandScript(
+  public static getCommandScript(
     commandDetails: CommandDetails,
-  ): Promise<CommandScript | undefined> {
+  ): CommandScript | null {
     const path = `/src/command/scripts/${commandDetails.name}.ts`;
 
-    const importer = getCommandScripts()[path];
+    const commandScript = getCommandScripts()[path];
 
-    if (!importer) {
+    if (commandScript == undefined) {
+      // TODO: Change this to be visible to users, rather than the dev console
       console.error(`Command "${commandDetails.name}" not found.`);
-      return;
+      return null;
     }
 
-    const module = await importer();
-    return module.default;
+    return commandScript.default;
   }
 }
 

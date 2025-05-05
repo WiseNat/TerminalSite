@@ -1,3 +1,3 @@
 export interface CommandScript {
-  run(): void;
+  run(args: string[]): void;
 }
