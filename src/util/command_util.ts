@@ -1,21 +1,21 @@
-import CommandDetails from "../dto/command.ts";
+import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
 import getCommandScripts from "./meta_import_util.ts";
 
 class CommandUtil {
   /**
-   * Tokenises a command string and transforms it into a {@link CommandDetails}.
+   * Tokenises a command string and transforms it into a {@link TokenisedCommand}.
    *
    * @param command string containing space separated tokens, e.g. "git commit -m 'foo'"
-   * @returns a new {@link CommandDetails} containing the command tokens.
+   * @returns a new {@link TokenisedCommand} containing the command tokens.
    */
-  public static tokenise(command: string): CommandDetails {
+  public static tokenise(command: string): TokenisedCommand {
     const tokens: string[] = this.split(command);
     const name = tokens.length == 0 ? "" : tokens[0];
     const args: string[] =
       tokens.length > 1 ? tokens.slice(1, tokens.length) : [];
 
-    return new CommandDetails(name, args);
+    return new TokenisedCommand(name, args);
   }
 
   /**
@@ -70,21 +70,21 @@ class CommandUtil {
   }
 
   /**
-   * Gets the command script with a name that resolves to the {@link CommandDetails} name.
+   * Gets the command script with a name that resolves to the {@link TokenisedCommand} name.
    *
-   * @param commandDetails details of the command.
+   * @param tokenisedCommand details of the command.
    * @returns the {@link CommandScript} if it is found, null otherwise.
    */
   public static getCommandScript(
-    commandDetails: CommandDetails,
+    tokenisedCommand: TokenisedCommand,
   ): CommandScript | null {
-    const path = `/src/command/scripts/${commandDetails.name}.ts`;
+    const path = `/src/command/scripts/${tokenisedCommand.name}.ts`;
 
     const commandScript = getCommandScripts()[path];
 
     if (commandScript == undefined) {
       // TODO: Change this to be visible to users, rather than the dev console
-      console.error(`Command "${commandDetails.name}" not found.`);
+      console.error(`Command "${tokenisedCommand.name}" not found.`);
       return null;
     }
 

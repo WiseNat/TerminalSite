@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 import CommandUtil from "../../../src/util/command_util";
 import { CommandScript } from "../../../src/command/command_script";
-import CommandDetails from "../../../src/dto/command";
+import TokenisedCommand from "../../../src/dto/tokenised_command";
 import getCommandScripts from "../../../src/util/meta_import_util";
 
 describe("CommandUtil", () => {
@@ -86,7 +86,7 @@ describe("CommandUtil", () => {
         "/src/command/scripts/test.ts": { default: mockCommandFile },
       });
 
-      const commandDetails: CommandDetails = new CommandDetails("test", []);
+      const commandDetails: TokenisedCommand = new TokenisedCommand("test", []);
 
       const result = await CommandUtil.getCommandScript(commandDetails);
 
@@ -97,7 +97,7 @@ describe("CommandUtil", () => {
     test("should return undefined if command does not exist", async () => {
       vi.mocked(getCommandScripts).mockReturnValue({});
 
-      const commandDetails: CommandDetails = new CommandDetails("test", []);
+      const commandDetails: TokenisedCommand = new TokenisedCommand("test", []);
 
       const result = await CommandUtil.getCommandScript(commandDetails);
 

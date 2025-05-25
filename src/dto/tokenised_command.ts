@@ -1,8 +1,8 @@
-class Command {
+class TokenisedCommand {
   constructor(
     readonly name: string,
     readonly args: string[],
   ) {}
 }
 
-export default Command;
+export default TokenisedCommand;
