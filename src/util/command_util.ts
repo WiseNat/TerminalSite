@@ -1,7 +1,7 @@
 import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
 import getCommandScripts from "./meta_import_util.ts";
-import LogUtil from "./log_util.ts";
+import log from "./log_util.ts";
 
 export default class CommandUtil {
   /**
@@ -84,7 +84,7 @@ export default class CommandUtil {
     const commandScript = getCommandScripts()[path];
 
     if (commandScript == undefined) {
-      LogUtil.error(`Command "${tokenisedCommand.name}" not found.`);
+      log.error(`Command "${tokenisedCommand.name}" not found.`);
       return null;
     }
 

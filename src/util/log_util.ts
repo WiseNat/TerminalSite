@@ -1,5 +1,6 @@
 // TODO: Change method implementations to be visible to users, rather than the dev console
-export default class LogUtil {
+export default class log {
+  // NOSONAR: intentional lowercase naming
   public static info(message: string) {
     console.log(message);
   }
