@@ -26,7 +26,7 @@ export default class CommandUtil {
    * E.g. passing "git commit -m 'foo bar'" will return ["git", "commit", "-m", "foo bar"]
    *
    * @param command string to split
-   * @return split command strings
+   * @returns split command strings
    * @private
    */
   private static split(command: string): string[] {
