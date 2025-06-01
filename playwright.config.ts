@@ -73,11 +73,10 @@ export default defineConfig({
       name: "Mobile Chrome",
       use: { ...devices["Pixel 5"] },
     },
-    // TODO: Enable later - currently fails in example Playwright script `demo-todo-app.spec.ts` for some reason
-    // {
-    //   name: "Mobile Safari",
-    //   use: { ...devices["iPhone 12"] },
-    // },
+    {
+      name: "Mobile Safari",
+      use: { ...devices["iPhone 12"] },
+    },
   ],
 
   /* Run your local dev server before starting the tests */
