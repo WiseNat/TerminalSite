@@ -47,9 +47,23 @@ export default class TerminalUtil {
    * Moves the cursor to the end of the terminals text.
    */
   public static cursorToEnd() {
+    // Insert a br tag to enable cursor to appear in the right position when the last character is a newline
+    const children = this.terminal.childNodes;
+    if (children.length > 0) {
+      const last = children[children.length - 1];
+
+      if (
+        last.nodeType === Node.TEXT_NODE &&
+        last.textContent?.endsWith("\n") &&
+        !last.nextSibling
+      ) {
+        this.terminal.appendChild(document.createElement("br"));
+      }
+    }
+
     const range = document.createRange();
     range.selectNodeContents(this.terminal);
-    range.collapse(false);
+    range.collapse();
 
     const selection = window.getSelection()!;
     selection.removeAllRanges();

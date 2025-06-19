@@ -52,6 +52,8 @@ terminal.addEventListener("beforeinput", () => {
 });
 
 terminal.addEventListener("input", (event) => {
+  const inputEvent = event as InputEvent;
+
   const contentAfterInput = TerminalUtil.getTerminalContent();
 
   // Check if the readonly terminal sections do not match
@@ -59,13 +61,40 @@ terminal.addEventListener("input", (event) => {
     contentBeforeInput.substring(0, readonlyIndex) !=
     contentAfterInput.substring(0, readonlyIndex)
   ) {
-    const inputEvent = event as InputEvent;
-
-    // The following should never be null according to the spec: https://w3c.github.io/input-events/#overview
-    const data =
-      inputEvent.data ?? inputEvent.dataTransfer?.getData("text/plain") ?? "";
+    const data = getInsertedDataFromInputEvent(inputEvent);
 
     // Reset to previous content and append user-inputted data to the end of the input
     TerminalUtil.setText(contentBeforeInput + data);
+  } else if (
+    inputEvent.inputType === "insertLineBreak" ||
+    inputEvent.inputType === "insertParagraph"
+  ) {
+    // Safe-guarding against uncaught newlines - should trigger for all browsers except Firefox
+
+    if (
+      terminal.innerText.substring(0, readonlyIndex) !=
+      contentAfterInput.substring(0, readonlyIndex)
+    ) {
+      // Reset to previous content and append newline to the end of the input
+      // Carriage returns ("\r") will be treated as newlines
+      TerminalUtil.setText(contentBeforeInput + "\n");
+    }
   }
 });
+
+/**
+ * Retrieves the inserted data safely from the provided {@link InputEvent}.
+ * Uses the following spec: https://w3c.github.io/input-events/#overview
+ *
+ * @param inputEvent event to pull the data from
+ */
+function getInsertedDataFromInputEvent(inputEvent: InputEvent) {
+  // Newlines are inexplicably excluded from data and dataTransfer
+  if (inputEvent.inputType === "insertLineBreak") {
+    return "\n";
+  }
+
+  return (
+    inputEvent.data ?? inputEvent.dataTransfer?.getData("text/plain") ?? ""
+  );
+}
