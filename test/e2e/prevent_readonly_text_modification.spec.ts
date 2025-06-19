@@ -1,12 +1,14 @@
 import { test } from "./fixture";
 import {
   expectExactTextInTerminal,
+  expectTerminalToStartWithText,
   setCaretAtCharIndex,
 } from "./util/terminal_util";
 import {
   ALPHANUMERIC,
   BASIC_SYMBOLS,
   UNICODE_SYMBOLS,
+  WHITESPACE,
 } from "./constant/charset";
 import {
   charIndexInReadOnly,
@@ -36,7 +38,7 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
   [
     { type: "alphanumeric characters", values: ALPHANUMERIC },
     { type: "symbols", values: BASIC_SYMBOLS },
-    // { type: "whitespace characters", values: WHITESPACE }, // TODO: Fix newline issue in codebase!
+    { type: "whitespace characters", values: WHITESPACE },
     { type: "Unicode symbols", values: UNICODE_SYMBOLS },
   ].forEach(({ type, values }) => {
     test(`when typing ${type} in the readonly section`, async ({ page }) => {
@@ -47,7 +49,8 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
         await setCaretAtCharIndex(page, terminalSelector, charIndexInReadOnly);
         await page.locator(terminalSelector).pressSequentially(char);
 
-        insertedChars += char;
+        // Carriage returns should be treated like newlines
+        insertedChars += char.replace("\r", "\n");
 
         await expectExactTextInTerminal(
           page,
@@ -69,7 +72,6 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
   [
     { type: "alphanumeric characters", value: ALPHANUMERIC },
     { type: "symbols", value: BASIC_SYMBOLS },
-    // { type: "whitespace characters", value: WHITESPACE }, // TODO: Fix whitespace failures
     { type: "Unicode symbols", value: UNICODE_SYMBOLS },
   ].forEach(({ type, value }) => {
     test(`when pasting ${type} in the readonly section`, async ({
@@ -84,6 +86,17 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
         defaultReadOnly + defaultInput + value,
       );
     });
+  });
+
+  // Do not merge with the above. Whitespace pasting has no guarantee of being appended due to browser limitations.
+  test(`when pasting whitespace in the readonly section`, async ({
+    page,
+    browser,
+  }) => {
+    await setCaretAtCharIndex(page, terminalSelector, charIndexInReadOnly);
+    await simulatePaste(page, browser, terminalSelector, WHITESPACE);
+
+    await expectTerminalToStartWithText(page, defaultReadOnly + defaultInput);
   });
 
   /*
@@ -104,12 +117,4 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
    *      - File
    *      - Video
    */
-
-  test.describe("Programmatic", () => {
-    /*
-     * TODO:
-     *    - execCommand?
-     *    - DOM mutation?
-     */
-  });
 });
