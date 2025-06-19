@@ -2,7 +2,7 @@
 // TODO: Proper E2E testing with Selenium/Playwright/Cypress
 
 import TerminalUtil from "./util/terminal_util.ts";
-import * as Bowser from "bowser";
+import Bowser from "bowser";
 
 const terminal = TerminalUtil.getTerminal();
 
