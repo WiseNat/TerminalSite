@@ -1,5 +1,7 @@
+// TODO: clean up this class
 export default class TerminalUtil {
   private static readOnlyIndex: number = 0;
+  private static previousContent: string = "";
 
   /**
    * Retrieves the terminal from the DOM. Used in place of a static readonly variable to allow Integration tests to work
@@ -94,5 +96,20 @@ export default class TerminalUtil {
   public static getReadOnlyContent(text?: string): string {
     text ??= this.getTerminalContent();
     return text.substring(0, this.readOnlyIndex);
+  }
+
+  /**
+   * @returns the previous content in the terminal, before the current changes were made
+   */
+  public static getPreviousContent() {
+    return this.previousContent;
+  }
+
+  /**
+   * @param previousContent sets the internal previous content to this or {@link this#getTerminalContent} if none is provided
+   */
+  public static updatePreviousContent(previousContent?: string) {
+    previousContent ??= this.getTerminalContent();
+    this.previousContent = previousContent;
   }
 }

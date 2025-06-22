@@ -15,8 +15,6 @@ TerminalUtil.setText(initialPrompt + "\n" + prompt);
 // TODO: Update this when commands are processed
 TerminalUtil.setReadOnlyIndex(TerminalUtil.getTerminalContent().length);
 
-let contentBeforeInput = "";
-
 terminal.addEventListener("paste", (event) => {
   const browser = Bowser.getParser(window.navigator.userAgent);
 
@@ -39,7 +37,7 @@ terminal.addEventListener("paste", (event) => {
     event.preventDefault();
 
     // Added in case beforeinput does not fire from insertText call - varies per browser
-    contentBeforeInput = TerminalUtil.getTerminalContent();
+    TerminalUtil.updatePreviousContent();
 
     // Deprecated though no good alternatives exist for pasting with proper undo history.
     const text = event.clipboardData?.getData("text/plain") ?? "";
@@ -48,21 +46,22 @@ terminal.addEventListener("paste", (event) => {
 });
 
 terminal.addEventListener("beforeinput", () => {
-  contentBeforeInput = TerminalUtil.getTerminalContent();
+  TerminalUtil.updatePreviousContent();
 });
 
 terminal.addEventListener("input", (event) => {
   const inputEvent = event as InputEvent;
+  const previousContent = TerminalUtil.getPreviousContent();
+  const currentReadOnlyContent = TerminalUtil.getReadOnlyContent();
 
   // Check if the readonly terminal sections do not match
   if (
-    TerminalUtil.getReadOnlyContent(contentBeforeInput) !=
-    TerminalUtil.getReadOnlyContent()
+    TerminalUtil.getReadOnlyContent(previousContent) != currentReadOnlyContent
   ) {
     const data = getInsertedDataFromInputEvent(inputEvent);
 
     // Reset to previous content and append user-inputted data to the end of the input
-    TerminalUtil.setText(contentBeforeInput + data);
+    TerminalUtil.setText(previousContent + data);
   } else if (
     inputEvent.inputType === "insertLineBreak" ||
     inputEvent.inputType === "insertParagraph"
@@ -71,11 +70,11 @@ terminal.addEventListener("input", (event) => {
 
     if (
       TerminalUtil.getReadOnlyContent(terminal.innerText) !=
-      TerminalUtil.getReadOnlyContent()
+      currentReadOnlyContent
     ) {
       // Reset to previous content and append newline to the end of the input
       // Carriage returns ("\r") will be treated as newlines
-      TerminalUtil.setText(contentBeforeInput + "\n");
+      TerminalUtil.setText(previousContent + "\n");
     }
   }
 });
