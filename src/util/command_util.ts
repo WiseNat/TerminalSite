@@ -1,7 +1,7 @@
 import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
 import getCommandScripts from "./meta_import_util.ts";
-import LogUtil from "./log_util.ts";
+import log from "./log_util.ts";
 
 export default class CommandUtil {
   /**
@@ -26,7 +26,7 @@ export default class CommandUtil {
    * E.g. passing "git commit -m 'foo bar'" will return ["git", "commit", "-m", "foo bar"]
    *
    * @param command string to split
-   * @return split command strings
+   * @returns split command strings
    * @private
    */
   private static split(command: string): string[] {
@@ -84,7 +84,7 @@ export default class CommandUtil {
     const commandScript = getCommandScripts()[path];
 
     if (commandScript == undefined) {
-      LogUtil.error(`Command "${tokenisedCommand.name}" not found.`);
+      log.error(`Command "${tokenisedCommand.name}" not found.`);
       return null;
     }
 

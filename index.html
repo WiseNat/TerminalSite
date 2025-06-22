@@ -6,10 +6,6 @@
     <title>%VITE_SITE_TITLE%</title>
 
     <link rel="icon" href="/terminal.svg" type="image/svg+xml" />
-    <link
-      rel="stylesheet"
-      href="/node_modules/the-new-css-reset/css/reset.css"
-    />
     <link rel="stylesheet" href="/main.css" />
 
     <!-- Primary Meta -->
@@ -40,11 +36,11 @@
   <body>
     <div
       id="terminal"
-      class="command-input"
-      contenteditable="true"
+      contenteditable="plaintext-only"
       spellcheck="false"
-      autofocus="autofocus"
+      autofocus
     ></div>
     <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/css_reset.ts"></script>
   </body>
 </html>
