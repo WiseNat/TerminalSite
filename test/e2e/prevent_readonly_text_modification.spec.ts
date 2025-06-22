@@ -32,7 +32,6 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
    *      - Backspace
    *      - Delete
    *    - Undo/Redo
-   *      - ???
    */
 
   [
@@ -100,7 +99,7 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
   });
 
   /*
-   * TODO: the following tests are currently not possible
+   * TODO: the following tests are currently not possible, implement later if Playwright provides support for them
    *  - Dragging Text
    *      - ? to readonly
    *      - ? to input

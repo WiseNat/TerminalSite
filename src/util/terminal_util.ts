@@ -1,4 +1,3 @@
-// TODO: clean up this class
 export default class TerminalUtil {
   private static readOnlyIndex: number = 0;
   private static previousContent: string = "";
