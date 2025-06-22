@@ -4,7 +4,7 @@ import TerminalUtil from "../util/terminal_util.ts";
 /**
  * Event listener function for preventing rich-formatted text pasting on paste calls.
  *
- * Firefox recently added support for contentEditable="plaintext-only". exeCommand safety net is being used to ensure
+ * Firefox recently added support for contentEditable="plaintext-only". execCommand safety net is being used to ensure
  * users with older Firefox browsers cannot paste rich formatted text.
  *
  * We only need to run the below for Firefox (+ fork) browsers but detecting those are a nightmare as Firefox is not
