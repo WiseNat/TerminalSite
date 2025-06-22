@@ -13,7 +13,7 @@ const prompt = "C:\\Users\\user>";
 TerminalUtil.setText(initialPrompt + "\n" + prompt);
 
 // TODO: Update this when commands are processed
-const readonlyIndex = TerminalUtil.getTerminalContent().length;
+TerminalUtil.setReadOnlyIndex(TerminalUtil.getTerminalContent().length);
 
 let contentBeforeInput = "";
 
@@ -54,12 +54,10 @@ terminal.addEventListener("beforeinput", () => {
 terminal.addEventListener("input", (event) => {
   const inputEvent = event as InputEvent;
 
-  const contentAfterInput = TerminalUtil.getTerminalContent();
-
   // Check if the readonly terminal sections do not match
   if (
-    contentBeforeInput.substring(0, readonlyIndex) !=
-    contentAfterInput.substring(0, readonlyIndex)
+    TerminalUtil.getReadOnlyContent(contentBeforeInput) !=
+    TerminalUtil.getReadOnlyContent()
   ) {
     const data = getInsertedDataFromInputEvent(inputEvent);
 
@@ -72,8 +70,8 @@ terminal.addEventListener("input", (event) => {
     // Safe-guarding against uncaught newlines - should trigger for all browsers except Firefox
 
     if (
-      terminal.innerText.substring(0, readonlyIndex) !=
-      contentAfterInput.substring(0, readonlyIndex)
+      TerminalUtil.getReadOnlyContent(terminal.innerText) !=
+      TerminalUtil.getReadOnlyContent()
     ) {
       // Reset to previous content and append newline to the end of the input
       // Carriage returns ("\r") will be treated as newlines

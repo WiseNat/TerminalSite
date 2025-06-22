@@ -1,4 +1,6 @@
 export default class TerminalUtil {
+  private static readOnlyIndex: number = 0;
+
   /**
    * Retrieves the terminal from the DOM. Used in place of a static readonly variable to allow Integration tests to work
    * as expected
@@ -70,5 +72,27 @@ export default class TerminalUtil {
     selection.addRange(range);
 
     this.terminal.focus();
+  }
+
+  /**
+   * Updates the read only index of the terminal.
+   * This defines where the current index is for the end of the read only
+   * content in the terminal.
+   *
+   * @param index value to update to
+   */
+  public static setReadOnlyIndex(index: number) {
+    this.readOnlyIndex = index;
+  }
+
+  /**
+   * Retrieves the read-only content from the provided text.
+   * Uses the tracked read-only index to pull this data.
+   *
+   * @param text the string to use or {@link this#getTerminalContent} if none is provided
+   */
+  public static getReadOnlyContent(text?: string): string {
+    text ??= this.getTerminalContent();
+    return text.substring(0, this.readOnlyIndex);
   }
 }
