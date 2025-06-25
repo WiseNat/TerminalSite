@@ -5,6 +5,21 @@ import log from "./log_util.ts";
 
 export default class CommandUtil {
   /**
+   * TODO
+   *
+   * @param command TODO
+   */
+  public static executeCommand(command: string) {
+    const tokenisedCommand: TokenisedCommand = this.tokenise(command);
+    const commandScript = this.getCommandScript(tokenisedCommand);
+
+    if (commandScript !== null) {
+      console.info(`Running command ${tokenisedCommand.name}`); // TODO: remove
+      commandScript.run(tokenisedCommand.args);
+    }
+  }
+
+  /**
    * Tokenises a command string and transforms it into a {@link TokenisedCommand}.
    *
    * @param command string containing space separated tokens, e.g. "git commit -m 'foo'"

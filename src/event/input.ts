@@ -1,5 +1,7 @@
 import TerminalUtil from "../util/terminal_util.ts";
 
+// TODO: unit test this?...
+
 /**
  * Event listener function for preventing read-only text modification on inputs to the terminal.
  *
@@ -7,6 +9,10 @@ import TerminalUtil from "../util/terminal_util.ts";
  */
 export function input(event: Event) {
   const inputEvent = event as InputEvent;
+  const returnPressed =
+    inputEvent.inputType === "insertLineBreak" ||
+    inputEvent.inputType === "insertParagraph";
+
   const previousContent = TerminalUtil.getPreviousContent();
   const currentReadOnlyContent = TerminalUtil.getReadOnlyContent();
 
@@ -14,23 +20,17 @@ export function input(event: Event) {
   if (
     TerminalUtil.getReadOnlyContent(previousContent) != currentReadOnlyContent
   ) {
-    const data = getInsertedDataFromInputEvent(inputEvent);
+    let newText = previousContent;
 
-    // Reset to previous content and append user-inputted data to the end of the input
-    TerminalUtil.setText(previousContent + data);
-  } else if (
-    inputEvent.inputType === "insertLineBreak" ||
-    inputEvent.inputType === "insertParagraph"
-  ) {
-    // Safe-guarding against uncaught newlines - should trigger for all browsers except Firefox
-
-    const innerText = TerminalUtil.getTerminal().innerText;
-
-    if (TerminalUtil.getReadOnlyContent(innerText) != currentReadOnlyContent) {
-      // Reset to previous content and append newline to the end of the input
-      // Carriage returns ("\r") will be treated as newlines
-      TerminalUtil.setText(previousContent + "\n");
+    // Reset to previous content and append user-inputted data to the end of the input if return was not pressed
+    if (!returnPressed) {
+      const data = getInsertedDataFromInputEvent(inputEvent);
+      newText += data;
     }
+
+    TerminalUtil.setText(newText);
+  } else if (returnPressed) {
+    TerminalUtil.setText(previousContent);
   }
 }
 

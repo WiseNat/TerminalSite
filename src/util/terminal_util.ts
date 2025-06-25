@@ -111,4 +111,12 @@ export default class TerminalUtil {
     previousContent ??= this.getTerminalContent();
     this.previousContent = previousContent;
   }
+
+  /**
+   * @returns TODO
+   */
+  public static getUserInput(): string {
+    const text = this.getTerminalContent();
+    return text.substring(this.readOnlyIndex);
+  }
 }

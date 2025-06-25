@@ -37,7 +37,7 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
   [
     { type: "alphanumeric characters", values: ALPHANUMERIC },
     { type: "symbols", values: BASIC_SYMBOLS },
-    { type: "whitespace characters", values: WHITESPACE },
+    { type: "whitespace characters", values: WHITESPACE }, // TODO: change WHITESPACE to 'SPACE + TAB + NON_BREAKING_SPACE', make INVERTED test for 'NEWLINE + CARRIAGE_RETURN'
     { type: "Unicode symbols", values: UNICODE_SYMBOLS },
   ].forEach(({ type, values }) => {
     test(`when typing ${type} in the readonly section`, async ({ page }) => {
