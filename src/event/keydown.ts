@@ -6,7 +6,7 @@ import CommandUtil from "../util/command_util.ts";
  *
  * @param event event listener {@link KeyboardEvent}
  */
-export function keyup(event: KeyboardEvent) {
+export function keydown(event: KeyboardEvent) {
   if (event.key === "Enter") {
     console.warn("ENTER PRESSED: '" + TerminalUtil.getUserInput() + "'"); // TODO: Delete this
 
