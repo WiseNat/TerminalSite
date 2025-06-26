@@ -9,7 +9,7 @@ import TerminalUtil from "../util/terminal_util.ts";
  */
 export function input(event: Event) {
   const inputEvent = event as InputEvent;
-  const returnPressed =
+  const newlineInserted =
     inputEvent.inputType === "insertLineBreak" ||
     inputEvent.inputType === "insertParagraph";
 
@@ -23,13 +23,16 @@ export function input(event: Event) {
     let newText = previousContent;
 
     // Reset to previous content and append user-inputted data to the end of the input if return was not pressed
-    if (!returnPressed) {
+    if (!newlineInserted) {
       const data = getInsertedDataFromInputEvent(inputEvent);
       newText += data;
     }
 
     TerminalUtil.setText(newText);
-  } else if (returnPressed) {
+  } else if (newlineInserted) {
+    // Prevent newlines being added when return is pressed.
+    // Shift+Return is allowed through the keydown event.
+    // Pasted newlines are allowed
     TerminalUtil.setText(previousContent);
   }
 }

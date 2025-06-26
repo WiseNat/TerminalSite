@@ -45,6 +45,7 @@ export default class CommandUtil {
    * @private
    */
   private static split(command: string): string[] {
+    // TODO: investigate missing newlines in args! make a unit test for this!
     const quotes = `"'`;
     const whitespace = " \t\n\r";
 

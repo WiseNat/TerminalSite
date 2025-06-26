@@ -8,12 +8,26 @@ import CommandUtil from "../util/command_util.ts";
  */
 export function keydown(event: KeyboardEvent) {
   if (event.key === "Enter") {
-    console.warn("ENTER PRESSED: '" + TerminalUtil.getUserInput() + "'"); // TODO: Delete this
-
-    const userInput = TerminalUtil.getUserInput();
-    CommandUtil.executeCommand(userInput);
-
-    // TODO: Append new prefix thing
-    // TODO: Update readonly index
+    processEnter(event);
   }
+}
+
+/**
+ * TODO
+ *
+ * @param event TODO
+ */
+function processEnter(event: KeyboardEvent) {
+  if (event.shiftKey) {
+    TerminalUtil.appendText("\n");
+    return;
+  }
+
+  console.warn("ENTER PRESSED: '" + TerminalUtil.getUserInput() + "'"); // TODO: Delete this
+
+  const userInput = TerminalUtil.getUserInput();
+  CommandUtil.executeCommand(userInput);
+
+  // TODO: Append new prefix
+  // TODO: Update readonly index
 }
