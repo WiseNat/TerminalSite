@@ -74,6 +74,15 @@ describe("CommandUtil", () => {
       expect(command.name).toBe("mycommand");
       expect(command.args).toStrictEqual(["ab", "foo \tbar"]);
     });
+
+    test("correctly tokenises a command with newlines and ignores them", () => {
+      const commandString = "mycommand foo\nbar baz \ngaz";
+
+      const command = CommandUtil.tokenise(commandString);
+
+      expect(command.name).toBe("mycommand");
+      expect(command.args).toStrictEqual(["foobar", "baz", "gaz"]);
+    });
   });
 
   describe("getCommandScripts", () => {

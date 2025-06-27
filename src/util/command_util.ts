@@ -44,10 +44,10 @@ export default class CommandUtil {
    * @returns split command strings
    * @private
    */
-  private static split(command: string): string[] {
-    // TODO: investigate missing newlines in args! make a unit test for this!
+  // prettier-ignore
+  private static split(command: string): string[] {  // NOSONAR: reducing cognitive complexity for this is difficult
     const quotes = `"'`;
-    const whitespace = " \t\n\r";
+    const whitespace = " \t\r";
 
     const values: string[] = [];
     let buffer = "";
@@ -56,6 +56,12 @@ export default class CommandUtil {
     let currentQuoteChar = "";
 
     for (const char of command) {
+      // Ignore newlines, treat them as line continuations
+      if (char == "\n") {
+        continue;
+      }
+
+      // Check if inside of quotes to allow an argument with spaces, e.g. echo 'foo bar' baz
       if (quotes.includes(char)) {
         if (!insideQuotes) {
           insideQuotes = true;
