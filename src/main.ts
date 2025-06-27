@@ -10,8 +10,7 @@ const prompt = "C:\\Users\\user>";
 
 TerminalUtil.setText(initialPrompt + "\n" + prompt);
 
-// TODO: Update this when commands are processed
-TerminalUtil.setReadOnlyIndex(TerminalUtil.getTerminalContent().length);
+TerminalUtil.updateReadOnlyIndex();
 
 const terminal = TerminalUtil.getTerminal();
 terminal.addEventListener("paste", paste);

@@ -23,8 +23,7 @@ export default class CommandUtil {
     const prompt = "C:\\Users\\user>";
     TerminalUtil.appendText(`\n${prompt}`);
 
-    const currentTerminalLength = TerminalUtil.getTerminalContent().length;
-    TerminalUtil.setReadOnlyIndex(currentTerminalLength);
+    TerminalUtil.updateReadOnlyIndex();
   }
 
   /**
