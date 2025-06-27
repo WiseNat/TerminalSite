@@ -23,11 +23,6 @@ function processEnter(event: KeyboardEvent) {
     return;
   }
 
-  console.warn("ENTER PRESSED: '" + TerminalUtil.getUserInput() + "'"); // TODO: Delete this
-
   const userInput = TerminalUtil.getUserInput();
   CommandUtil.executeCommand(userInput);
-
-  // TODO: Append new prefix
-  // TODO: Update readonly index
 }

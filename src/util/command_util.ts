@@ -1,6 +1,7 @@
 import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
 import getCommandScripts from "./meta_import_util.ts";
+import TerminalUtil from "./terminal_util.ts";
 
 export default class CommandUtil {
   /**
@@ -13,9 +14,17 @@ export default class CommandUtil {
     const commandScript = this.getCommandScript(tokenisedCommand);
 
     if (commandScript !== null) {
-      console.info(`Running command ${tokenisedCommand.name}`); // TODO: remove
       commandScript.run(tokenisedCommand.args);
+    } else {
+      TerminalUtil.appendText(`\n${tokenisedCommand.name}: command not found`);
     }
+
+    // TODO: move prompt var somewhere else
+    const prompt = "C:\\Users\\user>";
+    TerminalUtil.appendText(`\n${prompt}`);
+
+    const currentTerminalLength = TerminalUtil.getTerminalContent().length;
+    TerminalUtil.setReadOnlyIndex(currentTerminalLength);
   }
 
   /**
