@@ -8,4 +8,5 @@ export const defaultReadOnly =
   "(c) 2019 Microsoft Corporation. All rights reserved.\n" +
   "\n" +
   defaultPrompt;
+export const commandNotFound = ": command not found";
 export const charIndexInReadOnly = 5;

@@ -13,6 +13,7 @@ import {
 } from "./constant/charset";
 import {
   charIndexInReadOnly,
+  commandNotFound,
   defaultPrompt,
   defaultReadOnly,
   terminalSelector,
@@ -68,8 +69,6 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
     for (const char of NEWLINES) {
       await setCaretAtCharIndex(page, terminalSelector, charIndexInReadOnly);
       await page.locator(terminalSelector).pressSequentially(char);
-
-      const commandNotFound = ": command not found";
 
       // Account for initial inserted text
       if (firstRun) {
