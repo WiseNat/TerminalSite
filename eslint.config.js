@@ -5,13 +5,18 @@ import json from "@eslint/json";
 import css from "@eslint/css";
 import { defineConfig, globalIgnores } from "eslint/config";
 import sonarjs from "eslint-plugin-sonarjs";
+import stylistic from "@stylistic/eslint-plugin";
 
 export default defineConfig([
   {
     files: ["**/*.{js,mjs,cjs,ts}"],
-    plugins: { js, sonarjs },
+    plugins: { js, sonarjs, "@stylistic": stylistic },
     extends: ["js/recommended"],
     languageOptions: { globals: globals.browser },
+    rules: {
+      "@stylistic/semi": ["error", "always"],
+      "@stylistic/quotes": ["error", "double"],
+    },
   },
   {
     files: ["**/*.jsonc"],

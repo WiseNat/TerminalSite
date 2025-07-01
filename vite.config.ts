@@ -2,12 +2,17 @@
 import { defineConfig } from "vite";
 import autoprefixer from "autoprefixer";
 
-export default defineConfig({
-  plugins: [],
-  css: {
-    postcss: {
-      plugins: [autoprefixer({})],
+export default defineConfig(({ mode }) => {
+  return {
+    plugins: [],
+    css: {
+      postcss: {
+        plugins: [autoprefixer({})],
+      },
     },
-  },
-  test: {},
+    test: {},
+    esbuild: {
+      drop: mode === "production" ? ["console"] : [],
+    },
+  };
 });

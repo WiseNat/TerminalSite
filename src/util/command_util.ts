@@ -1,9 +1,38 @@
 import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
 import getCommandScripts from "./meta_import_util.ts";
-import log from "./log_util.ts";
+import TerminalUtil from "./terminal_util.ts";
+import { userPrompt } from "../constant/prompt.ts";
 
 export default class CommandUtil {
+  /**
+   * Executes a command using the given command string.
+   * Will output to the terminal if no command is found.
+   *
+   * @param command a command string, e.g. 'echo foo bar'
+   */
+  public static executeCommand(command: string) {
+    const tokenisedCommand: TokenisedCommand = this.tokenise(command);
+
+    if (tokenisedCommand.name !== "") {
+      const commandScript = this.getCommandScript(tokenisedCommand);
+
+      if (commandScript !== null) {
+        console.info(
+          `Running command '${tokenisedCommand.name}' with args ${tokenisedCommand.args}`,
+        );
+        commandScript.run(tokenisedCommand.args);
+      } else {
+        TerminalUtil.appendText(
+          `\n${tokenisedCommand.name}: command not found`,
+        );
+      }
+    }
+
+    TerminalUtil.appendText(`\n${userPrompt}`);
+    TerminalUtil.updateReadOnlyIndex();
+  }
+
   /**
    * Tokenises a command string and transforms it into a {@link TokenisedCommand}.
    *
@@ -29,9 +58,10 @@ export default class CommandUtil {
    * @returns split command strings
    * @private
    */
-  private static split(command: string): string[] {
-    const quotes = `"'`;
-    const whitespace = " \t\n\r";
+  // prettier-ignore
+  private static split(command: string): string[] {  // NOSONAR: reducing cognitive complexity for this is difficult
+    const quotes = "\"'";
+    const whitespace = " \t\r";
 
     const values: string[] = [];
     let buffer = "";
@@ -40,6 +70,12 @@ export default class CommandUtil {
     let currentQuoteChar = "";
 
     for (const char of command) {
+      // Ignore newlines, treat them as line continuations
+      if (char == "\n") {
+        continue;
+      }
+
+      // Check if inside of quotes to allow an argument with spaces, e.g. echo 'foo bar' baz
       if (quotes.includes(char)) {
         if (!insideQuotes) {
           insideQuotes = true;
@@ -84,7 +120,7 @@ export default class CommandUtil {
     const commandScript = getCommandScripts()[path];
 
     if (commandScript == undefined) {
-      log.error(`Command "${tokenisedCommand.name}" not found.`);
+      console.warn(`\nCommand "${tokenisedCommand.name}" not found.`);
       return null;
     }
 

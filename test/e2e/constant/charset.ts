@@ -10,7 +10,7 @@ export const DIGITS = "0123456789";
 export const ALPHANUMERIC = LETTERS + DIGITS;
 
 /* Symbols */
-export const BASIC_SYMBOLS = `!"#$%&'()*+,-./:;<=>?@[\\]^_\`{|}~`;
+export const BASIC_SYMBOLS = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
 /* Whitespace */
 export const SPACE = " ";
@@ -18,8 +18,8 @@ export const TAB = "\t";
 export const NEWLINE = "\n";
 export const CARRIAGE_RETURN = "\r";
 export const NON_BREAKING_SPACE = "\u00A0";
-export const WHITESPACE =
-  SPACE + TAB + NEWLINE + CARRIAGE_RETURN + NON_BREAKING_SPACE;
+export const WHITESPACE = SPACE + TAB + NON_BREAKING_SPACE;
+export const NEWLINES = NEWLINE + CARRIAGE_RETURN;
 
 /* Simple Unicode Samples */
 export const EMOJIS = "😀😃😄😁😆😅😂🤣😊😇";

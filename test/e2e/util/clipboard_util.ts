@@ -26,7 +26,7 @@ export async function simulatePaste(
 ) {
   await setClipboard(browser, value);
 
-  await page.locator(selector).press(`ControlOrMeta+v`);
+  await page.locator(selector).press("ControlOrMeta+v");
 }
 
 /**
@@ -40,7 +40,7 @@ export async function getClipboard(browser: Browser) {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await page.setContent('<textarea id="target"></textarea>');
+  await page.setContent("<textarea id=\"target\"></textarea>");
 
   const target = page.locator("#target");
   await target.focus();

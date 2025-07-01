@@ -80,9 +80,10 @@ export default class TerminalUtil {
    * This defines where the current index is for the end of the read only
    * content in the terminal.
    *
-   * @param index value to update to
+   * @param index value to update to or the current terminal content length if none is provided
    */
-  public static setReadOnlyIndex(index: number) {
+  public static updateReadOnlyIndex(index?: number) {
+    index ??= this.getTerminalContent().length;
     this.readOnlyIndex = index;
   }
 
@@ -90,7 +91,7 @@ export default class TerminalUtil {
    * Retrieves the read-only content from the provided text.
    * Uses the tracked read-only index to pull this data.
    *
-   * @param text the string to use or {@link this#getTerminalContent} if none is provided
+   * @param text the string to use or the current readonly content if none is provided
    */
   public static getReadOnlyContent(text?: string): string {
     text ??= this.getTerminalContent();
@@ -105,10 +106,20 @@ export default class TerminalUtil {
   }
 
   /**
-   * @param previousContent sets the internal previous content to this or {@link this#getTerminalContent} if none is provided
+   * @param previousContent sets the internal previous content to this or the current terminal content if none is provided
    */
   public static updatePreviousContent(previousContent?: string) {
     previousContent ??= this.getTerminalContent();
     this.previousContent = previousContent;
+  }
+
+  /**
+   * @param text the string to use or the current user input if none is provided
+   *
+   * @returns the most recent data the user has inputted into the terminal; anything after the read only content
+   */
+  public static getUserInput(text?: string): string {
+    text ??= this.getTerminalContent();
+    return text.substring(this.readOnlyIndex);
   }
 }

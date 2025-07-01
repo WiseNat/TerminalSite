@@ -16,7 +16,7 @@ import TerminalUtil from "../util/terminal_util.ts";
  * This can be removed in 5-10 years time as contentEditable="plaintext-only" support will be in most Firefox users
  * browsers.
  *
- * @param event event listener {@link Event}
+ * @param event event listener {@link ClipboardEvent}
  */
 export function paste(event: ClipboardEvent) {
   const browser = Bowser.getParser(window.navigator.userAgent);

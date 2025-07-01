@@ -7,6 +7,10 @@ import TerminalUtil from "../util/terminal_util.ts";
  */
 export function input(event: Event) {
   const inputEvent = event as InputEvent;
+  const newlineInserted =
+    inputEvent.inputType === "insertLineBreak" ||
+    inputEvent.inputType === "insertParagraph";
+
   const previousContent = TerminalUtil.getPreviousContent();
   const currentReadOnlyContent = TerminalUtil.getReadOnlyContent();
 
@@ -14,23 +18,22 @@ export function input(event: Event) {
   if (
     TerminalUtil.getReadOnlyContent(previousContent) != currentReadOnlyContent
   ) {
-    const data = getInsertedDataFromInputEvent(inputEvent);
+    console.info("Read-only content was modified, reverting..");
 
-    // Reset to previous content and append user-inputted data to the end of the input
-    TerminalUtil.setText(previousContent + data);
-  } else if (
-    inputEvent.inputType === "insertLineBreak" ||
-    inputEvent.inputType === "insertParagraph"
-  ) {
-    // Safe-guarding against uncaught newlines - should trigger for all browsers except Firefox
+    let text = previousContent;
 
-    const innerText = TerminalUtil.getTerminal().innerText;
-
-    if (TerminalUtil.getReadOnlyContent(innerText) != currentReadOnlyContent) {
-      // Reset to previous content and append newline to the end of the input
-      // Carriage returns ("\r") will be treated as newlines
-      TerminalUtil.setText(previousContent + "\n");
+    // Reset to previous content and append user-inputted data to the end of the input if return was not pressed
+    if (!newlineInserted) {
+      const data = getInsertedDataFromInputEvent(inputEvent);
+      text += data;
     }
+
+    TerminalUtil.setText(text);
+  } else if (newlineInserted) {
+    // Prevent newlines being added when return is pressed.
+    // Shift+Return is allowed through the keydown event.
+    // Pasted newlines are allowed
+    TerminalUtil.setText(previousContent);
   }
 }
 
