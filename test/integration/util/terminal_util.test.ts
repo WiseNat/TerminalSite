@@ -85,7 +85,75 @@ describe("TerminalUtil", () => {
     });
   });
 
-  // Can't test effectively with JSDom - rely on E2E to test this
-  // describe("cursorToEnd", () => {
-  // });
+  // Can't test "cursorToEnd" effectively with JSDom - rely on E2E to test this
+  // Can't test "updateReadOnlyIndex" effectively as it just modifies a private value
+
+  describe("getReadOnlyContent", () => {
+    test("should get the read-only content from the provided value", async () => {
+      // Arrange
+      const readOnly = "[READONLY]";
+      const userInput = "normaltext";
+
+      TerminalUtil.updateReadOnlyIndex(readOnly.length);
+
+      // Act
+      const result = TerminalUtil.getReadOnlyContent(readOnly + userInput);
+
+      // Assert
+      expect(result).not.toBeNull();
+      expect(result).toBe(readOnly);
+    });
+
+    test("should get the read-only content from the current terminal content when no value is provided", async () => {
+      // Arrange
+      const readOnly = "[READONLY]";
+      const userInput = "normaltext";
+
+      TerminalUtil.setText(readOnly + userInput);
+      TerminalUtil.updateReadOnlyIndex(readOnly.length);
+
+      // Act
+      const result = TerminalUtil.getReadOnlyContent();
+
+      // Assert
+      expect(result).not.toBeNull();
+      expect(result).toBe(readOnly);
+    });
+  });
+
+  // Can't test "updatePreviousContent" effectively as it just modifies a private value
+
+  // TODO: impl!
+  describe("getUserInput", () => {
+    test("should get the user input from the provided value", async () => {
+      // Arrange
+      const readOnly = "[READONLY]";
+      const userInput = "normaltext";
+
+      TerminalUtil.updateReadOnlyIndex(readOnly.length);
+
+      // Act
+      const result = TerminalUtil.getUserInput(readOnly + userInput);
+
+      // Assert
+      expect(result).not.toBeNull();
+      expect(result).toBe(userInput);
+    });
+
+    test("should get the user input from the current terminal content when no value is provided", async () => {
+      // Arrange
+      const readOnly = "[READONLY]";
+      const userInput = "normaltext";
+
+      TerminalUtil.setText(readOnly + userInput);
+      TerminalUtil.updateReadOnlyIndex(readOnly.length);
+
+      // Act
+      const result = TerminalUtil.getUserInput();
+
+      // Assert
+      expect(result).not.toBeNull();
+      expect(result).toBe(userInput);
+    });
+  });
 });

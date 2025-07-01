@@ -1,5 +1,3 @@
-// TODO: unit tests where possible
-
 export default class TerminalUtil {
   private static readOnlyIndex: number = 0;
   private static previousContent: string = "";
@@ -116,10 +114,12 @@ export default class TerminalUtil {
   }
 
   /**
+   * @param text the string to use or the current user input if none is provided
+   *
    * @returns the most recent data the user has inputted into the terminal; anything after the read only content
    */
-  public static getUserInput(): string {
-    const text = this.getTerminalContent();
+  public static getUserInput(text?: string): string {
+    text ??= this.getTerminalContent();
     return text.substring(this.readOnlyIndex);
   }
 }
