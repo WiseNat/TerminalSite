@@ -18,6 +18,9 @@ export default class CommandUtil {
       const commandScript = this.getCommandScript(tokenisedCommand);
 
       if (commandScript !== null) {
+        console.info(
+          `Running command '${tokenisedCommand.name}' with args ${tokenisedCommand.args}`,
+        );
         commandScript.run(tokenisedCommand.args);
       } else {
         TerminalUtil.appendText(

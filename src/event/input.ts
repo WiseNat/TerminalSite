@@ -18,6 +18,8 @@ export function input(event: Event) {
   if (
     TerminalUtil.getReadOnlyContent(previousContent) != currentReadOnlyContent
   ) {
+    console.info("Read-only content was modified, reverting..");
+
     let text = previousContent;
 
     // Reset to previous content and append user-inputted data to the end of the input if return was not pressed
