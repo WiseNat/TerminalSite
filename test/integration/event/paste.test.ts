@@ -1,4 +1,4 @@
-import { test, describe } from "vitest";
+import { describe, test } from "vitest";
 
 describe("Paste Event", () => {
   describe("paste", () => {

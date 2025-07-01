@@ -1,4 +1,4 @@
-import { test, describe, vi, expect } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../src/util/terminal_util";
 import { beforeinput } from "../../../src/event/beforeinput";
 
