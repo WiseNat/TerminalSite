@@ -7,11 +7,13 @@ import {
 import {
   ALPHANUMERIC,
   BASIC_SYMBOLS,
+  NEWLINES,
   UNICODE_SYMBOLS,
   WHITESPACE,
 } from "./constant/charset";
 import {
   charIndexInReadOnly,
+  defaultPrompt,
   defaultReadOnly,
   terminalSelector,
 } from "./constant/generic";
@@ -37,7 +39,7 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
   [
     { type: "alphanumeric characters", values: ALPHANUMERIC },
     { type: "symbols", values: BASIC_SYMBOLS },
-    { type: "whitespace characters", values: WHITESPACE }, // TODO: change WHITESPACE to 'SPACE + TAB + NON_BREAKING_SPACE', make INVERTED test for 'NEWLINE + CARRIAGE_RETURN'
+    { type: "whitespace characters", values: WHITESPACE },
     { type: "Unicode symbols", values: UNICODE_SYMBOLS },
   ].forEach(({ type, values }) => {
     test(`when typing ${type} in the readonly section`, async ({ page }) => {
@@ -48,8 +50,7 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
         await setCaretAtCharIndex(page, terminalSelector, charIndexInReadOnly);
         await page.locator(terminalSelector).pressSequentially(char);
 
-        // Carriage returns should be treated like newlines
-        insertedChars += char.replace("\r", "\n");
+        insertedChars += char;
 
         await expectExactTextInTerminal(
           page,
@@ -57,6 +58,32 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
         );
       }
     });
+  });
+
+  test("when typing newlines in the readonly section", async ({ page }) => {
+    let insertedChars = "";
+    let firstRun = true;
+
+    // Set caret to be within the readonly section before typing each character
+    for (const char of NEWLINES) {
+      await setCaretAtCharIndex(page, terminalSelector, charIndexInReadOnly);
+      await page.locator(terminalSelector).pressSequentially(char);
+
+      const commandNotFound = ": command not found";
+
+      // Account for initial inserted text
+      if (firstRun) {
+        insertedChars += `\nfoo,${commandNotFound}\n${defaultPrompt}`;
+        firstRun = false;
+      } else {
+        insertedChars += `\n${commandNotFound}\n${defaultPrompt}`;
+      }
+
+      await expectExactTextInTerminal(
+        page,
+        defaultReadOnly + defaultInput + insertedChars,
+      );
+    }
   });
 
   [{ key: "Backspace" }, { key: "Delete" }].forEach(({ key }) => {
