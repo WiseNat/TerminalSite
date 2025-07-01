@@ -54,7 +54,7 @@ export default class CommandUtil {
    */
   // prettier-ignore
   private static split(command: string): string[] {  // NOSONAR: reducing cognitive complexity for this is difficult
-    const quotes = `"'`;
+    const quotes = "\"'";
     const whitespace = " \t\r";
 
     const values: string[] = [];

@@ -88,7 +88,7 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
   });
 
   // Do not merge with the above. Whitespace pasting has no guarantee of being appended due to browser limitations.
-  test(`when pasting whitespace in the readonly section`, async ({
+  test("when pasting whitespace in the readonly section", async ({
     page,
     browser,
   }) => {

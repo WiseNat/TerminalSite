@@ -10,7 +10,7 @@ export const DIGITS = "0123456789";
 export const ALPHANUMERIC = LETTERS + DIGITS;
 
 /* Symbols */
-export const BASIC_SYMBOLS = `!"#$%&'()*+,-./:;<=>?@[\\]^_\`{|}~`;
+export const BASIC_SYMBOLS = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
 /* Whitespace */
 export const SPACE = " ";

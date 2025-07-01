@@ -15,6 +15,7 @@ export default defineConfig([
     languageOptions: { globals: globals.browser },
     rules: {
       "@stylistic/semi": ["error", "always"],
+      "@stylistic/quotes": ["error", "double"],
     },
   },
   {

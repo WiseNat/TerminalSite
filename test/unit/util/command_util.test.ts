@@ -44,12 +44,12 @@ describe("CommandUtil", () => {
         "-m",
         "foo 'bar'",
         "and",
-        'baz "gaz',
+        "baz \"gaz",
       ]);
     });
 
     test("correctly tokenises a command with arguments with double quoted spaces", () => {
-      const commandString = 'mycommand "foo bar"';
+      const commandString = "mycommand \"foo bar\"";
 
       const command = CommandUtil.tokenise(commandString);
 

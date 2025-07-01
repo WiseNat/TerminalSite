@@ -7,7 +7,7 @@ describe("TerminalUtil", () => {
   beforeEach(() => {
     // Mock terminal element
     document.body.innerHTML =
-      '<div id="terminal" contenteditable="true"></div>';
+      "<div id=\"terminal\" contenteditable=\"true\"></div>";
 
     terminal = document.getElementById("terminal")!;
   });
