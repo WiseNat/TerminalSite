@@ -54,6 +54,12 @@ test("Typing an unknown command and pressing Enter returns that the command was 
   );
 });
 
+test("Typing no command and pressing Enter does nothing", async ({ page }) => {
+  await page.locator(terminalSelector).press("Enter");
+
+  await expectExactTextInTerminal(page, defaultReadOnly + "\n" + defaultPrompt);
+});
+
 [{ type: "readonly" }, { type: "user input" }].forEach(({ type }) => {
   test(`Pressing Enter should run a command & should prevent a newline being inputted in the ${type} section`, async ({
     page,

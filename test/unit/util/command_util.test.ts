@@ -3,8 +3,66 @@ import CommandUtil from "../../../src/util/command_util";
 import { CommandScript } from "../../../src/command/command_script";
 import TokenisedCommand from "../../../src/dto/tokenised_command";
 import getCommandScripts from "../../../src/util/meta_import_util";
+import TerminalUtil from "../../../src/util/terminal_util";
 
 describe("CommandUtil", () => {
+  describe("executeCommand", () => {
+    // Spy
+    const appendText = vi.spyOn(TerminalUtil, "appendText");
+    const updateReadOnlyIndex = vi.spyOn(TerminalUtil, "updateReadOnlyIndex");
+
+    // Mock
+    vi.mock("../../../src/util/terminal_util");
+
+    test("runs a command when it is found", () => {
+      // Arrange
+      const mockCommandFile: CommandScript = { run: vi.fn() };
+      vi.mocked(getCommandScripts).mockReturnValue({
+        "/src/command/scripts/test.ts": { default: mockCommandFile },
+      });
+
+      const command = "test foo bar";
+
+      // Act
+      CommandUtil.executeCommand(command);
+
+      // Assert
+      expect(mockCommandFile.run).toHaveBeenCalled();
+      expect(appendText).toHaveBeenCalledOnce();
+      expect(updateReadOnlyIndex).toHaveBeenCalledOnce();
+    });
+
+    test("outputs that a command is not found when it does not exist", () => {
+      // Arrange
+      vi.mocked(getCommandScripts).mockReturnValue({});
+
+      const command = "test foo bar";
+
+      // Act
+      CommandUtil.executeCommand(command);
+
+      // Assert
+      expect(appendText).toHaveBeenCalledWith("\ntest: command not found");
+      expect(appendText).toHaveBeenCalledTimes(2);
+      expect(updateReadOnlyIndex).toHaveBeenCalledOnce();
+    });
+
+    test("outputs nothing when a command is not found with no name", () => {
+      // Arrange
+      vi.mocked(getCommandScripts).mockReturnValue({});
+      const appendText = vi.spyOn(TerminalUtil, "appendText");
+
+      const command = "";
+
+      // Act
+      CommandUtil.executeCommand(command);
+
+      // Assert
+      expect(appendText).toHaveBeenCalledOnce();
+      expect(updateReadOnlyIndex).toHaveBeenCalledOnce();
+    });
+  });
+
   describe("tokenise", () => {
     test("correctly tokenises a command with multiple arguments", () => {
       // Arrange

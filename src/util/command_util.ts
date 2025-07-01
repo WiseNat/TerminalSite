@@ -13,12 +13,17 @@ export default class CommandUtil {
    */
   public static executeCommand(command: string) {
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);
-    const commandScript = this.getCommandScript(tokenisedCommand);
 
-    if (commandScript !== null) {
-      commandScript.run(tokenisedCommand.args);
-    } else {
-      TerminalUtil.appendText(`\n${tokenisedCommand.name}: command not found`);
+    if (tokenisedCommand.name !== "") {
+      const commandScript = this.getCommandScript(tokenisedCommand);
+
+      if (commandScript !== null) {
+        commandScript.run(tokenisedCommand.args);
+      } else {
+        TerminalUtil.appendText(
+          `\n${tokenisedCommand.name}: command not found`,
+        );
+      }
     }
 
     TerminalUtil.appendText(`\n${userPrompt}`);
