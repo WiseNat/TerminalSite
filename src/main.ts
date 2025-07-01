@@ -3,13 +3,9 @@ import { paste } from "./event/paste.ts";
 import { beforeinput } from "./event/beforeinput.ts";
 import { input } from "./event/input.ts";
 import { keydown } from "./event/keydown.ts";
+import { initialPrompt, userPrompt } from "./constant/prompt.ts";
 
-const initialPrompt =
-  "Microsoft Windows [Version 10.0.18363.1379]\n(c) 2019 Microsoft Corporation. All rights reserved.\n";
-const prompt = "C:\\Users\\user>";
-
-TerminalUtil.setText(initialPrompt + "\n" + prompt);
-
+TerminalUtil.setText(initialPrompt + "\n" + userPrompt);
 TerminalUtil.updateReadOnlyIndex();
 
 const terminal = TerminalUtil.getTerminal();

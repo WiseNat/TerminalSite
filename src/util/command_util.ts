@@ -2,6 +2,7 @@ import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
 import getCommandScripts from "./meta_import_util.ts";
 import TerminalUtil from "./terminal_util.ts";
+import { userPrompt } from "../constant/prompt.ts";
 
 export default class CommandUtil {
   /**
@@ -20,10 +21,7 @@ export default class CommandUtil {
       TerminalUtil.appendText(`\n${tokenisedCommand.name}: command not found`);
     }
 
-    // TODO: move prompt var somewhere else
-    const prompt = "C:\\Users\\user>";
-    TerminalUtil.appendText(`\n${prompt}`);
-
+    TerminalUtil.appendText(`\n${userPrompt}`);
     TerminalUtil.updateReadOnlyIndex();
   }
 
