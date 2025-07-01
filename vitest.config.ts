@@ -8,6 +8,7 @@ export default defineConfig({
           name: "Unit",
           include: ["test/unit/**/*.test.ts"],
           environment: "node",
+          clearMocks: true,
         },
       },
       {
@@ -15,6 +16,7 @@ export default defineConfig({
           name: "Integration",
           include: ["test/integration/**/*.test.ts"],
           environment: "jsdom",
+          clearMocks: true,
         },
       },
     ],
