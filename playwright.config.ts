@@ -1,3 +1,5 @@
+/* v8 ignore start */
+
 import { defineConfig, devices } from "@playwright/test";
 
 /**
@@ -86,3 +88,5 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
   },
 });
+
+/* v8 ignore end */
