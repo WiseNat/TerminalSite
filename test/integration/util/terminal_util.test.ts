@@ -123,7 +123,6 @@ describe("TerminalUtil", () => {
 
   // Can't test "updatePreviousContent" effectively as it just modifies a private value
 
-  // TODO: impl!
   describe("getUserInput", () => {
     test("should get the user input from the provided value", async () => {
       // Arrange

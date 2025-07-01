@@ -1,7 +1,5 @@
 import TerminalUtil from "../util/terminal_util.ts";
 
-// TODO: unit test this?...
-
 /**
  * Event listener function for preventing read-only text modification on inputs to the terminal.
  *
