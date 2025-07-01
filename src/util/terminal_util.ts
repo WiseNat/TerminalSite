@@ -116,7 +116,7 @@ export default class TerminalUtil {
   }
 
   /**
-   * @returns TODO
+   * @returns the most recent data the user has inputted into the terminal; anything after the read only content
    */
   public static getUserInput(): string {
     const text = this.getTerminalContent();

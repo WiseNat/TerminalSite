@@ -5,9 +5,10 @@ import TerminalUtil from "./terminal_util.ts";
 
 export default class CommandUtil {
   /**
-   * TODO
+   * Executes a command using the given command string.
+   * Will output to the terminal if no command is found.
    *
-   * @param command TODO
+   * @param command a command string, e.g. 'echo foo bar'
    */
   public static executeCommand(command: string) {
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);

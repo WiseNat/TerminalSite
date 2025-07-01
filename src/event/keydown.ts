@@ -2,7 +2,7 @@ import TerminalUtil from "../util/terminal_util.ts";
 import CommandUtil from "../util/command_util.ts";
 
 /**
- * TODO
+ * Event listener function for handling key down events in the terminal.
  *
  * @param event event listener {@link KeyboardEvent}
  */
@@ -13,9 +13,11 @@ export function keydown(event: KeyboardEvent) {
 }
 
 /**
- * TODO
+ * Processes the 'Enter' key event. This will either
+ * 1. Allow a newline if Shift+Return is being pressed
+ * 2. Execute a command if Shift+Return is not pressed
  *
- * @param event TODO
+ * @param event event listener {@link KeyboardEvent}
  */
 function processEnter(event: KeyboardEvent) {
   if (event.shiftKey) {
