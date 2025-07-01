@@ -18,15 +18,15 @@ export function input(event: Event) {
   if (
     TerminalUtil.getReadOnlyContent(previousContent) != currentReadOnlyContent
   ) {
-    let newText = previousContent;
+    let text = previousContent;
 
     // Reset to previous content and append user-inputted data to the end of the input if return was not pressed
     if (!newlineInserted) {
       const data = getInsertedDataFromInputEvent(inputEvent);
-      newText += data;
+      text += data;
     }
 
-    TerminalUtil.setText(newText);
+    TerminalUtil.setText(text);
   } else if (newlineInserted) {
     // Prevent newlines being added when return is pressed.
     // Shift+Return is allowed through the keydown event.
