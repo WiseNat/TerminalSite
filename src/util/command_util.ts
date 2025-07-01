@@ -113,7 +113,6 @@ export default class CommandUtil {
     const commandScript = getCommandScripts()[path];
 
     if (commandScript == undefined) {
-      // TODO: do we need a console warn for this?..
       console.warn(`\nCommand "${tokenisedCommand.name}" not found.`);
       return null;
     }
