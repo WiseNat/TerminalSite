@@ -3,12 +3,14 @@ import { input } from "../../../src/event/input";
 import TerminalUtil from "../../../src/util/terminal_util";
 
 describe("Input Event", () => {
-  vi.mock("../../../src/util/terminal_util");
-
   describe("input", () => {
-    // Mocks & Spies
+    // Spy
     const setText = vi.spyOn(TerminalUtil, "setText");
 
+    // Mock
+    vi.mock("../../../src/util/terminal_util");
+
+    // Other
     const previousReadOnly = ">>>";
     const previousContent = previousReadOnly + "PREVIOUS CONTENT";
 
@@ -30,7 +32,6 @@ describe("Input Event", () => {
       });
 
       const inputtedData = "foo";
-
       const event = new InputEvent("input", {
         inputType: "insertText",
         data: inputtedData,
@@ -50,7 +51,6 @@ describe("Input Event", () => {
       );
 
       const inputtedData = "foo";
-
       const event = new InputEvent("input", {
         inputType: "insertText",
         data: inputtedData,

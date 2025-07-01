@@ -4,10 +4,11 @@ import { keydown } from "../../../src/event/keydown";
 import CommandUtil from "../../../src/util/command_util";
 
 describe("Keydown Event", () => {
-  vi.mock("../../../src/util/terminal_util");
-  vi.mock("../../../src/util/command_util");
-
   describe("keydown", () => {
+    // Mock
+    vi.mock("../../../src/util/terminal_util");
+    vi.mock("../../../src/util/command_util");
+
     test("'Enter' executes a command", () => {
       // Arrange
       const executeCommand = vi.spyOn(CommandUtil, "executeCommand");

@@ -2,7 +2,6 @@ import { describe, expect, test, vi } from "vitest";
 import echo from "../../../../src/command/scripts/echo";
 import TerminalUtil from "../../../../src/util/terminal_util";
 
-// TODO: Make ALL vitest tests follow this structure
 describe("Echo", () => {
   describe("run", () => {
     // Spy
