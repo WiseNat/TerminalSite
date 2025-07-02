@@ -31,5 +31,16 @@ describe("Echo", () => {
       // Assert
       expect(appendText).toHaveBeenCalledWith("\n");
     });
+
+    test("should ignore options when outputting", () => {
+      // Arrange
+      const args = ["foo", "bar", "-a", "baz", "-gaz"];
+
+      // Act
+      echo.run(args);
+
+      // Assert
+      expect(appendText).toHaveBeenCalledWith("\nfoo bar");
+    });
   });
 });
