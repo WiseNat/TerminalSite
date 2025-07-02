@@ -41,6 +41,7 @@
   "dependencies": {
     "autoprefixer": "^10.4.21",
     "bowser": "^2.11.0",
+    "getopts": "^2.3.0",
     "the-new-css-reset": "^1.11.3"
   },
   "lint-staged": {
