@@ -75,7 +75,8 @@ test.describe("Keyboard should not be able to modify the readonly section", () =
         insertedChars += `\nfoo,${commandNotFound}\n${defaultPrompt}`;
         firstRun = false;
       } else {
-        insertedChars += `\n${commandNotFound}\n${defaultPrompt}`;
+        // No command not found for empty inputs
+        insertedChars += `\n${defaultPrompt}`;
       }
 
       await expectExactTextInTerminal(
