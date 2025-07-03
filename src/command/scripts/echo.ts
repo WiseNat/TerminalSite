@@ -4,8 +4,7 @@ import TerminalUtil from "../../util/terminal_util.ts";
 // @ts-expect-error
 import getopts, { ParsedOptions } from "getopts";
 
-// noinspection JSUnusedGlobalSymbols
-export const echo: CommandScript = {
+const echo: CommandScript = {
   run(args: string[]): void {
     const parsedOptions: ParsedOptions = getopts(args);
 
@@ -13,3 +12,6 @@ export const echo: CommandScript = {
     TerminalUtil.appendText(`\n${output}`);
   },
 };
+
+// noinspection JSUnusedGlobalSymbols
+export default echo;

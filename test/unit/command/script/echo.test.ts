@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { echo } from "../../../../src/command/scripts/echo";
+import echo from "../../../../src/command/scripts/echo";
 import TerminalUtil from "../../../../src/util/terminal_util";
 
 describe("Echo", () => {
