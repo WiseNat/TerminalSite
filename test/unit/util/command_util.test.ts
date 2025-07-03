@@ -14,8 +14,9 @@ describe("CommandUtil", () => {
     // Mock
     vi.mock("../../../src/util/terminal_util");
 
-    test("runs a command when it is found", () => {
+    test("runs a command when it is found", async () => {
       // Arrange
+      await unmockGetCommandScriptKey();
       const mockCommandFile: CommandScript = { run: vi.fn() };
       vi.mocked(getCommandScripts).mockReturnValue({
         "/src/command/scripts/test.ts": { default: mockCommandFile },
@@ -32,8 +33,9 @@ describe("CommandUtil", () => {
       expect(updateReadOnlyIndex).toHaveBeenCalledOnce();
     });
 
-    test("outputs that a command is not found when it does not exist", () => {
+    test("outputs that a command is not found when it does not exist", async () => {
       // Arrange
+      await unmockGetCommandScriptKey();
       vi.mocked(getCommandScripts).mockReturnValue({});
 
       const command = "test foo bar";
@@ -47,8 +49,9 @@ describe("CommandUtil", () => {
       expect(updateReadOnlyIndex).toHaveBeenCalledOnce();
     });
 
-    test("outputs nothing when a command is not found with no name", () => {
+    test("outputs nothing when a command is not found with no name", async () => {
       // Arrange
+      await unmockGetCommandScriptKey();
       vi.mocked(getCommandScripts).mockReturnValue({});
       const appendText = vi.spyOn(TerminalUtil, "appendText");
 
@@ -173,6 +176,7 @@ describe("CommandUtil", () => {
 
     test("should return the command scripts if it exists", async () => {
       // Arrange
+      await unmockGetCommandScriptKey();
       const mockCommandFile: CommandScript = { run: vi.fn() };
       vi.mocked(getCommandScripts).mockReturnValue({
         "/src/command/scripts/test.ts": { default: mockCommandFile },
@@ -200,3 +204,10 @@ describe("CommandUtil", () => {
     });
   });
 });
+
+async function unmockGetCommandScriptKey() {
+  const meta_import_util = await import("../../../src/util/meta_import_util");
+  meta_import_util.getCommandScriptKey = (
+    await vi.importActual("../../../src/util/meta_import_util")
+  ).getCommandScriptKey as (pathlessKey: string) => string;
+}

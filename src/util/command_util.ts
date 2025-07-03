@@ -1,6 +1,6 @@
 import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
-import getCommandScripts from "./meta_import_util.ts";
+import getCommandScripts, { getCommandScriptKey } from "./meta_import_util.ts";
 import TerminalUtil from "./terminal_util.ts";
 import { userPrompt } from "../constant/prompt.ts";
 
@@ -117,8 +117,7 @@ export default class CommandUtil {
   public static getCommandScript(
     tokenisedCommand: TokenisedCommand,
   ): CommandScript | null {
-    const path = `/src/command/scripts/${tokenisedCommand.name}.ts`;
-
+    const path = getCommandScriptKey(tokenisedCommand.name);
     const commandScript = getCommandScripts()[path];
 
     if (commandScript == undefined) {
