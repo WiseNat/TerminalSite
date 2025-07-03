@@ -18,7 +18,7 @@ describe("Echo", () => {
       echo.run(args);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\nfoo bar");
+      expect(appendText).toHaveBeenCalledWith("\nfoo bar\n");
     });
 
     test("should append nothing when no args are provided", () => {
@@ -29,7 +29,7 @@ describe("Echo", () => {
       echo.run(args);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\n");
+      expect(appendText).toHaveBeenCalledWith("\n\n");
     });
 
     test("should ignore options when outputting", () => {
@@ -40,7 +40,7 @@ describe("Echo", () => {
       echo.run(args);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\nfoo bar");
+      expect(appendText).toHaveBeenCalledWith("\nfoo bar\n");
     });
   });
 });

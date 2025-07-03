@@ -42,7 +42,7 @@ describe("CommandUtil", () => {
       CommandUtil.executeCommand(command);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\ntest: command not found");
+      expect(appendText).toHaveBeenCalledWith("\ntest: command not found\n");
       expect(appendText).toHaveBeenCalledTimes(2);
       expect(updateReadOnlyIndex).toHaveBeenCalledOnce();
     });
@@ -58,7 +58,8 @@ describe("CommandUtil", () => {
       CommandUtil.executeCommand(command);
 
       // Assert
-      expect(appendText).toHaveBeenCalledOnce();
+      expect(appendText).toHaveBeenCalledWith("\n");
+      expect(appendText).toHaveBeenCalledTimes(2);
       expect(updateReadOnlyIndex).toHaveBeenCalledOnce();
     });
   });

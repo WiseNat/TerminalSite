@@ -9,7 +9,7 @@ const echo: CommandScript = {
     const parsedOptions: ParsedOptions = getopts(args);
 
     const output = parsedOptions._.join(" ");
-    TerminalUtil.appendText(`\n${output}`);
+    TerminalUtil.appendText(`\n${output}\n`);
   },
 };
 

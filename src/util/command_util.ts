@@ -14,7 +14,9 @@ export default class CommandUtil {
   public static executeCommand(command: string) {
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);
 
-    if (tokenisedCommand.name !== "") {
+    if (tokenisedCommand.name === "") {
+      TerminalUtil.appendText("\n");
+    } else {
       const commandScript = this.getCommandScript(tokenisedCommand);
 
       if (commandScript !== null) {
@@ -24,12 +26,12 @@ export default class CommandUtil {
         commandScript.run(tokenisedCommand.args);
       } else {
         TerminalUtil.appendText(
-          `\n${tokenisedCommand.name}: command not found`,
+          `\n${tokenisedCommand.name}: command not found\n`,
         );
       }
     }
 
-    TerminalUtil.appendText(`\n${userPrompt}`);
+    TerminalUtil.appendText(userPrompt);
     TerminalUtil.updateReadOnlyIndex();
   }
 
