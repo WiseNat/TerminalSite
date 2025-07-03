@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import CommandUtil from "../../../src/util/command_util";
 import { CommandScript } from "../../../src/command/command_script";
 import TokenisedCommand from "../../../src/dto/tokenised_command";
-import getCommandScripts from "../../../src/util/meta_import_util";
 import TerminalUtil from "../../../src/util/terminal_util";
 import { unmock } from "../Unmock";
+import MetaImportUtil from "../../../src/util/meta_import_util";
 
 describe("CommandUtil", () => {
   describe("executeCommand", () => {
@@ -14,16 +14,17 @@ describe("CommandUtil", () => {
 
     // Mock
     vi.mock("../../../src/util/terminal_util");
+    vi.mock("../../../src/util/meta_import_util");
 
     // Other
     beforeEach(async () => {
-      await unmock("../../src/util/meta_import_util", "getCommandScriptKey");
+      await unmock("../../src/util/meta_import_util", ["default", "getKey"]);
     });
 
     test("runs a command when it is found", async () => {
       // Arrange
       const mockCommandFile: CommandScript = { run: vi.fn() };
-      vi.mocked(getCommandScripts).mockReturnValue({
+      vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
         "/src/command/scripts/test.ts": { default: mockCommandFile },
       });
 
@@ -40,7 +41,7 @@ describe("CommandUtil", () => {
 
     test("outputs that a command is not found when it does not exist", async () => {
       // Arrange
-      vi.mocked(getCommandScripts).mockReturnValue({});
+      vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({});
 
       const command = "test foo bar";
 
@@ -55,7 +56,7 @@ describe("CommandUtil", () => {
 
     test("outputs nothing when a command is not found with no name", async () => {
       // Arrange
-      vi.mocked(getCommandScripts).mockReturnValue({});
+      vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({});
       const appendText = vi.spyOn(TerminalUtil, "appendText");
 
       const command = "";
@@ -180,13 +181,13 @@ describe("CommandUtil", () => {
 
     // Other
     beforeEach(async () => {
-      await unmock("../../src/util/meta_import_util", "getCommandScriptKey");
+      await unmock("../../src/util/meta_import_util", ["default", "getKey"]);
     });
 
     test("should return the command scripts if it exists", async () => {
       // Arrange
       const mockCommandFile: CommandScript = { run: vi.fn() };
-      vi.mocked(getCommandScripts).mockReturnValue({
+      vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
         "/src/command/scripts/test.ts": { default: mockCommandFile },
       });
       const commandDetails: TokenisedCommand = new TokenisedCommand("test", []);
@@ -201,7 +202,7 @@ describe("CommandUtil", () => {
 
     test("should return undefined if command does not exist", async () => {
       // Arrange
-      vi.mocked(getCommandScripts).mockReturnValue({});
+      vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({});
       const commandDetails: TokenisedCommand = new TokenisedCommand("test", []);
 
       // Act

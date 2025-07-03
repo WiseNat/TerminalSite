@@ -1,11 +1,8 @@
 import TerminalUtil from "../../util/terminal_util.ts";
 import CommandUtil from "../../util/command_util.ts";
-import getCommandScripts, {
-  removePathFromCommandScriptKey,
-} from "../../util/meta_import_util.ts";
 import { userPrompt } from "../../constant/prompt.ts";
+import MetaImportUtil from "../../util/meta_import_util.ts";
 
-// TODO: JSDoc
 /**
  * Processes the 'Tab' key event. This will perform autocompletion of values in the terminal, either
  * 1. With a custom command specific autocomplete
@@ -92,8 +89,9 @@ function autocomplete(values: string[], userInput: string) {
 function getCommandSuggestions(searchValue: string): string[] {
   const commandSuggestions = [];
 
-  for (const commandScript in getCommandScripts()) {
-    const pathlessCommandScript = removePathFromCommandScriptKey(commandScript);
+  for (const commandScript in MetaImportUtil.getCommandScripts()) {
+    const pathlessCommandScript =
+      MetaImportUtil.removePathFromKey(commandScript);
     if (pathlessCommandScript.startsWith(searchValue)) {
       commandSuggestions.push(pathlessCommandScript);
     }

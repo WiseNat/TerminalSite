@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { processTab } from "../../../../src/event/keydown/tab";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { defaultPrompt } from "../../../e2e/helper/constant/generic";
-import getCommandScripts from "../../../../src/util/meta_import_util";
 import { unmock } from "../../Unmock";
+import MetaImportUtil from "../../../../src/util/meta_import_util";
 
 // TODO: E2E tests
 
@@ -20,10 +20,10 @@ describe("Tab", () => {
     const event = new KeyboardEvent("keydown");
 
     beforeEach(async () => {
-      await unmock(
-        "../../src/util/meta_import_util",
-        "removePathFromCommandScriptKey",
-      );
+      await unmock("../../src/util/meta_import_util", [
+        "default",
+        "removePathFromKey",
+      ]);
     });
 
     test.todo("Autocompletes a command name when typing a command", () => {
@@ -58,7 +58,7 @@ describe("Tab", () => {
       test("provides valid suggestions", () => {
         // Arrange
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue("ech");
-        vi.mocked(getCommandScripts).mockReturnValue({
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
           "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
@@ -76,7 +76,7 @@ describe("Tab", () => {
       test("does nothing when there are no valid suggestions", () => {
         // Arrange
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue("foo");
-        vi.mocked(getCommandScripts).mockReturnValue({
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
           "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
@@ -92,7 +92,7 @@ describe("Tab", () => {
       test("automatically inserts when there's only a single valid suggestion", () => {
         // Arrange
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue("echo_");
-        vi.mocked(getCommandScripts).mockReturnValue({
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
           "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
@@ -108,7 +108,7 @@ describe("Tab", () => {
       test("adds a space when the command name is already typed and there's only a single valid suggestion", () => {
         // Arrange
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue("echoing");
-        vi.mocked(getCommandScripts).mockReturnValue({
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
           "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
@@ -124,7 +124,7 @@ describe("Tab", () => {
       test("does nothing when the command name is already typed with a space and there's only a single valid suggestion", () => {
         // Arrange
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue("echoing ");
-        vi.mocked(getCommandScripts).mockReturnValue({
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
           "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
@@ -140,7 +140,7 @@ describe("Tab", () => {
       test("provides valid suggestions when a command name is already typed and there's other suggestions", () => {
         // Arrange
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue("echo");
-        vi.mocked(getCommandScripts).mockReturnValue({
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
           "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
@@ -158,7 +158,7 @@ describe("Tab", () => {
       test("does nothing when nothing is typed", () => {
         // Arrange
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue("");
-        vi.mocked(getCommandScripts).mockReturnValue({
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
           "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
           "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
