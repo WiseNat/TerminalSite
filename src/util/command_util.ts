@@ -21,7 +21,7 @@ export default class CommandUtil {
 
       if (commandScript !== null) {
         console.info(
-          `Running command '${tokenisedCommand.name}' with args ${tokenisedCommand.args}`,
+          `Running command '${tokenisedCommand.name}' with args '${tokenisedCommand.args}'`,
         );
         commandScript.run(tokenisedCommand.args);
       } else {
