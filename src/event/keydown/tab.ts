@@ -1,6 +1,7 @@
 import TerminalUtil from "../../util/terminal_util.ts";
 import CommandUtil from "../../util/command_util.ts";
 import AutocompleteUtil from "../../util/autocomplete_util.ts";
+import TokenisedCommand from "../../dto/tokenised_command.ts";
 
 /**
  * Processes the 'Tab' key event. This will perform autocompletion of values in the terminal, either
@@ -20,35 +21,65 @@ export function processTab(event: KeyboardEvent) {
 
   const tokenisedCommand = CommandUtil.tokenise(userInput);
 
-  let values: string[] | undefined;
+  let suggestions: string[];
 
   if (tokenisedCommand.args.length != 0 || userInput.endsWith(" ")) {
-    const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
-
-    if (commandScript?.autocomplete) {
-      const customValues = commandScript.autocomplete(tokenisedCommand.args);
-
-      if (customValues != null) {
-        values = customValues;
-      }
-    }
-
-    if (values == undefined) {
-      const searchPath =
-        tokenisedCommand.args[tokenisedCommand.args.length - 1];
-
-      values = AutocompleteUtil.getDirectorySuggestions(searchPath);
-      values = values.concat(AutocompleteUtil.getFileSuggestions(searchPath));
-    }
+    suggestions = customCommandAutocomplete(tokenisedCommand);
   } else {
-    values = AutocompleteUtil.getCommandSuggestions(tokenisedCommand.name);
-    values = values.concat(
-      AutocompleteUtil.getDirectorySuggestions(tokenisedCommand.name),
-    );
-    values = values.concat(
-      AutocompleteUtil.getFileSuggestions(tokenisedCommand.name),
-    );
+    suggestions = defaultAutocomplete(tokenisedCommand);
   }
 
-  AutocompleteUtil.autocomplete(values, userInput);
+  AutocompleteUtil.autocomplete(suggestions, userInput);
+}
+
+/**
+ * Handles custom command autocompletion.
+ *
+ * @param tokenisedCommand
+ *
+ * @returns values from the custom command autocomplete or directory & file suggestions if the method returns null or
+ * doesn't exist.
+ */
+function customCommandAutocomplete(
+  tokenisedCommand: TokenisedCommand,
+): string[] {
+  const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
+
+  if (commandScript?.autocomplete) {
+    const suggestions = commandScript.autocomplete(tokenisedCommand.args);
+
+    if (suggestions != null) {
+      return suggestions;
+    }
+  }
+
+  const searchPath = tokenisedCommand.args[tokenisedCommand.args.length - 1];
+
+  let suggestions = AutocompleteUtil.getDirectorySuggestions(searchPath);
+  suggestions = suggestions.concat(
+    AutocompleteUtil.getFileSuggestions(searchPath),
+  );
+
+  return suggestions;
+}
+
+/**
+ * Handles default autocompletion.
+ *
+ * @param tokenisedCommand
+ *
+ * @returns command name, directory, and file suggestions
+ */
+function defaultAutocomplete(tokenisedCommand: TokenisedCommand): string[] {
+  let suggestions: string[] = AutocompleteUtil.getCommandSuggestions(
+    tokenisedCommand.name,
+  );
+  suggestions = suggestions.concat(
+    AutocompleteUtil.getDirectorySuggestions(tokenisedCommand.name),
+  );
+  suggestions = suggestions.concat(
+    AutocompleteUtil.getFileSuggestions(tokenisedCommand.name),
+  );
+
+  return suggestions;
 }
