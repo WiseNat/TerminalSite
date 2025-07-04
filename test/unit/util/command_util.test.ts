@@ -72,106 +72,64 @@ describe("CommandUtil", () => {
   });
 
   describe("tokenise", () => {
-    test("correctly tokenises a command with multiple arguments", () => {
-      // Arrange
-      const commandString = "mycommand foo -m bar";
+    [
+      {
+        type: "a command with multiple arguments",
+        commandString: "mycommand foo -m bar",
+        expectedCommand: "mycommand",
+        expectedArgs: ["foo", "-m", "bar"],
+      },
+      {
+        type: "a command with no arguments",
+        commandString: "mycommand",
+        expectedCommand: "mycommand",
+        expectedArgs: [],
+      },
+      {
+        type: "an empty command",
+        commandString: "",
+        expectedCommand: "",
+        expectedArgs: [],
+      },
+      {
+        type: "a complex command",
+        commandString: "git commit -m \"foo 'bar'\" and 'baz \"gaz'",
+        expectedCommand: "git",
+        expectedArgs: ["commit", "-m", "foo 'bar'", "and", "baz \"gaz"],
+      },
+      {
+        type: "a command with arguments with double quoted spaces",
+        commandString: "mycommand \"foo bar\"",
+        expectedCommand: "mycommand",
+        expectedArgs: ["foo bar"],
+      },
+      {
+        type: "a command with arguments with single quoted spaces",
+        commandString: "mycommand 'foo bar'",
+        expectedCommand: "mycommand",
+        expectedArgs: ["foo bar"],
+      },
+      {
+        type: "a command with excessive whitespace",
+        commandString: "mycommand  ab \r  'foo \tbar' \n ",
+        expectedCommand: "mycommand",
+        expectedArgs: ["ab", "foo \tbar"],
+      },
+      {
+        type: "a command with newlines and ignores them",
+        commandString: "mycommand foo\nbar baz \ngaz",
+        expectedCommand: "mycommand",
+        expectedArgs: ["foobar", "baz", "gaz"],
+      },
+    ].forEach(({ type, commandString, expectedCommand, expectedArgs }) => {
+      test(`correctly tokenises ${type}`, () => {
+        // Arrange & Act
+        const command = CommandUtil.tokenise(commandString);
 
-      // Act
-      const command = CommandUtil.tokenise(commandString);
-
-      // Assert
-      expect(command.name).toBe("mycommand");
-      expect(command.args).toStrictEqual(["foo", "-m", "bar"]);
-    });
-
-    test("correctly tokenises a command with no arguments", () => {
-      // Arrange
-      const commandString = "mycommand";
-
-      // Act
-      const command = CommandUtil.tokenise(commandString);
-
-      // Assert
-      expect(command.name).toBe("mycommand");
-      expect(command.args).toStrictEqual([]);
-    });
-
-    test("correctly tokenises an empty command", () => {
-      // Arrange
-      const commandString = "";
-
-      // Act
-      const command = CommandUtil.tokenise(commandString);
-
-      // Assert
-      expect(command.name).toBe("");
-      expect(command.args).toStrictEqual([]);
-    });
-
-    test("correctly tokenises a complex command", () => {
-      // Arrange
-      const commandString = "git commit -m \"foo 'bar'\" and 'baz \"gaz'";
-
-      // Act
-      const command = CommandUtil.tokenise(commandString);
-
-      // Assert
-      expect(command.name).toBe("git");
-      expect(command.args).toStrictEqual([
-        "commit",
-        "-m",
-        "foo 'bar'",
-        "and",
-        "baz \"gaz",
-      ]);
-    });
-
-    test("correctly tokenises a command with arguments with double quoted spaces", () => {
-      // Arrange
-      const commandString = "mycommand \"foo bar\"";
-
-      // Act
-      const command = CommandUtil.tokenise(commandString);
-
-      // Assert
-      expect(command.name).toBe("mycommand");
-      expect(command.args).toStrictEqual(["foo bar"]);
-    });
-
-    test("correctly tokenises a command with arguments with single quoted spaces", () => {
-      // Arrange
-      const commandString = "mycommand 'foo bar'";
-
-      // Act
-      const command = CommandUtil.tokenise(commandString);
-
-      // Assert
-      expect(command.name).toBe("mycommand");
-      expect(command.args).toStrictEqual(["foo bar"]);
-    });
-
-    test("correctly tokenises a command with excessive whitespace", () => {
-      // Arrange
-      const commandString = "mycommand  ab \r  'foo \tbar' \n ";
-
-      // Act
-      const command = CommandUtil.tokenise(commandString);
-
-      // Assert
-      expect(command.name).toBe("mycommand");
-      expect(command.args).toStrictEqual(["ab", "foo \tbar"]);
-    });
-
-    test("correctly tokenises a command with newlines and ignores them", () => {
-      // Arrange
-      const commandString = "mycommand foo\nbar baz \ngaz";
-
-      // Act
-      const command = CommandUtil.tokenise(commandString);
-
-      // Assert
-      expect(command.name).toBe("mycommand");
-      expect(command.args).toStrictEqual(["foobar", "baz", "gaz"]);
+        // Assert
+        expect(command.name).toBe(expectedCommand);
+        expect(command.args).toStrictEqual(expectedArgs);
+      });
     });
   });
 

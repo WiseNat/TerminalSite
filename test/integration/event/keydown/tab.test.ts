@@ -55,120 +55,62 @@ describe("Tab", () => {
     );
 
     describe("Default autocompletion", () => {
-      test("provides valid suggestions", () => {
-        // Arrange
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue("ech");
-        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-          "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
+      [
+        {
+          type: "provides valid suggestions",
+          userInput: "ech",
+          appendTextCalledWith: `\necho\techoing\techo_ers\n${defaultPrompt}`,
+        },
+        {
+          type: "does nothing when there are no valid suggestions",
+          userInput: "foo",
+          appendTextCalledWith: null,
+        },
+        {
+          type: "automatically inserts when there's only a single valid suggestion",
+          userInput: "echo_",
+          appendTextCalledWith: "ers ",
+        },
+        {
+          type: "adds a space when the command name is already typed and there's only a single valid suggestion",
+          userInput: "echoing",
+          appendTextCalledWith: " ",
+        },
+        {
+          type: "does nothing when the command name is already typed with a space and there's only a single valid suggestion",
+          userInput: "echoing ",
+          appendTextCalledWith: null,
+        },
+        {
+          type: "provides valid suggestions when a command name is already typed and there's other suggestions",
+          userInput: "echo",
+          appendTextCalledWith: `\necho\techoing\techo_ers\n${defaultPrompt}`,
+        },
+        {
+          type: "does nothing when nothing is typed",
+          userInput: "",
+          appendTextCalledWith: null,
+        },
+      ].forEach(({ type, userInput, appendTextCalledWith }) => {
+        test(type, () => {
+          // Arrange
+          vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+          vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
+            "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
+            "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
+            "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
+          });
+
+          // Act
+          processTab(event);
+
+          // Assert
+          if (appendTextCalledWith == null) {
+            expect(appendText).not.toHaveBeenCalled();
+          } else {
+            expect(appendText).toHaveBeenCalledWith(appendTextCalledWith);
+          }
         });
-
-        // Act
-        processTab(event);
-
-        // Assert
-        expect(appendText).toHaveBeenCalledWith(
-          `\necho\techoing\techo_ers\n${defaultPrompt}`,
-        );
-      });
-
-      test("does nothing when there are no valid suggestions", () => {
-        // Arrange
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue("foo");
-        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-          "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
-        });
-
-        // Act
-        processTab(event);
-
-        // Assert
-        expect(appendText).not.toHaveBeenCalled();
-      });
-
-      test("automatically inserts when there's only a single valid suggestion", () => {
-        // Arrange
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue("echo_");
-        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-          "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
-        });
-
-        // Act
-        processTab(event);
-
-        // Assert
-        expect(appendText).toHaveBeenCalledWith("ers ");
-      });
-
-      test("adds a space when the command name is already typed and there's only a single valid suggestion", () => {
-        // Arrange
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue("echoing");
-        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-          "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
-        });
-
-        // Act
-        processTab(event);
-
-        // Assert
-        expect(appendText).toHaveBeenCalledWith(" ");
-      });
-
-      test("does nothing when the command name is already typed with a space and there's only a single valid suggestion", () => {
-        // Arrange
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue("echoing ");
-        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-          "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
-        });
-
-        // Act
-        processTab(event);
-
-        // Assert
-        expect(appendText).not.toHaveBeenCalled();
-      });
-
-      test("provides valid suggestions when a command name is already typed and there's other suggestions", () => {
-        // Arrange
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue("echo");
-        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-          "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
-        });
-
-        // Act
-        processTab(event);
-
-        // Assert
-        expect(appendText).toHaveBeenCalledWith(
-          `\necho\techoing\techo_ers\n${defaultPrompt}`,
-        );
-      });
-
-      test("does nothing when nothing is typed", () => {
-        // Arrange
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue("");
-        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-          "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
-        });
-
-        // Act
-        processTab(event);
-
-        // Assert
-        expect(appendText).not.toHaveBeenCalled();
       });
     });
 
