@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import TerminalUtil from "../../../src/util/terminal_util";
+import TerminalUtil from "../../../../src/util/terminal_util";
 
 describe("TerminalUtil", () => {
   let terminal: HTMLElement;

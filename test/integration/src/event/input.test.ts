@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { input } from "../../../src/event/input";
-import TerminalUtil from "../../../src/util/terminal_util";
+import { input } from "../../../../src/event/input";
+import TerminalUtil from "../../../../src/util/terminal_util";
 
 describe("Input Event", () => {
   describe("input", () => {
@@ -8,7 +8,7 @@ describe("Input Event", () => {
     const setText = vi.spyOn(TerminalUtil, "setText");
 
     // Mock
-    vi.mock("../../../src/util/terminal_util");
+    vi.mock("../../../../src/util/terminal_util");
 
     // Other
     const previousReadOnly = ">>>";

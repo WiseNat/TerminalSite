@@ -34,12 +34,17 @@
     <meta name="twitter:image:alt" content="%VITE_SITE_IMAGE_ALT%" />
   </head>
   <body>
-    <div
-      id="terminal"
-      contenteditable="plaintext-only"
-      spellcheck="false"
-      autofocus
-    ></div>
+    <header role="banner"></header>
+    <nav role="navigation"></nav>
+    <main role="main">
+      <div
+        id="terminal"
+        contenteditable="plaintext-only"
+        spellcheck="false"
+        autofocus
+      ></div>
+    </main>
+    <footer role="contentinfo"></footer>
     <script type="module" src="/src/main.ts"></script>
     <script type="module" src="/src/css_reset.ts"></script>
   </body>

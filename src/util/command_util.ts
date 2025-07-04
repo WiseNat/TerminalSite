@@ -1,8 +1,8 @@
 import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
-import getCommandScripts from "./meta_import_util.ts";
 import TerminalUtil from "./terminal_util.ts";
 import { userPrompt } from "../constant/prompt.ts";
+import MetaImportUtil from "./meta_import_util.ts";
 
 export default class CommandUtil {
   /**
@@ -14,22 +14,24 @@ export default class CommandUtil {
   public static executeCommand(command: string) {
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);
 
-    if (tokenisedCommand.name !== "") {
+    if (tokenisedCommand.name === "") {
+      TerminalUtil.appendText("\n");
+    } else {
       const commandScript = this.getCommandScript(tokenisedCommand);
 
       if (commandScript !== null) {
         console.info(
-          `Running command '${tokenisedCommand.name}' with args ${tokenisedCommand.args}`,
+          `Running command '${tokenisedCommand.name}' with args '${tokenisedCommand.args}'`,
         );
         commandScript.run(tokenisedCommand.args);
       } else {
         TerminalUtil.appendText(
-          `\n${tokenisedCommand.name}: command not found`,
+          `\n${tokenisedCommand.name}: command not found\n`,
         );
       }
     }
 
-    TerminalUtil.appendText(`\n${userPrompt}`);
+    TerminalUtil.appendText(userPrompt);
     TerminalUtil.updateReadOnlyIndex();
   }
 
@@ -115,9 +117,8 @@ export default class CommandUtil {
   public static getCommandScript(
     tokenisedCommand: TokenisedCommand,
   ): CommandScript | null {
-    const path = `/src/command/scripts/${tokenisedCommand.name}.ts`;
-
-    const commandScript = getCommandScripts()[path];
+    const path = MetaImportUtil.getKey(tokenisedCommand.name);
+    const commandScript = MetaImportUtil.getCommandScripts()[path];
 
     if (commandScript == undefined) {
       console.warn(`\nCommand "${tokenisedCommand.name}" not found.`);

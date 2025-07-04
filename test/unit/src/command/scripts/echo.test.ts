@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
-import echo from "../../../../src/command/scripts/echo";
-import TerminalUtil from "../../../../src/util/terminal_util";
+import echo from "../../../../../src/command/scripts/echo";
+import TerminalUtil from "../../../../../src/util/terminal_util";
 
 describe("Echo", () => {
   describe("run", () => {
@@ -8,7 +8,7 @@ describe("Echo", () => {
     const appendText = vi.spyOn(TerminalUtil, "appendText");
 
     // Mock
-    vi.mock("../../../../src/util/terminal_util");
+    vi.mock("../../../../../src/util/terminal_util");
 
     test("should join and append all args", () => {
       // Arrange
@@ -18,7 +18,7 @@ describe("Echo", () => {
       echo.run(args);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\nfoo bar");
+      expect(appendText).toHaveBeenCalledWith("\nfoo bar\n");
     });
 
     test("should append nothing when no args are provided", () => {
@@ -29,7 +29,7 @@ describe("Echo", () => {
       echo.run(args);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\n");
+      expect(appendText).toHaveBeenCalledWith("\n\n");
     });
 
     test("should ignore options when outputting", () => {
@@ -40,7 +40,7 @@ describe("Echo", () => {
       echo.run(args);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\nfoo bar");
+      expect(appendText).toHaveBeenCalledWith("\nfoo bar\n");
     });
   });
 });

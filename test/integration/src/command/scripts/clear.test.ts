@@ -1,13 +1,13 @@
 import { describe, expect, test, vi } from "vitest";
-import CommandUtil from "../../../../src/util/command_util";
+import CommandUtil from "../../../../../src/util/command_util";
 
-describe("Echo", () => {
+describe("Clear", () => {
   // Mock
-  vi.mock("../../../../src/util/terminal_util");
+  vi.mock("../../../../../src/util/terminal_util");
 
   test("should run with CommandUtil", () => {
     // Arrange
-    const commandName = "echo";
+    const commandName = "clear";
 
     // Act & Assert
     expect(() => CommandUtil.executeCommand(commandName)).not.toThrowError();

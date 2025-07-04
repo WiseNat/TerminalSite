@@ -1,15 +1,15 @@
-import { test } from "./fixture";
+import { test } from "../fixture";
 import {
   charIndexInReadOnly,
   commandNotFound,
   defaultPrompt,
   defaultReadOnly,
   terminalSelector,
-} from "./constant/generic";
+} from "../helper/constant/generic";
 import {
   expectExactTextInTerminal,
   setCaretAtCharIndex,
-} from "./util/terminal_util";
+} from "../helper/util/terminal_util";
 
 test("Typing a valid command and pressing Enter runs that command", async ({
   page,

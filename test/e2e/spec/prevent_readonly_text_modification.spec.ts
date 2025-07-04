@@ -1,24 +1,24 @@
-import { test } from "./fixture";
+import { test } from "../fixture";
 import {
   expectExactTextInTerminal,
   expectTerminalToStartWithText,
   setCaretAtCharIndex,
-} from "./util/terminal_util";
+} from "../helper/util/terminal_util";
 import {
   ALPHANUMERIC,
   BASIC_SYMBOLS,
   NEWLINES,
   UNICODE_SYMBOLS,
   WHITESPACE,
-} from "./constant/charset";
+} from "../helper/constant/charset";
 import {
   charIndexInReadOnly,
   commandNotFound,
   defaultPrompt,
   defaultReadOnly,
   terminalSelector,
-} from "./constant/generic";
-import { simulatePaste } from "./util/clipboard_util";
+} from "../helper/constant/generic";
+import { simulatePaste } from "../helper/util/clipboard_util";
 
 const defaultInput = "foo, bar ?<baz>gaz</baz> asd> // testing";
 

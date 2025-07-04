@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { expect } from "../fixture";
+import { expect } from "../../fixture";
 import { terminalSelector } from "../constant/generic";
 import _ from "lodash";
 
