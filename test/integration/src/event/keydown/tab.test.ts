@@ -4,13 +4,14 @@ import TerminalUtil from "../../../../../src/util/terminal_util";
 import { defaultPrompt } from "../../../../e2e/helper/constant/generic";
 import { unmock } from "../../../helper/Unmock";
 import MetaImportUtil from "../../../../../src/util/meta_import_util";
-
-// TODO: E2E tests
+import { CommandScript } from "../../../../../src/command/command_script";
+import CommandUtil from "../../../../../src/util/command_util";
 
 describe("Tab", () => {
   describe("processTab", () => {
     // Spy
     const appendText = vi.spyOn(TerminalUtil, "appendText");
+    const getCommandScript = vi.spyOn(CommandUtil, "getCommandScript");
 
     // Mock
     vi.mock("../../../../../src/util/terminal_util");
@@ -24,6 +25,8 @@ describe("Tab", () => {
         "default",
         "removePathFromKey",
       ]);
+
+      await unmock("../../../src/util/meta_import_util", ["default", "getKey"]);
     });
 
     test.todo("Autocompletes a command name when typing a command", () => {
@@ -114,7 +117,89 @@ describe("Tab", () => {
       });
     });
 
-    // TODO: tests for this
-    describe.todo("Custom command autocompletion");
+    // TODO: tests (incl. E2E) for this
+    describe("Custom command autocompletion", () => {
+      test("runs the default autocomplete if the command does not exist", () => {
+        // Arrange
+        const userInput = "echo -e ";
+        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
+          "/src/command/scripts/foo.ts": { default: { run: vi.fn() } },
+        });
+
+        // Act
+        processTab(event);
+
+        // Assert
+        expect(getCommandScript).toHaveBeenCalledOnce();
+        expect(getCommandScript).toReturnWith(null); // implicit check
+      });
+
+      test("runs the command autocomplete if it exists", () => {
+        // Arrange
+        const userInput = "echo -e ";
+        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+
+        const mockCommandFile: CommandScript = {
+          run: vi.fn(),
+          autocomplete: vi.fn(),
+        };
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
+          "/src/command/scripts/echo.ts": { default: mockCommandFile },
+        });
+
+        // Act
+        processTab(event);
+
+        // Assert
+        expect(getCommandScript).toHaveBeenCalledOnce();
+        expect(mockCommandFile.autocomplete).toHaveBeenCalled();
+      });
+
+      test("runs the default autocomplete if a command autocomplete does not exist", () => {
+        // Arrange
+        const userInput = "echo -e ";
+        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+
+        const mockCommandFile: CommandScript = {
+          run: vi.fn(),
+          autocomplete: undefined,
+        };
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
+          "/src/command/scripts/echo.ts": { default: mockCommandFile },
+        });
+
+        // Act
+        processTab(event);
+
+        // Assert
+        expect(getCommandScript).toHaveBeenCalledOnce();
+        // TODO: somehow check the default autocomplete was ran
+      });
+
+      test("runs the default autocomplete if the command autocomplete returns null", () => {
+        // Arrange
+        const userInput = "echo -e ";
+        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+
+        const mockCommandFile: CommandScript = {
+          run: vi.fn(),
+          autocomplete: vi.fn(() => {
+            return null;
+          }),
+        };
+        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
+          "/src/command/scripts/echo.ts": { default: mockCommandFile },
+        });
+
+        // Act
+        processTab(event);
+
+        // Assert
+        expect(getCommandScript).toHaveBeenCalledOnce();
+        expect(mockCommandFile.autocomplete).toHaveBeenCalled();
+        // TODO: somehow check the default autocomplete was ran
+      });
+    });
   });
 });

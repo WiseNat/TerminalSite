@@ -21,11 +21,21 @@ export function processTab(event: KeyboardEvent) {
 
   const tokenisedCommand = CommandUtil.tokenise(userInput);
 
-  let values: string[];
+  let values: string[] | undefined;
 
   if (tokenisedCommand.args.length != 0) {
-    // TODO: IF command has a custom autocomplete, call that, ELSE suggest directories & filenames
-    values = [];
+    const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
+
+    if (commandScript?.autocomplete) {
+      const customValues = commandScript.autocomplete(tokenisedCommand.args);
+
+      if (customValues != null) {
+        values = customValues;
+      }
+    }
+
+    // TODO: change to suggest directories and filenames
+    values ??= [];
   } else {
     values = getCommandSuggestions(tokenisedCommand.name);
     // TODO: suggest directories when functionality for them is added, Bash suggests those despite them not working so
