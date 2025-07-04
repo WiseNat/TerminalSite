@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { processTab } from "../../../../src/event/keydown/tab";
-import TerminalUtil from "../../../../src/util/terminal_util";
-import { defaultPrompt } from "../../../e2e/helper/constant/generic";
-import { unmock } from "../../Unmock";
-import MetaImportUtil from "../../../../src/util/meta_import_util";
+import { processTab } from "../../../../../src/event/keydown/tab";
+import TerminalUtil from "../../../../../src/util/terminal_util";
+import { defaultPrompt } from "../../../../e2e/helper/constant/generic";
+import { unmock } from "../../../helper/Unmock";
+import MetaImportUtil from "../../../../../src/util/meta_import_util";
 
 // TODO: E2E tests
 
@@ -13,14 +13,14 @@ describe("Tab", () => {
     const appendText = vi.spyOn(TerminalUtil, "appendText");
 
     // Mock
-    vi.mock("../../../../src/util/terminal_util");
-    vi.mock("../../../../src/util/meta_import_util");
+    vi.mock("../../../../../src/util/terminal_util");
+    vi.mock("../../../../../src/util/meta_import_util");
 
     // Other
     const event = new KeyboardEvent("keydown");
 
     beforeEach(async () => {
-      await unmock("../../src/util/meta_import_util", [
+      await unmock("../../../src/util/meta_import_util", [
         "default",
         "removePathFromKey",
       ]);

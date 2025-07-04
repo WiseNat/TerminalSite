@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import CommandUtil from "../../../src/util/command_util";
-import { CommandScript } from "../../../src/command/command_script";
-import TokenisedCommand from "../../../src/dto/tokenised_command";
-import TerminalUtil from "../../../src/util/terminal_util";
-import { unmock } from "../Unmock";
-import MetaImportUtil from "../../../src/util/meta_import_util";
+import CommandUtil from "../../../../src/util/command_util";
+import { CommandScript } from "../../../../src/command/command_script";
+import TokenisedCommand from "../../../../src/dto/tokenised_command";
+import TerminalUtil from "../../../../src/util/terminal_util";
+import { unmock } from "../../helper/Unmock";
+import MetaImportUtil from "../../../../src/util/meta_import_util";
 
 describe("CommandUtil", () => {
   describe("executeCommand", () => {
@@ -13,12 +13,12 @@ describe("CommandUtil", () => {
     const updateReadOnlyIndex = vi.spyOn(TerminalUtil, "updateReadOnlyIndex");
 
     // Mock
-    vi.mock("../../../src/util/terminal_util");
-    vi.mock("../../../src/util/meta_import_util");
+    vi.mock("../../../../src/util/terminal_util");
+    vi.mock("../../../../src/util/meta_import_util");
 
     // Other
     beforeEach(async () => {
-      await unmock("../../src/util/meta_import_util", ["default", "getKey"]);
+      await unmock("../../../src/util/meta_import_util", ["default", "getKey"]);
     });
 
     test("runs a command when it is found", async () => {
@@ -135,11 +135,11 @@ describe("CommandUtil", () => {
 
   describe("getCommandScripts", () => {
     // Mock
-    vi.mock("../../../src/util/meta_import_util");
+    vi.mock("../../../../src/util/meta_import_util");
 
     // Other
     beforeEach(async () => {
-      await unmock("../../src/util/meta_import_util", ["default", "getKey"]);
+      await unmock("../../../src/util/meta_import_util", ["default", "getKey"]);
     });
 
     test("should return the command scripts if it exists", async () => {

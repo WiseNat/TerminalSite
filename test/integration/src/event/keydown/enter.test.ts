@@ -1,12 +1,12 @@
 import { describe, expect, test, vi } from "vitest";
-import TerminalUtil from "../../../../src/util/terminal_util";
-import CommandUtil from "../../../../src/util/command_util";
-import { processEnter } from "../../../../src/event/keydown/enter";
+import TerminalUtil from "../../../../../src/util/terminal_util";
+import CommandUtil from "../../../../../src/util/command_util";
+import { processEnter } from "../../../../../src/event/keydown/enter";
 
 describe("Enter", () => {
   // Mock
-  vi.mock("../../../../src/util/terminal_util");
-  vi.mock("../../../../src/util/command_util");
+  vi.mock("../../../../../src/util/terminal_util");
+  vi.mock("../../../../../src/util/command_util");
 
   test("executes a command", () => {
     // Arrange

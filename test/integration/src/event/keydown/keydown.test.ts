@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
-import { keydown } from "../../../../src/event/keydown/keydown";
-import * as enterModule from "../../../../src/event/keydown/enter";
-import * as tabModule from "../../../../src/event/keydown/tab";
+import { keydown } from "../../../../../src/event/keydown/keydown";
+import * as enterModule from "../../../../../src/event/keydown/enter";
+import * as tabModule from "../../../../../src/event/keydown/tab";
 
 describe("Keydown Event", () => {
   describe("keydown", () => {
@@ -10,8 +10,8 @@ describe("Keydown Event", () => {
     const processTab = vi.spyOn(tabModule, "processTab");
 
     // Mock
-    vi.mock("../../../../src/event/keydown/enter");
-    vi.mock("../../../../src/event/keydown/tab");
+    vi.mock("../../../../../src/event/keydown/enter");
+    vi.mock("../../../../../src/event/keydown/tab");
 
     test("calls processEnter when 'Enter' is pressed", () => {
       // Arrange

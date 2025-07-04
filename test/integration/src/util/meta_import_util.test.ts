@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import MetaImportUtil from "../../../src/util/meta_import_util";
+import MetaImportUtil from "../../../../src/util/meta_import_util";
 
 describe("Meta Import Util", () => {
   describe("getCommandScripts", () => {
