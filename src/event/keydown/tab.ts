@@ -14,13 +14,13 @@ export function processTab(event: KeyboardEvent) {
   event.preventDefault();
 
   const userInput = TerminalUtil.getUserInput();
+
+  // We don't want suggestions provided when nothing exists in the user input
   if (userInput == "") {
-    // We don't want suggestions provided when nothing exists in the user input
     return;
   }
 
   const tokenisedCommand = CommandUtil.tokenise(userInput);
-
   let suggestions: string[];
 
   if (tokenisedCommand.args.length != 0 || userInput.endsWith(" ")) {

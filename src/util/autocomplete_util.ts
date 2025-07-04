@@ -77,7 +77,7 @@ export default class AutocompleteUtil {
    */
   public static getDirectorySuggestions(searchPath: string): string[] {
     // TODO: implement when directories are implemented
-    console.info(`getDirectorySuggestions called with ${searchPath}`);
+    console.info(`getDirectorySuggestions called with '${searchPath}'`);
     return [];
   }
 
@@ -90,7 +90,7 @@ export default class AutocompleteUtil {
    */
   public static getFileSuggestions(searchPath: string): string[] {
     // TODO: implement when files are implemented
-    console.info(`getFileSuggestions called with ${searchPath}`);
+    console.info(`getFileSuggestions called with '${searchPath}'`);
     return [];
   }
 }
