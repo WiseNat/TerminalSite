@@ -59,3 +59,16 @@ export async function expectTerminalToStartWithText(page: Page, text: string) {
     new RegExp(`^${_.escapeRegExp(text)}`),
   );
 }
+
+/**
+ * Checks whether the terminal ends with the provided text.
+ *
+ * @param page Playwright's Page object
+ * @param text Expected text that the terminal will end with
+ */
+export async function expectTerminalToEndWithText(page: Page, text: string) {
+  // Using RegExp in toHaveText to prevent whitespace normalisation
+  await expect(page.locator(terminalSelector)).toHaveText(
+    new RegExp(`${_.escapeRegExp(text)}$`),
+  );
+}
