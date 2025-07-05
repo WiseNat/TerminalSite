@@ -16,14 +16,14 @@ export function processTab(event: KeyboardEvent) {
   const userInput = TerminalUtil.getUserInput();
 
   // We don't want suggestions provided when nothing exists in the user input
-  if (userInput == "") {
+  if (userInput === "") {
     return;
   }
 
   const tokenisedCommand = CommandUtil.tokenise(userInput);
   let suggestions: string[];
 
-  if (tokenisedCommand.args.length != 0 || userInput.endsWith(" ")) {
+  if (tokenisedCommand.args.length !== 0 || userInput.endsWith(" ")) {
     suggestions = customCommandAutocomplete(tokenisedCommand);
   } else {
     suggestions = defaultAutocomplete(tokenisedCommand);

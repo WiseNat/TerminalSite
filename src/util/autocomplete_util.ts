@@ -17,14 +17,14 @@ export default class AutocompleteUtil {
    */
   public static autocomplete(suggestions: string[], userInput: string) {
     // Do nothing when there are no suggestions
-    if (suggestions.length == 0) {
+    if (suggestions.length === 0) {
       return;
     }
 
     console.info(`Suggested values are '${suggestions}'`);
 
     // Autocomplete value if there's only 1 suggestion, otherwise output all suggestions
-    if (suggestions.length == 1) {
+    if (suggestions.length === 1) {
       let suggestedValue = suggestions[0];
 
       // We want to append whitespace to the end of a command if it's missing, but we don't want to append any additional
