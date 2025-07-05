@@ -16,6 +16,7 @@ export default defineConfig([
     rules: {
       "@stylistic/semi": ["error", "always"],
       "@stylistic/quotes": ["error", "double"],
+      "eqeqeq": ["error", "smart"]
     },
   },
   {

@@ -43,7 +43,7 @@ export default class CommandUtil {
    */
   public static tokenise(command: string): TokenisedCommand {
     const tokens: string[] = this.split(command);
-    const name = tokens.length == 0 ? "" : tokens[0];
+    const name = tokens.length === 0 ? "" : tokens[0];
     const args: string[] =
       tokens.length > 1 ? tokens.slice(1, tokens.length) : [];
 
@@ -73,7 +73,7 @@ export default class CommandUtil {
 
     for (const char of command) {
       // Ignore newlines, treat them as line continuations
-      if (char == "\n") {
+      if (char === "\n") {
         continue;
       }
 
@@ -120,7 +120,7 @@ export default class CommandUtil {
     const path = MetaImportUtil.getKey(tokenisedCommand.name);
     const commandScript = MetaImportUtil.getCommandScripts()[path];
 
-    if (commandScript == undefined) {
+    if (commandScript === undefined) {
       console.warn(`\nCommand "${tokenisedCommand.name}" not found.`);
       return null;
     }

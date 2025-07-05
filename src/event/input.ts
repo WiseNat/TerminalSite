@@ -16,7 +16,7 @@ export function input(event: Event) {
 
   // Check if the read-only terminal sections do not match
   if (
-    TerminalUtil.getReadOnlyContent(previousContent) != currentReadOnlyContent
+    TerminalUtil.getReadOnlyContent(previousContent) !== currentReadOnlyContent
   ) {
     console.info("Read-only content was modified, reverting..");
 
