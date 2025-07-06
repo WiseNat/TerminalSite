@@ -81,9 +81,10 @@ describe("CommandHistoryUtil", () => {
       CommandHistoryUtil.addToHistory("userinput");
 
       // Act
-      CommandHistoryUtil.incrementHistoryIndex();
+      const wasSuccessful = CommandHistoryUtil.incrementHistoryIndex();
 
       // Assert
+      expect(wasSuccessful).toEqual(true);
       const historyIndex = CommandHistoryUtil.getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(1);
@@ -100,9 +101,10 @@ describe("CommandHistoryUtil", () => {
       CommandHistoryUtil.incrementHistoryIndex();
       CommandHistoryUtil.incrementHistoryIndex();
       CommandHistoryUtil.incrementHistoryIndex();
-      CommandHistoryUtil.incrementHistoryIndex();
+      const wasSuccessful = CommandHistoryUtil.incrementHistoryIndex();
 
       // Assert
+      expect(wasSuccessful).toEqual(false);
       const historyIndex = CommandHistoryUtil.getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(2);
@@ -111,9 +113,10 @@ describe("CommandHistoryUtil", () => {
     test("does nothing when there is no history", () => {
       // Arrange & Act
       CommandHistoryUtil.incrementHistoryIndex();
-      CommandHistoryUtil.incrementHistoryIndex();
+      const wasSuccessful = CommandHistoryUtil.incrementHistoryIndex();
 
       // Assert
+      expect(wasSuccessful).toEqual(false);
       const historyIndex = CommandHistoryUtil.getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(0);
@@ -129,9 +132,10 @@ describe("CommandHistoryUtil", () => {
 
       // Act
       CommandHistoryUtil.incrementHistoryIndex();
-      CommandHistoryUtil.decrementHistoryIndex();
+      const wasSuccessful = CommandHistoryUtil.decrementHistoryIndex();
 
       // Assert
+      expect(wasSuccessful).toEqual(true);
       const historyIndex = CommandHistoryUtil.getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(0);
@@ -144,9 +148,10 @@ describe("CommandHistoryUtil", () => {
       CommandHistoryUtil.addToHistory("userinput");
 
       // Act
-      CommandHistoryUtil.decrementHistoryIndex();
+      const wasSuccessful = CommandHistoryUtil.decrementHistoryIndex();
 
       // Assert
+      expect(wasSuccessful).toEqual(false);
       const historyIndex = CommandHistoryUtil.getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(0);
@@ -155,9 +160,10 @@ describe("CommandHistoryUtil", () => {
     test("does nothing when there is no history", () => {
       // Arrange & Act
       CommandHistoryUtil.decrementHistoryIndex();
-      CommandHistoryUtil.decrementHistoryIndex();
+      const wasSuccessful = CommandHistoryUtil.decrementHistoryIndex();
 
       // Assert
+      expect(wasSuccessful).toEqual(false);
       const historyIndex = CommandHistoryUtil.getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(0);

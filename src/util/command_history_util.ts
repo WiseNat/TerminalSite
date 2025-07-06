@@ -26,20 +26,30 @@ export default class CommandHistoryUtil {
 
   /**
    * Increments the history index, but prevents going above the maximum history.
+   *
+   * @returns true if the index changed, false otherwise.
    */
-  public static incrementHistoryIndex() {
+  public static incrementHistoryIndex(): boolean {
     if (this.historyIndex < this.history.length - 1) {
       this.historyIndex += 1;
+      return true;
     }
+
+    return false;
   }
 
   /**
    * Decrements the history index, but prevents going under the minimum history.
+   *
+   * @returns true if the index changed, false otherwise.
    */
-  public static decrementHistoryIndex() {
+  public static decrementHistoryIndex(): boolean {
     if (this.historyIndex > 0) {
       this.historyIndex -= 1;
+      return true;
     }
+
+    return false;
   }
 
   /**
