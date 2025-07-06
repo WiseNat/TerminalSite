@@ -100,13 +100,13 @@ describe("Enter", () => {
   });
 
   describe("with 'Shift'", () => {
-    test("appends a newline and does not execute a command", () => {
-      // Arrange
-      const event = new KeyboardEvent("keydown", {
-        shiftKey: true,
-      });
+    // Other
+    const event = new KeyboardEvent("keydown", {
+      shiftKey: true,
+    });
 
-      // Act
+    test("appends a newline and does not execute a command", () => {
+      // Arrange & Act
       processEnter(event);
 
       // Assert
@@ -115,12 +115,7 @@ describe("Enter", () => {
     });
 
     test("does not add to the command history", () => {
-      // Arrange
-      const event = new KeyboardEvent("keydown", {
-        shiftKey: true,
-      });
-
-      // Act
+      // Arrange & Act
       processEnter(event);
 
       // Assert
