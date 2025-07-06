@@ -95,6 +95,25 @@ test.describe("with existing command history", () => {
       commands[commands.length - 1] + userInput,
     );
   });
+
+  test("typing data in a previous submitted command and submitting it adds it as a new user input but does not retain the typed data in the previous command", async ({
+    page,
+  }) => {
+    // Arrange & Act
+    await page.locator(terminalSelector).press("ArrowUp");
+    const userInput = "some extra data";
+    await page.locator(terminalSelector).pressSequentially(userInput);
+    await page.locator(terminalSelector).press("Enter");
+
+    // Assert
+    await page.locator(terminalSelector).press("ArrowUp");
+    await expectTerminalToEndWithText(
+      page,
+      commands[commands.length - 1] + userInput,
+    );
+    await page.locator(terminalSelector).press("ArrowUp");
+    await expectTerminalToEndWithText(page, commands[commands.length - 1]);
+  });
 });
 
 test.describe("without existing command history", () => {
