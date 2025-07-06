@@ -1,6 +1,9 @@
 import { test } from "../fixture";
 import { terminalSelector } from "../helper/constant/generic";
-import { expectTerminalToEndWithText } from "../helper/util/terminal_util";
+import {
+  expectExactTextInTerminal,
+  expectTerminalToEndWithText,
+} from "../helper/util/terminal_util";
 
 test.describe("with existing command history", () => {
   const commands: string[] = [
@@ -114,6 +117,39 @@ test.describe("with existing command history", () => {
     await page.locator(terminalSelector).press("ArrowUp");
     await expectTerminalToEndWithText(page, commands[commands.length - 1]);
   });
+
+  test.describe("does not interact with the command history", () => {
+    test("pressing 'Shift+Up' moves the caret upwards and the current command does not get cycled", async ({
+      page,
+    }) => {
+      // Arrange
+      const content = await page.locator(terminalSelector).textContent();
+
+      // Act
+      await page.keyboard.down("Shift");
+      await page.locator(terminalSelector).press("ArrowUp");
+      await page.keyboard.up("Shift");
+
+      // Assert
+      await expectExactTextInTerminal(page, content!);
+    });
+
+    test("pressing 'Shift+Down' moves the caret downwards and the current command does not get cycled", async ({
+      page,
+    }) => {
+      // Arrange
+      await page.keyboard.press("ArrowUp"); // moving up to have history to move back down to
+      const content = await page.locator(terminalSelector).textContent();
+
+      // Act
+      await page.keyboard.down("Shift");
+      await page.locator(terminalSelector).press("ArrowDown");
+      await page.keyboard.up("Shift");
+
+      // Assert
+      await expectExactTextInTerminal(page, content!);
+    });
+  });
 });
 
 test.describe("without existing command history", () => {
@@ -130,9 +166,4 @@ test.describe("without existing command history", () => {
     // Assert
     await expectTerminalToEndWithText(page, userInput);
   });
-});
-
-test.describe("does not interact with the command history", () => {
-  test("pressing 'Shift+Up' moves the caret upwards", () => {});
-  test("pressing 'Shift+Down' moves the caret downwards", () => {});
 });

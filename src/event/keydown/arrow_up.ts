@@ -8,6 +8,10 @@ import TerminalUtil from "../../util/terminal_util.ts";
  * @param event event listener {@link KeyboardEvent}
  */
 export function processArrowUp(event: KeyboardEvent) {
+  if (event.shiftKey) {
+    return;
+  }
+
   event.preventDefault();
 
   // Update current command with the user input
