@@ -44,9 +44,11 @@ describe("Keydown Event", () => {
     ];
 
     test.each([
+      { key: "a", expected: processA },
       { key: "A", expected: processA },
       { key: "ArrowDown", expected: processArrowDown },
       { key: "ArrowUp", expected: processArrowUp },
+      { key: "e", expected: processE },
       { key: "E", expected: processE },
       { key: "End", expected: processEnd },
       { key: "Enter", expected: processEnter },

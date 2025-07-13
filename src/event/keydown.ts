@@ -13,10 +13,13 @@ import { processE } from "./keydown_key/e.ts";
  * @param event event listener {@link KeyboardEvent}
  */
 export function keydown(event: KeyboardEvent) {
+  // Requires duplicates for capitalisable keys as per https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key#value
   const keyHandlerMap = new Map<string, (event: KeyboardEvent) => void>([
+    ["a", processA],
     ["A", processA],
     ["ArrowDown", processArrowDown],
     ["ArrowUp", processArrowUp],
+    ["e", processE],
     ["E", processE],
     ["End", processEnd],
     ["Enter", processEnter],
