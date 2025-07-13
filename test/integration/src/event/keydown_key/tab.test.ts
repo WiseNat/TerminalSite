@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { processTab } from "../../../../../src/event/keydown/tab";
+import { processTab } from "../../../../../src/event/keydown_key/tab";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 import { CommandScript } from "../../../../../src/command/command_script";
 import CommandUtil from "../../../../../src/util/command_util";

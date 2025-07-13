@@ -48,6 +48,8 @@ export default class TerminalUtil {
 
   /**
    * Moves the cursor to the end of the terminals text.
+   *
+   * @see cursorToIndex
    */
   public static cursorToEnd() {
     // Insert a br tag to enable cursor to appear in the right position when the last character is a newline
@@ -64,9 +66,28 @@ export default class TerminalUtil {
       }
     }
 
+    const lastTextNode = this.terminal.lastChild;
+    const textLength = lastTextNode?.textContent?.length ?? 0;
+
+    this.cursorToIndex(textLength);
+  }
+
+  /**
+   * Moves the cursor to a position in the terminals text. If moving to the end
+   * of the terminal, use {@link cursorToEnd} to provide visual newlines.
+   *
+   * @param index the index to move the cursor to.
+   */
+  public static cursorToIndex(index: number) {
+    const lastTextNode = this.terminal.lastChild;
+
+    if (lastTextNode === null) {
+      return;
+    }
+
     const range = document.createRange();
-    range.selectNodeContents(this.terminal);
-    range.collapse();
+    range.setStart(lastTextNode, index);
+    range.setEnd(lastTextNode, index);
 
     const selection = window.getSelection()!;
     selection.removeAllRanges();

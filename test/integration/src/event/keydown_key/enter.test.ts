@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 import CommandUtil from "../../../../../src/util/command_util";
-import { processEnter } from "../../../../../src/event/keydown/enter";
+import { processEnter } from "../../../../../src/event/keydown_key/enter";
 import CommandHistoryUtil from "../../../../../src/util/command_history_util";
 
 describe("Enter", () => {

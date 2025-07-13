@@ -1,8 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../../src/util/terminal_util";
-import { processArrowUp } from "../../../../../src/event/keydown/arrow_up";
+import { processArrowUp } from "../../../../../src/event/keydown_key/arrow_up";
 import CommandHistoryUtil from "../../../../../src/util/command_history_util";
-import { processArrowDown } from "../../../../../src/event/keydown/arrow_down";
 
 describe("ArrowUp", () => {
   // Spy
@@ -60,7 +59,7 @@ describe("ArrowUp", () => {
 
     test("does nothing when shift is held down", () => {
       // Arrange & Act
-      processArrowDown(event);
+      processArrowUp(event);
 
       // Assert
       expect(setHistoricCommand).not.toHaveBeenCalled();
