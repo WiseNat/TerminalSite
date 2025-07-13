@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../../src/util/terminal_util";
-import { processArrowDown } from "../../../../../src/event/keydown/arrow_down";
+import { processArrowDown } from "../../../../../src/event/keydown_key/arrow_down";
 import CommandHistoryUtil from "../../../../../src/util/command_history_util";
 
 describe("ArrowDown", () => {

@@ -1,7 +1,7 @@
-import { processEnter } from "./enter.ts";
-import { processTab } from "./tab.ts";
-import { processArrowUp } from "./arrow_up.ts";
-import { processArrowDown } from "./arrow_down.ts";
+import { processEnter } from "./keydown_key/enter.ts";
+import { processTab } from "./keydown_key/tab.ts";
+import { processArrowUp } from "./keydown_key/arrow_up.ts";
+import { processArrowDown } from "./keydown_key/arrow_down.ts";
 
 /**
  * Event listener function for handling key down events in the terminal.

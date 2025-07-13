@@ -1,9 +1,9 @@
 import { describe, expect, test, vi } from "vitest";
-import { keydown } from "../../../../../src/event/keydown/keydown";
-import * as enterModule from "../../../../../src/event/keydown/enter";
-import * as tabModule from "../../../../../src/event/keydown/tab";
-import * as arrowUpModule from "../../../../../src/event/keydown/arrow_up";
-import * as arrowDownModule from "../../../../../src/event/keydown/arrow_down";
+import { keydown } from "../../../../src/event/keydown";
+import * as enterModule from "../../../../src/event/keydown_key/enter";
+import * as tabModule from "../../../../src/event/keydown_key/tab";
+import * as arrowUpModule from "../../../../src/event/keydown_key/arrow_up";
+import * as arrowDownModule from "../../../../src/event/keydown_key/arrow_down";
 
 describe("Keydown Event", () => {
   describe("keydown", () => {
@@ -14,10 +14,10 @@ describe("Keydown Event", () => {
     const processArrowDown = vi.spyOn(arrowDownModule, "processArrowDown");
 
     // Mock
-    vi.mock("../../../../../src/event/keydown/enter");
-    vi.mock("../../../../../src/event/keydown/tab");
-    vi.mock("../../../../../src/event/keydown/arrow_up");
-    vi.mock("../../../../../src/event/keydown/arrow_down");
+    vi.mock("../../../../src/event/keydown_key/enter");
+    vi.mock("../../../../src/event/keydown_key/tab");
+    vi.mock("../../../../src/event/keydown_key/arrow_up");
+    vi.mock("../../../../src/event/keydown_key/arrow_down");
 
     test("calls processEnter when 'Enter' is pressed", () => {
       // Arrange
