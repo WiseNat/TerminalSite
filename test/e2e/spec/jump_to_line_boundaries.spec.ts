@@ -11,15 +11,29 @@ const defaultInput = "foo, bar ?<baz>gaz</baz> asd> // testing";
 [
   {
     button: "Home",
+    withCtrl: false,
+    expectedText: "the beginning of the user input",
+    expectedPosition: defaultReadOnly.length,
+  },
+  {
+    button: "a",
+    withCtrl: true,
     expectedText: "the beginning of the user input",
     expectedPosition: defaultReadOnly.length,
   },
   {
     button: "End",
+    withCtrl: false,
     expectedText: "the end of the user input",
     expectedPosition: defaultReadOnly.length + defaultInput.length,
   },
-].forEach(({ button, expectedText, expectedPosition }) => {
+  {
+    button: "e",
+    withCtrl: true,
+    expectedText: "the end of the user input",
+    expectedPosition: defaultReadOnly.length + defaultInput.length,
+  },
+].forEach(({ button, withCtrl, expectedText, expectedPosition }) => {
   test.describe(`Pressing '${button}'`, () => {
     test.beforeEach(async ({ page }) => {
       await page.locator(terminalSelector).pressSequentially(defaultInput);
@@ -45,7 +59,15 @@ const defaultInput = "foo, bar ?<baz>gaz</baz> asd> // testing";
         await setCaretAtCharIndex(page, terminalSelector, startIndex);
 
         // Act
+        if (withCtrl) {
+          await page.keyboard.down("Control");
+        }
+
         await page.locator(terminalSelector).press(button);
+
+        if (withCtrl) {
+          await page.keyboard.up("Control");
+        }
 
         // Assert
         const caretPos = await page.evaluate(() => {
