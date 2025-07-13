@@ -3,6 +3,7 @@ import { processTab } from "./keydown_key/tab.ts";
 import { processArrowUp } from "./keydown_key/arrow_up.ts";
 import { processArrowDown } from "./keydown_key/arrow_down.ts";
 import { processEnd } from "./keydown_key/end.ts";
+import { processHome } from "./keydown_key/home.ts";
 
 /**
  * Event listener function for handling key down events in the terminal.
@@ -25,6 +26,9 @@ export function keydown(event: KeyboardEvent) {
       break;
     case "End":
       processEnd(event);
+      break;
+    case "Home":
+      processHome(event);
       break;
   }
 }

@@ -5,6 +5,7 @@ import * as tabModule from "../../../../src/event/keydown_key/tab";
 import * as arrowUpModule from "../../../../src/event/keydown_key/arrow_up";
 import * as arrowDownModule from "../../../../src/event/keydown_key/arrow_down";
 import * as endModule from "../../../../src/event/keydown_key/end";
+import * as homeModule from "../../../../src/event/keydown_key/home";
 
 describe("Keydown Event", () => {
   describe("keydown", () => {
@@ -14,6 +15,7 @@ describe("Keydown Event", () => {
     const processArrowUp = vi.spyOn(arrowUpModule, "processArrowUp");
     const processArrowDown = vi.spyOn(arrowDownModule, "processArrowDown");
     const processEnd = vi.spyOn(endModule, "processEnd");
+    const processHome = vi.spyOn(homeModule, "processHome");
 
     // Mock
     vi.mock("../../../../src/event/keydown_key/enter");
@@ -21,6 +23,7 @@ describe("Keydown Event", () => {
     vi.mock("../../../../src/event/keydown_key/arrow_up");
     vi.mock("../../../../src/event/keydown_key/arrow_down");
     vi.mock("../../../../src/event/keydown_key/end");
+    vi.mock("../../../../src/event/keydown_key/home");
 
     // Other
     const functions = [
@@ -29,6 +32,7 @@ describe("Keydown Event", () => {
       processArrowUp,
       processArrowDown,
       processEnd,
+      processHome,
     ];
 
     test.each([
@@ -37,6 +41,7 @@ describe("Keydown Event", () => {
       { key: "ArrowUp", expected: processArrowUp },
       { key: "ArrowDown", expected: processArrowDown },
       { key: "End", expected: processEnd },
+      { key: "Home", expected: processHome },
     ])("calls correct function when '$key' is pressed", ({ key, expected }) => {
       // Arrange
       const event = new KeyboardEvent("keydown", { key });

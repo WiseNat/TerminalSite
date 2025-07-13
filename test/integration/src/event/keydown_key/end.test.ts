@@ -13,7 +13,7 @@ describe("End", () => {
     // Other
     const event = new KeyboardEvent("keydown");
 
-    test("moves the cursor to the end", () => {
+    test("moves the cursor to the end of the user input", () => {
       // Arrange & Act
       processEnd(event);
 

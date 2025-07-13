@@ -108,6 +108,7 @@ describe("TerminalUtil", () => {
   });
 
   // Can't test "cursorToEnd" effectively with JSDom - rely on E2E to test this
+  // Can't test "cursorToIndex" effectively with JSDom - rely on E2E to test this
   // Can't test "updateReadOnlyIndex" effectively as it just modifies a private value
 
   describe("getReadOnlyContent", () => {
