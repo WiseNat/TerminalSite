@@ -1,9 +1,12 @@
+import TerminalUtil from "../../util/terminal_util";
+
 /**
- * Processes the 'End' key event. TODO
+ * Processes the 'End' key event. Moves the cursor to the end of the user input.
  *
  * @param event event listener {@link KeyboardEvent}
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function processEnd(_event: KeyboardEvent) {
-  console.error("Not implemented yet");
+export function processEnd(event: KeyboardEvent) {
+  event.preventDefault();
+
+  TerminalUtil.cursorToEnd();
 }

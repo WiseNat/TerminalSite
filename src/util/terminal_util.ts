@@ -64,9 +64,12 @@ export default class TerminalUtil {
       }
     }
 
+    const lastTextNode = this.terminal.lastChild!;
+    const textLength = lastTextNode.textContent?.length ?? 0;
+
     const range = document.createRange();
-    range.selectNodeContents(this.terminal);
-    range.collapse();
+    range.setStart(lastTextNode, textLength);
+    range.setEnd(lastTextNode, textLength);
 
     const selection = window.getSelection()!;
     selection.removeAllRanges();

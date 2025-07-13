@@ -50,7 +50,11 @@ const defaultInput = "foo, bar ?<baz>gaz</baz> asd> // testing";
         // Assert
         const caretPos = await page.evaluate(() => {
           const selection = window.getSelection();
-          if (!selection || selection.rangeCount === 0) return null;
+
+          if (!selection || selection.rangeCount === 0) {
+            return null;
+          }
+
           return selection.getRangeAt(0).startOffset;
         });
 
