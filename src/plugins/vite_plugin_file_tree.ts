@@ -7,6 +7,9 @@ import { FileTreeNode } from "virtual:file-tree";
  * Walks along the provided {@code rootDirPath} recursively, returning a view of all the identified files and
  * directories.
  *
+ * The returned object will not include any `.gitkeep` files. These are required for preserving empty directories in Git
+ * and so if an empty directory is wanted for this function to find, it must contain a `.gitkeep` file.
+ *
  * @param rootDirPath the root path to walk down.
  */
 export function walk(rootDirPath: string): FileTreeNode[] {
@@ -27,6 +30,10 @@ export function walk(rootDirPath: string): FileTreeNode[] {
 
     const isDirectRootChild = parentRelativePath === ".";
     const isDirectory = entry.isDirectory();
+
+    if (entry.name === ".gitkeep" && !isDirectory) {
+      continue;
+    }
 
     const node: FileTreeNode = {
       name: entry.name,
