@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import MetaImportUtil from "../../../../src/util/meta_import_util";
 import AutocompleteUtil from "../../../../src/util/autocomplete_util";
-import { unmock } from "../../helper/Unmock";
+import { unmock } from "../../helper/unmock";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { userPrompt } from "../../../../src/constant/prompt";
 
