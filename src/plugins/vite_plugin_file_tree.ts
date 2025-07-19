@@ -19,57 +19,94 @@ export function walk(rootDirPath: string): FileTreeNode[] {
   });
 
   const nodeMap = new Map<string, FileTreeNode>();
-  const missingParentMap = new Map<string, FileTreeNode[]>();
+  const orphanChildren = new Map<string, FileTreeNode[]>();
   const result: FileTreeNode[] = [];
 
   for (const entry of allEntries) {
+    if (isIgnoredFile(entry)) {
+      continue;
+    }
+
     const relativePath = path.relative(
       rootDirPath,
       path.join(entry.parentPath, entry.name),
     );
     const parentRelativePath = path.dirname(relativePath);
 
-    const isDirectRootChild = parentRelativePath === ".";
+    const isRootChild = parentRelativePath === ".";
     const isDirectory = entry.isDirectory();
-
-    if (entry.name === ".gitkeep" && !isDirectory) {
-      continue;
-    }
 
     const node: FileTreeNode = {
       name: entry.name,
-      path: isDirectRootChild ? "" : parentRelativePath,
+      path: isRootChild ? "" : parentRelativePath,
       isDirectory: isDirectory,
       children: isDirectory ? [] : undefined,
     };
 
     nodeMap.set(relativePath, node);
+    attachOrphanChildren(relativePath, node, orphanChildren);
 
-    if (missingParentMap.has(relativePath)) {
-      node.children = missingParentMap.get(relativePath);
-      missingParentMap.delete(relativePath);
-    }
-
-    if (isDirectRootChild) {
+    if (isRootChild) {
       result.push(node);
     } else {
-      const parentKey = node.path;
-      const parentNode = nodeMap.get(parentKey);
+      const parentNode = nodeMap.get(parentRelativePath);
 
-      // Handle processing children before their parent dir
-      if (parentNode === undefined) {
-        if (!missingParentMap.has(parentKey)) {
-          missingParentMap.set(parentKey, []);
-        }
-
-        missingParentMap.get(parentKey)!.push(node);
-      } else if (parentNode.children) {
+      if (parentNode?.children) {
         parentNode.children.push(node);
+      } else {
+        storeAsOrphan(parentRelativePath, node, orphanChildren);
       }
     }
   }
 
   return result;
+}
+
+/**
+ * @param entry the file entry to check
+ *
+ * @returns true if the entry is ignorable, false otherwise
+ */
+function isIgnoredFile(entry: fs.Dirent): boolean {
+  return entry.name === ".gitkeep" && !entry.isDirectory();
+}
+
+/**
+ * Attaches relevant orphan children to the provided node, if any exist.
+ *
+ * @param relativePath relative path of the `node`
+ * @param node the parent node that the children will be attached to
+ * @param orphanMap existing map of orphans
+ */
+function attachOrphanChildren(
+  relativePath: string,
+  node: FileTreeNode,
+  orphanMap: Map<string, FileTreeNode[]>,
+) {
+  if (orphanMap.has(relativePath)) {
+    node.children = orphanMap.get(relativePath);
+    orphanMap.delete(relativePath);
+  }
+}
+
+/**
+ * Stores a node as an orphan in the `orphanMap`, alongside any other orphans
+ * that a parent may have.
+ *
+ * @param parentPath relative path of the expected parent
+ * @param node the orphan
+ * @param orphanMap existing map of orpahsn
+ */
+function storeAsOrphan(
+  parentPath: string,
+  node: FileTreeNode,
+  orphanMap: Map<string, FileTreeNode[]>,
+) {
+  if (!orphanMap.has(parentPath)) {
+    orphanMap.set(parentPath, []);
+  }
+
+  orphanMap.get(parentPath)!.push(node);
 }
 
 /**
