@@ -97,11 +97,11 @@ describe("AutocompleteUtil", () => {
       test(type, () => {
         // Arrange
         vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-          "/src/command/scripts/echo.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echoing.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/echo_ers.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/ec.ts": { default: { run: vi.fn() } },
-          "/src/command/scripts/foo.ts": { default: { run: vi.fn() } },
+          "./echo.ts": { default: { run: vi.fn() } },
+          "./echoing.ts": { default: { run: vi.fn() } },
+          "./echo_ers.ts": { default: { run: vi.fn() } },
+          "./ec.ts": { default: { run: vi.fn() } },
+          "./foo.ts": { default: { run: vi.fn() } },
         });
 
         // Act
