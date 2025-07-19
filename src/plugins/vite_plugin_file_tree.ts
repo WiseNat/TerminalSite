@@ -19,6 +19,7 @@ export function walk(rootDirPath: string): FileTreeNode[] {
   });
 
   const nodeMap = new Map<string, FileTreeNode>();
+  const missingParentMap = new Map<string, FileTreeNode[]>();
   const result: FileTreeNode[] = [];
 
   for (const entry of allEntries) {
@@ -44,12 +45,25 @@ export function walk(rootDirPath: string): FileTreeNode[] {
 
     nodeMap.set(relativePath, node);
 
+    if (missingParentMap.has(relativePath)) {
+      node.children = missingParentMap.get(relativePath);
+      missingParentMap.delete(relativePath);
+    }
+
     if (isDirectRootChild) {
       result.push(node);
     } else {
-      const parentNode = nodeMap.get(node.path);
+      const parentKey = node.path;
+      const parentNode = nodeMap.get(parentKey);
 
-      if (parentNode?.children) {
+      // Handle processing children before their parent dir
+      if (parentNode === undefined) {
+        if (!missingParentMap.has(parentKey)) {
+          missingParentMap.set(parentKey, []);
+        }
+
+        missingParentMap.get(parentKey)!.push(node);
+      } else if (parentNode.children) {
         parentNode.children.push(node);
       }
     }
