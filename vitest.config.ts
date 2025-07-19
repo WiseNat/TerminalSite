@@ -24,6 +24,7 @@ export default defineConfig({
           include: ["test/integration/**/*.test.ts"],
           environment: "jsdom",
           clearMocks: true,
+          setupFiles: ["test/integration/helper/setup.ts"],
           alias: {
             "virtual:file-tree": resolve(
               __dirname,

@@ -1,13 +1,10 @@
-import { describe, expect, test } from "vitest"; // or jest
+import { beforeEach, describe, expect, test } from "vitest";
 import fs from "fs";
-import path from "path";
-import os from "os";
 import { walk } from "../../../../src/plugins/vite_plugin_file_tree";
 import { sortBy } from "lodash";
 // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
 import { FileTreeNode } from "virtual:file-tree";
-
-let testRootDir: string;
+import { vol } from "memfs";
 
 function deepSortTree(nodes: FileTreeNode[]): FileTreeNode[] {
   return sortBy(nodes, "name").map((node) => ({
@@ -16,15 +13,24 @@ function deepSortTree(nodes: FileTreeNode[]): FileTreeNode[] {
   }));
 }
 
+beforeEach(() => {
+  vol.reset();
+});
+
 describe("walk", () => {
   test("should return the correct file tree", () => {
     // Arrange
-    testRootDir = fs.mkdtempSync(path.join(os.tmpdir(), "walk-test-"));
-    fs.mkdirSync(path.join(testRootDir, "foo"));
-    fs.mkdirSync(path.join(testRootDir, "foo", "bar"));
-    fs.writeFileSync(path.join(testRootDir, "bazzing.gaz"), "");
-    fs.writeFileSync(path.join(testRootDir, "foo", ".testing"), "");
-    fs.writeFileSync(path.join(testRootDir, "foo", "daz"), "");
+    const testRootDir = "/walk-test-";
+
+    vol.fromJSON(
+      {
+        "foo/bar": null,
+        "bazzing.gaz": "",
+        "foo/.testing": "",
+        "foo/daz": "",
+      },
+      testRootDir,
+    );
 
     // Act
     const tree = walk(testRootDir);
@@ -36,12 +42,16 @@ describe("walk", () => {
 
   test(".gitkeep files are not included in the file tree", () => {
     // Arrange
-    const gitKeep = ".gitkeep";
+    const testRootDir = "/walk-test-";
 
-    testRootDir = fs.mkdtempSync(path.join(os.tmpdir(), "walk-test-"));
-    fs.mkdirSync(path.join(testRootDir, "foo"));
-    fs.writeFileSync(path.join(testRootDir, gitKeep), "");
-    fs.writeFileSync(path.join(testRootDir, "foo", gitKeep), "");
+    vol.fromJSON(
+      {
+        foo: null,
+        ".gitkeep": "",
+        "foo/.gitkeep": "",
+      },
+      testRootDir,
+    );
 
     // Act
     const tree = walk(testRootDir);
