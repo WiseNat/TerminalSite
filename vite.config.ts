@@ -5,7 +5,7 @@ import FileTree from "./src/plugins/vite_plugin_file_tree";
 
 export default defineConfig(({ mode }) => {
   return {
-    plugins: [FileTree("public/content")],
+    plugins: [FileTree("src/content")],
     css: {
       postcss: {
         plugins: [autoprefixer({})],
