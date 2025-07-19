@@ -25,7 +25,7 @@ describe("CommandUtil", () => {
       // Arrange
       const mockCommandFile: CommandScript = { run: vi.fn() };
       vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-        "/src/command/scripts/test.ts": { default: mockCommandFile },
+        "./test.ts": { default: mockCommandFile },
       });
 
       const command = "test foo bar";
@@ -146,7 +146,7 @@ describe("CommandUtil", () => {
       // Arrange
       const mockCommandFile: CommandScript = { run: vi.fn() };
       vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-        "/src/command/scripts/test.ts": { default: mockCommandFile },
+        "./test.ts": { default: mockCommandFile },
       });
       const commandDetails: TokenisedCommand = new TokenisedCommand("test", []);
 

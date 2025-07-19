@@ -42,7 +42,7 @@ describe("Meta Import Util", () => {
   describe("removePathFromKey", () => {
     test("when given a path that starts with a path and ends with .ts, should return a valid key", () => {
       // Arrange
-      const path = "/src/command/scripts/echo.ts";
+      const path = "./echo.ts";
 
       // Act
       const commandAgain = MetaImportUtil.removePathFromKey(path);
@@ -53,7 +53,7 @@ describe("Meta Import Util", () => {
 
     test("when given a path that starts with a path, should return a valid key", () => {
       // Arrange
-      const path = "/src/command/scripts/echo";
+      const path = "./echo";
 
       // Act
       const commandAgain = MetaImportUtil.removePathFromKey(path);

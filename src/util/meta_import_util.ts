@@ -1,15 +1,15 @@
 import { CommandScript } from "../command/command_script.ts";
 
 // Does not function correctly as a readonly within MetaImportUtil
-const commandFiles = import.meta.glob<{ default: CommandScript }>(
-  "/src/command/scripts/*.ts",
-  { eager: true },
-);
+const commandFiles = import.meta.glob<{ default: CommandScript }>("./**/*.ts", {
+  eager: true,
+  base: "/src/command/scripts",
+});
 
 export default class MetaImportUtil {
-  // Vite does not allow non-literal values for Glob imports as per https://vite.dev/guide/features.html#glob-import-caveats
-  // The below needs to be manually updated if the glob path in 'commandFiles' is changed
-  static readonly path = "/src/command/scripts/";
+  // Vite Glob imports with a base always have './' appended to the start of files found as per https://vite.dev/guide/features.html#base-path
+  // This should be removed for easy access to commands.
+  static readonly path = "./";
   static readonly typescriptExtension = ".ts";
 
   /**

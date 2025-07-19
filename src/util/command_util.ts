@@ -121,7 +121,7 @@ export default class CommandUtil {
     const commandScript = MetaImportUtil.getCommandScripts()[path];
 
     if (commandScript === undefined) {
-      console.warn(`\nCommand "${tokenisedCommand.name}" not found.`);
+      console.warn(`Command "${tokenisedCommand.name}" not found.`);
       return null;
     }
 
