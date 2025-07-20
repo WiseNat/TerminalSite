@@ -13,9 +13,9 @@ describe("End", () => {
     // Other
     const event = new KeyboardEvent("keydown");
 
-    test("moves the cursor to the end of the user input", () => {
+    test("moves the cursor to the end of the user input", async () => {
       // Arrange & Act
-      processEnd(event);
+      await processEnd(event);
 
       // Assert
       expect(cursorToEnd).toHaveBeenCalledOnce();

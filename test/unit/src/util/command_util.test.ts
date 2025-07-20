@@ -31,7 +31,7 @@ describe("CommandUtil", () => {
       const command = "test foo bar";
 
       // Act
-      CommandUtil.executeCommand(command);
+      await CommandUtil.executeCommand(command);
 
       // Assert
       expect(mockCommandFile.run).toHaveBeenCalled();
@@ -46,7 +46,7 @@ describe("CommandUtil", () => {
       const command = "test foo bar";
 
       // Act
-      CommandUtil.executeCommand(command);
+      await CommandUtil.executeCommand(command);
 
       // Assert
       expect(appendText).toHaveBeenCalledWith("\ntest: command not found\n");
@@ -62,7 +62,7 @@ describe("CommandUtil", () => {
       const command = "";
 
       // Act
-      CommandUtil.executeCommand(command);
+      await CommandUtil.executeCommand(command);
 
       // Assert
       expect(appendText).toHaveBeenCalledWith("\n");

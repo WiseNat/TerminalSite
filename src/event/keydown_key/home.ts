@@ -5,7 +5,7 @@ import TerminalUtil from "../../util/terminal_util.ts";
  *
  * @param event event listener {@link KeyboardEvent}
  */
-export function processHome(event: KeyboardEvent) {
+export async function processHome(event: KeyboardEvent) {
   event.preventDefault();
 
   const textLength = TerminalUtil.getReadOnlyContent().length;

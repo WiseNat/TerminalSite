@@ -28,13 +28,13 @@ describe("Tab", () => {
     const event = new KeyboardEvent("keydown");
 
     describe("Default autocompletion", () => {
-      test("Autocompletes a command name when typing a command", () => {
+      test("Autocompletes a command name when typing a command", async () => {
         // Arrange
         const userInput = "ech";
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
 
         // Act
-        processTab(event);
+        await processTab(event);
 
         // Assert
         expect(getCommandSuggestions).toHaveBeenCalledOnce();
@@ -43,15 +43,18 @@ describe("Tab", () => {
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
-      test.todo("Autocompletes a directory when typing a directory", () => {});
+      test.todo(
+        "Autocompletes a directory when typing a directory",
+        async () => {},
+      );
 
-      test("when a command has been typed without a space", () => {
+      test("when a command has been typed without a space", async () => {
         // Arrange
         const userInput = "echo";
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
 
         // Act
-        processTab(event);
+        await processTab(event);
 
         // Assert
         expect(getCommandSuggestions).toHaveBeenCalledOnce();
@@ -62,23 +65,21 @@ describe("Tab", () => {
     });
 
     describe("Custom command autocompletion", () => {
-      test("when a command has been typed with a space", () => {
+      test("when a command has been typed with a space", async () => {
         // Arrange
         const userInput = "echo ";
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
 
         const mockCommandFile: CommandScript = {
           run: vi.fn(),
-          autocomplete: vi.fn(() => {
-            return [];
-          }),
+          autocomplete: vi.fn().mockResolvedValue([]),
         };
         vi.mocked(CommandUtil.getCommandScript).mockReturnValue(
           mockCommandFile,
         );
 
         // Act
-        processTab(event);
+        await processTab(event);
 
         // Assert
         expect(getCommandSuggestions).not.toHaveBeenCalled();
@@ -87,14 +88,14 @@ describe("Tab", () => {
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
-      test("runs the default autocomplete if the command does not exist", () => {
+      test("runs the default autocomplete if the command does not exist", async () => {
         // Arrange
         const userInput = "echo -e ";
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
         vi.mocked(CommandUtil.getCommandScript).mockReturnValue(null);
 
         // Act
-        processTab(event);
+        await processTab(event);
 
         // Assert
         expect(getCommandScript).toHaveBeenCalledOnce();
@@ -105,23 +106,21 @@ describe("Tab", () => {
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
-      test("runs the command autocomplete if it exists", () => {
+      test("runs the command autocomplete if it exists", async () => {
         // Arrange
         const userInput = "echo -e ";
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
 
         const mockCommandFile: CommandScript = {
           run: vi.fn(),
-          autocomplete: vi.fn(() => {
-            return [];
-          }),
+          autocomplete: vi.fn().mockResolvedValue([]),
         };
         vi.mocked(CommandUtil.getCommandScript).mockReturnValue(
           mockCommandFile,
         );
 
         // Act
-        processTab(event);
+        await processTab(event);
 
         // Assert
         expect(getCommandScript).toHaveBeenCalledOnce();
@@ -132,7 +131,7 @@ describe("Tab", () => {
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
-      test("runs the default autocomplete if a command autocomplete does not exist", () => {
+      test("runs the default autocomplete if a command autocomplete does not exist", async () => {
         // Arrange
         const userInput = "echo -e ";
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
@@ -146,7 +145,7 @@ describe("Tab", () => {
         );
 
         // Act
-        processTab(event);
+        await processTab(event);
 
         // Assert
         expect(getCommandScript).toHaveBeenCalledOnce();
@@ -156,23 +155,21 @@ describe("Tab", () => {
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
-      test("runs the default autocomplete if the command autocomplete returns null", () => {
+      test("runs the default autocomplete if the command autocomplete returns null", async () => {
         // Arrange
         const userInput = "echo -e ";
         vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
 
         const mockCommandFile: CommandScript = {
           run: vi.fn(),
-          autocomplete: vi.fn(() => {
-            return null;
-          }),
+          autocomplete: vi.fn().mockResolvedValue(null),
         };
         vi.mocked(CommandUtil.getCommandScript).mockReturnValue(
           mockCommandFile,
         );
 
         // Act
-        processTab(event);
+        await processTab(event);
 
         // Assert
         expect(mockCommandFile.autocomplete).toHaveBeenCalled();

@@ -12,9 +12,11 @@ import { processE } from "./keydown_key/e.ts";
  *
  * @param event event listener {@link KeyboardEvent}
  */
-export function keydown(event: KeyboardEvent) {
+export async function keydown(event: KeyboardEvent) {
+  type AsyncKeyHandler = (event: KeyboardEvent) => Promise<void>;
+
   // Requires duplicates for capitalisable keys as per https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key#value
-  const keyHandlerMap = new Map<string, (event: KeyboardEvent) => void>([
+  const keyHandlerMap = new Map<string, AsyncKeyHandler>([
     ["a", processA],
     ["A", processA],
     ["ArrowDown", processArrowDown],
@@ -29,6 +31,6 @@ export function keydown(event: KeyboardEvent) {
 
   const handler = keyHandlerMap.get(event.key);
   if (handler) {
-    handler(event);
+    await handler(event);
   }
 }

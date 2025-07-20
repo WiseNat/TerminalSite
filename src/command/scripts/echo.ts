@@ -5,7 +5,7 @@ import TerminalUtil from "../../util/terminal_util.ts";
 import getopts, { ParsedOptions } from "getopts";
 
 const echo: CommandScript = {
-  run(args: string[]): void {
+  async run(args: string[]): Promise<void> {
     const parsedOptions: ParsedOptions = getopts(args);
 
     const output = parsedOptions._.join(" ");

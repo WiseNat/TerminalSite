@@ -13,13 +13,13 @@ describe("Home", () => {
     // Other
     const event = new KeyboardEvent("keydown");
 
-    test("moves the cursor to the start of the user input", () => {
+    test("moves the cursor to the start of the user input", async () => {
       // Arrange
       const readonlyText = "some example text";
       vi.mocked(TerminalUtil.getReadOnlyContent).mockReturnValue(readonlyText);
 
       // Act
-      processHome(event);
+      await processHome(event);
 
       // Assert
       expect(cursorToIndex).toHaveBeenCalledExactlyOnceWith(

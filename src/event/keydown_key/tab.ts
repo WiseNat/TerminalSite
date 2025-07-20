@@ -10,7 +10,7 @@ import TokenisedCommand from "../../dto/tokenised_command.ts";
  *
  * @param event
  */
-export function processTab(event: KeyboardEvent) {
+export async function processTab(event: KeyboardEvent) {
   event.preventDefault();
 
   const userInput = TerminalUtil.getUserInput();
@@ -24,7 +24,7 @@ export function processTab(event: KeyboardEvent) {
   let suggestions: string[];
 
   if (tokenisedCommand.args.length !== 0 || userInput.endsWith(" ")) {
-    suggestions = customCommandAutocomplete(tokenisedCommand);
+    suggestions = await customCommandAutocomplete(tokenisedCommand);
   } else {
     suggestions = defaultAutocomplete(tokenisedCommand);
   }
@@ -40,13 +40,13 @@ export function processTab(event: KeyboardEvent) {
  * @returns values from the custom command autocomplete or directory & file suggestions if the method returns null or
  * doesn't exist.
  */
-function customCommandAutocomplete(
+async function customCommandAutocomplete(
   tokenisedCommand: TokenisedCommand,
-): string[] {
+): Promise<string[]> {
   const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
 
   if (commandScript?.autocomplete) {
-    const suggestions = commandScript.autocomplete(tokenisedCommand.args);
+    const suggestions = await commandScript.autocomplete(tokenisedCommand.args);
 
     if (suggestions != null) {
       return suggestions;

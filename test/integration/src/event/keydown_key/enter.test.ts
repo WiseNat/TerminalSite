@@ -23,21 +23,21 @@ describe("Enter", () => {
     // Other
     const event = new KeyboardEvent("keydown");
 
-    test("executes a command", () => {
+    test("executes a command", async () => {
       // Arrange & Act
-      processEnter(event);
+      await processEnter(event);
 
       // Assert
       expect(executeCommand).toHaveBeenCalledOnce();
     });
 
-    test("on user input and no history exists adds command to history, adds a new user input entry, and history index to be 0", () => {
+    test("on user input and no history exists adds command to history, adds a new user input entry, and history index to be 0", async () => {
       // Arrange
       const userInput = "foo bar";
       vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
 
       // Act
-      processEnter(event);
+      await processEnter(event);
 
       // Assert
       expect(addToHistory).toHaveBeenCalledTimes(2);
@@ -48,7 +48,7 @@ describe("Enter", () => {
       expect(CommandHistoryUtil.getHistory()).toStrictEqual(["", userInput]);
     });
 
-    test("on user input and history exists updates existing user input in history, adds a new user input entry, and history index to be 0", () => {
+    test("on user input and history exists updates existing user input in history, adds a new user input entry, and history index to be 0", async () => {
       // Arrange
       const userInput = "foo bar";
       vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
@@ -59,7 +59,7 @@ describe("Enter", () => {
       addToHistory.mockReset();
 
       // Act
-      processEnter(event);
+      await processEnter(event);
 
       // Assert
       expect(setHistoricCommand).toHaveBeenCalledExactlyOnceWith(userInput);
@@ -72,7 +72,7 @@ describe("Enter", () => {
       ]);
     });
 
-    test("on previous command, updates the previous command, resets the history index, adds a new user input entry, and history index to be 0", () => {
+    test("on previous command, updates the previous command, resets the history index, adds a new user input entry, and history index to be 0", async () => {
       // Arrange
       const userInput = "foo bar";
       vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
@@ -85,7 +85,7 @@ describe("Enter", () => {
       CommandHistoryUtil.incrementHistoryIndex();
 
       // Act
-      processEnter(event);
+      await processEnter(event);
 
       // Assert
       expect(setHistoricCommand).toHaveBeenCalledExactlyOnceWith(userInput);
@@ -105,18 +105,18 @@ describe("Enter", () => {
       shiftKey: true,
     });
 
-    test("appends a newline and does not execute a command", () => {
+    test("appends a newline and does not execute a command", async () => {
       // Arrange & Act
-      processEnter(event);
+      await processEnter(event);
 
       // Assert
       expect(appendText).toHaveBeenCalled();
       expect(executeCommand).not.toHaveBeenCalled();
     });
 
-    test("does not add to the command history", () => {
+    test("does not add to the command history", async () => {
       // Arrange & Act
-      processEnter(event);
+      await processEnter(event);
 
       // Assert
       expect(addToHistory).not.toHaveBeenCalled();

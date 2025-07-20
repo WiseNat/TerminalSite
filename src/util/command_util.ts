@@ -11,7 +11,7 @@ export default class CommandUtil {
    *
    * @param command a command string, e.g. 'echo foo bar'
    */
-  public static executeCommand(command: string) {
+  public static async executeCommand(command: string) {
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);
 
     if (tokenisedCommand.name === "") {
@@ -23,7 +23,7 @@ export default class CommandUtil {
         console.info(
           `Running command '${tokenisedCommand.name}' with args '${tokenisedCommand.args}'`,
         );
-        commandScript.run(tokenisedCommand.args);
+        await commandScript.run(tokenisedCommand.args);
       } else {
         TerminalUtil.appendText(
           `\n${tokenisedCommand.name}: command not found\n`,

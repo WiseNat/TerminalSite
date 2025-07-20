@@ -6,8 +6,8 @@ import { processEnd } from "./end.ts";
  *
  * @param event event listener {@link KeyboardEvent}
  */
-export function processE(event: KeyboardEvent) {
+export async function processE(event: KeyboardEvent) {
   if (event.ctrlKey) {
-    processEnd(event);
+    await processEnd(event);
   }
 }
