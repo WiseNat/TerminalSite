@@ -165,5 +165,24 @@ export default function FileTree(rootPath?: string): Plugin {
         return `export const fileTree = ${JSON.stringify(tree, null, 2)}`;
       }
     },
+
+    configureServer(server) {
+      server.watcher.on("all", async (_eventName: string, filePath: string) => {
+        const projectRoot = process.cwd();
+        const relativePath = path.relative(
+          projectRoot,
+          path.normalize(filePath),
+        );
+
+        if (relativePath.startsWith(rootPath)) {
+          server.config.logger.info(
+            `\x1b[32m${relativePath} changed, restarting server...\x1b[0m`,
+            { timestamp: true },
+          );
+
+          await server.restart();
+        }
+      });
+    },
   };
 }
