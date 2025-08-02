@@ -1,7 +1,7 @@
-// TODO: Unit/Integration tests?
-
 // Does not function correctly as a readonly within FileImportUtil
 // .gitkeep should not be included, see 'walk' in 'vite_plugin_file_tree.ts' for in-depth explanation.
+import FileSystemUtil from "./file_system_util.ts";
+
 const files = import.meta.glob<{ default: string }>(
   ["./**/*", "!./**/*.gitkeep"],
   {
@@ -20,11 +20,12 @@ export default class FileImportUtil {
    * @returns file contents if found, `null` otherwise.
    */
   public static async readFile(filePath: string): Promise<string | null> {
+    // '.' is required at the start due to how import meta glob imports work
+    filePath = "." + FileSystemUtil.resolvePath(filePath);
+
     if (!(filePath in files)) {
       return null;
     }
-
-    // TODO: resolve file path, e.g. "../foo/../../bar/foo/testing.txt" or "~/.test" or "/var/test.txt"
 
     const loader = files[filePath];
     const fileContent = await loader();
