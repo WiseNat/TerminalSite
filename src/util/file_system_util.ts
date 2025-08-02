@@ -17,19 +17,21 @@ export default class FileSystemUtil {
   /**
    * Sets the Current Working Directory as a single resolved conversion of the provided String paths.
    * <p>
-   * Any symbols resolvable by {@link toPath} found in the provided String paths will be resolved.
+   * Any symbols resolvable by {@link resolvePathParts} found in the provided String paths will be resolved.
    * This means that, for example, the previous Current Working Directory path can be used to set the new path.
    * E.g. if the previous CWD is `/home/nathanwise` then passing in `./Desktop` will set the CWD to
    * `/home/nathanwise/Desktop`.
    *
    * @param currentWorkingDirectory string paths to set the CWD to.
    *
-   * @see toPath
+   * @see resolvePathParts
    */
   public static setCurrentWorkingDirectory(
     ...currentWorkingDirectory: string[]
   ): void {
-    this.currentWorkingDirectory = this.toPath(...currentWorkingDirectory);
+    this.currentWorkingDirectory = this.resolvePathParts(
+      ...currentWorkingDirectory,
+    );
   }
 
   /**
@@ -42,17 +44,17 @@ export default class FileSystemUtil {
   /**
    * Sets the Home Directory as a single resolved conversion of the provided String paths.
    * <p>
-   * Any symbols resolvable by {@link toPath} found in the provided String paths will be resolved.
+   * Any symbols resolvable by {@link resolvePathParts} found in the provided String paths will be resolved.
    * This means that, for example, the previous Home Directory path can be used to set the new path.
    * E.g. if the previous Home Directory is `/home/nathanwise` then passing in `~/Desktop` will set the Home Directory
    * to `/home/nathanwise/Desktop`.
    *
    * @param homeDirectory string paths to set the Home Directory to.
    *
-   * @see toPath
+   * @see resolvePathParts
    */
   public static setHomeDirectory(...homeDirectory: string[]): void {
-    this.homeDirectory = this.toPath(...homeDirectory);
+    this.homeDirectory = this.resolvePathParts(...homeDirectory);
   }
 
   /**
@@ -69,6 +71,19 @@ export default class FileSystemUtil {
   }
 
   /**
+   * Resolves a path and converts it to a String.
+   *
+   * @returns the resolved string path.
+   *
+   * @see resolvePathParts
+   * @see formatPath
+   */
+  public static resolvePath(unresolvedStringPath: string): string {
+    const path = this.resolvePathParts(unresolvedStringPath);
+    return this.formatPath(path);
+  }
+
+  /**
    * Converts String paths into a single joined and resolved path.
    * Any of the following symbols found in the provided String paths will be resolved:
    * <ul>
@@ -81,7 +96,7 @@ export default class FileSystemUtil {
    *
    * @param paths
    */
-  public static toPath(...paths: string[]): string[] {
+  public static resolvePathParts(...paths: string[]): string[] {
     let joinedPath: string[] = this.joinPaths(...paths);
 
     // Handle special starting symbols

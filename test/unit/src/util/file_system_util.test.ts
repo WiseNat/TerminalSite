@@ -28,7 +28,7 @@ describe("FileSystemUtil", () => {
     });
   });
 
-  describe("toPath", () => {
+  describe("resolvePathParts", () => {
     interface PathTestCase {
       returns: string;
       when: string;
@@ -205,7 +205,7 @@ describe("FileSystemUtil", () => {
         FileSystemUtil.setHomeDirectory("/home/nathanwise");
 
         // Act
-        const resolvedPath = FileSystemUtil.toPath(...paths);
+        const resolvedPath = FileSystemUtil.resolvePathParts(...paths);
 
         // Assert
         expect(resolvedPath).toStrictEqual(expected);
