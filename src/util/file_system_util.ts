@@ -2,10 +2,10 @@ export default class FileSystemUtil {
   private static currentWorkingDirectory: string[] = [];
   private static homeDirectory: string[] = [];
 
-  private static readonly pathSeparator = "/";
-  private static readonly homeDirectorySymbol = "~";
-  private static readonly currentWorkingDirectorySymbol = ".";
-  private static readonly parentDirectorySymbol = "..";
+  public static readonly pathSeparator = "/";
+  public static readonly homeDirectorySymbol = "~";
+  public static readonly currentWorkingDirectorySymbol = ".";
+  public static readonly parentDirectorySymbol = "..";
 
   /**
    * @returns the Current Working Directory as an absolute path.
@@ -78,8 +78,8 @@ export default class FileSystemUtil {
    * @see resolvePathParts
    * @see formatPath
    */
-  public static resolvePath(unresolvedStringPath: string): string {
-    const path = this.resolvePathParts(unresolvedStringPath);
+  public static resolvePath(...paths: string[]): string {
+    const path = this.resolvePathParts(...paths);
     return this.formatPath(path);
   }
 
@@ -130,33 +130,13 @@ export default class FileSystemUtil {
    *
    * @returns the joined paths as an array.
    */
-  private static joinPaths(...stringPaths: string[]): string[] {
+  public static joinPaths(...stringPaths: string[]): string[] {
     const combinedPath: string[] = [];
 
     for (const stringPath of stringPaths) {
-      let previousCharWasSeparator = false;
-      let buffer = "";
-
-      for (const char of stringPath) {
-        const isSeparator = char === this.pathSeparator;
-
-        if (isSeparator) {
-          if (!previousCharWasSeparator && buffer !== "") {
-            combinedPath.push(buffer);
-            buffer = "";
-          }
-
-          previousCharWasSeparator = true;
-          continue;
-        }
-
-        previousCharWasSeparator = false;
-        buffer += char;
-      }
-
-      if (buffer !== "") {
-        combinedPath.push(buffer);
-      }
+      // .filter(Boolean) removes empty elements
+      const segments = stringPath.split(this.pathSeparator).filter(Boolean);
+      combinedPath.push(...segments);
     }
 
     return combinedPath;

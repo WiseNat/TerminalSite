@@ -29,14 +29,14 @@ describe("FileSystemUtil", () => {
   });
 
   describe("resolvePathParts", () => {
-    interface PathTestCase {
+    interface TestCase {
       returns: string;
       when: string;
       paths: string[];
       expected: string[];
     }
 
-    const preResolvedPathCases: PathTestCase[] = [
+    const preResolvedPathCases: TestCase[] = [
       {
         returns: "the same path",
         when: "given a single resolved path",
@@ -69,7 +69,7 @@ describe("FileSystemUtil", () => {
       },
     ];
 
-    const parentDirectoryCases: PathTestCase[] = [
+    const parentDirectoryCases: TestCase[] = [
       {
         returns: "the previous directory path",
         when: "given a path ending with '..'",
@@ -103,7 +103,7 @@ describe("FileSystemUtil", () => {
       },
     ];
 
-    const homeDirectoryCases: PathTestCase[] = [
+    const homeDirectoryCases: TestCase[] = [
       {
         returns: "the home directory",
         when: "given a path that is only '~'",
@@ -136,7 +136,7 @@ describe("FileSystemUtil", () => {
       },
     ];
 
-    const currentDirectoryCases: PathTestCase[] = [
+    const currentDirectoryCases: TestCase[] = [
       {
         returns: "a path relative to the current working directory",
         when: "given a path starting with '.'",
@@ -163,7 +163,7 @@ describe("FileSystemUtil", () => {
       },
     ];
 
-    const multipleSeparators: PathTestCase[] = [
+    const multipleSeparators: TestCase[] = [
       {
         returns: "a path without multiple '/'",
         when: "given a path starting with multiple '/'",
@@ -212,4 +212,42 @@ describe("FileSystemUtil", () => {
       });
     });
   });
+
+  describe("joinPaths", () => {
+    interface TestCase {
+      when: string;
+      paths: string[];
+      expected: string[];
+    }
+
+    const testCases: TestCase[] = [
+      {
+        when: "given a single path",
+        paths: ["/home/nathanwise/Desktop"],
+        expected: ["home", "nathanwise", "Desktop"],
+      },
+      {
+        when: "given multiple paths",
+        paths: ["/home/nathanwise/", "Desktop/"],
+        expected: ["home", "nathanwise", "Desktop"],
+      },
+      {
+        when: "given paths with multiple path separators",
+        paths: ["home////nathanwise", "/Desktop///", "/myfolder//subfolder"],
+        expected: ["home", "nathanwise", "Desktop", "myfolder", "subfolder"],
+      },
+    ];
+
+    testCases.forEach(({ when, paths, expected }) => {
+      test(`when ${when}, returns ${expected}`, () => {
+        // Act
+        const result = FileSystemUtil.joinPaths(...paths);
+
+        // Assert
+        expect(result).toStrictEqual(expected);
+      });
+    });
+  });
+
+  // TODO: walkFileTree...
 });
