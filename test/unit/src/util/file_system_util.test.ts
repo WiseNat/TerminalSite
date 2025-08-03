@@ -236,10 +236,18 @@ describe("FileSystemUtil", () => {
         paths: ["home////nathanwise", "/Desktop///", "/myfolder//subfolder"],
         expected: ["home", "nathanwise", "Desktop", "myfolder", "subfolder"],
       },
+      {
+        when: "given a single file",
+        paths: ["test"],
+        expected: [".", "test"],
+      },
     ];
 
     testCases.forEach(({ when, paths, expected }) => {
       test(`when ${when}, returns ${expected}`, () => {
+        // Arrange
+        FileSystemUtil.setCurrentWorkingDirectory("/home/nathanwise");
+
         // Act
         const result = FileSystemUtil.joinPaths(...paths);
 

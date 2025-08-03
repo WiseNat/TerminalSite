@@ -126,6 +126,8 @@ export default class FileSystemUtil {
    * Joins provided string paths into a single path.
    * When string paths with multiple consecutive path separators are provided, additional path separators are ignored,
    * when forming the resulting path.
+   * <p>
+   * If a single filename is provided, it will be assumed to implicitly sit under the current working directory.
    *
    * @param stringPaths the paths to combine.
    * @private
@@ -133,6 +135,22 @@ export default class FileSystemUtil {
    * @returns the joined paths as an array.
    */
   public static joinPaths(...stringPaths: string[]): string[] {
+    if (stringPaths.length === 1) {
+      const stringPath = stringPaths[0];
+
+      if (
+        !stringPath.includes(this.pathSeparator) &&
+        ![
+          this.currentWorkingDirectorySymbol,
+          this.parentDirectorySymbol,
+          this.homeDirectorySymbol,
+        ].includes(stringPath)
+      ) {
+        // Standalone file/directory, so implicit cwd
+        return [this.currentWorkingDirectorySymbol, stringPaths[0]];
+      }
+    }
+
     const combinedPath: string[] = [];
 
     for (const stringPath of stringPaths) {
