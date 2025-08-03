@@ -13,11 +13,10 @@ describe("Tab", () => {
       AutocompleteUtil,
       "getCommandSuggestions",
     );
-    const getDirectorySuggestions = vi.spyOn(
+    const getFileAndDirectorySuggestions = vi.spyOn(
       AutocompleteUtil,
-      "getDirectorySuggestions",
+      "getFileAndDirectorySuggestions",
     );
-    const getFileSuggestions = vi.spyOn(AutocompleteUtil, "getFileSuggestions");
     const autocomplete = vi.spyOn(AutocompleteUtil, "autocomplete");
 
     // Mock
@@ -38,8 +37,7 @@ describe("Tab", () => {
 
         // Assert
         expect(getCommandSuggestions).toHaveBeenCalledOnce();
-        expect(getDirectorySuggestions).toHaveBeenCalledOnce();
-        expect(getFileSuggestions).toHaveBeenCalledOnce();
+        expect(getFileAndDirectorySuggestions).toHaveBeenCalledOnce();
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
@@ -58,8 +56,7 @@ describe("Tab", () => {
 
         // Assert
         expect(getCommandSuggestions).toHaveBeenCalledOnce();
-        expect(getDirectorySuggestions).toHaveBeenCalledOnce();
-        expect(getFileSuggestions).toHaveBeenCalledOnce();
+        expect(getFileAndDirectorySuggestions).toHaveBeenCalledOnce();
         expect(autocomplete).toHaveBeenCalledOnce();
       });
     });
@@ -83,8 +80,7 @@ describe("Tab", () => {
 
         // Assert
         expect(getCommandSuggestions).not.toHaveBeenCalled();
-        expect(getDirectorySuggestions).not.toHaveBeenCalled();
-        expect(getFileSuggestions).not.toHaveBeenCalled();
+        expect(getFileAndDirectorySuggestions).not.toHaveBeenCalled();
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
@@ -101,8 +97,7 @@ describe("Tab", () => {
         expect(getCommandScript).toHaveBeenCalledOnce();
         expect(getCommandScript).toReturnWith(null); // implicit check
         expect(getCommandSuggestions).not.toHaveBeenCalled();
-        expect(getDirectorySuggestions).toHaveBeenCalledOnce();
-        expect(getFileSuggestions).toHaveBeenCalledOnce();
+        expect(getFileAndDirectorySuggestions).toHaveBeenCalledOnce();
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
@@ -126,8 +121,7 @@ describe("Tab", () => {
         expect(getCommandScript).toHaveBeenCalledOnce();
         expect(mockCommandFile.autocomplete).toHaveBeenCalled();
         expect(getCommandSuggestions).not.toHaveBeenCalled();
-        expect(getDirectorySuggestions).not.toHaveBeenCalled();
-        expect(getFileSuggestions).not.toHaveBeenCalled();
+        expect(getFileAndDirectorySuggestions).not.toHaveBeenCalled();
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
@@ -150,8 +144,7 @@ describe("Tab", () => {
         // Assert
         expect(getCommandScript).toHaveBeenCalledOnce();
         expect(getCommandSuggestions).not.toHaveBeenCalled();
-        expect(getDirectorySuggestions).toHaveBeenCalledOnce();
-        expect(getFileSuggestions).toHaveBeenCalledOnce();
+        expect(getFileAndDirectorySuggestions).toHaveBeenCalledOnce();
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
@@ -174,8 +167,7 @@ describe("Tab", () => {
         // Assert
         expect(mockCommandFile.autocomplete).toHaveBeenCalled();
         expect(getCommandSuggestions).not.toHaveBeenCalled();
-        expect(getDirectorySuggestions).toHaveBeenCalledOnce();
-        expect(getFileSuggestions).toHaveBeenCalledOnce();
+        expect(getFileAndDirectorySuggestions).toHaveBeenCalledOnce();
         expect(autocomplete).toHaveBeenCalledOnce();
       });
     });

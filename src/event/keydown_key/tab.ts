@@ -56,12 +56,7 @@ async function customCommandAutocomplete(
 
   const searchPath = tokenisedCommand.args[tokenisedCommand.args.length - 1];
 
-  let suggestions = AutocompleteUtil.getDirectorySuggestions(searchPath);
-  suggestions = suggestions.concat(
-    AutocompleteUtil.getFileSuggestions(searchPath),
-  );
-
-  return suggestions;
+  return AutocompleteUtil.getFileAndDirectorySuggestions(searchPath);
 }
 
 /**
@@ -72,15 +67,12 @@ async function customCommandAutocomplete(
  * @returns command name, directory, and file suggestions
  */
 function defaultAutocomplete(tokenisedCommand: TokenisedCommand): Suggestion[] {
-  let suggestions: Suggestion[] = AutocompleteUtil.getCommandSuggestions(
-    tokenisedCommand.name,
-  );
-  suggestions = suggestions.concat(
-    AutocompleteUtil.getDirectorySuggestions(tokenisedCommand.name),
-  );
-  suggestions = suggestions.concat(
-    AutocompleteUtil.getFileSuggestions(tokenisedCommand.name),
-  );
+  const searchTerm = tokenisedCommand.name;
 
-  return suggestions;
+  const suggestions: Suggestion[] =
+    AutocompleteUtil.getCommandSuggestions(searchTerm);
+
+  return suggestions.concat(
+    AutocompleteUtil.getFileAndDirectorySuggestions(searchTerm),
+  );
 }

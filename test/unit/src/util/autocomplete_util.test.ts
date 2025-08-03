@@ -40,13 +40,27 @@ describe("AutocompleteUtil", () => {
       },
       {
         type: "provides all visual suggestions when multiple suggestions exist",
-        suggestions: [{ visual: "visual_echo", actual: "echo " }, { visual: "visual_echo_ing", actual: "echo_ing " }, { visual: "visual_echoers", actual: "echoers " }],
+        suggestions: [
+          { visual: "visual_echo", actual: "echo " },
+          {
+            visual: "visual_echo_ing",
+            actual: "echo_ing ",
+          },
+          { visual: "visual_echoers", actual: "echoers " },
+        ],
         userInput: "ech",
         expectedAppendText: `\nvisual_echo\tvisual_echo_ing\tvisual_echoers\n${userPrompt}`,
       },
       {
         type: "provides valid suggestions when a command name is already typed and there's other suggestions",
-        suggestions: [{ visual: "visual_echo", actual: "echo " }, { visual: "visual_echo_ing", actual: "echo_ing " }, { visual: "visual_echoers", actual: "echoers " }],
+        suggestions: [
+          { visual: "visual_echo", actual: "echo " },
+          {
+            visual: "visual_echo_ing",
+            actual: "echo_ing ",
+          },
+          { visual: "visual_echoers", actual: "echoers " },
+        ],
         userInput: "echo",
         expectedAppendText: `\nvisual_echo\tvisual_echo_ing\tvisual_echoers\n${userPrompt}`,
       },
@@ -81,12 +95,26 @@ describe("AutocompleteUtil", () => {
       {
         type: "provides valid suggestions that start with the name of the search value",
         searchValue: "ech",
-        expectedCommandSuggestions: [{ visual: "echo", actual: "echo " }, { visual: "echoing", actual: "echoing " }, { visual: "echo_ers", actual: "echo_ers " }],
+        expectedCommandSuggestions: [
+          { visual: "echo", actual: "echo " },
+          {
+            visual: "echoing",
+            actual: "echoing ",
+          },
+          { visual: "echo_ers", actual: "echo_ers " },
+        ],
       },
       {
         type: "provides valid suggestions that includes the entirety of the search value",
         searchValue: "echo",
-        expectedCommandSuggestions: [{ visual: "echo", actual: "echo " }, { visual: "echoing", actual: "echoing " }, { visual: "echo_ers", actual: "echo_ers " }],
+        expectedCommandSuggestions: [
+          { visual: "echo", actual: "echo " },
+          {
+            visual: "echoing",
+            actual: "echoing ",
+          },
+          { visual: "echo_ers", actual: "echo_ers " },
+        ],
       },
       {
         type: "provides no suggestions when that are no valid suggestions",
@@ -114,6 +142,62 @@ describe("AutocompleteUtil", () => {
     });
   });
 
-  describe.todo("getDirectorySuggestions", () => {});
-  describe.todo("getFileSuggestions", () => {});
+  describe("getFileAndDirectorySuggestions", () => {
+    test("provides relevant files and directories when given a real path", () => {
+      // Act
+      const result =
+        AutocompleteUtil.getFileAndDirectorySuggestions("src/main/foo/ba");
+
+      // Assert
+      expect(result).toMatchSnapshot();
+    });
+
+    test("provides nothing when given a fake path", () => {
+      // Act
+      const result =
+        AutocompleteUtil.getFileAndDirectorySuggestions("some/fake/path");
+
+      // Assert
+      expect(result).toStrictEqual([]);
+    });
+  });
+
+  describe("getDirectorySuggestions", () => {
+    test("provides relevant directories when given a real path", () => {
+      // Act
+      const result =
+        AutocompleteUtil.getDirectorySuggestions("src/main/foo/ba");
+
+      // Assert
+      expect(result).toMatchSnapshot();
+      expect(result[0].actual.endsWith(" ")).toBeFalsy();
+    });
+
+    test("provides nothing when given a fake path", () => {
+      // Act
+      const result = AutocompleteUtil.getDirectorySuggestions("some/fake/path");
+
+      // Assert
+      expect(result).toStrictEqual([]);
+    });
+  });
+
+  describe("getFileSuggestions", () => {
+    test("provides relevant files when given a real path", () => {
+      // Act
+      const result = AutocompleteUtil.getFileSuggestions("src/main/foo/ba");
+
+      // Assert
+      expect(result).toMatchSnapshot();
+      expect(result[0].actual.endsWith(" ")).toBeTruthy();
+    });
+
+    test("provides nothing when given a fake path", () => {
+      // Act
+      const result = AutocompleteUtil.getFileSuggestions("some/fake/path");
+
+      // Assert
+      expect(result).toStrictEqual([]);
+    });
+  });
 });

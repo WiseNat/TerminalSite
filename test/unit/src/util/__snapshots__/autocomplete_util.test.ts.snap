@@ -1,0 +1,34 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AutocompleteUtil > getDirectorySuggestions > provides relevant directories when given a real path 1`] = `
+[
+  {
+    "actual": "/src/main/foo/bar/",
+    "visual": "bar/",
+  },
+]
+`;
+
+exports[`AutocompleteUtil > getFileAndDirectorySuggestions > example 1`] = `[]`;
+
+exports[`AutocompleteUtil > getFileAndDirectorySuggestions > provides relevant files and directories when given a real path 1`] = `
+[
+  {
+    "actual": "/src/main/foo/bar/",
+    "visual": "bar/",
+  },
+  {
+    "actual": "/src/main/foo/bazzing.gaz ",
+    "visual": "bazzing.gaz ",
+  },
+]
+`;
+
+exports[`AutocompleteUtil > getFileSuggestions > provides relevant files when given a real path 1`] = `
+[
+  {
+    "actual": "/src/main/foo/bazzing.gaz ",
+    "visual": "bazzing.gaz ",
+  },
+]
+`;
