@@ -22,33 +22,33 @@ describe("AutocompleteUtil", () => {
       },
       {
         type: "automatically inserts when there's only a single valid suggestion",
-        suggestions: ["echo"],
+        suggestions: [{ visual: "visual_echo", actual: "echo " }],
         userInput: "ech",
         expectedAppendText: "o ",
       },
       {
         type: "adds a space when the command name is already typed and there's only a single valid suggestion",
-        suggestions: ["echo"],
+        suggestions: [{ visual: "visual_echo", actual: "echo " }],
         userInput: "echo",
         expectedAppendText: " ",
       },
       {
         type: "does nothing when the command name is already typed with a space and there's only a single valid suggestion",
-        suggestions: ["echo"],
+        suggestions: [{ visual: "visual_echo", actual: "echo " }],
         userInput: "echo ",
         expectedAppendText: null,
       },
       {
-        type: "provides all suggestions when multiple suggestions exist",
-        suggestions: ["echo", "echo_ing", "echoers"],
+        type: "provides all visual suggestions when multiple suggestions exist",
+        suggestions: [{ visual: "visual_echo", actual: "echo " }, { visual: "visual_echo_ing", actual: "echo_ing " }, { visual: "visual_echoers", actual: "echoers " }],
         userInput: "ech",
-        expectedAppendText: `\necho\techo_ing\techoers\n${userPrompt}`,
+        expectedAppendText: `\nvisual_echo\tvisual_echo_ing\tvisual_echoers\n${userPrompt}`,
       },
       {
         type: "provides valid suggestions when a command name is already typed and there's other suggestions",
-        suggestions: ["echo", "echo_ing", "echoers"],
+        suggestions: [{ visual: "visual_echo", actual: "echo " }, { visual: "visual_echo_ing", actual: "echo_ing " }, { visual: "visual_echoers", actual: "echoers " }],
         userInput: "echo",
-        expectedAppendText: `\necho\techo_ing\techoers\n${userPrompt}`,
+        expectedAppendText: `\nvisual_echo\tvisual_echo_ing\tvisual_echoers\n${userPrompt}`,
       },
     ].forEach(({ type, suggestions, userInput, expectedAppendText }) => {
       test(type, () => {
@@ -81,12 +81,12 @@ describe("AutocompleteUtil", () => {
       {
         type: "provides valid suggestions that start with the name of the search value",
         searchValue: "ech",
-        expectedCommandSuggestions: ["echo", "echoing", "echo_ers"],
+        expectedCommandSuggestions: [{ visual: "echo", actual: "echo " }, { visual: "echoing", actual: "echoing " }, { visual: "echo_ers", actual: "echo_ers " }],
       },
       {
         type: "provides valid suggestions that includes the entirety of the search value",
         searchValue: "echo",
-        expectedCommandSuggestions: ["echo", "echoing", "echo_ers"],
+        expectedCommandSuggestions: [{ visual: "echo", actual: "echo " }, { visual: "echoing", actual: "echoing " }, { visual: "echo_ers", actual: "echo_ers " }],
       },
       {
         type: "provides no suggestions when that are no valid suggestions",

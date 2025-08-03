@@ -2,6 +2,7 @@ import TerminalUtil from "../../util/terminal_util.ts";
 import CommandUtil from "../../util/command_util.ts";
 import AutocompleteUtil from "../../util/autocomplete_util.ts";
 import TokenisedCommand from "../../dto/tokenised_command.ts";
+import { Suggestion } from "../../command/command_script.ts";
 
 /**
  * Processes the 'Tab' key event. This will perform autocompletion of values in the terminal, either
@@ -21,7 +22,7 @@ export async function processTab(event: KeyboardEvent) {
   }
 
   const tokenisedCommand = CommandUtil.tokenise(userInput);
-  let suggestions: string[];
+  let suggestions: Suggestion[];
 
   if (tokenisedCommand.args.length !== 0 || userInput.endsWith(" ")) {
     suggestions = await customCommandAutocomplete(tokenisedCommand);
@@ -42,7 +43,7 @@ export async function processTab(event: KeyboardEvent) {
  */
 async function customCommandAutocomplete(
   tokenisedCommand: TokenisedCommand,
-): Promise<string[]> {
+): Promise<Suggestion[]> {
   const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
 
   if (commandScript?.autocomplete) {
@@ -70,8 +71,8 @@ async function customCommandAutocomplete(
  *
  * @returns command name, directory, and file suggestions
  */
-function defaultAutocomplete(tokenisedCommand: TokenisedCommand): string[] {
-  let suggestions: string[] = AutocompleteUtil.getCommandSuggestions(
+function defaultAutocomplete(tokenisedCommand: TokenisedCommand): Suggestion[] {
+  let suggestions: Suggestion[] = AutocompleteUtil.getCommandSuggestions(
     tokenisedCommand.name,
   );
   suggestions = suggestions.concat(
