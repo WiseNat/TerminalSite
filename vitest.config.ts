@@ -13,7 +13,7 @@ export default defineConfig({
           alias: {
             "virtual:file-tree": resolve(
               __dirname,
-              "test/integration/helper/file_tree_mock.ts",
+              "test/unit/helper/file_tree_mock.ts",
             ),
           },
         },

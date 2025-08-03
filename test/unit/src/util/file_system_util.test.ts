@@ -249,5 +249,40 @@ describe("FileSystemUtil", () => {
     });
   });
 
-  // TODO: walkFileTree...
+  describe("walkFileTree", () => {
+    test("returns node for a valid path", () => {
+      // Arrange
+      const path = ["src", "main", "foo"];
+
+      // Act
+      const result = FileSystemUtil.walkFileTree(path);
+
+      // Assert
+      expect(result).not.toBeNull();
+      expect(result).toMatchSnapshot();
+    });
+
+    test("returns root node for an empty path", () => {
+      // Arrange
+      const path: string[] = [];
+
+      // Act
+      const result = FileSystemUtil.walkFileTree(path);
+
+      // Assert
+      expect(result).not.toBeNull();
+      expect(result).toMatchSnapshot();
+    });
+
+    test("returns null node for non-existent path", () => {
+      // Arrange
+      const path: string[] = ["some", "fake", "path"];
+
+      // Act
+      const result = FileSystemUtil.walkFileTree(path);
+
+      // Assert
+      expect(result).toBeNull();
+    });
+  });
 });

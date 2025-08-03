@@ -1,0 +1,90 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FileSystemUtil > walkFileTree > returns node for a valid path 1`] = `
+{
+  "children": [
+    {
+      "children": [],
+      "isDirectory": true,
+      "name": "bar",
+      "path": "src/main/foo",
+    },
+    {
+      "isDirectory": false,
+      "name": "bazzing.gaz",
+      "path": "src/main/foo",
+    },
+    {
+      "isDirectory": false,
+      "name": "daz",
+      "path": "src/main/foo",
+    },
+  ],
+  "isDirectory": true,
+  "name": "foo",
+  "path": "src/main",
+}
+`;
+
+exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "isDirectory": true,
+                  "name": "bar",
+                  "path": "src/main/foo",
+                },
+                {
+                  "isDirectory": false,
+                  "name": "bazzing.gaz",
+                  "path": "src/main/foo",
+                },
+                {
+                  "isDirectory": false,
+                  "name": "daz",
+                  "path": "src/main/foo",
+                },
+              ],
+              "isDirectory": true,
+              "name": "foo",
+              "path": "src/main",
+            },
+            {
+              "isDirectory": false,
+              "name": ".testing",
+              "path": "src/main",
+            },
+          ],
+          "isDirectory": true,
+          "name": "main",
+          "path": "src",
+        },
+        {
+          "isDirectory": false,
+          "name": "index.ts",
+          "path": "src",
+        },
+      ],
+      "isDirectory": true,
+      "name": "src",
+      "path": "",
+    },
+    {
+      "children": [],
+      "isDirectory": true,
+      "name": "test",
+      "path": "",
+    },
+  ],
+  "isDirectory": true,
+  "name": "",
+  "path": "",
+}
+`;

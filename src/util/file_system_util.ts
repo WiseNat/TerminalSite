@@ -1,3 +1,5 @@
+import { fileTree, FileTreeNode } from "virtual:file-tree";
+
 export default class FileSystemUtil {
   private static currentWorkingDirectory: string[] = [];
   private static homeDirectory: string[] = [];
@@ -140,6 +142,47 @@ export default class FileSystemUtil {
     }
 
     return combinedPath;
+  }
+
+  /**
+   * Walks along the File Tree using the provided path.
+   *
+   * @param path the path to walk
+   *
+   * @returns the files & directories under the path if the path exists, otherwise null
+   */
+  public static walkFileTree(path: string[]): FileTreeNode | null {
+    let currentNodes = fileTree;
+    let currentNode: FileTreeNode | undefined = {
+      name: "",
+      path: "",
+      isDirectory: true,
+      children: currentNodes,
+    };
+
+    for (const segment of path) {
+      currentNode = currentNodes.find((n) => n.name === segment);
+
+      // No node in the provided path has been found
+      if (currentNode === undefined) {
+        return null;
+      }
+
+      if (!currentNode.isDirectory) {
+        return currentNode;
+      }
+
+      if (
+        currentNode.children === undefined ||
+        currentNode.children.length === 0
+      ) {
+        return null;
+      }
+
+      currentNodes = currentNode.children;
+    }
+
+    return currentNode ?? null;
   }
 
   /**
