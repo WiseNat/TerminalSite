@@ -1,4 +1,5 @@
 import { defineConfig } from "vitest/config";
+import { resolve } from "node:path";
 
 export default defineConfig({
   test: {
@@ -9,6 +10,12 @@ export default defineConfig({
           include: ["test/unit/**/*.test.ts"],
           environment: "node",
           clearMocks: true,
+          alias: {
+            "virtual:file-tree": resolve(
+              __dirname,
+              "test/unit/helper/file_tree_mock.ts",
+            ),
+          },
         },
       }),
       defineConfig({
@@ -17,6 +24,13 @@ export default defineConfig({
           include: ["test/integration/**/*.test.ts"],
           environment: "jsdom",
           clearMocks: true,
+          setupFiles: ["test/integration/helper/setup.ts"],
+          alias: {
+            "virtual:file-tree": resolve(
+              __dirname,
+              "test/integration/helper/file_tree_mock.ts",
+            ),
+          },
         },
       }),
     ],

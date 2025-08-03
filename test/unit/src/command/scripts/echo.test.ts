@@ -3,41 +3,41 @@ import echo from "../../../../../src/command/scripts/echo";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 
 describe("Echo", () => {
-  describe("run", () => {
+  describe("run", async () => {
     // Spy
     const appendText = vi.spyOn(TerminalUtil, "appendText");
 
     // Mock
     vi.mock("../../../../../src/util/terminal_util");
 
-    test("should join and append all args", () => {
+    test("should join and append all args", async () => {
       // Arrange
       const args = ["foo", "bar"];
 
       // Act
-      echo.run(args);
+      await echo.run(args);
 
       // Assert
       expect(appendText).toHaveBeenCalledWith("\nfoo bar\n");
     });
 
-    test("should append nothing when no args are provided", () => {
+    test("should append nothing when no args are provided", async () => {
       // Arrange
       const args: string[] = [];
 
       // Act
-      echo.run(args);
+      await echo.run(args);
 
       // Assert
       expect(appendText).toHaveBeenCalledWith("\n\n");
     });
 
-    test("should ignore options when outputting", () => {
+    test("should ignore options when outputting", async () => {
       // Arrange
       const args = ["foo", "bar", "-a", "baz", "-gaz"];
 
       // Act
-      echo.run(args);
+      await echo.run(args);
 
       // Assert
       expect(appendText).toHaveBeenCalledWith("\nfoo bar\n");

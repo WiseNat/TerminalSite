@@ -1,0 +1,48 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`walk > .gitkeep files are not included in the file tree 1`] = `
+[
+  {
+    "children": [],
+    "isDirectory": true,
+    "name": "foo",
+    "path": "",
+  },
+]
+`;
+
+exports[`walk > should return the correct file tree 1`] = `
+[
+  {
+    "children": undefined,
+    "isDirectory": false,
+    "name": "bazzing.gaz",
+    "path": "",
+  },
+  {
+    "children": [
+      {
+        "children": undefined,
+        "isDirectory": false,
+        "name": ".testing",
+        "path": "foo",
+      },
+      {
+        "children": [],
+        "isDirectory": true,
+        "name": "bar",
+        "path": "foo",
+      },
+      {
+        "children": undefined,
+        "isDirectory": false,
+        "name": "daz",
+        "path": "foo",
+      },
+    ],
+    "isDirectory": true,
+    "name": "foo",
+    "path": "",
+  },
+]
+`;

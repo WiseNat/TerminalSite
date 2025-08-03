@@ -10,12 +10,12 @@ describe("Clear", () => {
     // Mock
     vi.mock("../../../../../src/util/terminal_util");
 
-    test("should clear the terminal", () => {
+    test("should clear the terminal", async () => {
       // Arrange
       const args = ["foo", "bar"];
 
       // Act
-      clear.run(args);
+      await clear.run(args);
 
       // Assert
       expect(setText).toHaveBeenCalledWith("");

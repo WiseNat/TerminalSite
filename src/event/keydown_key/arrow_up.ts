@@ -7,7 +7,7 @@ import TerminalUtil from "../../util/terminal_util.ts";
  *
  * @param event event listener {@link KeyboardEvent}
  */
-export function processArrowUp(event: KeyboardEvent) {
+export async function processArrowUp(event: KeyboardEvent) {
   if (event.shiftKey) {
     return;
   }

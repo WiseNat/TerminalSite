@@ -2,6 +2,7 @@ import TerminalUtil from "../../util/terminal_util.ts";
 import CommandUtil from "../../util/command_util.ts";
 import AutocompleteUtil from "../../util/autocomplete_util.ts";
 import TokenisedCommand from "../../dto/tokenised_command.ts";
+import { Suggestion } from "../../command/command_script.ts";
 
 /**
  * Processes the 'Tab' key event. This will perform autocompletion of values in the terminal, either
@@ -10,7 +11,7 @@ import TokenisedCommand from "../../dto/tokenised_command.ts";
  *
  * @param event
  */
-export function processTab(event: KeyboardEvent) {
+export async function processTab(event: KeyboardEvent) {
   event.preventDefault();
 
   const userInput = TerminalUtil.getUserInput();
@@ -21,10 +22,10 @@ export function processTab(event: KeyboardEvent) {
   }
 
   const tokenisedCommand = CommandUtil.tokenise(userInput);
-  let suggestions: string[];
+  let suggestions: Suggestion[];
 
   if (tokenisedCommand.args.length !== 0 || userInput.endsWith(" ")) {
-    suggestions = customCommandAutocomplete(tokenisedCommand);
+    suggestions = await customCommandAutocomplete(tokenisedCommand);
   } else {
     suggestions = defaultAutocomplete(tokenisedCommand);
   }
@@ -40,13 +41,13 @@ export function processTab(event: KeyboardEvent) {
  * @returns values from the custom command autocomplete or directory & file suggestions if the method returns null or
  * doesn't exist.
  */
-function customCommandAutocomplete(
+async function customCommandAutocomplete(
   tokenisedCommand: TokenisedCommand,
-): string[] {
+): Promise<Suggestion[]> {
   const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
 
   if (commandScript?.autocomplete) {
-    const suggestions = commandScript.autocomplete(tokenisedCommand.args);
+    const suggestions = await commandScript.autocomplete(tokenisedCommand.args);
 
     if (suggestions != null) {
       return suggestions;
@@ -55,12 +56,7 @@ function customCommandAutocomplete(
 
   const searchPath = tokenisedCommand.args[tokenisedCommand.args.length - 1];
 
-  let suggestions = AutocompleteUtil.getDirectorySuggestions(searchPath);
-  suggestions = suggestions.concat(
-    AutocompleteUtil.getFileSuggestions(searchPath),
-  );
-
-  return suggestions;
+  return AutocompleteUtil.getFileAndDirectorySuggestions(searchPath);
 }
 
 /**
@@ -70,16 +66,13 @@ function customCommandAutocomplete(
  *
  * @returns command name, directory, and file suggestions
  */
-function defaultAutocomplete(tokenisedCommand: TokenisedCommand): string[] {
-  let suggestions: string[] = AutocompleteUtil.getCommandSuggestions(
-    tokenisedCommand.name,
-  );
-  suggestions = suggestions.concat(
-    AutocompleteUtil.getDirectorySuggestions(tokenisedCommand.name),
-  );
-  suggestions = suggestions.concat(
-    AutocompleteUtil.getFileSuggestions(tokenisedCommand.name),
-  );
+function defaultAutocomplete(tokenisedCommand: TokenisedCommand): Suggestion[] {
+  const searchTerm = tokenisedCommand.name;
 
-  return suggestions;
+  const suggestions: Suggestion[] =
+    AutocompleteUtil.getCommandSuggestions(searchTerm);
+
+  return suggestions.concat(
+    AutocompleteUtil.getFileAndDirectorySuggestions(searchTerm),
+  );
 }

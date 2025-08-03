@@ -6,8 +6,8 @@ import { processHome } from "./home.ts";
  *
  * @param event event listener {@link KeyboardEvent}
  */
-export function processA(event: KeyboardEvent) {
+export async function processA(event: KeyboardEvent) {
   if (event.ctrlKey) {
-    processHome(event);
+    await processHome(event);
   }
 }

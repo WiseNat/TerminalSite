@@ -10,6 +10,8 @@ describe("Clear", () => {
     const commandName = "clear";
 
     // Act & Assert
-    expect(() => CommandUtil.executeCommand(commandName)).not.toThrowError();
+    expect(
+      async () => await CommandUtil.executeCommand(commandName),
+    ).not.toThrowError();
   });
 });

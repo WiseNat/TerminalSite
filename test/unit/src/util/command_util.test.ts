@@ -3,7 +3,7 @@ import CommandUtil from "../../../../src/util/command_util";
 import { CommandScript } from "../../../../src/command/command_script";
 import TokenisedCommand from "../../../../src/dto/tokenised_command";
 import TerminalUtil from "../../../../src/util/terminal_util";
-import { unmock } from "../../helper/Unmock";
+import { unmock } from "../../helper/unmock";
 import MetaImportUtil from "../../../../src/util/meta_import_util";
 
 describe("CommandUtil", () => {
@@ -31,7 +31,7 @@ describe("CommandUtil", () => {
       const command = "test foo bar";
 
       // Act
-      CommandUtil.executeCommand(command);
+      await CommandUtil.executeCommand(command);
 
       // Assert
       expect(mockCommandFile.run).toHaveBeenCalled();
@@ -46,7 +46,7 @@ describe("CommandUtil", () => {
       const command = "test foo bar";
 
       // Act
-      CommandUtil.executeCommand(command);
+      await CommandUtil.executeCommand(command);
 
       // Assert
       expect(appendText).toHaveBeenCalledWith("\ntest: command not found\n");
@@ -62,7 +62,7 @@ describe("CommandUtil", () => {
       const command = "";
 
       // Act
-      CommandUtil.executeCommand(command);
+      await CommandUtil.executeCommand(command);
 
       // Assert
       expect(appendText).toHaveBeenCalledWith("\n");

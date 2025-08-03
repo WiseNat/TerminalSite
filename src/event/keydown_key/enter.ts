@@ -9,14 +9,14 @@ import CommandHistoryUtil from "../../util/command_history_util.ts";
  *
  * @param event event listener {@link KeyboardEvent}
  */
-export function processEnter(event: KeyboardEvent) {
+export async function processEnter(event: KeyboardEvent) {
   if (event.shiftKey) {
     TerminalUtil.appendText("\n");
     return;
   }
 
   const userInput = TerminalUtil.getUserInput();
-  CommandUtil.executeCommand(userInput);
+  await CommandUtil.executeCommand(userInput);
 
   updateCommandHistory(userInput);
 }

@@ -1,10 +1,11 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from "vite";
 import autoprefixer from "autoprefixer";
+import FileTree from "./src/plugins/vite_plugin_file_tree";
 
 export default defineConfig(({ mode }) => {
   return {
-    plugins: [],
+    plugins: [FileTree("src/content")],
     css: {
       postcss: {
         plugins: [autoprefixer({})],

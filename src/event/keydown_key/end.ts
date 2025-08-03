@@ -5,7 +5,7 @@ import TerminalUtil from "../../util/terminal_util";
  *
  * @param event event listener {@link KeyboardEvent}
  */
-export function processEnd(event: KeyboardEvent) {
+export async function processEnd(event: KeyboardEvent) {
   event.preventDefault();
 
   TerminalUtil.cursorToEnd();

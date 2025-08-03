@@ -3,7 +3,7 @@ import TerminalUtil from "../../util/terminal_util.ts";
 
 const clear: CommandScript = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  run(_args: string[]): void {
+  async run(_args: string[]): Promise<void> {
     TerminalUtil.setText("");
   },
 };

@@ -16,7 +16,7 @@ describe("ArrowUp", () => {
     // Other
     const event = new KeyboardEvent("keydown");
 
-    test("a successful history increment cycles to the previous command and modifies the terminal text", () => {
+    test("a successful history increment cycles to the previous command and modifies the terminal text", async () => {
       // Arrange
       const readonlyContent = "idk";
       vi.mocked(TerminalUtil.getReadOnlyContent).mockReturnValue(
@@ -29,7 +29,7 @@ describe("ArrowUp", () => {
       vi.mocked(CommandHistoryUtil.incrementHistoryIndex).mockReturnValue(true);
 
       // Act
-      processArrowUp(event);
+      await processArrowUp(event);
 
       // Assert
       expect(setText).toHaveBeenCalledExactlyOnceWith(
@@ -37,14 +37,14 @@ describe("ArrowUp", () => {
       );
     });
 
-    test("an unsuccessful history increment does nothing", () => {
+    test("an unsuccessful history increment does nothing", async () => {
       // Arrange
       vi.mocked(CommandHistoryUtil.incrementHistoryIndex).mockReturnValue(
         false,
       );
 
       // Act
-      processArrowUp(event);
+      await processArrowUp(event);
 
       // Assert
       expect(setText).not.toHaveBeenCalled();
@@ -57,9 +57,9 @@ describe("ArrowUp", () => {
       shiftKey: true,
     });
 
-    test("does nothing when shift is held down", () => {
+    test("does nothing when shift is held down", async () => {
       // Arrange & Act
-      processArrowUp(event);
+      await processArrowUp(event);
 
       // Assert
       expect(setHistoricCommand).not.toHaveBeenCalled();

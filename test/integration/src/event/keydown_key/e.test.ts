@@ -10,23 +10,23 @@ describe("E", () => {
     // Mock
     vi.mock("../../../../../src/event/keydown_key/end");
 
-    test("with 'Ctrl' moves the cursor to the end of the user input", () => {
+    test("with 'Ctrl' moves the cursor to the end of the user input", async () => {
       // Arrange
       const event = new KeyboardEvent("keydown", { ctrlKey: true });
 
       // Act
-      processE(event);
+      await processE(event);
 
       // Assert
       expect(processEnd).toHaveBeenCalledOnce();
     });
 
-    test("without 'Ctrl' does nothing", () => {
+    test("without 'Ctrl' does nothing", async () => {
       // Arrange
       const event = new KeyboardEvent("keydown");
 
       // Act
-      processE(event);
+      await processE(event);
 
       // Assert
       expect(processEnd).not.toHaveBeenCalled();
