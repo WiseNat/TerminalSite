@@ -15,7 +15,7 @@ export async function processArrowUp(event: KeyboardEvent) {
   event.preventDefault();
 
   // Update current command with the user input
-  const userInput = TerminalUtil.getUserInput();
+  const userInput = TerminalUtil.getInput();
   CommandHistoryUtil.setHistoricCommand(userInput);
 
   const wasIncrementSuccessful: boolean =
@@ -23,8 +23,7 @@ export async function processArrowUp(event: KeyboardEvent) {
 
   // Only repaint the terminal if successful
   if (wasIncrementSuccessful) {
-    const readOnlyContent = TerminalUtil.getReadOnlyContent();
     const historicCommand = CommandHistoryUtil.getHistoricCommand();
-    TerminalUtil.setText(readOnlyContent + historicCommand);
+    TerminalUtil.setInput(historicCommand);
   }
 }

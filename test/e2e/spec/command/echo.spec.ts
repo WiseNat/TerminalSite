@@ -1,10 +1,15 @@
 import { test } from "../../fixture";
 import {
-  defaultPrompt,
-  defaultReadOnly,
-  terminalSelector,
+  defaultUserPrompt,
+  defaultInitialPrompt,
+  inputSelector,
+  outputSelector,
+  promptSelector,
 } from "../../helper/constant/generic";
-import { expectExactTextInTerminal } from "../../helper/util/terminal_util";
+import {
+  expectElementToStartWith,
+  expectExactTextInElement,
+} from "../../helper/util/terminal_util";
 
 test.describe("Echo", () => {
   test("should output all non-option arguments", async ({ page }) => {
@@ -12,16 +17,21 @@ test.describe("Echo", () => {
     const input = "echo foo bar -e baz gaz";
 
     // Act
-    await page.locator(terminalSelector).pressSequentially(input);
-    await page.locator(terminalSelector).press("Enter");
+    await page.locator(inputSelector).pressSequentially(input);
+    await page.locator(inputSelector).press("Enter");
 
     // Assert
     const expected = "foo bar gaz";
 
-    await expectExactTextInTerminal(
-      page,
-      `${defaultReadOnly}${input}\n${expected}\n${defaultPrompt}`,
+    await expectElementToStartWith(
+      page.locator(outputSelector),
+      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expected}`,
     );
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(page.locator(inputSelector), "");
   });
 
   test("should output nothing when nothing is provided", async ({ page }) => {
@@ -29,13 +39,18 @@ test.describe("Echo", () => {
     const input = "echo ";
 
     // Act
-    await page.locator(terminalSelector).pressSequentially(input);
-    await page.locator(terminalSelector).press("Enter");
+    await page.locator(inputSelector).pressSequentially(input);
+    await page.locator(inputSelector).press("Enter");
 
     // Assert
-    await expectExactTextInTerminal(
-      page,
-      `${defaultReadOnly}${input}\n\n${defaultPrompt}`,
+    await expectElementToStartWith(
+      page.locator(outputSelector),
+      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}`,
     );
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(page.locator(inputSelector), "");
   });
 });

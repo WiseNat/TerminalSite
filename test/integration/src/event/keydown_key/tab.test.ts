@@ -30,7 +30,7 @@ describe("Tab", () => {
       test("Autocompletes a command name when typing a command", async () => {
         // Arrange
         const userInput = "ech";
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+        vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
 
         // Act
         await processTab(event);
@@ -49,7 +49,7 @@ describe("Tab", () => {
       test("when a command has been typed without a space", async () => {
         // Arrange
         const userInput = "echo";
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+        vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
 
         // Act
         await processTab(event);
@@ -65,7 +65,7 @@ describe("Tab", () => {
       test("when a command has been typed with a space", async () => {
         // Arrange
         const userInput = "echo ";
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+        vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
 
         const mockCommandFile: CommandScript = {
           run: vi.fn(),
@@ -87,7 +87,7 @@ describe("Tab", () => {
       test("runs the default autocomplete if the command does not exist", async () => {
         // Arrange
         const userInput = "echo -e ";
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+        vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
         vi.mocked(CommandUtil.getCommandScript).mockReturnValue(null);
 
         // Act
@@ -104,7 +104,7 @@ describe("Tab", () => {
       test("runs the command autocomplete if it exists", async () => {
         // Arrange
         const userInput = "echo -e ";
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+        vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
 
         const mockCommandFile: CommandScript = {
           run: vi.fn(),
@@ -128,7 +128,7 @@ describe("Tab", () => {
       test("runs the default autocomplete if a command autocomplete does not exist", async () => {
         // Arrange
         const userInput = "echo -e ";
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+        vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
 
         const mockCommandFile: CommandScript = {
           run: vi.fn(),
@@ -151,7 +151,7 @@ describe("Tab", () => {
       test("runs the default autocomplete if the command autocomplete returns null", async () => {
         // Arrange
         const userInput = "echo -e ";
-        vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+        vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
 
         const mockCommandFile: CommandScript = {
           run: vi.fn(),

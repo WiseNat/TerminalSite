@@ -37,12 +37,16 @@
     <header role="banner"></header>
     <nav role="navigation"></nav>
     <main role="main">
-      <div
-        id="terminal"
-        contenteditable="plaintext-only"
-        spellcheck="false"
-        autofocus
-      ></div>
+      <div id="output"></div>
+      <div id="command-line-container">
+        <div id="prompt"></div>
+        <div
+          id="input"
+          contenteditable="plaintext-only"
+          spellcheck="false"
+          autofocus
+        ></div>
+      </div>
     </main>
     <footer role="contentinfo"></footer>
     <script type="module" src="/src/main.ts"></script>

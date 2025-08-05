@@ -15,8 +15,10 @@ export default class CommandUtil {
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);
 
     if (tokenisedCommand.name === "") {
-      TerminalUtil.appendText("\n");
+      TerminalUtil.appendOutput("\n" + userPrompt);
     } else {
+      TerminalUtil.appendOutput("\n" + userPrompt + command);
+
       const commandScript = this.getCommandScript(tokenisedCommand);
 
       if (commandScript !== null) {
@@ -25,14 +27,13 @@ export default class CommandUtil {
         );
         await commandScript.run(tokenisedCommand.args);
       } else {
-        TerminalUtil.appendText(
-          `\n${tokenisedCommand.name}: command not found\n`,
+        TerminalUtil.appendOutput(
+          `\n${tokenisedCommand.name}: command not found`,
         );
       }
     }
 
-    TerminalUtil.appendText(userPrompt);
-    TerminalUtil.updateReadOnlyIndex();
+    TerminalUtil.setInput("");
   }
 
   /**

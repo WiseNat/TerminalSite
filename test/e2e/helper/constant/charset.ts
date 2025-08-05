@@ -18,7 +18,8 @@ export const TAB = "\t";
 export const NEWLINE = "\n";
 export const CARRIAGE_RETURN = "\r";
 export const NON_BREAKING_SPACE = "\u00A0";
-export const WHITESPACE = SPACE + TAB + NON_BREAKING_SPACE;
+export const ZERO_WIDTH_SPACE = "\u200B";
+export const WHITESPACE = SPACE + TAB + NON_BREAKING_SPACE + ZERO_WIDTH_SPACE;
 export const NEWLINES = NEWLINE + CARRIAGE_RETURN;
 
 /* Simple Unicode Samples */

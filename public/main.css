@@ -1,11 +1,41 @@
-html, body, main {
+main {
     font-family: consola, monospace;
-    height: 100%;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    cursor: text;
+    white-space: pre-wrap;
 }
 
-#terminal {
-    width: 100%;
+#output {
+    background-color: indianred;
+}
+
+#command-line-container {
+    flex: 1;
     height: 100%;
-    white-space: pre-wrap;
+    width: 100%;
+    position: relative;
+}
+
+#prompt {
+    background: mediumseagreen;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+#input {
+    background-color: deepskyblue;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+#input::before {
+    /* TODO: Set this using TS */
+
+    /* TODO: Need to understand the "caveats" of this. E.g. escaping '\' */
+    content: "C:\\Users\\user>";
 }

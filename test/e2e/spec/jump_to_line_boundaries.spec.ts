@@ -1,9 +1,5 @@
 import { expect, test } from "../fixture";
-import {
-  charIndexInReadOnly,
-  defaultReadOnly,
-  terminalSelector,
-} from "../helper/constant/generic";
+import { inputSelector } from "../helper/constant/generic";
 import { setCaretAtCharIndex } from "../helper/util/terminal_util";
 
 const defaultInput = "foo, bar ?<baz>gaz</baz> asd> // testing";
@@ -13,57 +9,68 @@ const defaultInput = "foo, bar ?<baz>gaz</baz> asd> // testing";
     button: "Home",
     withCtrl: false,
     expectedText: "the beginning of the user input",
-    expectedPosition: defaultReadOnly.length,
+    expectedPosition: 0,
   },
   {
     button: "a",
     withCtrl: true,
     expectedText: "the beginning of the user input",
-    expectedPosition: defaultReadOnly.length,
+    expectedPosition: 0,
+  },
+  {
+    button: "A",
+    withCtrl: true,
+    expectedText: "the beginning of the user input",
+    expectedPosition: 0,
   },
   {
     button: "End",
     withCtrl: false,
     expectedText: "the end of the user input",
-    expectedPosition: defaultReadOnly.length + defaultInput.length,
+    expectedPosition: defaultInput.length,
   },
   {
     button: "e",
     withCtrl: true,
     expectedText: "the end of the user input",
-    expectedPosition: defaultReadOnly.length + defaultInput.length,
+    expectedPosition: defaultInput.length,
+  },
+  {
+    button: "E",
+    withCtrl: true,
+    expectedText: "the end of the user input",
+    expectedPosition: defaultInput.length,
   },
 ].forEach(({ button, withCtrl, expectedText, expectedPosition }) => {
   test.describe(`Pressing '${button}'`, () => {
     test.beforeEach(async ({ page }) => {
-      await page.locator(terminalSelector).pressSequentially(defaultInput);
+      await page.locator(inputSelector).pressSequentially(defaultInput);
     });
 
     [
-      { type: "in the readonly section", startIndex: charIndexInReadOnly },
       {
         type: "at the start of the user input",
-        startIndex: defaultReadOnly.length,
+        startIndex: 0,
       },
       {
         type: "in the middle of the user input",
-        startIndex: defaultReadOnly.length + 3,
+        startIndex: Math.floor(defaultInput.length / 2),
       },
       {
         type: "at the end of the user input",
-        startIndex: defaultReadOnly.length + defaultInput.length,
+        startIndex: defaultInput.length,
       },
     ].forEach(({ type, startIndex }) => {
       test(`${type} moves the cursor to ${expectedText}`, async ({ page }) => {
         // Arrange
-        await setCaretAtCharIndex(page, terminalSelector, startIndex);
+        await setCaretAtCharIndex(page, inputSelector, startIndex);
 
         // Act
         if (withCtrl) {
           await page.keyboard.down("Control");
         }
 
-        await page.locator(terminalSelector).press(button);
+        await page.locator(inputSelector).press(button);
 
         if (withCtrl) {
           await page.keyboard.up("Control");

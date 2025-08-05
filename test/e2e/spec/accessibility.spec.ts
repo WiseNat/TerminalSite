@@ -1,6 +1,6 @@
 import { expect, test } from "../fixture";
 import AxeBuilder from "@axe-core/playwright";
-import { terminalSelector } from "../helper/constant/generic";
+import { inputSelector } from "../helper/constant/generic";
 
 test.describe("homepage", () => {
   test("should not have any automatically detectable accessibility issues", async ({
@@ -36,6 +36,7 @@ test.describe("homepage", () => {
   });
 });
 
+// TODO: IMPLEMENT FUNCTIONALITY FOR THIS!!!
 test.describe("focus", () => {
   test("clicking anywhere on the web page focuses the terminal", async ({
     page,
@@ -54,11 +55,11 @@ test.describe("focus", () => {
     ];
 
     // Act & Assert
-    const terminal = page.locator(terminalSelector);
+    const input = page.locator(inputSelector);
     for (const corner of corners) {
       await page.mouse.click(corner.x, corner.y);
       await expect(
-        terminal,
+        input,
         `Page clicked in the ${corner.type} to have the terminal focussed`,
       ).toBeFocused();
     }
