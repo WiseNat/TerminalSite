@@ -14,7 +14,7 @@ import { Suggestion } from "../../command/command_script.ts";
 export async function processTab(event: KeyboardEvent) {
   event.preventDefault();
 
-  const userInput = TerminalUtil.getUserInput();
+  const userInput = TerminalUtil.getInput();
 
   // We don't want suggestions provided when nothing exists in the user input
   if (userInput === "") {
@@ -54,9 +54,13 @@ async function customCommandAutocomplete(
     }
   }
 
-  const searchPath = tokenisedCommand.args[tokenisedCommand.args.length - 1];
+  let searchValue = "";
 
-  return AutocompleteUtil.getFileAndDirectorySuggestions(searchPath);
+  if (tokenisedCommand.args.length > 0) {
+    searchValue = tokenisedCommand.args[tokenisedCommand.args.length - 1];
+  }
+
+  return AutocompleteUtil.getFileAndDirectorySuggestions(searchValue);
 }
 
 /**

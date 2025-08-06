@@ -8,73 +8,95 @@ import { userPrompt } from "../../../../src/constant/prompt";
 describe("AutocompleteUtil", () => {
   describe("autocomplete", () => {
     // Spy
-    const appendText = vi.spyOn(TerminalUtil, "appendText");
+    const appendInput = vi.spyOn(TerminalUtil, "appendInput");
+    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
     // Mock
     vi.mock("../../../../src/util/terminal_util");
 
-    [
-      {
-        type: "does nothing when there are no suggestions",
-        suggestions: [],
-        userInput: "ech",
-        expectedAppendText: null,
-      },
-      {
-        type: "automatically inserts when there's only a single valid suggestion",
-        suggestions: [{ visual: "visual_echo", actual: "echo " }],
-        userInput: "ech",
-        expectedAppendText: "o ",
-      },
-      {
-        type: "adds a space when the command name is already typed and there's only a single valid suggestion",
-        suggestions: [{ visual: "visual_echo", actual: "echo " }],
-        userInput: "echo",
-        expectedAppendText: " ",
-      },
-      {
-        type: "does nothing when the command name is already typed with a space and there's only a single valid suggestion",
-        suggestions: [{ visual: "visual_echo", actual: "echo " }],
-        userInput: "echo ",
-        expectedAppendText: null,
-      },
-      {
-        type: "provides all visual suggestions when multiple suggestions exist",
-        suggestions: [
-          { visual: "visual_echo", actual: "echo " },
-          {
-            visual: "visual_echo_ing",
-            actual: "echo_ing ",
-          },
-          { visual: "visual_echoers", actual: "echoers " },
-        ],
-        userInput: "ech",
-        expectedAppendText: `\nvisual_echo\tvisual_echo_ing\tvisual_echoers\n${userPrompt}`,
-      },
-      {
-        type: "provides valid suggestions when a command name is already typed and there's other suggestions",
-        suggestions: [
-          { visual: "visual_echo", actual: "echo " },
-          {
-            visual: "visual_echo_ing",
-            actual: "echo_ing ",
-          },
-          { visual: "visual_echoers", actual: "echoers " },
-        ],
-        userInput: "echo",
-        expectedAppendText: `\nvisual_echo\tvisual_echo_ing\tvisual_echoers\n${userPrompt}`,
-      },
-    ].forEach(({ type, suggestions, userInput, expectedAppendText }) => {
-      test(type, () => {
-        // Arrange & Act
-        AutocompleteUtil.autocomplete(suggestions, userInput);
+    describe("Input Insert", () => {
+      [
+        {
+          type: "does nothing when there are no suggestions",
+          suggestions: [],
+          userInput: "ech",
+          expectedAppendText: null,
+        },
+        {
+          type: "automatically inserts when there's only a single valid suggestion",
+          suggestions: [{ visual: "visual_echo", actual: "echo " }],
+          userInput: "ech",
+          expectedAppendText: "o ",
+        },
+        {
+          type: "adds a space when the command name is already typed and there's only a single valid suggestion",
+          suggestions: [{ visual: "visual_echo", actual: "echo " }],
+          userInput: "echo",
+          expectedAppendText: " ",
+        },
+        {
+          type: "does nothing when the command name is already typed with a space and there's only a single valid suggestion",
+          suggestions: [{ visual: "visual_echo", actual: "echo " }],
+          userInput: "echo ",
+          expectedAppendText: null,
+        },
+      ].forEach(({ type, suggestions, userInput, expectedAppendText }) => {
+        test(type, () => {
+          // Arrange & Act
+          AutocompleteUtil.autocomplete(suggestions, userInput);
 
-        // Assert
-        if (expectedAppendText == null) {
-          expect(appendText).not.toHaveBeenCalled();
-        } else {
-          expect(appendText).toHaveBeenCalledWith(expectedAppendText);
-        }
+          // Assert
+          if (expectedAppendText == null) {
+            expect(appendInput).not.toHaveBeenCalled();
+          } else {
+            expect(appendInput).toHaveBeenCalledWith(expectedAppendText);
+          }
+        });
+      });
+    });
+
+    describe("Provides Suggestions", () => {
+      [
+        {
+          type: "provides all visual suggestions when multiple suggestions exist",
+          suggestions: [
+            { visual: "visual_echo", actual: "echo " },
+            {
+              visual: "visual_echo_ing",
+              actual: "echo_ing ",
+            },
+            { visual: "visual_echoers", actual: "echoers " },
+          ],
+          userInput: "ech",
+          expectedAppendText: "visual_echo\tvisual_echo_ing\tvisual_echoers",
+        },
+        {
+          type: "provides valid suggestions when a command name is already typed and there's other suggestions",
+          suggestions: [
+            { visual: "visual_echo", actual: "echo " },
+            {
+              visual: "visual_echo_ing",
+              actual: "echo_ing ",
+            },
+            { visual: "visual_echoers", actual: "echoers " },
+          ],
+          userInput: "echo",
+          expectedAppendText: "visual_echo\tvisual_echo_ing\tvisual_echoers",
+        },
+      ].forEach(({ type, suggestions, userInput, expectedAppendText }) => {
+        test(type, () => {
+          // Arrange & Act
+          AutocompleteUtil.autocomplete(suggestions, userInput);
+
+          // Assert
+          if (expectedAppendText == null) {
+            expect(appendOutput).not.toHaveBeenCalled();
+          } else {
+            expect(appendOutput).toHaveBeenCalledWith(
+              `${userPrompt}${userInput}\n${expectedAppendText}`,
+            );
+          }
+        });
       });
     });
   });

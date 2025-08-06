@@ -11,11 +11,12 @@ import CommandHistoryUtil from "../../util/command_history_util.ts";
  */
 export async function processEnter(event: KeyboardEvent) {
   if (event.shiftKey) {
-    TerminalUtil.appendText("\n");
     return;
   }
 
-  const userInput = TerminalUtil.getUserInput();
+  event.preventDefault();
+
+  const userInput = TerminalUtil.getInput();
   await CommandUtil.executeCommand(userInput);
 
   updateCommandHistory(userInput);

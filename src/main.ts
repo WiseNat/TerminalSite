@@ -1,19 +1,21 @@
 import TerminalUtil from "./util/terminal_util.ts";
 import { paste } from "./event/paste.ts";
-import { beforeinput } from "./event/beforeinput.ts";
-import { input } from "./event/input.ts";
 import { keydown } from "./event/keydown.ts";
 import { initialPrompt, userPrompt } from "./constant/prompt.ts";
 import FileSystemUtil from "./util/file_system_util.ts";
+import { click } from "./event/click.ts";
 
+// Terminal Set-up
 FileSystemUtil.setHomeDirectory("/home/nathanwise");
 FileSystemUtil.setCurrentWorkingDirectory("~");
 
-TerminalUtil.setText(initialPrompt + "\n" + userPrompt);
-TerminalUtil.updateReadOnlyIndex();
+TerminalUtil.setOutput(initialPrompt);
+TerminalUtil.setPrompt(userPrompt);
+TerminalUtil.setInput("");
 
-const terminal = TerminalUtil.getTerminal();
-terminal.addEventListener("paste", paste);
-terminal.addEventListener("beforeinput", beforeinput);
-terminal.addEventListener("input", input);
-terminal.addEventListener("keydown", keydown);
+// Event Listeners
+document.addEventListener("click", click);
+
+const inputElement = TerminalUtil.getInputElement();
+inputElement.addEventListener("paste", paste);
+inputElement.addEventListener("keydown", keydown);

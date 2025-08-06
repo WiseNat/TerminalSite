@@ -6,7 +6,7 @@ import CommandHistoryUtil from "../../../../../src/util/command_history_util";
 describe("ArrowDown", () => {
   // Spy
   const setHistoricCommand = vi.spyOn(CommandHistoryUtil, "setHistoricCommand");
-  const setText = vi.spyOn(TerminalUtil, "setText");
+  const setInput = vi.spyOn(TerminalUtil, "setInput");
 
   // Mock
   vi.mock("../../../../../src/util/terminal_util");
@@ -18,10 +18,6 @@ describe("ArrowDown", () => {
 
     test("a successful history decrement cycles to a more recent command and modifies the terminal text", async () => {
       // Arrange
-      const readonlyContent = "idk";
-      vi.mocked(TerminalUtil.getReadOnlyContent).mockReturnValue(
-        readonlyContent,
-      );
       const historicCommand = "something";
       vi.mocked(CommandHistoryUtil.getHistoricCommand).mockReturnValue(
         historicCommand,
@@ -32,9 +28,7 @@ describe("ArrowDown", () => {
       await processArrowDown(event);
 
       // Assert
-      expect(setText).toHaveBeenCalledExactlyOnceWith(
-        readonlyContent + historicCommand,
-      );
+      expect(setInput).toHaveBeenCalledExactlyOnceWith(historicCommand);
     });
 
     test("an unsuccessful history decrement does nothing", async () => {
@@ -47,7 +41,7 @@ describe("ArrowDown", () => {
       await processArrowDown(event);
 
       // Assert
-      expect(setText).not.toHaveBeenCalled();
+      expect(setInput).not.toHaveBeenCalled();
     });
   });
 

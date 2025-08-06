@@ -1,59 +1,156 @@
-export default class TerminalUtil {
-  private static readOnlyIndex: number = 0;
-  private static previousContent: string = "";
+import HtmlUtil from "./html_util.ts";
 
+export default class TerminalUtil {
   /**
-   * Retrieves the terminal from the DOM. Used in place of a static readonly variable to allow Integration tests to work
-   * as expected
+   * Retrieves the Input element from the DOM.
+   * <p>
+   * Used in place of a static readonly variable to allow Integration tests to work as expected.
    * @private
    */
-  private static get terminal(): HTMLElement {
-    return document.getElementById("terminal")!;
+  private static get input(): HTMLElement {
+    return document.getElementById("input")!;
   }
 
   /**
-   * @returns the terminal element
+   * Retrieves the Prompt element from the DOM.
+   * <p>
+   * Used in place of a static readonly variable to allow Integration tests to work as expected.
+   * @private
    */
-  public static getTerminal(): HTMLElement {
-    return this.terminal;
+  private static get prompt(): HTMLElement {
+    return document.getElementById("prompt")!;
   }
 
   /**
-   * @returns the current text content of the terminal
-   * @see HTMLElement#textContent
+   * Retrieves the Output element from the DOM.
+   * <p>
+   * Used in place of a static readonly variable to allow Integration tests to work as expected.
+   * @private
    */
-  public static getTerminalContent(): string {
-    return this.terminal.textContent ?? "";
+  private static get output(): HTMLElement {
+    return document.getElementById("output")!;
   }
 
   /**
-   * Sets the terminal text as the provided text and moves the cursor to the end
+   * @returns the Input element
+   */
+  public static getInputElement(): HTMLElement {
+    return this.input;
+  }
+
+  /**
+   * @returns the Prompt element
+   */
+  public static getPromptElement(): HTMLElement {
+    return this.prompt;
+  }
+
+  /**
+   * @returns the Output element
+   */
+  public static getOutputElement(): HTMLElement {
+    return this.output;
+  }
+
+  /**
+   * @returns the most recent data the user has inputted into the terminal
+   */
+  public static getInput(): string {
+    return this.input.textContent === null
+      ? ""
+      : HtmlUtil.normaliseSpaces(this.input.textContent);
+  }
+
+  /**
+   * @returns the current prompt, e.g. `C:\Users\user>`
+   */
+  public static getPrompt(): string {
+    return this.prompt.textContent === null
+      ? ""
+      : HtmlUtil.normaliseSpaces(this.prompt.textContent);
+  }
+
+  /**
+   * @returns the output content of the terminal
+   */
+  public static getOutput() {
+    return this.output.textContent === null
+      ? ""
+      : HtmlUtil.normaliseSpaces(this.output.textContent);
+  }
+
+  /**
+   * Sets the Input as the provided text and moves the cursor to the end.
    *
    * @param text text to set
    */
-  public static setText(text: string) {
-    this.terminal.textContent = text;
+  public static setInput(text: string) {
+    this.input.textContent = text;
     this.cursorToEnd();
   }
 
   /**
-   * Appends the provided text to the end of the terminal text and moves the cursor to the end
+   * Sets the Prompt as the provided text.
+   *
+   * @param text text to set
+   */
+  public static setPrompt(text: string) {
+    this.prompt.textContent = text;
+
+    // Hidden prompt to ensure the Input element visibly starts after the prompt
+    // CSS is marked with ? to fix failing tests
+    const escapedPrompt = CSS?.escape(text);
+    document.documentElement.style.setProperty(
+      "--prompt-content",
+      `"${escapedPrompt}"`,
+    );
+  }
+
+  /**
+   * Sets the Output as the provided text.
+   *
+   * @param text text to set
+   */
+  public static setOutput(text: string) {
+    this.output.textContent = text;
+  }
+
+  /**
+   * Appends the provided text to the end of the Input and moves the cursor to the end.
    *
    * @param text text to append
    */
-  public static appendText(text: string) {
-    this.terminal.textContent += text;
+  public static appendInput(text: string) {
+    this.input.textContent += text;
     this.cursorToEnd();
   }
 
   /**
-   * Moves the cursor to the end of the terminals text.
+   * Appends the provided text to the end of the Prompt.
+   *
+   * @param text text to append
+   */
+  public static appendPrompt(text: string) {
+    this.prompt.textContent += text;
+  }
+
+  /**
+   * Appends the provided text to the end of the Output.
+   *
+   * @param text text to append
+   */
+  public static appendOutput(text: string) {
+    this.output.textContent += text;
+  }
+
+  /**
+   * Moves the cursor to the end of the Input element's text.
    *
    * @see cursorToIndex
    */
   public static cursorToEnd() {
     // Insert a br tag to enable cursor to appear in the right position when the last character is a newline
-    const children = this.terminal.childNodes;
+    const children = this.input.childNodes;
     if (children.length > 0) {
       const last = children[children.length - 1];
 
@@ -62,24 +159,25 @@ export default class TerminalUtil {
         last.textContent?.endsWith("\n") &&
         !last.nextSibling
       ) {
-        this.terminal.appendChild(document.createElement("br"));
+        this.input.appendChild(document.createElement("br"));
       }
     }
 
-    const lastTextNode = this.terminal.lastChild;
+    const lastTextNode = this.input.lastChild;
     const textLength = lastTextNode?.textContent?.length ?? 0;
 
     this.cursorToIndex(textLength);
   }
 
   /**
-   * Moves the cursor to a position in the terminals text. If moving to the end
-   * of the terminal, use {@link cursorToEnd} to provide visual newlines.
+   * Moves the cursor to a specific position in the Input Element's text.
+   * <p>
+   * If moving to the end of the Input Element, use {@link cursorToEnd} to provide visual newlines.
    *
    * @param index the index to move the cursor to.
    */
   public static cursorToIndex(index: number) {
-    const lastTextNode = this.terminal.lastChild;
+    const lastTextNode = this.input.lastChild;
 
     if (lastTextNode === null) {
       return;
@@ -93,54 +191,6 @@ export default class TerminalUtil {
     selection.removeAllRanges();
     selection.addRange(range);
 
-    this.terminal.focus();
-  }
-
-  /**
-   * Updates the read only index of the terminal.
-   * This defines where the current index is for the end of the read only
-   * content in the terminal.
-   *
-   * @param index value to update to or the current terminal content length if none is provided
-   */
-  public static updateReadOnlyIndex(index?: number) {
-    index ??= this.getTerminalContent().length;
-    this.readOnlyIndex = index;
-  }
-
-  /**
-   * Retrieves the read-only content from the provided text.
-   * Uses the tracked read-only index to pull this data.
-   *
-   * @param text the string to use or the current readonly content if none is provided
-   */
-  public static getReadOnlyContent(text?: string): string {
-    text ??= this.getTerminalContent();
-    return text.substring(0, this.readOnlyIndex);
-  }
-
-  /**
-   * @returns the previous content in the terminal, before the current changes were made
-   */
-  public static getPreviousContent() {
-    return this.previousContent;
-  }
-
-  /**
-   * @param previousContent sets the internal previous content to this or the current terminal content if none is provided
-   */
-  public static updatePreviousContent(previousContent?: string) {
-    previousContent ??= this.getTerminalContent();
-    this.previousContent = previousContent;
-  }
-
-  /**
-   * @param text the string to use or the current user input if none is provided
-   *
-   * @returns the most recent data the user has inputted into the terminal; anything after the read only content
-   */
-  public static getUserInput(text?: string): string {
-    text ??= this.getTerminalContent();
-    return text.substring(this.readOnlyIndex);
+    this.input.focus();
   }
 }

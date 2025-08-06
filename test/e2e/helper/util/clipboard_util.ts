@@ -1,4 +1,4 @@
-import { Browser, Page } from "@playwright/test";
+import { Browser, Locator } from "@playwright/test";
 
 /**
  * Simulates a paste event by initially copying text using {@link setClipboard}.
@@ -13,20 +13,18 @@ import { Browser, Page } from "@playwright/test";
  *
  * I love the maturity of frontend development.
  *
- * @param page
+ * @param locator
  * @param browser
- * @param selector
  * @param value
  */
 export async function simulatePaste(
-  page: Page,
+  locator: Locator,
   browser: Browser,
-  selector: string,
   value: string,
 ) {
   await setClipboard(browser, value);
 
-  await page.locator(selector).press("ControlOrMeta+v");
+  await locator.press("ControlOrMeta+v");
 }
 
 /**

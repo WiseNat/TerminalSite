@@ -1,177 +1,273 @@
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 import TerminalUtil from "../../../../src/util/terminal_util";
 
-describe("TerminalUtil", () => {
-  let terminal: HTMLElement;
+let inputElement: HTMLElement;
+let promptElement: HTMLElement;
+let outputElement: HTMLElement;
 
-  beforeEach(() => {
-    // Mock terminal element
-    document.body.innerHTML =
-      "<div id=\"terminal\" contenteditable=\"true\"></div>";
+beforeEach(() => {
+  // Mock terminal elements
+  document.body.innerHTML =
+    "<div id=\"input\" contenteditable=\"true\"></div>" +
+    "<div id=\"prompt\"></div>" +
+    "<div id=\"output\"></div>";
 
-    terminal = document.getElementById("terminal")!;
-  });
+  inputElement = document.getElementById("input")!;
+  promptElement = document.getElementById("prompt")!;
+  outputElement = document.getElementById("output")!;
+});
 
-  describe("getTerminal", () => {
+describe("Input", () => {
+  describe("getInputElement", () => {
     test("should return the terminal", async () => {
       // Arrange & Act
-      const terminal = TerminalUtil.getTerminal();
+      const element = TerminalUtil.getInputElement();
 
       // Assert
-      expect(terminal).not.toBeNull();
+      expect(element).not.toBeNull();
     });
   });
-
-  describe("getTerminalContent", () => {
-    test("should return the terminal content when the terminal has content", async () => {
+  describe("getInput", () => {
+    test("should return the terminal content when the input element has content", async () => {
       // Arrange
       const insertedContent = "foo";
-      terminal.textContent = insertedContent;
+      inputElement.textContent = insertedContent;
 
       // Act
-      const content = TerminalUtil.getTerminalContent();
+      const content = TerminalUtil.getInput();
 
       // Assert
       expect(content).toBe(insertedContent);
     });
 
-    test("should return an empty string when the terminal has no content", async () => {
+    test("should return an empty string when the input element has no content", async () => {
       // Arrange & Act
-      const content = TerminalUtil.getTerminalContent();
+      const content = TerminalUtil.getInput();
 
       // Assert
       expect(content).not.toBeNull();
       expect(content).toBe("");
     });
-  });
 
-  describe("setText", () => {
-    test("should set text in the terminal when the terminal was previously empty", async () => {
+    test("should normalise spaces when they are present in the input element", async () => {
+      // Arrange
+      inputElement.innerHTML = "FOO&nbsp;BAR&nbsp;BAZ";
+
+      // Act
+      const content = TerminalUtil.getInput();
+
+      // Assert
+      expect(content).not.toBeNull();
+      expect(content).toBe("FOO BAR BAZ");
+    });
+  });
+  describe("setInput", () => {
+    test("should set text in the input element when the input element was previously empty", async () => {
       // Arrange
       const text = "foo";
 
       // Act
-      TerminalUtil.setText(text);
+      TerminalUtil.setInput(text);
 
       // Assert
-      expect(terminal.textContent).toBe(text);
+      expect(inputElement.textContent).toBe(text);
     });
 
-    test("should set text in the terminal when the terminal had content", async () => {
+    test("should set text in the input element when the input element had content", async () => {
       // Arrange
       const text = "foo";
-      terminal.textContent = "bar";
+      inputElement.textContent = "bar";
 
       // Act
-      TerminalUtil.setText(text);
+      TerminalUtil.setInput(text);
 
       // Assert
-      expect(terminal.textContent).toBe(text);
-    });
-
-    test("should move the cursor to the end of the terminal", async () => {
-      // Arrange
-      const cursorToEnd = vi.spyOn(TerminalUtil, "cursorToEnd");
-
-      // Act
-      TerminalUtil.setText("foo");
-
-      // Assert
-      expect(cursorToEnd).toHaveBeenCalled();
+      expect(inputElement.textContent).toBe(text);
     });
   });
-
-  describe("appendText", () => {
-    test("should append text to the terminal", async () => {
+  describe("appendInput", () => {
+    test("should append text to the input element", async () => {
       // Arrange
       const existingText = "foo";
       const appendedText = "bar";
-      terminal.textContent = existingText;
+      inputElement.textContent = existingText;
 
       // Act
-      TerminalUtil.appendText(appendedText);
+      TerminalUtil.appendInput(appendedText);
 
       // Assert
-      expect(terminal.textContent).toBe(existingText + appendedText);
-    });
-
-    test("should move the cursor to the end of the terminal", async () => {
-      // Arrange
-      const cursorToEnd = vi.spyOn(TerminalUtil, "cursorToEnd");
-
-      // Act
-      TerminalUtil.appendText("foo");
-
-      // Assert
-      expect(cursorToEnd).toHaveBeenCalled();
-    });
-  });
-
-  // Can't test "cursorToEnd" effectively with JSDom - rely on E2E to test this
-  // Can't test "cursorToIndex" effectively with JSDom - rely on E2E to test this
-  // Can't test "updateReadOnlyIndex" effectively as it just modifies a private value
-
-  describe("getReadOnlyContent", () => {
-    test("should get the read-only content from the provided value", async () => {
-      // Arrange
-      const readOnly = "[READONLY]";
-      const userInput = "normaltext";
-      TerminalUtil.updateReadOnlyIndex(readOnly.length);
-
-      // Act
-      const result = TerminalUtil.getReadOnlyContent(readOnly + userInput);
-
-      // Assert
-      expect(result).not.toBeNull();
-      expect(result).toBe(readOnly);
-    });
-
-    test("should get the read-only content from the current terminal content when no value is provided", async () => {
-      // Arrange
-      const readOnly = "[READONLY]";
-      const userInput = "normaltext";
-      TerminalUtil.setText(readOnly + userInput);
-      TerminalUtil.updateReadOnlyIndex(readOnly.length);
-
-      // Act
-      const result = TerminalUtil.getReadOnlyContent();
-
-      // Assert
-      expect(result).not.toBeNull();
-      expect(result).toBe(readOnly);
-    });
-  });
-
-  // Can't test "updatePreviousContent" effectively as it just modifies a private value
-
-  describe("getUserInput", () => {
-    test("should get the user input from the provided value", async () => {
-      // Arrange
-      const readOnly = "[READONLY]";
-      const userInput = "normaltext";
-      TerminalUtil.updateReadOnlyIndex(readOnly.length);
-
-      // Act
-      const result = TerminalUtil.getUserInput(readOnly + userInput);
-
-      // Assert
-      expect(result).not.toBeNull();
-      expect(result).toBe(userInput);
-    });
-
-    test("should get the user input from the current terminal content when no value is provided", async () => {
-      // Arrange
-      const readOnly = "[READONLY]";
-      const userInput = "normaltext";
-      TerminalUtil.setText(readOnly + userInput);
-      TerminalUtil.updateReadOnlyIndex(readOnly.length);
-
-      // Act
-      const result = TerminalUtil.getUserInput();
-
-      // Assert
-      expect(result).not.toBeNull();
-      expect(result).toBe(userInput);
+      expect(inputElement.textContent).toBe(existingText + appendedText);
     });
   });
 });
+
+describe("Prompt", () => {
+  describe("getPromptElement", () => {
+    test("should return the prompt element", async () => {
+      // Arrange & Act
+      const element = TerminalUtil.getPromptElement();
+
+      // Assert
+      expect(element).not.toBeNull();
+    });
+  });
+  describe("getPrompt", () => {
+    test("should return the prompt element content when the prompt element has content", async () => {
+      // Arrange
+      const insertedContent = "foo";
+      promptElement.textContent = insertedContent;
+
+      // Act
+      const content = TerminalUtil.getPrompt();
+
+      // Assert
+      expect(content).toBe(insertedContent);
+    });
+
+    test("should return an empty string when the prompt element has no content", async () => {
+      // Arrange & Act
+      const content = TerminalUtil.getPrompt();
+
+      // Assert
+      expect(content).not.toBeNull();
+      expect(content).toBe("");
+    });
+
+    test("should normalise spaces when they are present in the prompt element", async () => {
+      // Arrange
+      promptElement.innerHTML = "FOO&nbsp;BAR&nbsp;BAZ";
+
+      // Act
+      const content = TerminalUtil.getPrompt();
+
+      // Assert
+      expect(content).not.toBeNull();
+      expect(content).toBe("FOO BAR BAZ");
+    });
+  });
+  describe("setPrompt", () => {
+    test("should set text in the prompt element when the prompt element was previously empty", async () => {
+      // Arrange
+      const text = "foo";
+
+      // Act
+      TerminalUtil.setPrompt(text);
+
+      // Assert
+      expect(promptElement.textContent).toBe(text);
+    });
+
+    test("should set text in the prompt element when the prompt element had content", async () => {
+      // Arrange
+      const text = "foo";
+      promptElement.textContent = "bar";
+
+      // Act
+      TerminalUtil.setPrompt(text);
+
+      // Assert
+      expect(promptElement.textContent).toBe(text);
+    });
+  });
+  describe("appendPrompt", () => {
+    test("should append text to the prompt element", async () => {
+      // Arrange
+      const existingText = "foo";
+      const appendedText = "bar";
+      promptElement.textContent = existingText;
+
+      // Act
+      TerminalUtil.appendPrompt(appendedText);
+
+      // Assert
+      expect(promptElement.textContent).toBe(existingText + appendedText);
+    });
+  });
+});
+
+describe("Output", () => {
+  describe("getOutputElement", () => {
+    test("should return the output element", async () => {
+      // Arrange & Act
+      const element = TerminalUtil.getOutputElement();
+
+      // Assert
+      expect(element).not.toBeNull();
+    });
+  });
+  describe("getOutput", () => {
+    test("should return the output element content when the output element has content", async () => {
+      // Arrange
+      const insertedContent = "foo";
+      outputElement.textContent = insertedContent;
+
+      // Act
+      const content = TerminalUtil.getOutput();
+
+      // Assert
+      expect(content).toBe(insertedContent);
+    });
+
+    test("should return an empty string when the output element has no content", async () => {
+      // Arrange & Act
+      const content = TerminalUtil.getOutput();
+
+      // Assert
+      expect(content).not.toBeNull();
+      expect(content).toBe("");
+    });
+
+    test("should normalise spaces when they are present in the output element", async () => {
+      // Arrange
+      outputElement.innerHTML = "FOO&nbsp;BAR&nbsp;BAZ";
+
+      // Act
+      const content = TerminalUtil.getOutput();
+
+      // Assert
+      expect(content).not.toBeNull();
+      expect(content).toBe("FOO BAR BAZ");
+    });
+  });
+  describe("setOutput", () => {
+    test("should set text in the output element when the output element was previously empty", async () => {
+      // Arrange
+      const text = "foo";
+
+      // Act
+      TerminalUtil.setOutput(text);
+
+      // Assert
+      expect(outputElement.textContent).toBe(text);
+    });
+
+    test("should set text in the output element when the output element had content", async () => {
+      // Arrange
+      const text = "foo";
+      outputElement.textContent = "bar";
+
+      // Act
+      TerminalUtil.setOutput(text);
+
+      // Assert
+      expect(outputElement.textContent).toBe(text);
+    });
+  });
+  describe("appendOutput", () => {
+    test("should append text to the output element", async () => {
+      // Arrange
+      const existingText = "foo";
+      const appendedText = "bar";
+      outputElement.textContent = existingText;
+
+      // Act
+      TerminalUtil.appendOutput(appendedText);
+
+      // Assert
+      expect(outputElement.textContent).toBe(existingText + appendedText);
+    });
+  });
+});
+
+// Can't test "cursorToEnd" effectively with JSDom - rely on E2E to test this
+// Can't test "cursorToIndex" effectively with JSDom - rely on E2E to test this

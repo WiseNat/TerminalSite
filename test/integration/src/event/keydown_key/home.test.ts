@@ -14,17 +14,11 @@ describe("Home", () => {
     const event = new KeyboardEvent("keydown");
 
     test("moves the cursor to the start of the user input", async () => {
-      // Arrange
-      const readonlyText = "some example text";
-      vi.mocked(TerminalUtil.getReadOnlyContent).mockReturnValue(readonlyText);
-
-      // Act
+      // Arrange & Act
       await processHome(event);
 
       // Assert
-      expect(cursorToIndex).toHaveBeenCalledExactlyOnceWith(
-        readonlyText.length,
-      );
+      expect(cursorToIndex).toHaveBeenCalledExactlyOnceWith(0);
     });
   });
 });

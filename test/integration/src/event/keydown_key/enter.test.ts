@@ -7,7 +7,7 @@ import CommandHistoryUtil from "../../../../../src/util/command_history_util";
 describe("Enter", () => {
   // Spy
   const executeCommand = vi.spyOn(CommandUtil, "executeCommand");
-  const appendText = vi.spyOn(TerminalUtil, "appendText");
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
   const addToHistory = vi.spyOn(CommandHistoryUtil, "addToHistory");
   const setHistoricCommand = vi.spyOn(CommandHistoryUtil, "setHistoricCommand");
 
@@ -34,7 +34,7 @@ describe("Enter", () => {
     test("on user input and no history exists adds command to history, adds a new user input entry, and history index to be 0", async () => {
       // Arrange
       const userInput = "foo bar";
-      vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+      vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
 
       // Act
       await processEnter(event);
@@ -51,7 +51,7 @@ describe("Enter", () => {
     test("on user input and history exists updates existing user input in history, adds a new user input entry, and history index to be 0", async () => {
       // Arrange
       const userInput = "foo bar";
-      vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+      vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
 
       const existingCommand = "existing command";
       CommandHistoryUtil.addToHistory(existingCommand);
@@ -75,7 +75,7 @@ describe("Enter", () => {
     test("on previous command, updates the previous command, resets the history index, adds a new user input entry, and history index to be 0", async () => {
       // Arrange
       const userInput = "foo bar";
-      vi.mocked(TerminalUtil.getUserInput).mockReturnValue(userInput);
+      vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
 
       const existingCommand = "existing command";
       CommandHistoryUtil.addToHistory(existingCommand);
@@ -110,7 +110,7 @@ describe("Enter", () => {
       await processEnter(event);
 
       // Assert
-      expect(appendText).toHaveBeenCalled();
+      expect(appendOutput).not.toHaveBeenCalled();
       expect(executeCommand).not.toHaveBeenCalled();
     });
 

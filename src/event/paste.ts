@@ -1,5 +1,4 @@
 import Bowser from "bowser";
-import TerminalUtil from "../util/terminal_util.ts";
 
 /**
  * Event listener function for preventing rich-formatted text pasting on paste calls.
@@ -24,9 +23,6 @@ export function paste(event: ClipboardEvent) {
   // Should work based on ENGINE_MAP in https://github.com/bowser-js/bowser/blob/master/src/constants.js
   if (browser.getEngineName() !== "WebKit") {
     event.preventDefault();
-
-    // Added in case beforeinput does not fire from insertText call - varies per browser
-    TerminalUtil.updatePreviousContent();
 
     // Deprecated though no good alternatives exist for pasting with proper undo history.
     const text = event.clipboardData?.getData("text/plain") ?? "";

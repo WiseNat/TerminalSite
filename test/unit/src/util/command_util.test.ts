@@ -5,12 +5,12 @@ import TokenisedCommand from "../../../../src/dto/tokenised_command";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { unmock } from "../../helper/unmock";
 import MetaImportUtil from "../../../../src/util/meta_import_util";
+import { userPrompt } from "../../../../src/constant/prompt";
 
 describe("CommandUtil", () => {
   describe("executeCommand", () => {
     // Spy
-    const appendText = vi.spyOn(TerminalUtil, "appendText");
-    const updateReadOnlyIndex = vi.spyOn(TerminalUtil, "updateReadOnlyIndex");
+    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
     // Mock
     vi.mock("../../../../src/util/terminal_util");
@@ -35,8 +35,8 @@ describe("CommandUtil", () => {
 
       // Assert
       expect(mockCommandFile.run).toHaveBeenCalled();
-      expect(appendText).toHaveBeenCalledOnce();
-      expect(updateReadOnlyIndex).toHaveBeenCalledOnce();
+      expect(appendOutput).toHaveBeenCalledTimes(2);
+      expect(appendOutput).toHaveBeenCalledWith("\n");
     });
 
     test("outputs that a command is not found when it does not exist", async () => {
@@ -49,15 +49,14 @@ describe("CommandUtil", () => {
       await CommandUtil.executeCommand(command);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\ntest: command not found\n");
-      expect(appendText).toHaveBeenCalledTimes(2);
-      expect(updateReadOnlyIndex).toHaveBeenCalledOnce();
+      expect(appendOutput).toHaveBeenCalledTimes(3);
+      expect(appendOutput).toHaveBeenCalledWith("\n");
+      expect(appendOutput).toHaveBeenCalledWith("\ntest: command not found");
     });
 
     test("outputs nothing when a command is not found with no name", async () => {
       // Arrange
       vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({});
-      const appendText = vi.spyOn(TerminalUtil, "appendText");
 
       const command = "";
 
@@ -65,9 +64,9 @@ describe("CommandUtil", () => {
       await CommandUtil.executeCommand(command);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\n");
-      expect(appendText).toHaveBeenCalledTimes(2);
-      expect(updateReadOnlyIndex).toHaveBeenCalledOnce();
+      expect(appendOutput).toHaveBeenCalledTimes(2);
+      expect(appendOutput).toHaveBeenCalledWith("\n");
+      expect(appendOutput).toHaveBeenCalledWith(`${userPrompt}`);
     });
   });
 

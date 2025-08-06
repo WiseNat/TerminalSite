@@ -8,6 +8,5 @@ import TerminalUtil from "../../util/terminal_util.ts";
 export async function processHome(event: KeyboardEvent) {
   event.preventDefault();
 
-  const textLength = TerminalUtil.getReadOnlyContent().length;
-  TerminalUtil.cursorToIndex(textLength);
+  TerminalUtil.cursorToIndex(0);
 }

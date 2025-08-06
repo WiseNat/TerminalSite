@@ -41,7 +41,7 @@ export default class AutocompleteUtil {
 
       if (suggestedValue !== "") {
         console.info(`Autocompleting '${userInput}' with '${suggestedValue}'`);
-        TerminalUtil.appendText(suggestedValue);
+        TerminalUtil.appendInput(suggestedValue);
       }
     } else {
       console.info("Providing a list of suggested autocompletion suggestions");
@@ -50,10 +50,14 @@ export default class AutocompleteUtil {
         .map((suggestion) => suggestion.visual)
         .join("\t");
 
+      if (TerminalUtil.getOutput() !== "") {
+        TerminalUtil.appendOutput("\n");
+      }
+
       // TODO: Make this use TUI (columns) when that's implemented
-      TerminalUtil.appendText(`\n${joinedSuggestions}\n${userPrompt}`);
-      TerminalUtil.updateReadOnlyIndex();
-      TerminalUtil.appendText(userInput);
+      TerminalUtil.appendOutput(
+        `${userPrompt}${userInput}\n${joinedSuggestions}`,
+      );
     }
   }
 

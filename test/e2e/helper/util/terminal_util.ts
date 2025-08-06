@@ -1,6 +1,5 @@
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { expect } from "../../fixture";
-import { terminalSelector } from "../constant/generic";
 import _ from "lodash";
 
 /**
@@ -35,40 +34,34 @@ export async function setCaretAtCharIndex(
 }
 
 /**
- * Checks whether the terminal contains the exact provided text.
+ * Checks whether the given element contains the exact provided text.
  *
- * @param page Playwright's Page object
- * @param text Exact expected text that the terminal will contain
+ * @param locator Playwright's Locator for element
+ * @param text the text to check
  */
-export async function expectExactTextInTerminal(page: Page, text: string) {
+export async function expectExactTextInElement(locator: Locator, text: string) {
   // Using RegExp in toHaveText to prevent whitespace normalisation
-  await expect(page.locator(terminalSelector)).toHaveText(
-    new RegExp(`^${_.escapeRegExp(text)}$`),
-  );
+  await expect(locator).toHaveText(new RegExp(`^${_.escapeRegExp(text)}$`));
 }
 
 /**
- * Checks whether the terminal starts with the provided text.
+ * Checks whether the given element starts with the provided text.
  *
- * @param page Playwright's Page object
- * @param text Expected text that the terminal will start with
+ * @param locator Playwright's Locator for element
+ * @param text the text to check
  */
-export async function expectTerminalToStartWithText(page: Page, text: string) {
+export async function expectElementToStartWith(locator: Locator, text: string) {
   // Using RegExp in toHaveText to prevent whitespace normalisation
-  await expect(page.locator(terminalSelector)).toHaveText(
-    new RegExp(`^${_.escapeRegExp(text)}`),
-  );
+  await expect(locator).toHaveText(new RegExp(`^${_.escapeRegExp(text)}`));
 }
 
 /**
- * Checks whether the terminal ends with the provided text.
+ * Checks whether the given element ends with the provided text.
  *
- * @param page Playwright's Page object
- * @param text Expected text that the terminal will end with
+ * @param locator Playwright's Locator for element
+ * @param text the text to check
  */
-export async function expectTerminalToEndWithText(page: Page, text: string) {
+export async function expectElementToEndWith(locator: Locator, text: string) {
   // Using RegExp in toHaveText to prevent whitespace normalisation
-  await expect(page.locator(terminalSelector)).toHaveText(
-    new RegExp(`${_.escapeRegExp(text)}$`),
-  );
+  await expect(locator).toHaveText(new RegExp(`${_.escapeRegExp(text)}$`));
 }

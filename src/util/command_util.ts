@@ -14,9 +14,16 @@ export default class CommandUtil {
   public static async executeCommand(command: string) {
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);
 
+    // Prevents extra newline when there is no output
+    if (TerminalUtil.getOutput() !== "") {
+      TerminalUtil.appendOutput("\n");
+    }
+
     if (tokenisedCommand.name === "") {
-      TerminalUtil.appendText("\n");
+      TerminalUtil.appendOutput(userPrompt);
     } else {
+      TerminalUtil.appendOutput(userPrompt + command);
+
       const commandScript = this.getCommandScript(tokenisedCommand);
 
       if (commandScript !== null) {
@@ -25,14 +32,13 @@ export default class CommandUtil {
         );
         await commandScript.run(tokenisedCommand.args);
       } else {
-        TerminalUtil.appendText(
-          `\n${tokenisedCommand.name}: command not found\n`,
+        TerminalUtil.appendOutput(
+          `\n${tokenisedCommand.name}: command not found`,
         );
       }
     }
 
-    TerminalUtil.appendText(userPrompt);
-    TerminalUtil.updateReadOnlyIndex();
+    TerminalUtil.setInput("");
   }
 
   /**

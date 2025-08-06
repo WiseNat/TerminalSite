@@ -1,9 +1,10 @@
 import { test } from "../fixture";
-import { terminalSelector } from "../helper/constant/generic";
 import {
-  expectExactTextInTerminal,
-  expectTerminalToEndWithText,
-} from "../helper/util/terminal_util";
+  inputSelector,
+  promptSelector,
+  defaultUserPrompt,
+} from "../helper/constant/generic";
+import { expectExactTextInElement } from "../helper/util/terminal_util";
 
 test.describe("with existing command history", () => {
   const commands: string[] = [
@@ -17,8 +18,8 @@ test.describe("with existing command history", () => {
   test.beforeEach(async ({ page }) => {
     // Insert commands...
     for (const command of commands) {
-      await page.locator(terminalSelector).pressSequentially(command);
-      await page.locator(terminalSelector).press("Enter");
+      await page.locator(inputSelector).pressSequentially(command);
+      await page.locator(inputSelector).press("Enter");
     }
   });
 
@@ -26,33 +27,57 @@ test.describe("with existing command history", () => {
     page,
   }) => {
     // Arrange & Act
-    await page.locator(terminalSelector).press("ArrowUp");
+    await page.locator(inputSelector).press("ArrowUp");
 
     // Assert
-    await expectTerminalToEndWithText(page, commands[commands.length - 1]);
+    // No check for output as commands significantly alter it.
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(
+      page.locator(inputSelector),
+      commands[commands.length - 1],
+    );
   });
 
   test("pressing 'Up' twice goes to the previously submitted command", async ({
     page,
   }) => {
     // Arrange & Act
-    await page.locator(terminalSelector).press("ArrowUp");
-    await page.locator(terminalSelector).press("ArrowUp");
+    await page.locator(inputSelector).press("ArrowUp");
+    await page.locator(inputSelector).press("ArrowUp");
 
     // Assert
-    await expectTerminalToEndWithText(page, commands[commands.length - 2]);
+    // No check for output as commands significantly alter it.
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(
+      page.locator(inputSelector),
+      commands[commands.length - 2],
+    );
   });
 
   test("pressing 'Down' goes to a more recently submitted command", async ({
     page,
   }) => {
     // Arrange & Act
-    await page.locator(terminalSelector).press("ArrowUp");
-    await page.locator(terminalSelector).press("ArrowUp");
-    await page.locator(terminalSelector).press("ArrowDown");
+    await page.locator(inputSelector).press("ArrowUp");
+    await page.locator(inputSelector).press("ArrowUp");
+    await page.locator(inputSelector).press("ArrowDown");
 
     // Assert
-    await expectTerminalToEndWithText(page, commands[commands.length - 1]);
+    // No check for output as commands significantly alter it.
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(
+      page.locator(inputSelector),
+      commands[commands.length - 1],
+    );
   });
 
   test("pressing 'Up' and then 'Down' from the user input returns to the original user input", async ({
@@ -60,41 +85,56 @@ test.describe("with existing command history", () => {
   }) => {
     // Arrange
     const userInput = "some --fake=command example";
-    await page.locator(terminalSelector).pressSequentially(userInput);
+    await page.locator(inputSelector).pressSequentially(userInput);
 
     // Act
-    await page.locator(terminalSelector).press("ArrowUp");
-    await page.locator(terminalSelector).press("ArrowDown");
+    await page.locator(inputSelector).press("ArrowUp");
+    await page.locator(inputSelector).press("ArrowDown");
 
     // Assert
-    await expectTerminalToEndWithText(page, userInput);
+    // No check for output as commands significantly alter it.
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(page.locator(inputSelector), userInput);
   });
 
   test("pressing 'Down' from the user input does nothing", async ({ page }) => {
     // Arrange
     const userInput = "some --fake=command example";
-    await page.locator(terminalSelector).pressSequentially(userInput);
+    await page.locator(inputSelector).pressSequentially(userInput);
 
     // Act
-    await page.locator(terminalSelector).press("ArrowDown");
+    await page.locator(inputSelector).press("ArrowDown");
 
     // Assert
-    await expectTerminalToEndWithText(page, userInput);
+    // No check for output as commands significantly alter it.
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(page.locator(inputSelector), userInput);
   });
 
   test("typing data in a previously submitted command and returning to that retains the typed data", async ({
     page,
   }) => {
     // Arrange & Act
-    await page.locator(terminalSelector).press("ArrowUp");
+    await page.locator(inputSelector).press("ArrowUp");
     const userInput = "some extra data";
-    await page.locator(terminalSelector).pressSequentially(userInput);
-    await page.locator(terminalSelector).press("ArrowDown");
-    await page.locator(terminalSelector).press("ArrowUp");
+    await page.locator(inputSelector).pressSequentially(userInput);
+    await page.locator(inputSelector).press("ArrowDown");
+    await page.locator(inputSelector).press("ArrowUp");
 
     // Assert
-    await expectTerminalToEndWithText(
-      page,
+    // No check for output as commands significantly alter it.
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(
+      page.locator(inputSelector),
       commands[commands.length - 1] + userInput,
     );
   });
@@ -103,19 +143,33 @@ test.describe("with existing command history", () => {
     page,
   }) => {
     // Arrange & Act
-    await page.locator(terminalSelector).press("ArrowUp");
+    await page.locator(inputSelector).press("ArrowUp");
     const userInput = "some extra data";
-    await page.locator(terminalSelector).pressSequentially(userInput);
-    await page.locator(terminalSelector).press("Enter");
+    await page.locator(inputSelector).pressSequentially(userInput);
+    await page.locator(inputSelector).press("Enter");
 
     // Assert
-    await page.locator(terminalSelector).press("ArrowUp");
-    await expectTerminalToEndWithText(
-      page,
+    await page.locator(inputSelector).press("ArrowUp");
+    // No check for output as commands significantly alter it.
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(
+      page.locator(inputSelector),
       commands[commands.length - 1] + userInput,
     );
-    await page.locator(terminalSelector).press("ArrowUp");
-    await expectTerminalToEndWithText(page, commands[commands.length - 1]);
+
+    await page.locator(inputSelector).press("ArrowUp");
+    // No check for output as commands significantly alter it.
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(
+      page.locator(inputSelector),
+      commands[commands.length - 1],
+    );
   });
 
   test.describe("does not interact with the command history", () => {
@@ -123,15 +177,20 @@ test.describe("with existing command history", () => {
       page,
     }) => {
       // Arrange
-      const content = await page.locator(terminalSelector).textContent();
+      const content = await page.locator(inputSelector).textContent();
 
       // Act
       await page.keyboard.down("Shift");
-      await page.locator(terminalSelector).press("ArrowUp");
+      await page.locator(inputSelector).press("ArrowUp");
       await page.keyboard.up("Shift");
 
       // Assert
-      await expectExactTextInTerminal(page, content!);
+      // No check for output as commands significantly alter it.
+      await expectExactTextInElement(
+        page.locator(promptSelector),
+        defaultUserPrompt,
+      );
+      await expectExactTextInElement(page.locator(inputSelector), content!);
     });
 
     test("pressing 'Shift+Down' moves the caret downwards and the current command does not get cycled", async ({
@@ -139,15 +198,20 @@ test.describe("with existing command history", () => {
     }) => {
       // Arrange
       await page.keyboard.press("ArrowUp"); // moving up to have history to move back down to
-      const content = await page.locator(terminalSelector).textContent();
+      const content = await page.locator(inputSelector).textContent();
 
       // Act
       await page.keyboard.down("Shift");
-      await page.locator(terminalSelector).press("ArrowDown");
+      await page.locator(inputSelector).press("ArrowDown");
       await page.keyboard.up("Shift");
 
       // Assert
-      await expectExactTextInTerminal(page, content!);
+      // No check for output as commands significantly alter it.
+      await expectExactTextInElement(
+        page.locator(promptSelector),
+        defaultUserPrompt,
+      );
+      await expectExactTextInElement(page.locator(inputSelector), content!);
     });
   });
 });
@@ -158,12 +222,17 @@ test.describe("without existing command history", () => {
   }) => {
     // Arrange
     const userInput = "some --fake=command example";
-    await page.locator(terminalSelector).pressSequentially(userInput);
+    await page.locator(inputSelector).pressSequentially(userInput);
 
     // Act
-    await page.locator(terminalSelector).press("ArrowUp");
+    await page.locator(inputSelector).press("ArrowUp");
 
     // Assert
-    await expectTerminalToEndWithText(page, userInput);
+    // No check for output as commands significantly alter it.
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(page.locator(inputSelector), userInput);
   });
 });

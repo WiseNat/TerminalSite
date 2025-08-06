@@ -5,7 +5,7 @@ import TerminalUtil from "../../../../../src/util/terminal_util";
 describe("Echo", () => {
   describe("run", async () => {
     // Spy
-    const appendText = vi.spyOn(TerminalUtil, "appendText");
+    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
     // Mock
     vi.mock("../../../../../src/util/terminal_util");
@@ -18,7 +18,7 @@ describe("Echo", () => {
       await echo.run(args);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\nfoo bar\n");
+      expect(appendOutput).toHaveBeenCalledWith("\nfoo bar");
     });
 
     test("should append nothing when no args are provided", async () => {
@@ -29,7 +29,7 @@ describe("Echo", () => {
       await echo.run(args);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\n\n");
+      expect(appendOutput).toHaveBeenCalledWith("\n");
     });
 
     test("should ignore options when outputting", async () => {
@@ -40,7 +40,7 @@ describe("Echo", () => {
       await echo.run(args);
 
       // Assert
-      expect(appendText).toHaveBeenCalledWith("\nfoo bar\n");
+      expect(appendOutput).toHaveBeenCalledWith("\nfoo bar");
     });
   });
 });
