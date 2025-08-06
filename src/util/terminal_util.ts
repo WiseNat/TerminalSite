@@ -1,11 +1,10 @@
-// TODO: update JSDocs
-
 import HtmlUtil from "./html_util.ts";
 
 export default class TerminalUtil {
   /**
-   * Retrieves the Input element from the DOM. Used in place of a static readonly variable to allow Integration tests to work
-   * as expected
+   * Retrieves the Input element from the DOM.
+   * <p>
+   * Used in place of a static readonly variable to allow Integration tests to work as expected.
    * @private
    */
   private static get input(): HTMLElement {
@@ -13,8 +12,9 @@ export default class TerminalUtil {
   }
 
   /**
-   * Retrieves the Prompt element from the DOM. Used in place of a static readonly variable to allow Integration tests to work
-   * as expected
+   * Retrieves the Prompt element from the DOM.
+   * <p>
+   * Used in place of a static readonly variable to allow Integration tests to work as expected.
    * @private
    */
   private static get prompt(): HTMLElement {
@@ -22,8 +22,9 @@ export default class TerminalUtil {
   }
 
   /**
-   * Retrieves the Output element from the DOM. Used in place of a static readonly variable to allow Integration tests to work
-   * as expected
+   * Retrieves the Output element from the DOM.
+   * <p>
+   * Used in place of a static readonly variable to allow Integration tests to work as expected.
    * @private
    */
   private static get output(): HTMLElement {
@@ -52,7 +53,7 @@ export default class TerminalUtil {
   }
 
   /**
-   * @returns the most recent data the user has inputted into the terminal; anything after the read only content
+   * @returns the most recent data the user has inputted into the terminal
    */
   public static getInput(): string {
     return this.input.textContent === null
@@ -60,7 +61,9 @@ export default class TerminalUtil {
       : HtmlUtil.normaliseSpaces(this.input.textContent);
   }
 
-  // TODO: JSDoc
+  /**
+   * @returns the current prompt, e.g. `C:\Users\user>`
+   */
   public static getPrompt(): string {
     return this.prompt.textContent === null
       ? ""
@@ -68,8 +71,7 @@ export default class TerminalUtil {
   }
 
   /**
-   * @returns the current text content of the terminal
-   * @see HTMLElement#textContent
+   * @returns the output content of the terminal
    */
   public static getOutput() {
     return this.output.textContent === null
@@ -77,21 +79,25 @@ export default class TerminalUtil {
       : HtmlUtil.normaliseSpaces(this.output.textContent);
   }
 
-  // TODO: unit test
-  // TODO: JSDoc
+  /**
+   * Sets the Input as the provided text and moves the cursor to the end.
+   *
+   * @param text text to set
+   */
   public static setInput(text: string) {
     this.input.textContent = text;
-    // TODO: redundant?
     this.cursorToEnd();
   }
 
-  // TODO: unit test
-  // TODO: JSDoc
+  /**
+   * Sets the Prompt as the provided text.
+   *
+   * @param text text to set
+   */
   public static setPrompt(text: string) {
     this.prompt.textContent = text;
-    // TODO: redundant?
-    this.cursorToEnd();
 
+    // Hidden prompt to ensure the Input element visibly starts after the prompt
     // CSS is marked with ? to fix failing tests
     const escapedPrompt = CSS?.escape(text);
     document.documentElement.style.setProperty(
@@ -101,45 +107,44 @@ export default class TerminalUtil {
   }
 
   /**
-   * Sets the terminal text as the provided text and moves the cursor to the end
+   * Sets the Output as the provided text.
    *
    * @param text text to set
    */
   public static setOutput(text: string) {
     this.output.textContent = text;
-    // TODO: redundant?
-    this.cursorToEnd();
   }
 
-  // TODO: unit test
-  // TODO: JSDoc
+  /**
+   * Appends the provided text to the end of the Input and moves the cursor to the end.
+   *
+   * @param text text to append
+   */
   public static appendInput(text: string) {
     this.input.textContent += text;
-    // TODO: redundant?
-    this.cursorToEnd();
-  }
-
-  // TODO: unit test
-  // TODO: JSDoc
-  public static appendPrompt(text: string) {
-    this.prompt.textContent += text;
-    // TODO: redundant?
     this.cursorToEnd();
   }
 
   /**
-   * Appends the provided text to the end of the terminal text and moves the cursor to the end
+   * Appends the provided text to the end of the Prompt.
+   *
+   * @param text text to append
+   */
+  public static appendPrompt(text: string) {
+    this.prompt.textContent += text;
+  }
+
+  /**
+   * Appends the provided text to the end of the Output.
    *
    * @param text text to append
    */
   public static appendOutput(text: string) {
     this.output.textContent += text;
-    // TODO: redundant?
-    this.cursorToEnd();
   }
 
   /**
-   * Moves the cursor to the end of the terminals text.
+   * Moves the cursor to the end of the Input element's text.
    *
    * @see cursorToIndex
    */
@@ -165,8 +170,9 @@ export default class TerminalUtil {
   }
 
   /**
-   * Moves the cursor to a position in the terminals text. If moving to the end
-   * of the terminal, use {@link cursorToEnd} to provide visual newlines.
+   * Moves the cursor to a specific position in the Input Element's text.
+   * <p>
+   * If moving to the end of the Input Element, use {@link cursorToEnd} to provide visual newlines.
    *
    * @param index the index to move the cursor to.
    */

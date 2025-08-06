@@ -172,7 +172,6 @@ test.describe("with existing command history", () => {
     );
   });
 
-  // TODO: Redundant now multi-line support has been dropped? These do pass, just the functionality seems redundant now
   test.describe("does not interact with the command history", () => {
     test("pressing 'Shift+Up' moves the caret upwards and the current command does not get cycled", async ({
       page,

@@ -16,10 +16,6 @@ import {
 import { expectExactTextInElement } from "../helper/util/terminal_util";
 import { simulatePaste } from "../helper/util/clipboard_util";
 
-// TODO: Migrate tests from prevent_readonly_edit into here.
-//  - Allowed chars
-//  - No inserting newlines (typing or pasting)
-
 test.describe("Keyboard", () => {
   /*
    * TODO:

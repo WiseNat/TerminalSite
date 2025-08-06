@@ -36,7 +36,6 @@ test.describe("homepage", () => {
   });
 });
 
-// TODO: IMPLEMENT FUNCTIONALITY FOR THIS!!!
 test.describe("focus", () => {
   test("clicking anywhere on the web page focuses the terminal", async ({
     page,
