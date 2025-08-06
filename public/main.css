@@ -1,5 +1,6 @@
 :root {
     --prompt-content: "";
+    --background-colour: white;
 }
 
 main {
@@ -12,7 +13,7 @@ main {
 }
 
 #output {
-    background-color: indianred;
+    background-color: var(--background-colour);
 }
 
 #command-line-container {
@@ -23,7 +24,7 @@ main {
 }
 
 #prompt {
-    background: mediumseagreen;
+    background: var(--background-colour);
     position: absolute;
     top: 0;
     left: 0;
@@ -31,7 +32,7 @@ main {
 }
 
 #input {
-    background-color: deepskyblue;
+    background-color: var(--background-colour);
     position: absolute;
     inset: 0;
     z-index: 0;
