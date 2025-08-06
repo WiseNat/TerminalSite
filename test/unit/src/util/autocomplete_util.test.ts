@@ -93,7 +93,7 @@ describe("AutocompleteUtil", () => {
             expect(appendOutput).not.toHaveBeenCalled();
           } else {
             expect(appendOutput).toHaveBeenCalledWith(
-              `${userPrompt}${userInput}\n${expectedAppendText}\n`,
+              `${userPrompt}${userInput}\n${expectedAppendText}`,
             );
           }
         });
