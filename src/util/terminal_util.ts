@@ -91,6 +91,13 @@ export default class TerminalUtil {
     this.prompt.textContent = text;
     // TODO: redundant?
     this.cursorToEnd();
+
+    // CSS is marked with ? to fix failing tests
+    const escapedPrompt = CSS?.escape(text);
+    document.documentElement.style.setProperty(
+      "--prompt-content",
+      `"${escapedPrompt}"`,
+    );
   }
 
   /**

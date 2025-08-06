@@ -1,3 +1,7 @@
+:root {
+    --prompt-content: "";
+}
+
 main {
     font-family: consola, monospace;
     display: flex;
@@ -34,8 +38,5 @@ main {
 }
 
 #input::before {
-    /* TODO: Set this using TS */
-
-    /* TODO: Need to understand the "caveats" of this. E.g. escaping '\' */
-    content: "C:\\Users\\user>";
+    content: var(--prompt-content);
 }
