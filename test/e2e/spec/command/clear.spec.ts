@@ -1,5 +1,6 @@
 import { test } from "../../fixture";
 import {
+  commandNotFound,
   defaultUserPrompt,
   inputSelector,
   outputSelector,
@@ -24,6 +25,30 @@ test.describe("Clear", () => {
 
     // Assert
     await expectExactTextInElement(page.locator(outputSelector), "");
+    await expectExactTextInElement(
+      page.locator(promptSelector),
+      defaultUserPrompt,
+    );
+    await expectExactTextInElement(page.locator(inputSelector), "");
+  });
+
+  test("output must not have an extra newline after clearing", async ({
+    page,
+  }) => {
+    // Arrange
+    const fakeCommand = "fakecommand";
+
+    // Act
+    await page.locator(inputSelector).pressSequentially("clear");
+    await page.locator(inputSelector).press("Enter");
+    await page.locator(inputSelector).pressSequentially(fakeCommand);
+    await page.locator(inputSelector).press("Enter");
+
+    // Assert
+    await expectExactTextInElement(
+      page.locator(outputSelector),
+      `${defaultUserPrompt}${fakeCommand}\n${fakeCommand}${commandNotFound}`,
+    );
     await expectExactTextInElement(
       page.locator(promptSelector),
       defaultUserPrompt,

@@ -35,7 +35,8 @@ describe("CommandUtil", () => {
 
       // Assert
       expect(mockCommandFile.run).toHaveBeenCalled();
-      expect(appendOutput).toHaveBeenCalledOnce();
+      expect(appendOutput).toHaveBeenCalledTimes(2);
+      expect(appendOutput).toHaveBeenCalledWith("\n");
     });
 
     test("outputs that a command is not found when it does not exist", async () => {
@@ -48,8 +49,9 @@ describe("CommandUtil", () => {
       await CommandUtil.executeCommand(command);
 
       // Assert
+      expect(appendOutput).toHaveBeenCalledTimes(3);
+      expect(appendOutput).toHaveBeenCalledWith("\n");
       expect(appendOutput).toHaveBeenCalledWith("\ntest: command not found");
-      expect(appendOutput).toHaveBeenCalledTimes(2);
     });
 
     test("outputs nothing when a command is not found with no name", async () => {
@@ -62,8 +64,9 @@ describe("CommandUtil", () => {
       await CommandUtil.executeCommand(command);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledWith(`\n${userPrompt}`);
-      expect(appendOutput).toHaveBeenCalledOnce();
+      expect(appendOutput).toHaveBeenCalledTimes(2);
+      expect(appendOutput).toHaveBeenCalledWith("\n");
+      expect(appendOutput).toHaveBeenCalledWith(`${userPrompt}`);
     });
   });
 
