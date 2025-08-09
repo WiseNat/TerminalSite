@@ -1,6 +1,4 @@
-import { Locator, Page } from "@playwright/test";
-import { expect } from "../../fixture";
-import _ from "lodash";
+import { Page } from "@playwright/test";
 
 /**
  * Places the caret inside a contenteditable element at a given character index.
@@ -30,44 +28,5 @@ export async function setCaretAtCharIndex(
       selection?.addRange(range);
     },
     { selector, charIndex },
-  );
-}
-
-/**
- * Checks whether the given element contains the exact provided text.
- *
- * @param locator Playwright's Locator for element
- * @param text the text to check
- */
-export async function expectExactTextInElement(locator: Locator, text: string) {
-  // Using RegExp in toHaveText to prevent whitespace normalisation
-  await expect(locator).toHaveText(
-    new RegExp(`^\\u200B*${_.escapeRegExp(text)}$`),
-  );
-}
-
-/**
- * Checks whether the given element starts with the provided text.
- *
- * @param locator Playwright's Locator for element
- * @param text the text to check
- */
-export async function expectElementToStartWith(locator: Locator, text: string) {
-  // Using RegExp in toHaveText to prevent whitespace normalisation
-  await expect(locator).toHaveText(
-    new RegExp(`^\\u200B*${_.escapeRegExp(text)}`),
-  );
-}
-
-/**
- * Checks whether the given element ends with the provided text.
- *
- * @param locator Playwright's Locator for element
- * @param text the text to check
- */
-export async function expectElementToEndWith(locator: Locator, text: string) {
-  // Using RegExp in toHaveText to prevent whitespace normalisation
-  await expect(locator).toHaveText(
-    new RegExp(`\\u200B*${_.escapeRegExp(text)}$`),
   );
 }

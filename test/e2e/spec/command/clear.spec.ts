@@ -1,4 +1,4 @@
-import { test } from "../../fixture";
+import { expect, test } from "../../fixture";
 import {
   commandNotFound,
   defaultUserPrompt,
@@ -6,7 +6,6 @@ import {
   outputSelector,
   promptSelector,
 } from "../../helper/constant/generic";
-import { expectExactTextInElement } from "../../helper/util/terminal_util";
 
 test.describe("Clear", () => {
   test("should remove all existing outputs", async ({ page }) => {
@@ -24,12 +23,11 @@ test.describe("Clear", () => {
     await page.locator(inputSelector).press("Enter");
 
     // Assert
-    await expectExactTextInElement(page.locator(outputSelector), "");
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(outputSelector)).exactTextInElement("");
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), "");
+    await expect(page.locator(inputSelector)).exactTextInElement("");
   });
 
   test("output must not have an extra newline after clearing", async ({
@@ -45,14 +43,12 @@ test.describe("Clear", () => {
     await page.locator(inputSelector).press("Enter");
 
     // Assert
-    await expectExactTextInElement(
-      page.locator(outputSelector),
+    await expect(page.locator(outputSelector)).exactTextInElement(
       `${defaultUserPrompt}${fakeCommand}\n${fakeCommand}${commandNotFound}`,
     );
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), "");
+    await expect(page.locator(inputSelector)).exactTextInElement("");
   });
 });

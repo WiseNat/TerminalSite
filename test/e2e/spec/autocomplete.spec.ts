@@ -1,4 +1,4 @@
-import { test } from "../fixture";
+import { expect, test } from "../fixture";
 import {
   defaultInitialPrompt,
   inputSelector,
@@ -6,7 +6,6 @@ import {
   outputSelector,
   defaultUserPrompt,
 } from "../helper/constant/generic";
-import { expectExactTextInElement } from "../helper/util/terminal_util";
 
 // Custom command specific E2E tests are under each command spec
 
@@ -20,15 +19,13 @@ test.describe("Default autocompletion", () => {
     await page.locator(inputSelector).press("Tab");
 
     // Assert
-    await expectExactTextInElement(
-      page.locator(outputSelector),
+    await expect(page.locator(outputSelector)).exactTextInElement(
       defaultInitialPrompt,
     );
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), `${input}o `);
+    await expect(page.locator(inputSelector)).exactTextInElement(`${input}o `);
   });
 
   test("adds a space when 'echo' has been typed", async ({ page }) => {
@@ -40,15 +37,13 @@ test.describe("Default autocompletion", () => {
     await page.locator(inputSelector).press("Tab");
 
     // Assert
-    await expectExactTextInElement(
-      page.locator(outputSelector),
+    await expect(page.locator(outputSelector)).exactTextInElement(
       defaultInitialPrompt,
     );
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), `${input} `);
+    await expect(page.locator(inputSelector)).exactTextInElement(`${input} `);
   });
 
   test("does nothing when no text has been inputted", async ({ page }) => {
@@ -56,15 +51,13 @@ test.describe("Default autocompletion", () => {
     await page.locator(inputSelector).press("Tab");
 
     // Assert
-    await expectExactTextInElement(
-      page.locator(outputSelector),
+    await expect(page.locator(outputSelector)).exactTextInElement(
       defaultInitialPrompt,
     );
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), "");
+    await expect(page.locator(inputSelector)).exactTextInElement("");
   });
 
   test("provides root directories when '/' has been typed", async ({
@@ -80,14 +73,12 @@ test.describe("Default autocompletion", () => {
     await page.locator(inputSelector).press("Tab");
 
     // Assert
-    await expectExactTextInElement(
-      page.locator(outputSelector),
+    await expect(page.locator(outputSelector)).exactTextInElement(
       `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expectedOutput}`,
     );
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), input);
+    await expect(page.locator(inputSelector)).exactTextInElement(input);
   });
 });
