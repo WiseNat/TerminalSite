@@ -41,7 +41,9 @@ export async function setCaretAtCharIndex(
  */
 export async function expectExactTextInElement(locator: Locator, text: string) {
   // Using RegExp in toHaveText to prevent whitespace normalisation
-  await expect(locator).toHaveText(new RegExp(`^${_.escapeRegExp(text)}$`));
+  await expect(locator).toHaveText(
+    new RegExp(`^\\u200B*${_.escapeRegExp(text)}$`),
+  );
 }
 
 /**
@@ -52,7 +54,9 @@ export async function expectExactTextInElement(locator: Locator, text: string) {
  */
 export async function expectElementToStartWith(locator: Locator, text: string) {
   // Using RegExp in toHaveText to prevent whitespace normalisation
-  await expect(locator).toHaveText(new RegExp(`^${_.escapeRegExp(text)}`));
+  await expect(locator).toHaveText(
+    new RegExp(`^\\u200B*${_.escapeRegExp(text)}`),
+  );
 }
 
 /**
@@ -63,5 +67,7 @@ export async function expectElementToStartWith(locator: Locator, text: string) {
  */
 export async function expectElementToEndWith(locator: Locator, text: string) {
   // Using RegExp in toHaveText to prevent whitespace normalisation
-  await expect(locator).toHaveText(new RegExp(`${_.escapeRegExp(text)}$`));
+  await expect(locator).toHaveText(
+    new RegExp(`\\u200B*${_.escapeRegExp(text)}$`),
+  );
 }
