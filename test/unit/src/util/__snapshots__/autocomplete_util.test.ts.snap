@@ -3,22 +3,20 @@
 exports[`AutocompleteUtil > getDirectorySuggestions > provides relevant directories when given a real path 1`] = `
 [
   {
-    "actual": "/src/main/foo/bar/",
+    "actual": "r/",
     "visual": "bar/",
   },
 ]
 `;
 
-exports[`AutocompleteUtil > getFileAndDirectorySuggestions > example 1`] = `[]`;
-
 exports[`AutocompleteUtil > getFileAndDirectorySuggestions > provides relevant files and directories when given a real path 1`] = `
 [
   {
-    "actual": "/src/main/foo/bar/",
+    "actual": "r/",
     "visual": "bar/",
   },
   {
-    "actual": "/src/main/foo/bazzing.gaz ",
+    "actual": "zzing.gaz ",
     "visual": "bazzing.gaz ",
   },
 ]
@@ -27,7 +25,7 @@ exports[`AutocompleteUtil > getFileAndDirectorySuggestions > provides relevant f
 exports[`AutocompleteUtil > getFileSuggestions > provides relevant files when given a real path 1`] = `
 [
   {
-    "actual": "/src/main/foo/bazzing.gaz ",
+    "actual": "zzing.gaz ",
     "visual": "bazzing.gaz ",
   },
 ]

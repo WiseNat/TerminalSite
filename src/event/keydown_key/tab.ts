@@ -25,9 +25,9 @@ export async function processTab(event: KeyboardEvent) {
   let suggestions: Suggestion[];
 
   if (tokenisedCommand.args.length !== 0 || userInput.endsWith(" ")) {
-    suggestions = await customCommandAutocomplete(tokenisedCommand);
+    suggestions = await customCommandAutocomplete(userInput, tokenisedCommand);
   } else {
-    suggestions = defaultAutocomplete(tokenisedCommand);
+    suggestions = defaultAutocomplete(userInput, tokenisedCommand);
   }
 
   AutocompleteUtil.autocomplete(suggestions, userInput);
@@ -36,18 +36,23 @@ export async function processTab(event: KeyboardEvent) {
 /**
  * Handles custom command autocompletion.
  *
+ * @param userInput
  * @param tokenisedCommand
  *
  * @returns values from the custom command autocomplete or directory & file suggestions if the method returns null or
  * doesn't exist.
  */
 async function customCommandAutocomplete(
+  userInput: string,
   tokenisedCommand: TokenisedCommand,
 ): Promise<Suggestion[]> {
   const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
 
   if (commandScript?.autocomplete) {
-    const suggestions = await commandScript.autocomplete(tokenisedCommand.args);
+    const suggestions = await commandScript.autocomplete(
+      userInput,
+      tokenisedCommand.args,
+    );
 
     if (suggestions != null) {
       return suggestions;
@@ -66,15 +71,21 @@ async function customCommandAutocomplete(
 /**
  * Handles default autocompletion.
  *
+ * @param userInput
  * @param tokenisedCommand
  *
  * @returns command name, directory, and file suggestions
  */
-function defaultAutocomplete(tokenisedCommand: TokenisedCommand): Suggestion[] {
+function defaultAutocomplete(
+  userInput: string,
+  tokenisedCommand: TokenisedCommand,
+): Suggestion[] {
   const searchTerm = tokenisedCommand.name;
 
-  const suggestions: Suggestion[] =
-    AutocompleteUtil.getCommandSuggestions(searchTerm);
+  const suggestions: Suggestion[] = AutocompleteUtil.getCommandSuggestions(
+    userInput,
+    searchTerm,
+  );
 
   return suggestions.concat(
     AutocompleteUtil.getFileAndDirectorySuggestions(searchTerm),
