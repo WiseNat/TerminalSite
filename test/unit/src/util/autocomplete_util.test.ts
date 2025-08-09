@@ -24,19 +24,19 @@ describe("AutocompleteUtil", () => {
         },
         {
           type: "automatically inserts when there's only a single valid suggestion",
-          suggestions: [{ visual: "visual_echo", actual: "echo " }],
+          suggestions: [{ visual: "visual_echo", actual: "o " }],
           userInput: "ech",
           expectedAppendText: "o ",
         },
         {
           type: "adds a space when the command name is already typed and there's only a single valid suggestion",
-          suggestions: [{ visual: "visual_echo", actual: "echo " }],
+          suggestions: [{ visual: "visual_echo", actual: " " }],
           userInput: "echo",
           expectedAppendText: " ",
         },
         {
           type: "does nothing when the command name is already typed with a space and there's only a single valid suggestion",
-          suggestions: [{ visual: "visual_echo", actual: "echo " }],
+          suggestions: [{ visual: "visual_echo", actual: "" }],
           userInput: "echo ",
           expectedAppendText: null,
         },
@@ -94,6 +94,7 @@ describe("AutocompleteUtil", () => {
           } else {
             expect(appendOutput).toHaveBeenCalledWith(
               `${userPrompt}${userInput}\n${expectedAppendText}`,
+              true,
             );
           }
         });
@@ -118,24 +119,24 @@ describe("AutocompleteUtil", () => {
         type: "provides valid suggestions that start with the name of the search value",
         searchValue: "ech",
         expectedCommandSuggestions: [
-          { visual: "echo", actual: "echo " },
+          { visual: "echo", actual: "o " },
           {
             visual: "echoing",
-            actual: "echoing ",
+            actual: "oing ",
           },
-          { visual: "echo_ers", actual: "echo_ers " },
+          { visual: "echo_ers", actual: "o_ers " },
         ],
       },
       {
         type: "provides valid suggestions that includes the entirety of the search value",
         searchValue: "echo",
         expectedCommandSuggestions: [
-          { visual: "echo", actual: "echo " },
+          { visual: "echo", actual: " " },
           {
             visual: "echoing",
-            actual: "echoing ",
+            actual: "ing ",
           },
-          { visual: "echo_ers", actual: "echo_ers " },
+          { visual: "echo_ers", actual: "_ers " },
         ],
       },
       {
@@ -155,8 +156,10 @@ describe("AutocompleteUtil", () => {
         });
 
         // Act
-        const commandSuggestions =
-          AutocompleteUtil.getCommandSuggestions(searchValue);
+        const commandSuggestions = AutocompleteUtil.getCommandSuggestions(
+          searchValue,
+          searchValue,
+        );
 
         // Assert
         expect(commandSuggestions).toEqual(expectedCommandSuggestions);

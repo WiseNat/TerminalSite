@@ -138,8 +138,13 @@ export default class TerminalUtil {
    * Appends the provided text to the end of the Output.
    *
    * @param text text to append
+   * @param onNewLine whether to append the text so that it is on a new line
    */
-  public static appendOutput(text: string) {
+  public static appendOutput(text: string, onNewLine?: boolean) {
+    if (onNewLine !== null && onNewLine && TerminalUtil.getOutput() !== "") {
+      text = `\n${text}`;
+    }
+
     this.output.textContent += text;
   }
 

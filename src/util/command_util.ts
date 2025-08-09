@@ -14,15 +14,10 @@ export default class CommandUtil {
   public static async executeCommand(command: string) {
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);
 
-    // Prevents extra newline when there is no output
-    if (TerminalUtil.getOutput() !== "") {
-      TerminalUtil.appendOutput("\n");
-    }
-
     if (tokenisedCommand.name === "") {
-      TerminalUtil.appendOutput(userPrompt);
+      TerminalUtil.appendOutput(userPrompt, true);
     } else {
-      TerminalUtil.appendOutput(userPrompt + command);
+      TerminalUtil.appendOutput(userPrompt + command, true);
 
       const commandScript = this.getCommandScript(tokenisedCommand);
 

@@ -266,6 +266,34 @@ describe("Output", () => {
       // Assert
       expect(outputElement.textContent).toBe(existingText + appendedText);
     });
+
+    test("should append a newline if text exists in the output", () => {
+      // Arrange
+      const existingText = "foo";
+      const appendedText = "bar";
+      outputElement.textContent = existingText;
+
+      // Act
+      TerminalUtil.appendOutput(appendedText, true);
+
+      // Assert
+      expect(outputElement.textContent).toBe(
+        `${existingText}\n${appendedText}`,
+      );
+    });
+
+    test("should not append a newline if text does not exist in the output", () => {
+      // Arrange
+      const existingText = "";
+      const appendedText = "bar";
+      outputElement.textContent = existingText;
+
+      // Act
+      TerminalUtil.appendOutput(appendedText, true);
+
+      // Assert
+      expect(outputElement.textContent).toBe(`${existingText}${appendedText}`);
+    });
   });
 });
 

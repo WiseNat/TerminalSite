@@ -34,10 +34,7 @@ export default class AutocompleteUtil {
 
     // Autocomplete value if there's only 1 suggestion, otherwise output all suggestions
     if (suggestions.length === 1) {
-      const suggestion = suggestions[0];
-
-      // Should search left to right, finding "userInput" at the start of "suggestedValue"
-      const suggestedValue = suggestion.actual.replace(userInput, "");
+      const suggestedValue = suggestions[0].actual;
 
       if (suggestedValue !== "") {
         console.info(`Autocompleting '${userInput}' with '${suggestedValue}'`);
@@ -50,13 +47,10 @@ export default class AutocompleteUtil {
         .map((suggestion) => suggestion.visual)
         .join("\t");
 
-      if (TerminalUtil.getOutput() !== "") {
-        TerminalUtil.appendOutput("\n");
-      }
-
       // TODO: Make this use TUI (columns) when that's implemented
       TerminalUtil.appendOutput(
         `${userPrompt}${userInput}\n${joinedSuggestions}`,
+        true,
       );
     }
   }
@@ -64,10 +58,14 @@ export default class AutocompleteUtil {
   /**
    * Gets a list of suggested commands for autocompletion which start with the same value as the `searchValue`.
    *
+   * @param userInput the current user input
    * @param searchValue the value to search against
    * @returns a list of command suggestions
    */
-  public static getCommandSuggestions(searchValue: string): Suggestion[] {
+  public static getCommandSuggestions(
+    userInput: string,
+    searchValue: string,
+  ): Suggestion[] {
     const commandSuggestions: Suggestion[] = [];
 
     for (const commandScript in MetaImportUtil.getCommandScripts()) {
@@ -76,7 +74,7 @@ export default class AutocompleteUtil {
       if (pathlessCommandScript.startsWith(searchValue)) {
         commandSuggestions.push({
           visual: pathlessCommandScript,
-          actual: pathlessCommandScript + " ",
+          actual: `${pathlessCommandScript} `.replace(userInput, ""),
         });
       }
     }
@@ -129,7 +127,10 @@ export default class AutocompleteUtil {
 
         const suggestion: Suggestion = {
           visual: joinedPath[joinedPath.length - 1],
-          actual: FileSystemUtil.formatPath(joinedPath),
+          actual: joinedPath[joinedPath.length - 1].replace(
+            incompleteFinalPathSegment,
+            "",
+          ),
         };
 
         if (child.isDirectory) {
