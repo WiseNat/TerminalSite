@@ -47,14 +47,10 @@ export default class AutocompleteUtil {
         .map((suggestion) => suggestion.visual)
         .join("\t");
 
-      // TODO: Migrate into appendOutput (somehow)
-      if (TerminalUtil.getOutput() !== "") {
-        TerminalUtil.appendOutput("\n");
-      }
-
       // TODO: Make this use TUI (columns) when that's implemented
       TerminalUtil.appendOutput(
         `${userPrompt}${userInput}\n${joinedSuggestions}`,
+        true,
       );
     }
   }
