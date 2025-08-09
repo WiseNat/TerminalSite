@@ -1,6 +1,7 @@
 import { describe, test, expect, vi } from "vitest";
 import { processHome } from "../../../../../src/event/keydown_key/home";
 import TerminalUtil from "../../../../../src/util/terminal_util";
+import { zeroWidthSpace } from "../../../../e2e/helper/constant/generic";
 
 describe("Home", () => {
   describe("processHome", () => {
@@ -13,12 +14,28 @@ describe("Home", () => {
     // Other
     const event = new KeyboardEvent("keydown");
 
-    test("moves the cursor to the start of the user input", async () => {
-      // Arrange & Act
+    test("moves the cursor to the start of the user input when no zero-width space is present", async () => {
+      // Arrange
+      vi.mocked(TerminalUtil.getRawInput).mockReturnValue("foo bar");
+
+      // Act
       await processHome(event);
 
       // Assert
       expect(cursorToIndex).toHaveBeenCalledExactlyOnceWith(0);
+    });
+
+    test("moves the cursor to the first index when a zero-width space is present", async () => {
+      // Arrange
+      vi.mocked(TerminalUtil.getRawInput).mockReturnValue(
+        `${zeroWidthSpace}foo bar`,
+      );
+
+      // Act
+      await processHome(event);
+
+      // Assert
+      expect(cursorToIndex).toHaveBeenCalledExactlyOnceWith(1);
     });
   });
 });

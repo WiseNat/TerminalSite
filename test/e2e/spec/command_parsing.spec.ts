@@ -1,4 +1,4 @@
-import { test } from "../fixture";
+import { expect, test } from "../fixture";
 import {
   commandNotFound,
   defaultInitialPrompt,
@@ -7,7 +7,6 @@ import {
   outputSelector,
   promptSelector,
 } from "../helper/constant/generic";
-import { expectExactTextInElement } from "../helper/util/terminal_util";
 
 test("Typing a valid command and pressing Enter runs that command", async ({
   page,
@@ -22,15 +21,13 @@ test("Typing a valid command and pressing Enter runs that command", async ({
   await page.locator(inputSelector).press("Enter");
 
   // Assert
-  await expectExactTextInElement(
-    page.locator(outputSelector),
+  await expect(page.locator(outputSelector)).exactTextInElement(
     `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${commandArgs.join(" ")}`,
   );
-  await expectExactTextInElement(
-    page.locator(promptSelector),
+  await expect(page.locator(promptSelector)).exactTextInElement(
     defaultUserPrompt,
   );
-  await expectExactTextInElement(page.locator(inputSelector), "");
+  await expect(page.locator(inputSelector)).exactTextInElement("");
 });
 
 test("Typing an unknown command and pressing Enter returns that the command was not found", async ({
@@ -46,15 +43,13 @@ test("Typing an unknown command and pressing Enter returns that the command was 
   await page.locator(inputSelector).press("Enter");
 
   // Assert
-  await expectExactTextInElement(
-    page.locator(outputSelector),
+  await expect(page.locator(outputSelector)).exactTextInElement(
     `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${commandName}${commandNotFound}`,
   );
-  await expectExactTextInElement(
-    page.locator(promptSelector),
+  await expect(page.locator(promptSelector)).exactTextInElement(
     defaultUserPrompt,
   );
-  await expectExactTextInElement(page.locator(inputSelector), "");
+  await expect(page.locator(inputSelector)).exactTextInElement("");
 });
 
 test("Typing no command and pressing Enter does nothing", async ({ page }) => {
@@ -62,15 +57,13 @@ test("Typing no command and pressing Enter does nothing", async ({ page }) => {
   await page.locator(inputSelector).press("Enter");
 
   // Assert
-  await expectExactTextInElement(
-    page.locator(outputSelector),
+  await expect(page.locator(outputSelector)).exactTextInElement(
     `${defaultInitialPrompt}\n${defaultUserPrompt}`,
   );
-  await expectExactTextInElement(
-    page.locator(promptSelector),
+  await expect(page.locator(promptSelector)).exactTextInElement(
     defaultUserPrompt,
   );
-  await expectExactTextInElement(page.locator(inputSelector), "");
+  await expect(page.locator(inputSelector)).exactTextInElement("");
 });
 
 test("Pressing Enter should run a command & prevent a newline being inserted in the user input", async ({
@@ -86,5 +79,5 @@ test("Pressing Enter should run a command & prevent a newline being inserted in 
   await page.locator(inputSelector).press("Enter");
 
   // Assert
-  await expectExactTextInElement(page.locator(inputSelector), "");
+  await expect(page.locator(inputSelector)).exactTextInElement("");
 });

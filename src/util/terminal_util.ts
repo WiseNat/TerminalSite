@@ -1,4 +1,5 @@
 import HtmlUtil from "./html_util.ts";
+import { zeroWidthSpace } from "../constant/char.ts";
 
 export default class TerminalUtil {
   /**
@@ -53,12 +54,21 @@ export default class TerminalUtil {
   }
 
   /**
-   * @returns the most recent data the user has inputted into the terminal
+   * @returns the most recent data the user has inputted into the terminal, including any zero-width spaces
+   * @see getInput
    */
-  public static getInput(): string {
+  public static getRawInput(): string {
     return this.input.textContent === null
       ? ""
       : HtmlUtil.normaliseSpaces(this.input.textContent);
+  }
+
+  /**
+   * @returns the most recent data the user has inputted into the terminal, without any zero-width spaces
+   * @see getRawInput
+   */
+  public static getInput(): string {
+    return this.getRawInput().replace(zeroWidthSpace, "");
   }
 
   /**
@@ -85,6 +95,10 @@ export default class TerminalUtil {
    * @param text text to set
    */
   public static setInput(text: string) {
+    if (text === "") {
+      text = zeroWidthSpace;
+    }
+
     this.input.textContent = text;
     this.cursorToEnd();
   }
@@ -117,12 +131,17 @@ export default class TerminalUtil {
 
   /**
    * Appends the provided text to the end of the Input and moves the cursor to the end.
+   * If the current input is a zero-width space, this will set instead of append.
    *
    * @param text text to append
    */
   public static appendInput(text: string) {
-    this.input.textContent += text;
-    this.cursorToEnd();
+    if (this.getRawInput() === zeroWidthSpace) {
+      this.setInput(text);
+    } else {
+      this.input.textContent += text;
+      this.cursorToEnd();
+    }
   }
 
   /**

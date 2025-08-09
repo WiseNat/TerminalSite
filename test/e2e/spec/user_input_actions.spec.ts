@@ -1,4 +1,4 @@
-import { test } from "../fixture";
+import { expect, test } from "../fixture";
 import {
   defaultInitialPrompt,
   defaultUserPrompt,
@@ -13,7 +13,6 @@ import {
   UNICODE_SYMBOLS,
   WHITESPACE,
 } from "../helper/constant/charset";
-import { expectExactTextInElement } from "../helper/util/terminal_util";
 import { simulatePaste } from "../helper/util/clipboard_util";
 
 test.describe("Keyboard", () => {
@@ -40,15 +39,13 @@ test.describe("Keyboard", () => {
         await page.locator(inputSelector).pressSequentially(values);
 
         // Assert
-        await expectExactTextInElement(
-          page.locator(outputSelector),
+        await expect(page.locator(outputSelector)).exactTextInElement(
           defaultInitialPrompt,
         );
-        await expectExactTextInElement(
-          page.locator(promptSelector),
+        await expect(page.locator(promptSelector)).exactTextInElement(
           defaultUserPrompt,
         );
-        await expectExactTextInElement(page.locator(inputSelector), values);
+        await expect(page.locator(inputSelector)).exactTextInElement(values);
       });
     });
 
@@ -68,15 +65,13 @@ test.describe("Keyboard", () => {
         // Assert
         const prompts = `\n${defaultUserPrompt}`.repeat(newlineCounter);
 
-        await expectExactTextInElement(
-          page.locator(outputSelector),
+        await expect(page.locator(outputSelector)).exactTextInElement(
           `${defaultInitialPrompt}${prompts}`,
         );
-        await expectExactTextInElement(
-          page.locator(promptSelector),
+        await expect(page.locator(promptSelector)).exactTextInElement(
           defaultUserPrompt,
         );
-        await expectExactTextInElement(page.locator(inputSelector), "");
+        await expect(page.locator(inputSelector)).exactTextInElement("");
       });
 
       test("With Shift can be typed in the user input", async ({ page }) => {
@@ -95,12 +90,10 @@ test.describe("Keyboard", () => {
         // Assert
         const newlines = "\n".repeat(newlineCounter);
 
-        await expectExactTextInElement(
-          page.locator(outputSelector),
+        await expect(page.locator(outputSelector)).exactTextInElement(
           defaultInitialPrompt,
         );
-        await expectExactTextInElement(
-          page.locator(promptSelector),
+        await expect(page.locator(promptSelector)).exactTextInElement(
           defaultUserPrompt,
         );
 
@@ -108,8 +101,7 @@ test.describe("Keyboard", () => {
         // though it actually passes.
         const character = "a";
         await page.locator(inputSelector).pressSequentially(character);
-        await expectExactTextInElement(
-          page.locator(inputSelector),
+        await expect(page.locator(inputSelector)).exactTextInElement(
           newlines + character,
         );
       });
@@ -131,15 +123,13 @@ test.describe("Keyboard", () => {
       await simulatePaste(page.locator(inputSelector), browser, values);
 
       // Assert
-      await expectExactTextInElement(
-        page.locator(outputSelector),
+      await expect(page.locator(outputSelector)).exactTextInElement(
         defaultInitialPrompt,
       );
-      await expectExactTextInElement(
-        page.locator(promptSelector),
+      await expect(page.locator(promptSelector)).exactTextInElement(
         defaultUserPrompt,
       );
-      await expectExactTextInElement(page.locator(inputSelector), values);
+      await expect(page.locator(inputSelector)).exactTextInElement(values);
     });
   });
 });

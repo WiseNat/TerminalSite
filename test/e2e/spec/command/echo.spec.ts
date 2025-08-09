@@ -1,4 +1,4 @@
-import { test } from "../../fixture";
+import { expect, test } from "../../fixture";
 import {
   defaultUserPrompt,
   defaultInitialPrompt,
@@ -6,10 +6,6 @@ import {
   outputSelector,
   promptSelector,
 } from "../../helper/constant/generic";
-import {
-  expectElementToStartWith,
-  expectExactTextInElement,
-} from "../../helper/util/terminal_util";
 
 test.describe("Echo", () => {
   test("should output all non-option arguments", async ({ page }) => {
@@ -23,15 +19,13 @@ test.describe("Echo", () => {
     // Assert
     const expected = "foo bar gaz";
 
-    await expectElementToStartWith(
-      page.locator(outputSelector),
+    await expect(page.locator(outputSelector)).elementToStartWith(
       `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expected}`,
     );
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), "");
+    await expect(page.locator(inputSelector)).exactTextInElement("");
   });
 
   test("should output nothing when nothing is provided", async ({ page }) => {
@@ -43,14 +37,12 @@ test.describe("Echo", () => {
     await page.locator(inputSelector).press("Enter");
 
     // Assert
-    await expectElementToStartWith(
-      page.locator(outputSelector),
+    await expect(page.locator(outputSelector)).elementToStartWith(
       `${defaultInitialPrompt}\n${defaultUserPrompt}${input}`,
     );
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), "");
+    await expect(page.locator(inputSelector)).exactTextInElement("");
   });
 });

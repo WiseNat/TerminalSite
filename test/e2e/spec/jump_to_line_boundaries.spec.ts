@@ -4,42 +4,43 @@ import { setCaretAtCharIndex } from "../helper/util/terminal_util";
 
 const defaultInput = "foo, bar ?<baz>gaz</baz> asd> // testing";
 
+// Zero-width Space is present so all positions are +1
 [
   {
     button: "Home",
     withCtrl: false,
     expectedText: "the beginning of the user input",
-    expectedPosition: 0,
+    expectedPosition: 1,
   },
   {
     button: "a",
     withCtrl: true,
     expectedText: "the beginning of the user input",
-    expectedPosition: 0,
+    expectedPosition: 1,
   },
   {
     button: "A",
     withCtrl: true,
     expectedText: "the beginning of the user input",
-    expectedPosition: 0,
+    expectedPosition: 1,
   },
   {
     button: "End",
     withCtrl: false,
     expectedText: "the end of the user input",
-    expectedPosition: defaultInput.length,
+    expectedPosition: 1 + defaultInput.length,
   },
   {
     button: "e",
     withCtrl: true,
     expectedText: "the end of the user input",
-    expectedPosition: defaultInput.length,
+    expectedPosition: 1 + defaultInput.length,
   },
   {
     button: "E",
     withCtrl: true,
     expectedText: "the end of the user input",
-    expectedPosition: defaultInput.length,
+    expectedPosition: 1 + defaultInput.length,
   },
 ].forEach(({ button, withCtrl, expectedText, expectedPosition }) => {
   test.describe(`Pressing '${button}'`, () => {

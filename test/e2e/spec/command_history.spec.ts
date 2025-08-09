@@ -1,10 +1,9 @@
-import { test } from "../fixture";
+import { expect, test } from "../fixture";
 import {
   inputSelector,
   promptSelector,
   defaultUserPrompt,
 } from "../helper/constant/generic";
-import { expectExactTextInElement } from "../helper/util/terminal_util";
 
 test.describe("with existing command history", () => {
   const commands: string[] = [
@@ -31,12 +30,10 @@ test.describe("with existing command history", () => {
 
     // Assert
     // No check for output as commands significantly alter it.
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(
-      page.locator(inputSelector),
+    await expect(page.locator(inputSelector)).exactTextInElement(
       commands[commands.length - 1],
     );
   });
@@ -50,12 +47,10 @@ test.describe("with existing command history", () => {
 
     // Assert
     // No check for output as commands significantly alter it.
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(
-      page.locator(inputSelector),
+    await expect(page.locator(inputSelector)).exactTextInElement(
       commands[commands.length - 2],
     );
   });
@@ -70,12 +65,10 @@ test.describe("with existing command history", () => {
 
     // Assert
     // No check for output as commands significantly alter it.
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(
-      page.locator(inputSelector),
+    await expect(page.locator(inputSelector)).exactTextInElement(
       commands[commands.length - 1],
     );
   });
@@ -93,11 +86,10 @@ test.describe("with existing command history", () => {
 
     // Assert
     // No check for output as commands significantly alter it.
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), userInput);
+    await expect(page.locator(inputSelector)).exactTextInElement(userInput);
   });
 
   test("pressing 'Down' from the user input does nothing", async ({ page }) => {
@@ -110,11 +102,10 @@ test.describe("with existing command history", () => {
 
     // Assert
     // No check for output as commands significantly alter it.
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), userInput);
+    await expect(page.locator(inputSelector)).exactTextInElement(userInput);
   });
 
   test("typing data in a previously submitted command and returning to that retains the typed data", async ({
@@ -129,12 +120,10 @@ test.describe("with existing command history", () => {
 
     // Assert
     // No check for output as commands significantly alter it.
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(
-      page.locator(inputSelector),
+    await expect(page.locator(inputSelector)).exactTextInElement(
       commands[commands.length - 1] + userInput,
     );
   });
@@ -151,23 +140,19 @@ test.describe("with existing command history", () => {
     // Assert
     await page.locator(inputSelector).press("ArrowUp");
     // No check for output as commands significantly alter it.
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(
-      page.locator(inputSelector),
+    await expect(page.locator(inputSelector)).exactTextInElement(
       commands[commands.length - 1] + userInput,
     );
 
     await page.locator(inputSelector).press("ArrowUp");
     // No check for output as commands significantly alter it.
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(
-      page.locator(inputSelector),
+    await expect(page.locator(inputSelector)).exactTextInElement(
       commands[commands.length - 1],
     );
   });
@@ -186,11 +171,10 @@ test.describe("with existing command history", () => {
 
       // Assert
       // No check for output as commands significantly alter it.
-      await expectExactTextInElement(
-        page.locator(promptSelector),
+      await expect(page.locator(promptSelector)).exactTextInElement(
         defaultUserPrompt,
       );
-      await expectExactTextInElement(page.locator(inputSelector), content!);
+      await expect(page.locator(inputSelector)).exactTextInElement(content!);
     });
 
     test("pressing 'Shift+Down' moves the caret downwards and the current command does not get cycled", async ({
@@ -207,11 +191,10 @@ test.describe("with existing command history", () => {
 
       // Assert
       // No check for output as commands significantly alter it.
-      await expectExactTextInElement(
-        page.locator(promptSelector),
+      await expect(page.locator(promptSelector)).exactTextInElement(
         defaultUserPrompt,
       );
-      await expectExactTextInElement(page.locator(inputSelector), content!);
+      await expect(page.locator(inputSelector)).exactTextInElement(content!);
     });
   });
 });
@@ -229,10 +212,9 @@ test.describe("without existing command history", () => {
 
     // Assert
     // No check for output as commands significantly alter it.
-    await expectExactTextInElement(
-      page.locator(promptSelector),
+    await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
     );
-    await expectExactTextInElement(page.locator(inputSelector), userInput);
+    await expect(page.locator(inputSelector)).exactTextInElement(userInput);
   });
 });

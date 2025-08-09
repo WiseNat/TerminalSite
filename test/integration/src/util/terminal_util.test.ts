@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test } from "vitest";
 import TerminalUtil from "../../../../src/util/terminal_util";
+import { zeroWidthSpace } from "../../../e2e/helper/constant/generic";
 
 let inputElement: HTMLElement;
 let promptElement: HTMLElement;
@@ -27,40 +28,74 @@ describe("Input", () => {
       expect(element).not.toBeNull();
     });
   });
-  describe("getInput", () => {
-    test("should return the terminal content when the input element has content", async () => {
-      // Arrange
-      const insertedContent = "foo";
-      inputElement.textContent = insertedContent;
 
-      // Act
-      const content = TerminalUtil.getInput();
+  [
+    { type: "getInput", returnZeroWidth: false },
+    { type: "getRawInput", returnZeroWidth: true },
+  ].forEach(({ type, returnZeroWidth }) => {
+    describe(type, () => {
+      function getInputType(type: string): string | undefined {
+        switch (type) {
+          case "getInput":
+            return TerminalUtil.getInput();
+          case "getRawInput":
+            return TerminalUtil.getRawInput();
+        }
 
-      // Assert
-      expect(content).toBe(insertedContent);
-    });
+        return undefined;
+      }
 
-    test("should return an empty string when the input element has no content", async () => {
-      // Arrange & Act
-      const content = TerminalUtil.getInput();
+      test("should return the terminal content when the input element has content", async () => {
+        // Arrange
+        const insertedContent = "foo";
+        inputElement.textContent = insertedContent;
 
-      // Assert
-      expect(content).not.toBeNull();
-      expect(content).toBe("");
-    });
+        // Act
+        const content = getInputType(type);
 
-    test("should normalise spaces when they are present in the input element", async () => {
-      // Arrange
-      inputElement.innerHTML = "FOO&nbsp;BAR&nbsp;BAZ";
+        // Assert
+        expect(content).toBe(insertedContent);
+      });
 
-      // Act
-      const content = TerminalUtil.getInput();
+      test("should return an empty string when the input element has no content", async () => {
+        // Arrange & Act
+        const content = getInputType(type);
 
-      // Assert
-      expect(content).not.toBeNull();
-      expect(content).toBe("FOO BAR BAZ");
+        // Assert
+        expect(content).not.toBeNull();
+        expect(content).toBe("");
+      });
+
+      test("should normalise spaces when they are present in the input element", async () => {
+        // Arrange
+        inputElement.innerHTML = "FOO&nbsp;BAR&nbsp;BAZ";
+
+        // Act
+        const content = getInputType(type);
+
+        // Assert
+        expect(content).not.toBeNull();
+        expect(content).toBe("FOO BAR BAZ");
+      });
+
+      test(`should ${returnZeroWidth ? "" : "not "}return a zero-width space`, async () => {
+        // Arrange
+        const insertedContent = zeroWidthSpace;
+        inputElement.textContent = insertedContent;
+
+        // Act
+        const content = getInputType(type);
+
+        // Assert
+        if (returnZeroWidth) {
+          expect(content).toBe(insertedContent);
+        } else {
+          expect(content).toBe("");
+        }
+      });
     });
   });
+
   describe("setInput", () => {
     test("should set text in the input element when the input element was previously empty", async () => {
       // Arrange
@@ -84,6 +119,18 @@ describe("Input", () => {
       // Assert
       expect(inputElement.textContent).toBe(text);
     });
+
+    test("should set text in the input element as a zero-width space when an empty string is provided", async () => {
+      // Arrange
+      const text = "";
+      inputElement.textContent = "bar";
+
+      // Act
+      TerminalUtil.setInput(text);
+
+      // Assert
+      expect(inputElement.textContent).toBe(zeroWidthSpace);
+    });
   });
   describe("appendInput", () => {
     test("should append text to the input element", async () => {
@@ -97,6 +144,18 @@ describe("Input", () => {
 
       // Assert
       expect(inputElement.textContent).toBe(existingText + appendedText);
+    });
+
+    test("should set instead of append the input if the current input is a zero-width space", async () => {
+      // Arrange
+      const appendedText = "bar";
+      inputElement.textContent = zeroWidthSpace;
+
+      // Act
+      TerminalUtil.appendInput(appendedText);
+
+      // Assert
+      expect(inputElement.textContent).toBe(appendedText);
     });
   });
 });
