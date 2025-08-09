@@ -132,16 +132,13 @@ test.describe("File/Directory autocompletion", () => {
       await page.locator(inputSelector).press("Tab");
 
       // Assert
-      await expectExactTextInElement(
-        page.locator(outputSelector),
+      await expect(page.locator(outputSelector)).exactTextInElement(
         defaultInitialPrompt,
       );
-      await expectExactTextInElement(
-        page.locator(promptSelector),
+      await expect(page.locator(promptSelector)).exactTextInElement(
         defaultUserPrompt,
       );
-      await expectExactTextInElement(
-        page.locator(inputSelector),
+      await expect(page.locator(inputSelector)).exactTextInElement(
         `${input}${expected}`,
       );
     });
