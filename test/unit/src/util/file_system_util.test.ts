@@ -30,229 +30,135 @@ describe("FileSystemUtil", () => {
 
   describe("resolvePathParts", () => {
     interface TestCase {
-      returns: string;
-      when: string;
-      paths: string[];
-      expected: string[];
+      type: string;
+      path: string;
+      expected: string[] | null;
     }
 
-    const preResolvedPathCases: TestCase[] = [
+    const simpleTestCases: TestCase[] = [
       {
-        returns: "the same path",
-        when: "given a single resolved path",
-        paths: ["/home/nathanwise/Desktop"],
-        expected: ["home", "nathanwise", "Desktop"],
-      },
-      {
-        returns: "the paths merged",
-        when: "given a resolved path NOT starting with '/' & NOT terminating with '/' and another directory",
-        paths: ["home/nathanwise", "Desktop"],
-        expected: ["home", "nathanwise", "Desktop"],
-      },
-      {
-        returns: "the paths merged",
-        when: "given a resolved path starting with '/' & NOT terminating with '/' and another directory",
-        paths: ["/home/nathanwise", "Desktop"],
-        expected: ["home", "nathanwise", "Desktop"],
-      },
-      {
-        returns: "the paths merged",
-        when: "given a resolved path NOT starting with '/' & terminating with '/' and another directory",
-        paths: ["home/nathanwise/", "Desktop"],
-        expected: ["home", "nathanwise", "Desktop"],
-      },
-      {
-        returns: "the paths merged",
-        when: "given a resolved path starting with '/' & terminating with '/' and another directory",
-        paths: ["/home/nathanwise/", "Desktop"],
+        type: "[Simple] a simple path",
+        path: "/home/nathanwise/Desktop",
         expected: ["home", "nathanwise", "Desktop"],
       },
     ];
 
-    const parentDirectoryCases: TestCase[] = [
+    const parentDirectoryTestCases: TestCase[] = [
       {
-        returns: "the previous directory path",
-        when: "given a path ending with '..'",
-        paths: ["/home/nathanwise/Desktop/.."],
+        type: "[Parent Directory] a path ending with the parent directory symbol",
+        path: "/home/nathanwise/Desktop/..",
         expected: ["home", "nathanwise"],
       },
       {
-        returns: "a valid path",
-        when: "given a path with multiple '..'",
-        paths: [
-          "/home/nathanwise/../nathanwise/Desktop/../../nathanwise/Desktop/..",
-        ],
+        type: "[Parent Directory] a path with multiple parent directory symbols",
+        path: "/home/nathanwise/../nathanwise/Desktop/../../nathanwise/Desktop/..",
         expected: ["home", "nathanwise"],
       },
       {
-        returns: "the root directory",
-        when: "given a path that resolves above the root directory",
-        paths: ["/home/../.."],
+        type: "[Parent Directory] a path that resolves above the root directory",
+        path: "/home/../..",
         expected: [],
       },
-      {
-        returns: "a valid path",
-        when: "given multiple paths with varying '..'",
-        paths: [
-          "/home/nathanwise/..",
-          "../..",
-          "home/../home/nathanwise",
-          "../nathanwise/Desktop",
-        ],
-        expected: ["home", "nathanwise", "Desktop"],
-      },
     ];
 
-    const homeDirectoryCases: TestCase[] = [
+    const homeDirectoryTestCases: TestCase[] = [
       {
-        returns: "the home directory",
-        when: "given a path that is only '~'",
-        paths: ["~"],
+        type: "[Home Directory] a path starting with the home directory symbol followed by a path separator",
+        path: "~/Desktop/subfolder",
+        expected: ["home", "nathanwise", "Desktop", "subfolder"],
+      },
+      {
+        type: "[Home Directory]] a path starting with the home directory symbol followed by an invalid username",
+        path: "~Desktop/subfolder",
+        expected: null,
+      },
+      {
+        type: "[Home Directory]] a path starting with the home directory symbol only followed by an invalid username",
+        path: "~Desktop",
+        expected: null,
+      },
+      {
+        type: "[Home Directory] a path starting with the home directory symbol followed by 'nathanwise'",
+        path: "~nathanwise/Desktop",
+        expected: ["home", "nathanwise", "Desktop"],
+      },
+      {
+        type: "[Home Directory] a path starting with the home directory symbol only followed by 'nathanwise'",
+        path: "~nathanwise",
         expected: ["home", "nathanwise"],
       },
       {
-        returns: "a path relative to the home directory",
-        when: "given a path starting with '~'",
-        paths: ["~/Desktop"],
-        expected: ["home", "nathanwise", "Desktop"],
+        type: "[Home Directory] a path that is only a home directory symbol followed",
+        path: "~",
+        expected: ["home", "nathanwise"],
       },
       {
-        returns: "a path containing '~'",
-        when: "given a path including '~' not at the start",
-        paths: ["/home/~/Desktop"],
-        expected: ["home", "~", "Desktop"],
+        type: "[Home Directory] a path that is only a home directory symbol followed by a path separator",
+        path: "~/",
+        expected: ["home", "nathanwise"],
       },
       {
-        returns: "a path relative to the home directory containing '~'",
-        when: "given multiple paths that include '~', with the first having '~' at the start",
-        paths: ["~/Desktop", "~/myfolder"],
-        expected: ["home", "nathanwise", "Desktop", "~", "myfolder"],
-      },
-      {
-        returns: "a path containing '~'",
-        when: "given multiple paths that include '~', with the first not having '~' at the start",
-        paths: ["/home/~", "~/Desktop"],
-        expected: ["home", "~", "~", "Desktop"],
+        type: "[Home Directory] a path containing a home directory symbol not at the start",
+        path: "/home/~/Desktop/subfolder",
+        expected: ["home", "~", "Desktop", "subfolder"],
       },
     ];
 
-    const currentDirectoryCases: TestCase[] = [
+    const currentWorkingDirectoryTestCases: TestCase[] = [
       {
-        returns: "a path relative to the current working directory",
-        when: "given a path starting with '.'",
-        paths: ["./myfolder"],
-        expected: ["home", "nathanwise", "Desktop", "myfolder"],
+        type: "[CWD] a path starting with the current working directory symbol",
+        path: "./subfolder",
+        expected: ["home", "nathanwise", "Desktop", "subfolder"],
       },
       {
-        returns: "a path ignoring '.'",
-        when: "given a path including '.' not at the start",
-        paths: ["/home/./nathanwise/Desktop"],
+        type: "[CWD] a path that is only a current working directory symbol",
+        path: ".",
         expected: ["home", "nathanwise", "Desktop"],
       },
       {
-        returns: "a path ignoring '.'",
-        when: "given multiple paths that include '.', with the first having '.' at the start",
-        paths: ["./myfolder", "subfolder/."],
-        expected: ["home", "nathanwise", "Desktop", "myfolder", "subfolder"],
+        type: "[CWD] a path that is only a current working directory symbol followed by a path separator",
+        path: "./",
+        expected: ["home", "nathanwise", "Desktop"],
       },
       {
-        returns: "a path ignoring '.'",
-        when: "given multiple paths that include '.', with the first not having '.' at the start",
-        paths: ["/home/nathanwise/.", "./Desktop"],
-        expected: ["home", "nathanwise", "Desktop"],
+        type: "[CWD] a path containing a current working directory symbol not at the start",
+        path: "/home/./nathanwise/Desktop/subfolder",
+        expected: ["home", "nathanwise", "Desktop", "subfolder"],
       },
     ];
 
-    const multipleSeparators: TestCase[] = [
+    const multipleSeparatorTestCases: TestCase[] = [
       {
-        returns: "a path without multiple '/'",
-        when: "given a path starting with multiple '/'",
-        paths: ["//home/nathanwise/Desktop"],
+        type: "[Multiple Separators] a path starting with multiple file separators",
+        path: "//home/nathanwise/Desktop",
         expected: ["home", "nathanwise", "Desktop"],
       },
       {
-        returns: "a path without multiple '/'",
-        when: "given a path containing multiple '/'",
-        paths: ["/home///nathanwise//Desktop"],
-        expected: ["home", "nathanwise", "Desktop"],
-      },
-      {
-        returns: "a path without multiple '/'",
-        when: "given a path containing multiple '/'",
-        paths: ["/home///nathanwise//Desktop"],
-        expected: ["home", "nathanwise", "Desktop"],
-      },
-      {
-        returns: "a path without multiple '/'",
-        when: "given multiple paths containing multiple '/'",
-        paths: ["///////home/nathanwise", "//Desktop"],
+        type: "[Multiple Separators] a path containing multiple file separators",
+        path: "/home///nathanwise//Desktop",
         expected: ["home", "nathanwise", "Desktop"],
       },
     ];
 
-    const allCases = [
-      ...preResolvedPathCases,
-      ...parentDirectoryCases,
-      ...homeDirectoryCases,
-      ...currentDirectoryCases,
-      ...multipleSeparators,
+    const testCases: TestCase[] = [
+      ...simpleTestCases,
+      ...parentDirectoryTestCases,
+      ...homeDirectoryTestCases,
+      ...currentWorkingDirectoryTestCases,
+      ...multipleSeparatorTestCases,
     ];
 
-    allCases.forEach(({ returns, when, paths, expected }) => {
-      test(`returns ${returns} when ${when}`, () => {
+    testCases.forEach(({ type, path, expected }) => {
+      test(type, () => {
         // Arrange
-        FileSystemUtil.setCurrentWorkingDirectory("~/Desktop");
         FileSystemUtil.setHomeDirectory("/home/nathanwise");
+        FileSystemUtil.setCurrentWorkingDirectory("/home/nathanwise/Desktop"); // TODO; "~/Desktop"
 
         // Act
-        const resolvedPath = FileSystemUtil.resolvePathParts(...paths);
+        const resolvedPath = FileSystemUtil.resolvePathParts(path);
 
         // Assert
         expect(resolvedPath).toStrictEqual(expected);
-      });
-    });
-  });
-
-  describe("joinPaths", () => {
-    interface TestCase {
-      when: string;
-      paths: string[];
-      expected: string[];
-    }
-
-    const testCases: TestCase[] = [
-      {
-        when: "given a single path",
-        paths: ["/home/nathanwise/Desktop"],
-        expected: ["home", "nathanwise", "Desktop"],
-      },
-      {
-        when: "given multiple paths",
-        paths: ["/home/nathanwise/", "Desktop/"],
-        expected: ["home", "nathanwise", "Desktop"],
-      },
-      {
-        when: "given paths with multiple path separators",
-        paths: ["home////nathanwise", "/Desktop///", "/myfolder//subfolder"],
-        expected: ["home", "nathanwise", "Desktop", "myfolder", "subfolder"],
-      },
-      {
-        when: "given a single file",
-        paths: ["test"],
-        expected: [".", "test"],
-      },
-    ];
-
-    testCases.forEach(({ when, paths, expected }) => {
-      test(`when ${when}, returns ${expected}`, () => {
-        // Arrange
-        FileSystemUtil.setCurrentWorkingDirectory("/home/nathanwise");
-
-        // Act
-        const result = FileSystemUtil.joinPaths(...paths);
-
-        // Assert
-        expect(result).toStrictEqual(expected);
       });
     });
   });

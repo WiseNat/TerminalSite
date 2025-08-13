@@ -84,16 +84,27 @@ test.describe("File/Directory autocompletion", () => {
     await expect(page.locator(inputSelector)).exactTextInElement(input);
   });
 
+  // TODO: Rename with absolute and relative...
   [
     {
-      type: "autocompletes a directory in an implicit current working directory path",
+      type: "autocompletes a direct directory in an implicit current working directory path",
       input: "Documen",
       expected: "ts/",
     },
     {
-      type: "autocompletes a file in an implicit current working directory path",
+      type: "autocompletes a direct file in an implicit current working directory path",
       input: "contact.",
       expected: "txt ",
+    },
+    {
+      type: "autocompletes a directory in a long implicit current working directory path",
+      input: "Projects/th",
+      expected: "is/",
+    },
+    {
+      type: "autocompletes a file in a long implicit current working directory path",
+      input: "Projects/th",
+      expected: "is/",
     },
     {
       type: "autocompletes a directory in a path that starts with the home directory symbol",

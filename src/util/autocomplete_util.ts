@@ -96,6 +96,10 @@ export default class AutocompleteUtil {
   ): PathRelatedSuggestion[] {
     const incompleteFilePath = FileSystemUtil.resolvePathParts(searchValue);
 
+    if (incompleteFilePath === null) {
+      return [];
+    }
+
     let incompleteFinalPathSegment: string;
     let pathToWalk: string[];
 
@@ -123,11 +127,14 @@ export default class AutocompleteUtil {
 
     for (const child of node.children) {
       if (child.name.startsWith(incompleteFinalPathSegment)) {
-        const joinedPath = FileSystemUtil.joinPaths(child.path, child.name);
+        // TODO: Migrate into FileSystemUtil (joinPaths & splitPaths)?..
+        const path = child.path + FileSystemUtil.pathSeparator + child.name;
+        const splitPath = path.split(FileSystemUtil.pathSeparator);
 
+        // TODO: Split path?
         const suggestion: Suggestion = {
-          visual: joinedPath[joinedPath.length - 1],
-          actual: joinedPath[joinedPath.length - 1].replace(
+          visual: splitPath[splitPath.length - 1],
+          actual: splitPath[splitPath.length - 1].replace(
             incompleteFinalPathSegment,
             "",
           ),

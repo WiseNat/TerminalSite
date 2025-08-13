@@ -9,6 +9,8 @@ export default class FileSystemUtil {
   public static readonly currentWorkingDirectorySymbol = ".";
   public static readonly parentDirectorySymbol = "..";
 
+  public static readonly username = "nathanwise";
+
   /**
    * @returns the Current Working Directory as an absolute path.
    */
@@ -28,12 +30,12 @@ export default class FileSystemUtil {
    *
    * @see resolvePathParts
    */
+  // TODO: Unit test me
   public static setCurrentWorkingDirectory(
-    ...currentWorkingDirectory: string[]
+    currentWorkingDirectory: string,
   ): void {
-    this.currentWorkingDirectory = this.resolvePathParts(
-      ...currentWorkingDirectory,
-    );
+    const resolvedPath = this.resolvePathParts(currentWorkingDirectory);
+    this.currentWorkingDirectory = resolvedPath ?? [];
   }
 
   /**
@@ -55,8 +57,10 @@ export default class FileSystemUtil {
    *
    * @see resolvePathParts
    */
-  public static setHomeDirectory(...homeDirectory: string[]): void {
-    this.homeDirectory = this.resolvePathParts(...homeDirectory);
+  // TODO: Unit test me
+  public static setHomeDirectory(homeDirectory: string): void {
+    const resolvedPath = this.resolvePathParts(homeDirectory);
+    this.homeDirectory = resolvedPath ?? [];
   }
 
   /**
@@ -80,9 +84,13 @@ export default class FileSystemUtil {
    * @see resolvePathParts
    * @see formatPath
    */
-  public static resolvePath(...paths: string[]): string {
-    const path = this.resolvePathParts(...paths);
-    return this.formatPath(path);
+  public static resolvePath(path: string): string | null {
+    const resolvedPath = this.resolvePathParts(path);
+    if (resolvedPath === null) {
+      return null;
+    }
+
+    return this.formatPath(resolvedPath);
   }
 
   /**
@@ -96,70 +104,82 @@ export default class FileSystemUtil {
    * <p>
    * To convert the path into a human-readable format, use {@link formatPath}.
    *
-   * @param paths
+   * @param path
    */
-  public static resolvePathParts(...paths: string[]): string[] {
-    let joinedPath: string[] = this.joinPaths(...paths);
+  public static resolvePathParts(path: string): string[] | null {
+    // Resolve special starting symbols
+    if (path.startsWith(this.homeDirectorySymbol)) {
+      // TODO: rename
+      const potentialPath = this.resolveHomePath(path);
 
-    // Handle special starting symbols
-    if (joinedPath.length > 0) {
-      const firstDirectory = joinedPath[0];
-
-      if (firstDirectory === this.homeDirectorySymbol) {
-        joinedPath.shift();
-        joinedPath.unshift(...this.getHomeDirectory());
-      } else if (firstDirectory === this.currentWorkingDirectorySymbol) {
-        joinedPath.shift();
-        joinedPath.unshift(...this.getCurrentWorkingDirectory());
+      if (potentialPath === null) {
+        return null;
       }
+
+      path = potentialPath;
+    } else if (
+      path.startsWith(this.currentWorkingDirectorySymbol + this.pathSeparator)
+    ) {
+      // Let Relative path logic handle this
+      path = path.slice(
+        this.currentWorkingDirectorySymbol.length + this.pathSeparator.length,
+      );
     }
 
-    // Ignore CWD symbols
-    joinedPath = joinedPath.filter((path: string) => {
-      return path !== this.currentWorkingDirectorySymbol;
-    });
+    if (this.isRelativePath(path)) {
+      const currentWorkingDirectoryString = this.formatPath(
+        this.currentWorkingDirectory,
+      );
 
-    return this.normalisePath(joinedPath);
+      path = currentWorkingDirectoryString + this.pathSeparator + path;
+    }
+
+    path = this.normalisePath(path);
+
+    const splitPath = path.split(this.pathSeparator);
+
+    if (path.startsWith(this.pathSeparator)) {
+      splitPath.shift();
+    }
+
+    // Remove empty elements
+    return splitPath.filter(Boolean);
   }
 
-  /**
-   * Joins provided string paths into a single path.
-   * When string paths with multiple consecutive path separators are provided, additional path separators are ignored,
-   * when forming the resulting path.
-   * <p>
-   * If a single filename is provided, it will be assumed to implicitly sit under the current working directory.
-   *
-   * @param stringPaths the paths to combine.
-   * @private
-   *
-   * @returns the joined paths as an array.
-   */
-  public static joinPaths(...stringPaths: string[]): string[] {
-    if (stringPaths.length === 1) {
-      const stringPath = stringPaths[0];
+  // TODO: JSDoc
+  // TODO: Rename?
+  private static resolveHomePath(homePath: string): string | null {
+    // TODO: Handle ~USERNAME
+    // TODO: get username. IF username in ["nathanwise", ""]; then add home dir. Otherwise return
 
-      if (
-        !stringPath.includes(this.pathSeparator) &&
-        ![
-          this.currentWorkingDirectorySymbol,
-          this.parentDirectorySymbol,
-          this.homeDirectorySymbol,
-        ].includes(stringPath)
-      ) {
-        // Standalone file/directory, so implicit cwd
-        return [this.currentWorkingDirectorySymbol, stringPaths[0]];
-      }
+    const pathSeparatorIndex = homePath.indexOf(this.pathSeparator);
+
+    let username: string;
+    if (pathSeparatorIndex === -1) {
+      username = homePath.slice(this.homeDirectorySymbol.length);
+    } else {
+      username = homePath.slice(
+        this.homeDirectorySymbol.length,
+        pathSeparatorIndex,
+      );
     }
 
-    const combinedPath: string[] = [];
-
-    for (const stringPath of stringPaths) {
-      // .filter(Boolean) removes empty elements
-      const segments = stringPath.split(this.pathSeparator).filter(Boolean);
-      combinedPath.push(...segments);
+    if (username !== "" && username !== this.username) {
+      return null;
     }
 
-    return combinedPath;
+    const homeDirectoryString = this.formatPath(this.homeDirectory);
+    const pathWithoutHomeSymbol = homePath.slice(
+      this.homeDirectorySymbol.length + username.length,
+    );
+
+    return homeDirectoryString + pathWithoutHomeSymbol;
+  }
+
+  // TODO: JSDoc
+  // TODO: Unit test
+  public static isRelativePath(stringPath: string): boolean {
+    return !stringPath.startsWith(this.pathSeparator);
   }
 
   /**
@@ -205,16 +225,24 @@ export default class FileSystemUtil {
 
   /**
    * Resolves any instances of `..` parent directory symbols within the provided path.
+   * <p>
+   * This also removes instances of '.' current working directory symbols.
    *
    * @param path the path to have parent directories resolved for.
    * @private
    *
    * @returns a normalised path without parent directory symbols.
    */
-  private static normalisePath(path: string[]): string[] {
+  // TODO: Unit test?
+  public static normalisePath(path: string): string {
+    const splitPath = path.split(this.pathSeparator);
     const normalisedPath: string[] = [];
 
-    for (const directory of path) {
+    for (const directory of splitPath) {
+      if (directory === this.currentWorkingDirectorySymbol) {
+        continue;
+      }
+
       if (directory === this.parentDirectorySymbol) {
         normalisedPath.pop();
       } else {
@@ -222,6 +250,6 @@ export default class FileSystemUtil {
       }
     }
 
-    return normalisedPath;
+    return normalisedPath.join(this.pathSeparator);
   }
 }
