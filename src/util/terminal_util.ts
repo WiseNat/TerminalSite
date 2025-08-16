@@ -1,5 +1,6 @@
 import HtmlUtil from "./html_util.ts";
 import { zeroWidthSpace } from "../constant/char.ts";
+import { escape, unescape } from "lodash-es";
 
 export default class TerminalUtil {
   /**
@@ -64,6 +65,15 @@ export default class TerminalUtil {
   }
 
   /**
+   * @returns the output content of the terminal, including unescaped nested HTML elements
+   */
+  public static getRawOutput(): string {
+    return this.output.innerHTML === null
+      ? ""
+      : HtmlUtil.normaliseSpaces(this.output.innerHTML);
+  }
+
+  /**
    * @returns the most recent data the user has inputted into the terminal, without any zero-width spaces
    * @see getRawInput
    */
@@ -81,12 +91,10 @@ export default class TerminalUtil {
   }
 
   /**
-   * @returns the output content of the terminal
+   * @returns the output content of the terminal, with nested HTML elements unescaped
    */
   public static getOutput() {
-    return this.output.textContent === null
-      ? ""
-      : HtmlUtil.normaliseSpaces(this.output.textContent);
+    return unescape(this.getRawOutput());
   }
 
   /**
@@ -121,12 +129,25 @@ export default class TerminalUtil {
   }
 
   /**
-   * Sets the Output as the provided text.
+   * Sets the `innerHtml` of the Output as the escaped version of the given text.
+   * <p>
+   * This allows for safely setting text that may contain HTML characters. For inserting HTML elements, use {@link setRawOutput}.
+   *
+   * @param text text to escape and set
+   */
+  public static setOutput(text: string) {
+    this.output.innerHTML = escape(text);
+  }
+
+  /**
+   * Sets the `innerHtml` of the Output as this text.
+   * <p>
+   * This allows for inserting of HTML elements. For inserting regular text safely, use {@link setOutput}.
    *
    * @param text text to set
    */
-  public static setOutput(text: string) {
-    this.output.textContent = text;
+  public static setRawOutput(text: string) {
+    this.output.innerHTML = text;
   }
 
   /**
@@ -154,17 +175,31 @@ export default class TerminalUtil {
   }
 
   /**
+   * Appends the provided text - after escaping it - to the end of the Output.
+   * <p>
+   * This allows for safely appending text that may contain HTML characters. For appending HTML elements, use {@link appendRawOutput}.
+   *
+   * @param text text to escape & append
+   * @param onNewLine whether to append the text so that it is on a new line
+   */
+  public static appendOutput(text: string, onNewLine?: boolean) {
+    this.appendRawOutput(escape(text), onNewLine);
+  }
+
+  /**
    * Appends the provided text to the end of the Output.
+   * <p>
+   * This allows for appending HTML elements. For regular text safe appends, use {@link appendOutput}.
    *
    * @param text text to append
    * @param onNewLine whether to append the text so that it is on a new line
    */
-  public static appendOutput(text: string, onNewLine?: boolean) {
+  public static appendRawOutput(text: string, onNewLine?: boolean) {
     if (onNewLine !== null && onNewLine && TerminalUtil.getOutput() !== "") {
       text = `\n${text}`;
     }
 
-    this.output.textContent += text;
+    this.output.innerHTML += text;
   }
 
   /**

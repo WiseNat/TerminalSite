@@ -18,22 +18,26 @@ export default class CommandUtil {
       TerminalUtil.appendOutput(userPrompt, true);
     } else {
       TerminalUtil.appendOutput(userPrompt + command, true);
+      TerminalUtil.setInput("");
 
       const commandScript = this.getCommandScript(tokenisedCommand);
 
-      if (commandScript !== null) {
+      if (commandScript === null) {
+        TerminalUtil.appendOutput(
+          `\n${tokenisedCommand.name}: command not found`,
+        );
+      } else {
+        // Fixes visual issues with non-instant commands
+        TerminalUtil.setPrompt("");
+
         console.info(
           `Running command '${tokenisedCommand.name}' with args '${tokenisedCommand.args}'`,
         );
         await commandScript.run(tokenisedCommand.args);
-      } else {
-        TerminalUtil.appendOutput(
-          `\n${tokenisedCommand.name}: command not found`,
-        );
+
+        TerminalUtil.setPrompt(userPrompt);
       }
     }
-
-    TerminalUtil.setInput("");
   }
 
   /**

@@ -5,7 +5,7 @@ import {
   MatcherReturnType,
   test as baseTest,
 } from "@playwright/test";
-import _ from "lodash";
+import { escapeRegExp } from "lodash-es";
 
 // Test
 export const test = baseTest.extend({
@@ -105,7 +105,7 @@ export const expect = baseExpect.extend({
       matcherName: "exactTextInElement",
       locator,
       expected,
-      regex: new RegExp(`^\\u200B*${_.escapeRegExp(expected)}$`),
+      regex: new RegExp(`^\\u200B*${escapeRegExp(expected)}$`),
       isNot: this.isNot,
       utils: this.utils,
       options,
@@ -128,7 +128,7 @@ export const expect = baseExpect.extend({
       matcherName: "expectElementToStartWith",
       locator,
       expected,
-      regex: new RegExp(`^\\u200B*${_.escapeRegExp(expected)}`),
+      regex: new RegExp(`^\\u200B*${escapeRegExp(expected)}`),
       isNot: this.isNot,
       utils: this.utils,
       options,
@@ -151,7 +151,7 @@ export const expect = baseExpect.extend({
       matcherName: "expectElementToEndWith",
       locator,
       expected,
-      regex: new RegExp(`\\u200B*${_.escapeRegExp(expected)}`),
+      regex: new RegExp(`\\u200B*${escapeRegExp(expected)}`),
       isNot: this.isNot,
       utils: this.utils,
       options,
