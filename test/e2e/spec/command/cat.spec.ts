@@ -8,21 +8,33 @@ import {
 } from "../../helper/constant/generic";
 
 test.describe("Cat", () => {
-  // TODO: test..
-  //  - Renders []() as an 'a' tag with a href
-
   const existingFiles = [
     {
-      path: "~/Projects/this/.external",
-      content: "github.com/WiseNat/TerminalSite/",
+      path: "/etc/hosts",
+      content: "127.0.0.1\tlocalhost\n" + "127.0.1.1\tnathan-wise-portfolio",
     },
     {
-      path: "~/Documents/about.txt",
+      path: "~/Documents/Education/gcses.md",
       content:
-        "I'm Nathan Wise, someone who loves programming and technology as a whole.\n" +
-        "I developed a passion for programming early in 2014 and have continued growing my skills ever since.\n" +
+        "# GCSEs\n" +
         "\n" +
-        "The source code for this website is available [here](https://github.com/WiseNat/TerminalSite/).\n",
+        "## Summary\n" +
+        "\n" +
+        "I completed my GCSES in June 2019 at Debden Park High School.\n" +
+        "\n" +
+        "## Subjects & Grades\n" +
+        "\n" +
+        "| Subject                            | Grade | Board           | QN         |\n" +
+        "|------------------------------------|-------|-----------------|------------|\n" +
+        "| Mathematics                        | 9     | Pearson Edexcel | 601/4700/3 |\n" +
+        "| Computer Science                   | 8     | OCR             | 601/8355/X |\n" +
+        "| Physics                            | 8     | OCR             | 601/8685/9 |\n" +
+        "| Biology                            | 8     | OCR             | 601/8506/5 |\n" +
+        "| Chemistry                          | 7     | OCR             | 601/8605/7 |\n" +
+        "| Geography                          | 6     | AQA             | 601/8410/3 |\n" +
+        "| English Literature                 | 6     | AQA             | 601/4447/6 |\n" +
+        "| English Language                   | 5     | AQA             | 601/4292/3 |\n" +
+        "| English Language (Spoken Language) | Merit | AQA             | 601/4292/3 |\n",
     },
   ];
 
@@ -34,6 +46,14 @@ test.describe("Cat", () => {
     {
       path: "/home/fakePath/someFile.txt",
       resolvedPath: "/home/fakePath/someFile.txt",
+    },
+  ];
+
+  const urlFiles = [
+    {
+      path: "~/Projects/this/.external",
+      text: "https://github.com/WiseNat/TerminalSite/",
+      href: "https://github.com/WiseNat/TerminalSite/",
     },
   ];
 
@@ -163,5 +183,33 @@ test.describe("Cat", () => {
       defaultUserPrompt,
     );
     await expect(page.locator(inputSelector)).exactTextInElement("");
+  });
+
+  test("should output an 'a' element when reading a file with a Markdown URL", async ({
+    page,
+  }) => {
+    // Arrange
+    const input = `cat ${urlFiles[0].path}`;
+
+    // Act
+    await page.locator(inputSelector).pressSequentially(input);
+    await page.locator(inputSelector).press("Enter");
+
+    // Assert
+    const expected = urlFiles[0].text;
+
+    await expect(page.locator(outputSelector)).elementToStartWith(
+      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expected}`,
+    );
+    await expect(page.locator(promptSelector)).exactTextInElement(
+      defaultUserPrompt,
+    );
+    await expect(page.locator(inputSelector)).exactTextInElement("");
+
+    const link = page
+      .locator(outputSelector)
+      .locator(`a[href="${urlFiles[0].href}"]`, { hasText: urlFiles[0].text });
+    await expect(link).toHaveCount(1);
+    await expect(link).toBeVisible();
   });
 });

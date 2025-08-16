@@ -4,8 +4,30 @@ import { CommandScript } from "../command_script.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import FileImportUtil from "../../util/file_import_util.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
+import { escape } from "lodash-es";
 
-// TODO: Render []() as an 'a' tag with a href + unit test + e2e test
+/**
+ * Replaces Markdown URLs with an Anchor Element.
+ * <p>
+ * Escapes any other text.
+ *
+ * @param text the text to modify
+ *
+ * @returns text with Anchor elements and escaped text
+ */
+function insertAnchorElements(text: string): string {
+  return text.replace(
+    /\[([^\]]+)]\(([^)]+)\)|([^[]+)/g,
+    (_match, text, url, outside) => {
+      // Text outside of []()
+      if (outside !== undefined) {
+        return escape(outside);
+      } else {
+        return `<a href='${url}' target='_blank'>${text}</a>`;
+      }
+    },
+  );
+}
 
 const cat: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -27,11 +49,15 @@ const cat: CommandScript = {
           `cat: ${resolvedFilePath ?? filePath}: No such file or directory`,
         );
       } else {
-        output.push(fileContents + (fileContents.endsWith("\n") ? " " : ""));
+        let result = fileContents + (fileContents.endsWith("\n") ? " " : "");
+
+        result = insertAnchorElements(result);
+
+        output.push(result);
       }
     }
 
-    TerminalUtil.appendOutput(`\n${output.join("\n")}`);
+    TerminalUtil.appendRawOutput(`\n${output.join("\n")}`);
   },
 };
 

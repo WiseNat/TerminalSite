@@ -7,7 +7,7 @@ import FileSystemUtil from "../../../../../src/util/file_system_util";
 describe("Cat", () => {
   describe("run", async () => {
     // Spy
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+    const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
     const readFile = vi.spyOn(FileImportUtil, "readFile");
     const resolvePath = vi.spyOn(FileSystemUtil, "resolvePath");
 
@@ -23,7 +23,7 @@ describe("Cat", () => {
       await cat.run(args);
 
       // Assert
-      expect(appendOutput).not.toHaveBeenCalled();
+      expect(appendRawOutput).not.toHaveBeenCalled();
     });
 
     test("should output file contents when a path for a file that exists is given", async () => {
@@ -38,7 +38,9 @@ describe("Cat", () => {
       // Assert
       expect(readFile).toHaveBeenCalledOnce();
       expect(resolvePath).not.toHaveBeenCalled();
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(`\n${fileContents}`);
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
+        `\n${fileContents}`,
+      );
     });
 
     test("should output an error message when a path for a file that does not exist is given", async () => {
@@ -54,7 +56,7 @@ describe("Cat", () => {
       expect(resolvePath).toHaveBeenCalledOnce();
 
       const resolvedPath = FileSystemUtil.resolvePath(args[0]);
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         `\ncat: ${resolvedPath}: No such file or directory`,
       );
     });
@@ -74,7 +76,7 @@ describe("Cat", () => {
       // Assert
       expect(readFile).toHaveBeenCalledTimes(2);
       expect(resolvePath).not.toHaveBeenCalled();
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         `\n${fileContentsFirst}\n${fileContentsSecond}`,
       );
     });
@@ -93,7 +95,7 @@ describe("Cat", () => {
 
       const resolvedPathFirst = FileSystemUtil.resolvePath(args[0]);
       const resolvedPathSecond = FileSystemUtil.resolvePath(args[1]);
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         `\ncat: ${resolvedPathFirst}: No such file or directory\ncat: ${resolvedPathSecond}: No such file or directory`,
       );
     });
@@ -114,7 +116,7 @@ describe("Cat", () => {
       expect(resolvePath).toHaveBeenCalledOnce();
 
       const resolvedPath = FileSystemUtil.resolvePath(args[0]);
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         `\ncat: ${resolvedPath}: No such file or directory\n${fileContentsFirst}`,
       );
     });
@@ -131,8 +133,29 @@ describe("Cat", () => {
       expect(readFile).toHaveBeenCalledOnce();
       expect(resolvePath).toHaveBeenCalledOnce();
 
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         `\ncat: ${args[0]}: No such file or directory`,
+      );
+    });
+
+    test("should replace Markdown URLs with an 'a' tag when outputting the contents of a file that exists", async () => {
+      // Arrange
+      const args: string[] = ["/home/test.txt"];
+      const fileContents =
+        "AN EXAMPLE CONTAINING [some text](https://duckduckgo.com/?hps=1&q=foobar&atb=v446-1&ia=web) <- A URL";
+      vi.mocked(FileImportUtil.readFile).mockResolvedValueOnce(fileContents);
+
+      // Act
+      await cat.run(args);
+
+      // Assert
+      expect(readFile).toHaveBeenCalledOnce();
+      expect(resolvePath).not.toHaveBeenCalled();
+
+      const replacedFileContents =
+        "AN EXAMPLE CONTAINING <a href='https://duckduckgo.com/?hps=1&q=foobar&atb=v446-1&ia=web' target='_blank'>some text</a> &lt;- A URL";
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
+        `\n${replacedFileContents}`,
       );
     });
   });
