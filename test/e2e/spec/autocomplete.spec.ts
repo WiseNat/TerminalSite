@@ -84,26 +84,24 @@ test.describe("File/Directory autocompletion", () => {
     await expect(page.locator(inputSelector)).exactTextInElement(input);
   });
 
-  // TODO: Rename with absolute and relative...
-  // TODO: add test for 'path ' autocomplete, shouldn't turn into 'path /'
   [
     {
-      type: "autocompletes a direct directory in an implicit current working directory path",
+      type: "autocompletes a directory in an implicit relative path",
       input: "Documen",
       expected: "ts/",
     },
     {
-      type: "autocompletes a direct file in an implicit current working directory path",
+      type: "autocompletes a file in an implicit relative path",
       input: "contact.",
       expected: "txt ",
     },
     {
-      type: "autocompletes a directory in a long implicit current working directory path",
+      type: "autocompletes a directory in a long implicit relative path",
       input: "Projects/th",
       expected: "is/",
     },
     {
-      type: "autocompletes a file in a long implicit current working directory path",
+      type: "autocompletes a file in a long implicit relative path",
       input: "Projects/th",
       expected: "is/",
     },
@@ -118,32 +116,52 @@ test.describe("File/Directory autocompletion", () => {
       expected: "xt ",
     },
     {
-      type: "autocompletes a directory in a path that starts with the current working directory symbol",
+      type: "autocompletes a directory in an explicit relative path",
       input: "./Desk",
       expected: "top/",
     },
     {
-      type: "autocompletes a file in a path that starts with the current working directory symbol",
+      type: "autocompletes a file in an explicit relative path",
       input: "./contact.t",
       expected: "xt ",
     },
     {
-      type: "autocompletes a directory in a path that includes a parent directory symbol",
+      type: "autocompletes a directory in an absolute path that includes a parent directory symbol",
       input: "/home/nathanwise/../nathanwise/Desktop/../../nathan",
       expected: "wise/",
     },
     {
-      type: "autocompletes a file in a path that includes a parent directory symbol",
+      type: "autocompletes a file in an absolute path that includes a parent directory symbol",
       input: "/home/nathanwise/../nathanwise/Desktop/../../nathanwise/contact",
       expected: ".txt ",
     },
     {
-      type: "autocompletes a dot file in a path",
+      type: "autocompletes a dot file in an implicit relative path",
+      input: "Projects/this/.",
+      expected: "external ",
+    },
+    {
+      type: "autocompletes a dot file in an explicit relative path",
+      input: "./Projects/this/.",
+      expected: "external ",
+    },
+    {
+      type: "autocompletes a dot file in an absolute path",
       input: "/home/nathanwise/Projects/this/.",
       expected: "external ",
     },
     {
-      type: "does nothing when trying to autocomplete a space after a path",
+      type: "does nothing when trying to autocomplete a space after an implicit relative path",
+      input: "Projects ",
+      expected: "",
+    },
+    {
+      type: "does nothing when trying to autocomplete a space after an explicit relative path",
+      input: "./Projects ",
+      expected: "",
+    },
+    {
+      type: "does nothing when trying to autocomplete a space after an absolute path",
       input: "/home/nathanwise/Projects ",
       expected: "",
     },
