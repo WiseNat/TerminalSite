@@ -127,11 +127,9 @@ export default class AutocompleteUtil {
 
     for (const child of node.children) {
       if (child.name.startsWith(incompleteFinalPathSegment)) {
-        // TODO: Migrate into FileSystemUtil (joinPaths & splitPaths)?..
-        const path = child.path + FileSystemUtil.pathSeparator + child.name;
-        const splitPath = path.split(FileSystemUtil.pathSeparator);
+        const path = FileSystemUtil.joinPaths(child.path, child.name);
+        const splitPath = FileSystemUtil.splitPath(path);
 
-        // TODO: Split path?
         const suggestion: Suggestion = {
           visual: splitPath[splitPath.length - 1],
           actual: splitPath[splitPath.length - 1].replace(

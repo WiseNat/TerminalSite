@@ -2,6 +2,94 @@ import { describe, expect, test } from "vitest";
 import FileSystemUtil from "../../../../src/util/file_system_util";
 
 describe("FileSystemUtil", () => {
+  describe("joinPaths", () => {
+    [
+      {
+        type: "joins just directories together",
+        paths: ["home", "nathanwise", "Desktop"],
+        expected: "home/nathanwise/Desktop",
+      },
+      {
+        type: "joins paths that both start with a path separator",
+        paths: ["/home/nathanwise", "/Desktop/subfolder"],
+        expected: "/home/nathanwise/Desktop/subfolder",
+      },
+      {
+        type: "joins paths that both end with a path separator",
+        paths: ["home/nathanwise/", "Desktop/subfolder/"],
+        expected: "home/nathanwise/Desktop/subfolder/",
+      },
+      {
+        type: "joins paths that both start & end with a path separator",
+        paths: ["/home/nathanwise/", "/Desktop/subfolder/"],
+        expected: "/home/nathanwise/Desktop/subfolder/",
+      },
+      {
+        type: "returns an empty string when no paths are provided",
+        paths: [],
+        expected: "",
+      },
+    ].forEach(({ type, paths, expected }) => {
+      test(type, () => {
+        // Arrange & Act
+        const result = FileSystemUtil.joinPaths(...paths);
+
+        // Assert
+        expect(result).toEqual(expected);
+      });
+    });
+  });
+
+  describe("splitPaths", () => {
+    [
+      {
+        type: "splits a path starting with a path separator",
+        path: "/home/nathanwise/Desktop",
+        expected: ["home", "nathanwise", "Desktop"],
+      },
+      {
+        type: "splits a path not starting with a path separator",
+        path: "home/nathanwise/Desktop",
+        expected: ["home", "nathanwise", "Desktop"],
+      },
+      {
+        type: "splits a path containing a current working directory symbol",
+        path: "./Desktop/subfolder/",
+        expected: [".", "Desktop", "subfolder"],
+      },
+      {
+        type: "splits a path containing a parent directory symbol",
+        path: "/home/nathanwise/../nathanwise/Desktop/subfolder/",
+        expected: [
+          "home",
+          "nathanwise",
+          "..",
+          "nathanwise",
+          "Desktop",
+          "subfolder",
+        ],
+      },
+      {
+        type: "splits a path containing a home directory symbol",
+        path: "~/Desktop/subfolder/",
+        expected: ["~", "Desktop", "subfolder"],
+      },
+      {
+        type: "returns an empty array when no path is provided",
+        path: "",
+        expected: [],
+      },
+    ].forEach(({ type, path, expected }) => {
+      test(type, () => {
+        // Arrange & Act
+        const result = FileSystemUtil.splitPath(path);
+
+        // Assert
+        expect(result).toEqual(expected);
+      });
+    });
+  });
+
   describe("formatPath", () => {
     test("generic path should be valid", () => {
       // Arrange
@@ -152,13 +240,114 @@ describe("FileSystemUtil", () => {
       test(type, () => {
         // Arrange
         FileSystemUtil.setHomeDirectory("/home/nathanwise");
-        FileSystemUtil.setCurrentWorkingDirectory("/home/nathanwise/Desktop"); // TODO; "~/Desktop"
+        FileSystemUtil.setCurrentWorkingDirectory("~/Desktop");
 
         // Act
         const resolvedPath = FileSystemUtil.resolvePathParts(path);
 
         // Assert
         expect(resolvedPath).toStrictEqual(expected);
+      });
+    });
+  });
+
+  describe("isRelativePath", () => {
+    [
+      {
+        type: "returns true for a path that starts with a directory",
+        path: "Desktop/subfolder/",
+        expected: true,
+      },
+      {
+        type: "returns true for a path that starts with a file",
+        path: "mydocument.txt",
+        expected: true,
+      },
+      {
+        type: "returns true for a path that is just a directory",
+        path: "subfolder/",
+        expected: true,
+      },
+      {
+        type: "returns false for a path that starts with a / followed by a directory",
+        path: "/Desktop/subfolder/",
+        expected: false,
+      },
+      {
+        type: "returns false for a path that starts with a / followed by a file",
+        path: "/mydocument.txt",
+        expected: false,
+      },
+      {
+        type: "returns false for a path that starts with a / followed by the home directory symbol",
+        path: "/~",
+        expected: false,
+      },
+      {
+        type: "returns true for a path that does not start with a / followed by the home directory symbol",
+        path: "~",
+        expected: true,
+      },
+      {
+        type: "returns false for a path that starts with a / followed by the current working directory symbol",
+        path: "/.",
+        expected: false,
+      },
+      {
+        type: "returns true for a path that does not start with a / followed by the current working directory symbol",
+        path: ".",
+        expected: true,
+      },
+      {
+        type: "returns false for a path that starts with a / followed by the parent directory symbol",
+        path: "/..",
+        expected: false,
+      },
+      {
+        type: "returns true for a path that does not start with a / followed by the parent directory symbol",
+        path: "..",
+        expected: true,
+      },
+    ].forEach(({ type, path, expected }) => {
+      test(type, () => {
+        // Arrange & Act
+        const result = FileSystemUtil.isRelativePath(path);
+
+        // Assert
+        expect(result).toEqual(expected);
+      });
+    });
+  });
+
+  describe("normalisePath", () => {
+    [
+      {
+        type: "returns the same relative path when no special symbols are present",
+        path: "/home/nathanwise/Desktop",
+        expected: "/home/nathanwise/Desktop",
+      },
+      {
+        type: "returns the same absolute path when no special symbols are present",
+        path: "/home/nathanwise/Desktop",
+        expected: "/home/nathanwise/Desktop",
+      },
+      {
+        type: "removes instances of the current working directory symbol",
+        path: "./nathanwise/././Desktop",
+        expected: "nathanwise/Desktop",
+      },
+      {
+        type: "resolves instances of the parent directory symbol",
+        path: "/home/../home/nathanwise/../../home/nathanwise/Desktop",
+        expected: "/home/nathanwise/Desktop",
+      },
+    ].forEach(({ type, path, expected }) => {
+      test(type, () => {
+        // Arrange & Act
+        const result = FileSystemUtil.normalisePath(path);
+
+        // Assert
+        expect(result).toEqual(expected);
       });
     });
   });
