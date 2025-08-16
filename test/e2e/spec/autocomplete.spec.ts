@@ -142,6 +142,16 @@ test.describe("File/Directory autocompletion", () => {
       input: "/home/nathanwise/Projects/this/.",
       expected: "external ",
     },
+    {
+      type: "does nothing when trying to autocomplete a space after a path",
+      input: "/home/nathanwise/Projects ",
+      expected: "",
+    },
+    {
+      type: "does nothing when trying to autocomplete a space after a fake command",
+      input: "somefakecommand ",
+      expected: "",
+    },
   ].forEach(async ({ type, input, expected }) => {
     test(type, async ({ page }) => {
       // Arrange & Act

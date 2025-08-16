@@ -170,6 +170,23 @@ describe("Tab", () => {
         expect(getFileAndDirectorySuggestions).toHaveBeenCalledOnce();
         expect(autocomplete).toHaveBeenCalledOnce();
       });
+
+      test("runs no suggestion helper methods if there is an empty arg after an unknown command", async () => {
+        // Arrange
+        const userInput = "echo ";
+        vi.mocked(TerminalUtil.getInput).mockReturnValue(userInput);
+        vi.mocked(CommandUtil.getCommandScript).mockReturnValue(null);
+
+        // Act
+        await processTab(event);
+
+        // Assert
+        expect(getCommandScript).toHaveBeenCalledOnce();
+        expect(getCommandScript).toReturnWith(null); // implicit check
+        expect(getCommandSuggestions).not.toHaveBeenCalled();
+        expect(getFileAndDirectorySuggestions).not.toHaveBeenCalled();
+        expect(autocomplete).toHaveBeenCalledOnce();
+      });
     });
   });
 });

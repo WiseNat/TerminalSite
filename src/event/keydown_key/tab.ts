@@ -59,12 +59,11 @@ async function customCommandAutocomplete(
     }
   }
 
-  let searchValue = "";
-
-  if (tokenisedCommand.args.length > 0) {
-    searchValue = tokenisedCommand.args[tokenisedCommand.args.length - 1];
+  if (tokenisedCommand.args.length === 0) {
+    return [];
   }
 
+  const searchValue = tokenisedCommand.args[tokenisedCommand.args.length - 1];
   return AutocompleteUtil.getFileAndDirectorySuggestions(searchValue);
 }
 
