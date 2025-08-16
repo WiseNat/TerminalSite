@@ -1,6 +1,5 @@
 import { fileTree, FileTreeNode } from "virtual:file-tree";
 
-// TODO: Update JSDocs
 export default class FileSystemUtil {
   private static currentWorkingDirectory: string[] = [];
   private static homeDirectory: string[] = [];
@@ -14,6 +13,7 @@ export default class FileSystemUtil {
 
   /**
    * @returns the Current Working Directory as an unformatted path.
+   * @see formatPath
    */
   public static getCurrentWorkingDirectory(): string[] {
     return this.currentWorkingDirectory;
@@ -21,6 +21,7 @@ export default class FileSystemUtil {
 
   /**
    * @returns the Home Directory as an unformatted path.
+   * @see formatPath
    */
   public static getHomeDirectory(): string[] {
     return this.homeDirectory;
@@ -30,12 +31,10 @@ export default class FileSystemUtil {
    * Sets the Current Working Directory as a resolved conversion of the provided path.
    * <p>
    * Any symbols resolvable by {@link resolvePathParts} found in the provided String paths will be resolved.
-   * Any symbols resolvable by {@link resolvePathParts} found in the provided String path will be resolved.
    * This means that, for example, the previous Current Working Directory path can be used to set the new path.
-   * E.g. if the previous CWD is `/home/nathanwise` then passing in `./Desktop` will set the CWD to
+   * E.g. if the previous CWD is `/home/nathanwise`, then passing in `./Desktop` to this method will set the CWD to
    * `/home/nathanwise/Desktop`.
    *
-   * @param currentWorkingDirectory string paths to set the CWD to.
    * @param currentWorkingDirectory string path to set the CWD to.
    *
    * @see resolvePathParts
@@ -48,16 +47,13 @@ export default class FileSystemUtil {
   }
 
   /**
-   * Sets the Home Directory as a single resolved conversion of the provided String paths.
    * Sets the Home Directory as a single resolved conversion of the provided path.
    * <p>
    * Any symbols resolvable by {@link resolvePathParts} found in the provided String paths will be resolved.
-   * Any symbols resolvable by {@link resolvePathParts} found in the provided String path will be resolved.
    * This means that, for example, the previous Home Directory path can be used to set the new path.
-   * E.g. if the previous Home Directory is `/home/nathanwise` then passing in `~/Desktop` will set the Home Directory
-   * to `/home/nathanwise/Desktop`.
+   * E.g. if the previous Home Directory is `/home/nathanwise`, then passing in `./Desktop` to this method will set the
+   * Home Directory to `/home/nathanwise/Desktop`.
    *
-   * @param homeDirectory string paths to set the Home Directory to.
    * @param homeDirectory string path to set the Home Directory to.
    *
    * @see resolvePathParts
@@ -69,6 +65,7 @@ export default class FileSystemUtil {
 
   /**
    * Joins together multiple paths, ensuring that leading and trailing path separators are retained.
+   * E.g. `["/home/nathanwise", "/Desktop/"]` -> `"/home/nathanwise/Desktop/"`
    *
    * @param paths the paths to join together.
    * @returns the resulting joined path.
@@ -117,9 +114,10 @@ export default class FileSystemUtil {
   /**
    * Formats the given path in a human-readable format.
    * This includes a path separator at the beginning, and between directories & files.
+   * This method should be used carefully, as an already segmented path has lost information pertaining to
+   * whether it is absolute or relative; this method assumes the given segmented path is absolute.
    *
-   * @param path path to format.
-   * @private
+   * @param path segmented absolute path to format.
    *
    * @returns the formatted path, e.g. `/home/nathanwise/Desktop`.
    */
@@ -145,7 +143,7 @@ export default class FileSystemUtil {
   }
 
   /**
-   * Converts String paths into a single joined and resolved path.
+   * Resolves the given path.
    * Any of the following symbols found in the provided String paths will be resolved:
    * <ul>
    *   <li>Home Directory: `~`</li>
@@ -160,14 +158,13 @@ export default class FileSystemUtil {
   public static resolvePathParts(path: string): string[] | null {
     // Resolve special starting symbols
     if (path.startsWith(this.homeDirectorySymbol)) {
-      // TODO: rename
-      const potentialPath = this.resolveHomePath(path);
+      const resolvedHomePath = this.resolveHomePath(path);
 
-      if (potentialPath === null) {
+      if (resolvedHomePath === null) {
         return null;
       }
 
-      path = potentialPath;
+      path = resolvedHomePath;
     } else if (
       path.startsWith(this.currentWorkingDirectorySymbol + this.pathSeparator)
     ) {
@@ -190,7 +187,6 @@ export default class FileSystemUtil {
     return this.splitPath(path);
   }
 
-  // TODO: Rename?
   /**
    * Resolves the provided Home Directory path by replacing either of the following with the absolute home directory
    * path:
@@ -198,7 +194,6 @@ export default class FileSystemUtil {
    *   <li> Home Directory symbol followed by a username e.g. `~nathanwise`
    *  <li>Standalone Home Directory symbol e.g. `~`
    * </ul>
-   *
    *
    * @param homePath a path that starts with the home directory symbol `~`
    * @private
@@ -252,7 +247,6 @@ export default class FileSystemUtil {
    * This also removes instances of `.` current working directory symbols.
    *
    * @param path the path to have parent directories resolved for.
-   * @private
    *
    * @returns a normalised path without parent directory symbols.
    */
