@@ -11,11 +11,31 @@ test.describe("Cat", () => {
   // TODO: test..
   //  - Renders []() as an 'a' tag with a href
 
-  // TODO: Rewrite:
-  //  - Pull out .external file path
-  //  - Pull out file contents
+  const existingFiles = [
+    {
+      path: "~/Projects/this/.external",
+      content: "github.com/WiseNat/TerminalSite/",
+    },
+    {
+      path: "~/Documents/about.txt",
+      content:
+        "I'm Nathan Wise, someone who loves programming and technology as a whole.\n" +
+        "I developed a passion for programming early in 2014 and have continued growing my skills ever since.\n" +
+        "\n" +
+        "The source code for this website is available [here](https://github.com/WiseNat/TerminalSite/).\n",
+    },
+  ];
 
-  // TODO: Remove some of these?.. Unit test should handle most of these.
+  const fakeFiles = [
+    {
+      path: "~/Projects/someFakeProject/.external",
+      resolvedPath: "/home/nathanwise/Projects/someFakeProject/.external",
+    },
+    {
+      path: "/home/fakePath/someFile.txt",
+      resolvedPath: "/home/fakePath/someFile.txt",
+    },
+  ];
 
   test("should output nothing when no args are passed", async ({ page }) => {
     // Arrange
@@ -39,14 +59,14 @@ test.describe("Cat", () => {
     page,
   }) => {
     // Arrange
-    const input = "cat ~/Projects/this/.external";
+    const input = `cat ${existingFiles[0].path}`;
 
     // Act
     await page.locator(inputSelector).pressSequentially(input);
     await page.locator(inputSelector).press("Enter");
 
     // Assert
-    const expected = "github.com/WiseNat/TerminalSite/";
+    const expected = existingFiles[0].content;
 
     await expect(page.locator(outputSelector)).elementToStartWith(
       `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expected}`,
@@ -61,22 +81,15 @@ test.describe("Cat", () => {
     page,
   }) => {
     // Arrange
-    const input = "cat ~/Projects/this/.external ~/Documents/about.txt";
+    const input = `cat ${existingFiles[0].path} ${existingFiles[1].path}`;
 
     // Act
     await page.locator(inputSelector).pressSequentially(input);
     await page.locator(inputSelector).press("Enter");
 
     // Assert
-    const expectedExternal = "github.com/WiseNat/TerminalSite/";
-    const expectedAbout =
-      "I'm Nathan Wise, someone who loves programming and technology as a whole.\n" +
-      "I developed a passion for programming early in 2014 and have continued growing my skills ever since.\n" +
-      "\n" +
-      "The source code for this website is available [here](https://github.com/WiseNat/TerminalSite/).\n";
-
     await expect(page.locator(outputSelector)).elementToStartWith(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expectedExternal}\n${expectedAbout}`,
+      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${existingFiles[0].content}\n${existingFiles[1].content}`,
     );
     await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
@@ -88,15 +101,14 @@ test.describe("Cat", () => {
     page,
   }) => {
     // Arrange
-    const input = "cat ~/Projects/someFakeProject/.external";
+    const input = `cat ${fakeFiles[0].path}`;
 
     // Act
     await page.locator(inputSelector).pressSequentially(input);
     await page.locator(inputSelector).press("Enter");
 
     // Assert
-    const expected =
-      "cat: /home/nathanwise/Projects/someFakeProject/.external: No such file or directory";
+    const expected = `cat: ${fakeFiles[0].resolvedPath}: No such file or directory`;
 
     await expect(page.locator(outputSelector)).elementToStartWith(
       `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expected}`,
@@ -111,18 +123,15 @@ test.describe("Cat", () => {
     page,
   }) => {
     // Arrange
-    const input =
-      "cat ~/Projects/someFakeProject/.external /home/fakePath/someFile.txt";
+    const input = `cat ${fakeFiles[0].path} ${fakeFiles[1].path}`;
 
     // Act
     await page.locator(inputSelector).pressSequentially(input);
     await page.locator(inputSelector).press("Enter");
 
     // Assert
-    const expectedFirst =
-      "cat: /home/nathanwise/Projects/someFakeProject/.external: No such file or directory";
-    const expectedSecond =
-      "cat: /home/fakePath/someFile.txt: No such file or directory";
+    const expectedFirst = `cat: ${fakeFiles[0].resolvedPath}: No such file or directory`;
+    const expectedSecond = `cat: ${fakeFiles[1].resolvedPath}: No such file or directory`;
 
     await expect(page.locator(outputSelector)).elementToStartWith(
       `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expectedFirst}\n${expectedSecond}`,
@@ -137,17 +146,15 @@ test.describe("Cat", () => {
     page,
   }) => {
     // Arrange
-    const input =
-      "cat ~/Projects/someFakeProject/.external ~/Projects/this/.external";
+    const input = `cat ${fakeFiles[0].path} ${existingFiles[0].path}`;
 
     // Act
     await page.locator(inputSelector).pressSequentially(input);
     await page.locator(inputSelector).press("Enter");
 
     // Assert
-    const expectedFirst =
-      "cat: /home/nathanwise/Projects/someFakeProject/.external: No such file or directory";
-    const expectedSecond = "github.com/WiseNat/TerminalSite/";
+    const expectedFirst = `cat: ${fakeFiles[0].resolvedPath}: No such file or directory`;
+    const expectedSecond = existingFiles[0].content;
 
     await expect(page.locator(outputSelector)).elementToStartWith(
       `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expectedFirst}\n${expectedSecond}`,
