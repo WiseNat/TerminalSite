@@ -63,4 +63,21 @@ test.describe("focus", () => {
       ).toBeFocused();
     }
   });
+
+  test("clicking on anchor elements opens in a new tab", async ({ page }) => {
+    // Arrange
+    const input = "cat ~/Projects/this/.external";
+
+    // Act
+    await page.locator(inputSelector).pressSequentially(input);
+    await page.locator(inputSelector).press("Enter");
+
+    const [newPage] = await Promise.all([
+      page.context().waitForEvent("page"),
+      page.locator("a[target=\"_blank\"]").click(),
+    ]);
+
+    // Assert
+    expect(newPage.url()).toBe("https://github.com/WiseNat/TerminalSite/");
+  });
 });

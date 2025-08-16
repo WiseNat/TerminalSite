@@ -8,7 +8,10 @@ import TerminalUtil from "../util/terminal_util.ts";
 export function click(event: MouseEvent) {
   const input = TerminalUtil.getInputElement();
 
-  if (input.contains(event.target as Node)) {
+  if (
+    input.contains(event.target as Node) ||
+    (event.target as HTMLElement).tagName === "A"
+  ) {
     return;
   }
 
