@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from "vitest";
 import fs from "fs";
 import { walk } from "../../../../src/plugins/vite_plugin_file_tree";
-import { sortBy } from "lodash";
+import { sortBy } from "lodash-es";
 // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
 import { FileTreeNode } from "virtual:file-tree";
 import { vol } from "memfs";

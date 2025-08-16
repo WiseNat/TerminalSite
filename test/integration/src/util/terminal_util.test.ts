@@ -254,6 +254,55 @@ describe("Output", () => {
       expect(element).not.toBeNull();
     });
   });
+  describe("getRawOutput", () => {
+    test("should return the output element content when the output element has content", async () => {
+      // Arrange
+      const insertedContent = "foo";
+      outputElement.textContent = insertedContent;
+
+      // Act
+      const content = TerminalUtil.getRawOutput();
+
+      // Assert
+      expect(content).toBe(insertedContent);
+    });
+
+    test("should return an empty string when the output element has no content", async () => {
+      // Arrange & Act
+      const content = TerminalUtil.getRawOutput();
+
+      // Assert
+      expect(content).not.toBeNull();
+      expect(content).toBe("");
+    });
+
+    test("should normalise spaces when they are present in the output element", async () => {
+      // Arrange
+      outputElement.innerHTML = "FOO&nbsp;BAR&nbsp;BAZ";
+
+      // Act
+      const content = TerminalUtil.getRawOutput();
+
+      // Assert
+      expect(content).not.toBeNull();
+      expect(content).toBe("FOO BAR BAZ");
+    });
+
+    test("should return non-escaped HTML specific characters when a nested HTML element exists within the output element", async () => {
+      // Arrange
+      outputElement.innerHTML =
+        "TEST<a href='https://nathanwise.tech'>&gt;asdas das&lt;</a>ING";
+
+      // Act
+      const content = TerminalUtil.getRawOutput();
+
+      // Assert
+      expect(content).not.toBeNull();
+      expect(content).toBe(
+        "TEST<a href=\"https://nathanwise.tech\">&gt;asdas das&lt;</a>ING",
+      );
+    });
+  });
   describe("getOutput", () => {
     test("should return the output element content when the output element has content", async () => {
       // Arrange
@@ -287,6 +336,21 @@ describe("Output", () => {
       expect(content).not.toBeNull();
       expect(content).toBe("FOO BAR BAZ");
     });
+
+    test("should return non-escaped HTML specific characters when a nested HTML element exists within the output element", async () => {
+      // Arrange
+      outputElement.innerHTML =
+        "TEST<a href='https://nathanwise.tech'>&gt;asdas das&lt;</a>ING";
+
+      // Act
+      const content = TerminalUtil.getOutput();
+
+      // Assert
+      expect(content).not.toBeNull();
+      expect(content).toBe(
+        "TEST<a href=\"https://nathanwise.tech\">>asdas das<</a>ING",
+      );
+    });
   });
   describe("setOutput", () => {
     test("should set text in the output element when the output element was previously empty", async () => {
@@ -310,6 +374,56 @@ describe("Output", () => {
 
       // Assert
       expect(outputElement.textContent).toBe(text);
+    });
+
+    test("should escape HTML specific characters when setting text in the output element", async () => {
+      const text = "TEST<a href='https://nathanwise.tech'>example</a>ING";
+
+      // Act
+      TerminalUtil.setOutput(text);
+
+      // Assert
+      expect(outputElement.textContent).toBe(text);
+
+      const escapedText =
+        "TEST&lt;a href='https://nathanwise.tech'&gt;example&lt;/a&gt;ING";
+      expect(outputElement.innerHTML).toBe(escapedText);
+    });
+  });
+  describe("setRawOutput", () => {
+    test("should set text in the output element when the output element was previously empty", async () => {
+      // Arrange
+      const text = "foo";
+
+      // Act
+      TerminalUtil.setRawOutput(text);
+
+      // Assert
+      expect(outputElement.textContent).toBe(text);
+    });
+
+    test("should set text in the output element when the output element had content", async () => {
+      // Arrange
+      const text = "foo";
+      outputElement.textContent = "bar";
+
+      // Act
+      TerminalUtil.setRawOutput(text);
+
+      // Assert
+      expect(outputElement.textContent).toBe(text);
+    });
+
+    test("should escape HTML specific characters when setting text in the output element", async () => {
+      const text = "TEST<a href='https://nathanwise.tech'>example</a>ING";
+
+      // Act
+      TerminalUtil.setRawOutput(text);
+
+      // Assert
+      const onlyText = "TESTexampleING";
+      expect(outputElement.textContent).toBe(onlyText);
+      expect(outputElement.innerHTML).toBe(text.replace(/'/g, "\""));
     });
   });
   describe("appendOutput", () => {
@@ -352,6 +466,85 @@ describe("Output", () => {
 
       // Assert
       expect(outputElement.textContent).toBe(`${existingText}${appendedText}`);
+    });
+
+    test("should escape HTML specific characters when appending text to the output element", async () => {
+      // Arrange
+      const existingText = "foo";
+      const appendedText =
+        "TEST<a href='https://nathanwise.tech'>example</a>ING";
+      outputElement.textContent = existingText;
+
+      // Act
+      TerminalUtil.appendOutput(appendedText);
+
+      // Assert
+      expect(outputElement.textContent).toBe(existingText + appendedText);
+
+      const escapedText =
+        "TEST&lt;a href='https://nathanwise.tech'&gt;example&lt;/a&gt;ING";
+      expect(outputElement.innerHTML).toBe(existingText + escapedText);
+    });
+  });
+  describe("appendRawOutput", () => {
+    test("should append text to the output element", async () => {
+      // Arrange
+      const existingText = "foo";
+      const appendedText = "bar";
+      outputElement.textContent = existingText;
+
+      // Act
+      TerminalUtil.appendRawOutput(appendedText);
+
+      // Assert
+      expect(outputElement.textContent).toBe(existingText + appendedText);
+    });
+
+    test("should append a newline if text exists in the output", () => {
+      // Arrange
+      const existingText = "foo";
+      const appendedText = "bar";
+      outputElement.textContent = existingText;
+
+      // Act
+      TerminalUtil.appendRawOutput(appendedText, true);
+
+      // Assert
+      expect(outputElement.textContent).toBe(
+        `${existingText}\n${appendedText}`,
+      );
+    });
+
+    test("should not append a newline if text does not exist in the output", () => {
+      // Arrange
+      const existingText = "";
+      const appendedText = "bar";
+      outputElement.textContent = existingText;
+
+      // Act
+      TerminalUtil.appendRawOutput(appendedText, true);
+
+      // Assert
+      expect(outputElement.textContent).toBe(`${existingText}${appendedText}`);
+    });
+
+    test("should escape HTML specific characters when appending text to the output element", async () => {
+      // Arrange
+      const existingText = "foo";
+      const appendedText =
+        "TEST<a href='https://nathanwise.tech'>example</a>ING";
+      outputElement.textContent = existingText;
+
+      // Act
+      TerminalUtil.appendRawOutput(appendedText);
+
+      // Assert
+      const onlyText = "TESTexampleING";
+      expect(outputElement.textContent).toBe(existingText + onlyText);
+
+      expect(outputElement.innerHTML).toBe(
+        existingText + appendedText.replace(/'/g, "\""),
+      );
     });
   });
 });

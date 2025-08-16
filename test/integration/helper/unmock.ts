@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import { get, set } from "lodash";
+import { get, set } from "lodash-es";
 
 export async function unmock(import_path: string, methods: string[]) {
   const module = await import(import_path);
