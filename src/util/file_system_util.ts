@@ -133,8 +133,11 @@ export default class FileSystemUtil {
    * @see resolvePathParts
    * @see formatPath
    */
-  public static resolvePath(path: string): string | null {
-    const resolvedPath = this.resolvePathParts(path);
+  public static resolvePath(
+    path: string,
+    keepTrailingDot?: boolean,
+  ): string | null {
+    const resolvedPath = this.resolvePathParts(path, keepTrailingDot);
     if (resolvedPath === null) {
       return null;
     }
@@ -154,8 +157,12 @@ export default class FileSystemUtil {
    * To convert the path into a human-readable format, use {@link formatPath}.
    *
    * @param path
+   * @param keepTrailingDot
    */
-  public static resolvePathParts(path: string): string[] | null {
+  public static resolvePathParts(
+    path: string,
+    keepTrailingDot?: boolean,
+  ): string[] | null {
     // Resolve special starting symbols
     if (path.startsWith(this.homeDirectorySymbol)) {
       const resolvedHomePath = this.resolveHomePath(path);
@@ -182,7 +189,7 @@ export default class FileSystemUtil {
       path = currentWorkingDirectoryString + this.pathSeparator + path;
     }
 
-    path = this.normalisePath(path);
+    path = this.normalisePath(path, keepTrailingDot);
 
     return this.splitPath(path);
   }
@@ -247,12 +254,17 @@ export default class FileSystemUtil {
    * This also removes instances of `.` current working directory symbols.
    *
    * @param path the path to have parent directories resolved for.
+   * @param keepTrailingDot
    *
    * @returns a normalised path without parent directory symbols.
    */
-  public static normalisePath(path: string): string {
+  public static normalisePath(path: string, keepTrailingDot?: boolean): string {
     const splitPath = path.split(this.pathSeparator);
     const normalisedPath: string[] = [];
+
+    if (splitPath.length === 0) {
+      return "";
+    }
 
     for (const directory of splitPath) {
       if (directory === this.currentWorkingDirectorySymbol) {
@@ -264,6 +276,13 @@ export default class FileSystemUtil {
       } else {
         normalisedPath.push(directory);
       }
+    }
+
+    if (
+      keepTrailingDot &&
+      splitPath[splitPath.length - 1] === this.currentWorkingDirectorySymbol
+    ) {
+      normalisedPath.push(this.currentWorkingDirectorySymbol);
     }
 
     return normalisedPath.join(this.pathSeparator);

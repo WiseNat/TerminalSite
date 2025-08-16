@@ -4,6 +4,7 @@ import AutocompleteUtil from "../../../../src/util/autocomplete_util";
 import { unmock } from "../../helper/unmock";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { userPrompt } from "../../../../src/constant/prompt";
+import { Suggestion } from "../../../../src/command/command_script";
 
 describe("AutocompleteUtil", () => {
   describe("autocomplete", () => {
@@ -185,6 +186,22 @@ describe("AutocompleteUtil", () => {
       // Assert
       expect(result).toStrictEqual([]);
     });
+
+    test("provides a dot file when provided a path ending with a dot", () => {
+      // Arrange
+      const searchPath = "/src/main/.";
+
+      // Act
+      const result =
+        AutocompleteUtil.getFileAndDirectorySuggestions(searchPath);
+
+      // Assert
+      const expected: Suggestion[] = [
+        { visual: ".testing ", actual: "testing " },
+      ];
+
+      expect(result).toStrictEqual(expected);
+    });
   });
 
   describe("getDirectorySuggestions", () => {
@@ -201,6 +218,17 @@ describe("AutocompleteUtil", () => {
     test("provides nothing when given a fake path", () => {
       // Act
       const result = AutocompleteUtil.getDirectorySuggestions("some/fake/path");
+
+      // Assert
+      expect(result).toStrictEqual([]);
+    });
+
+    test("provides nothing when provided a path ending with a dot", () => {
+      // Arrange
+      const searchPath = "/src/main/.";
+
+      // Act
+      const result = AutocompleteUtil.getDirectorySuggestions(searchPath);
 
       // Assert
       expect(result).toStrictEqual([]);
@@ -223,6 +251,21 @@ describe("AutocompleteUtil", () => {
 
       // Assert
       expect(result).toStrictEqual([]);
+    });
+
+    test("provides a dot file when provided a path ending with a dot", () => {
+      // Arrange
+      const searchPath = "/src/main/.";
+
+      // Act
+      const result = AutocompleteUtil.getFileSuggestions(searchPath);
+
+      // Assert
+      const expected: Suggestion[] = [
+        { visual: ".testing ", actual: "testing " },
+      ];
+
+      expect(result).toStrictEqual(expected);
     });
   });
 });

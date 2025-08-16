@@ -94,7 +94,10 @@ export default class AutocompleteUtil {
   private static getPathRelatedSuggestions(
     searchValue: string,
   ): PathRelatedSuggestion[] {
-    const incompleteFilePath = FileSystemUtil.resolvePathParts(searchValue);
+    const incompleteFilePath = FileSystemUtil.resolvePathParts(
+      searchValue,
+      true,
+    );
 
     if (incompleteFilePath === null) {
       return [];

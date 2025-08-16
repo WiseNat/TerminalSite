@@ -350,6 +350,29 @@ describe("FileSystemUtil", () => {
         expect(result).toEqual(expected);
       });
     });
+
+    [
+      {
+        type: "retains the trailing dot when keepTrailingDot is true",
+        path: "/home/nathanwise/./Projects/this/.",
+        keepTrailingDot: true,
+        expected: "/home/nathanwise/Projects/this/.",
+      },
+      {
+        type: "does not retain the trailing dot when keepTrailingDot is false",
+        path: "/home/nathanwise/./Projects/this/.",
+        keepTrailingDot: false,
+        expected: "/home/nathanwise/Projects/this",
+      },
+    ].forEach(({ type, path, keepTrailingDot, expected }) => {
+      test(type, () => {
+        // Arrange & Act
+        const result = FileSystemUtil.normalisePath(path, keepTrailingDot);
+
+        // Assert
+        expect(result).toEqual(expected);
+      });
+    });
   });
 
   describe("walkFileTree", () => {

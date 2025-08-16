@@ -85,6 +85,7 @@ test.describe("File/Directory autocompletion", () => {
   });
 
   // TODO: Rename with absolute and relative...
+  // TODO: add test for 'path ' autocomplete, shouldn't turn into 'path /'
   [
     {
       type: "autocompletes a direct directory in an implicit current working directory path",
@@ -135,6 +136,11 @@ test.describe("File/Directory autocompletion", () => {
       type: "autocompletes a file in a path that includes a parent directory symbol",
       input: "/home/nathanwise/../nathanwise/Desktop/../../nathanwise/contact",
       expected: ".txt ",
+    },
+    {
+      type: "autocompletes a dot file in a path",
+      input: "/home/nathanwise/Projects/this/.",
+      expected: "external ",
     },
   ].forEach(async ({ type, input, expected }) => {
     test(type, async ({ page }) => {
