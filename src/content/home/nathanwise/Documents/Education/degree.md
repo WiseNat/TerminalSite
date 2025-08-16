@@ -2,7 +2,7 @@
 
 ## Summary
 
-I completed my Degree Apprenticeship in July 2024 at IBM.
+I completed my 3-year Degree Apprenticeship in July 2024 at IBM.
 I completed my Degree in August 2024 at The University of Winchester.
 
 ## Certificate & Grades
