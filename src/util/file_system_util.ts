@@ -329,7 +329,6 @@ export default class FileSystemUtil {
     return currentNode ?? null;
   }
 
-  // TODO: Unit test
   /**
    * Checks if the File in the path provided exists.
    *
@@ -347,7 +346,6 @@ export default class FileSystemUtil {
     return !node.isDirectory;
   }
 
-  // TODO: Unit test
   /**
    * Checks if the Directory in the path provided exists.
    *
@@ -365,7 +363,6 @@ export default class FileSystemUtil {
     return node.isDirectory;
   }
 
-  // TODO: Unit test
   /**
    * Checks if the File or Directory in the path provided exists.
    *
