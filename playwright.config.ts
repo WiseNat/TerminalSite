@@ -30,6 +30,12 @@ export default defineConfig({
     trace: "on-first-retry",
   },
 
+  /* Test Timeouts. See https://playwright.dev/docs/test-timeouts */
+  timeout: 15_000,
+  expect: {
+    timeout: 2_500,
+  },
+
   /*
     Microsoft Edge and Chrome (channels) are unsupported on Linux Distros that aren't explicitly Ubuntu or Debian.
     Comment out the following in the `node_modules/playwright-core/reinstall_<browser>_stable_linux.sh` scripts to force installation:
