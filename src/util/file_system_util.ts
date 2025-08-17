@@ -326,8 +326,14 @@ export default class FileSystemUtil {
     return currentNode ?? null;
   }
 
-  // TODO: JSDoc
   // TODO: Unit test
+  /**
+   * Checks if the File in the path provided exists.
+   *
+   * @param path the file path to check.
+   *
+   * @returns true if the file exists, false otherwise.
+   */
   public static doesFileExist(path: string[]): boolean {
     const node = this.walkFileTree(path);
 
@@ -338,8 +344,14 @@ export default class FileSystemUtil {
     return !node.isDirectory;
   }
 
-  // TODO: JSDoc
   // TODO: Unit test
+  /**
+   * Checks if the Directory in the path provided exists.
+   *
+   * @param path the directory path to check.
+   *
+   * @returns true if the directory exists, false otherwise.
+   */
   public static doesDirectoryExist(path: string[]): boolean {
     const node = this.walkFileTree(path);
 
@@ -350,8 +362,14 @@ export default class FileSystemUtil {
     return node.isDirectory;
   }
 
-  // TODO: JSDoc
   // TODO: Unit test
+  /**
+   * Checks if the File or Directory in the path provided exists.
+   *
+   * @param path the path to check.
+   *
+   * @returns true if the file or directory exists, false otherwise.
+   */
   public static doesFileOrDirectoryExist(path: string[]): boolean {
     return this.walkFileTree(path) !== null;
   }
