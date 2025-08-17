@@ -28,30 +28,28 @@ test.describe("Pwd", () => {
     await expect(page.locator(inputSelector)).exactTextInElement("");
   });
 
-  // TODO: Check this passes when cd is implemented.
-  test.fixme(
-    "should output the changed current working directory when the current working directory is changed",
-    async ({ page }) => {
-      // Arrange
-      const changedDirectory = "/usr/local/etc";
-      const cdInput = `cd ${changedDirectory}`;
-      await page.locator(inputSelector).pressSequentially(cdInput);
-      await page.locator(inputSelector).press("Enter");
+  test("should output the changed current working directory when the current working directory is changed", async ({
+    page,
+  }) => {
+    // Arrange
+    const changedDirectory = "/usr/local/etc";
+    const cdInput = `cd ${changedDirectory}`;
+    await page.locator(inputSelector).pressSequentially(cdInput);
+    await page.locator(inputSelector).press("Enter");
 
-      const input = "pwd";
+    const input = "pwd";
 
-      // Act
-      await page.locator(inputSelector).pressSequentially(input);
-      await page.locator(inputSelector).press("Enter");
+    // Act
+    await page.locator(inputSelector).pressSequentially(input);
+    await page.locator(inputSelector).press("Enter");
 
-      // Assert
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        `${defaultInitialPrompt}\n${defaultUserPrompt}${cdInput}\n${defaultUserPrompt}${input}\n${changedDirectory}`,
-      );
-      await expect(page.locator(promptSelector)).exactTextInElement(
-        defaultUserPrompt,
-      );
-      await expect(page.locator(inputSelector)).exactTextInElement("");
-    },
-  );
+    // Assert
+    await expect(page.locator(outputSelector)).exactTextInElement(
+      `${defaultInitialPrompt}\n${defaultUserPrompt}${cdInput}\n${defaultUserPrompt}${input}\n${changedDirectory}`,
+    );
+    await expect(page.locator(promptSelector)).exactTextInElement(
+      defaultUserPrompt,
+    );
+    await expect(page.locator(inputSelector)).exactTextInElement("");
+  });
 });

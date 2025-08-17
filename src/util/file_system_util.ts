@@ -296,7 +296,7 @@ export default class FileSystemUtil {
    * @returns the files & directories under the path if the path exists, otherwise null
    */
   public static walkFileTree(path: string[]): FileTreeNode | null {
-    let currentNodes = fileTree;
+    let currentNodes: FileTreeNode[] | undefined = fileTree;
     let currentNode: FileTreeNode | undefined = {
       name: "",
       path: "",
@@ -305,6 +305,10 @@ export default class FileSystemUtil {
     };
 
     for (const segment of path) {
+      if (currentNodes === undefined) {
+        return null;
+      }
+
       currentNode = currentNodes.find((n) => n.name === segment);
 
       // No node in the provided path has been found
@@ -316,16 +320,39 @@ export default class FileSystemUtil {
         return currentNode;
       }
 
-      if (
-        currentNode.children === undefined ||
-        currentNode.children.length === 0
-      ) {
-        return null;
-      }
-
       currentNodes = currentNode.children;
     }
 
     return currentNode ?? null;
+  }
+
+  // TODO: JSDoc
+  // TODO: Unit test
+  public static doesFileExist(path: string[]): boolean {
+    const node = this.walkFileTree(path);
+
+    if (node === null) {
+      return false;
+    }
+
+    return !node.isDirectory;
+  }
+
+  // TODO: JSDoc
+  // TODO: Unit test
+  public static doesDirectoryExist(path: string[]): boolean {
+    const node = this.walkFileTree(path);
+
+    if (node === null) {
+      return false;
+    }
+
+    return node.isDirectory;
+  }
+
+  // TODO: JSDoc
+  // TODO: Unit test
+  public static doesFileOrDirectoryExist(path: string[]): boolean {
+    return this.walkFileTree(path) !== null;
   }
 }

@@ -388,6 +388,30 @@ describe("FileSystemUtil", () => {
       expect(result).toMatchSnapshot();
     });
 
+    test("returns node for a valid single directory with children", () => {
+      // Arrange
+      const path = ["src"];
+
+      // Act
+      const result = FileSystemUtil.walkFileTree(path);
+
+      // Assert
+      expect(result).not.toBeNull();
+      expect(result).toMatchSnapshot();
+    });
+
+    test("returns node for a valid single directory with no children", () => {
+      // Arrange
+      const path = ["test"];
+
+      // Act
+      const result = FileSystemUtil.walkFileTree(path);
+
+      // Assert
+      expect(result).not.toBeNull();
+      expect(result).toMatchSnapshot();
+    });
+
     test("returns root node for an empty path", () => {
       // Arrange
       const path: string[] = [];
