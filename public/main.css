@@ -9,7 +9,6 @@ main {
     flex-direction: column;
     height: 100vh;
     cursor: text;
-    white-space: pre-wrap;
 }
 
 a {
@@ -35,6 +34,7 @@ a[target="_blank"]::after {
 
 #output {
     background-color: var(--background-colour);
+    white-space: pre-wrap;
 }
 
 #command-line-container {
@@ -46,6 +46,7 @@ a[target="_blank"]::after {
 
 #prompt {
     background: var(--background-colour);
+    white-space: pre-wrap;
     position: absolute;
     top: 0;
     left: 0;
@@ -54,8 +55,7 @@ a[target="_blank"]::after {
 
 #input {
     background-color: var(--background-colour);
-    position: absolute;
-    inset: 0;
+    white-space: pre-wrap;
     z-index: 0;
 }
 
