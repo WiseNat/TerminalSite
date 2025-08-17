@@ -1,4 +1,5 @@
 import { fileTree, FileTreeNode } from "virtual:file-tree";
+import TerminalUtil from "./terminal_util.ts";
 
 export default class FileSystemUtil {
   private static currentWorkingDirectory: string[] = [];
@@ -44,6 +45,8 @@ export default class FileSystemUtil {
   ): void {
     const resolvedPath = this.resolvePathParts(currentWorkingDirectory);
     this.currentWorkingDirectory = resolvedPath ?? [];
+
+    TerminalUtil.setPromptPath(this.formatPath(this.currentWorkingDirectory));
   }
 
   /**
@@ -296,7 +299,7 @@ export default class FileSystemUtil {
    * @returns the files & directories under the path if the path exists, otherwise null
    */
   public static walkFileTree(path: string[]): FileTreeNode | null {
-    let currentNodes = fileTree;
+    let currentNodes: FileTreeNode[] | undefined = fileTree;
     let currentNode: FileTreeNode | undefined = {
       name: "",
       path: "",
@@ -305,6 +308,10 @@ export default class FileSystemUtil {
     };
 
     for (const segment of path) {
+      if (currentNodes === undefined) {
+        return null;
+      }
+
       currentNode = currentNodes.find((n) => n.name === segment);
 
       // No node in the provided path has been found
@@ -316,16 +323,54 @@ export default class FileSystemUtil {
         return currentNode;
       }
 
-      if (
-        currentNode.children === undefined ||
-        currentNode.children.length === 0
-      ) {
-        return null;
-      }
-
       currentNodes = currentNode.children;
     }
 
     return currentNode ?? null;
+  }
+
+  /**
+   * Checks if the File in the path provided exists.
+   *
+   * @param path the file path to check.
+   *
+   * @returns true if the file exists, false otherwise.
+   */
+  public static doesFileExist(path: string[]): boolean {
+    const node = this.walkFileTree(path);
+
+    if (node === null) {
+      return false;
+    }
+
+    return !node.isDirectory;
+  }
+
+  /**
+   * Checks if the Directory in the path provided exists.
+   *
+   * @param path the directory path to check.
+   *
+   * @returns true if the directory exists, false otherwise.
+   */
+  public static doesDirectoryExist(path: string[]): boolean {
+    const node = this.walkFileTree(path);
+
+    if (node === null) {
+      return false;
+    }
+
+    return node.isDirectory;
+  }
+
+  /**
+   * Checks if the File or Directory in the path provided exists.
+   *
+   * @param path the path to check.
+   *
+   * @returns true if the file or directory exists, false otherwise.
+   */
+  public static doesFileOrDirectoryExist(path: string[]): boolean {
+    return this.walkFileTree(path) !== null;
   }
 }

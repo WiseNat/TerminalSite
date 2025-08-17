@@ -54,6 +54,7 @@ describe("CommandUtil", () => {
 
     test("outputs nothing when a command is not found with no name", async () => {
       // Arrange
+      vi.mocked(TerminalUtil.getPrompt).mockReturnValue(userPrompt);
       vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({});
 
       const command = "";

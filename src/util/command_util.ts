@@ -1,7 +1,6 @@
 import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
 import TerminalUtil from "./terminal_util.ts";
-import { userPrompt } from "../constant/prompt.ts";
 import MetaImportUtil from "./meta_import_util.ts";
 
 export default class CommandUtil {
@@ -13,11 +12,12 @@ export default class CommandUtil {
    */
   public static async executeCommand(command: string) {
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);
+    const prompt = TerminalUtil.getPrompt();
 
     if (tokenisedCommand.name === "") {
-      TerminalUtil.appendOutput(userPrompt, true);
+      TerminalUtil.appendOutput(prompt, true);
     } else {
-      TerminalUtil.appendOutput(userPrompt + command, true);
+      TerminalUtil.appendOutput(prompt + command, true);
       TerminalUtil.setInput("");
 
       const commandScript = this.getCommandScript(tokenisedCommand);
@@ -35,7 +35,9 @@ export default class CommandUtil {
         );
         await commandScript.run(tokenisedCommand.args);
 
-        TerminalUtil.setPrompt(userPrompt);
+        if (TerminalUtil.getPrompt() === "") {
+          TerminalUtil.setPrompt(prompt);
+        }
       }
     }
   }

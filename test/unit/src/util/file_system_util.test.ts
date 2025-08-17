@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import FileSystemUtil from "../../../../src/util/file_system_util";
 
 describe("FileSystemUtil", () => {
@@ -117,6 +117,9 @@ describe("FileSystemUtil", () => {
   });
 
   describe("resolvePathParts", () => {
+    // Mocks
+    vi.mock("../../../../src/util/terminal_util");
+
     interface TestCase {
       type: string;
       path: string;
@@ -388,6 +391,30 @@ describe("FileSystemUtil", () => {
       expect(result).toMatchSnapshot();
     });
 
+    test("returns node for a valid single directory with children", () => {
+      // Arrange
+      const path = ["src"];
+
+      // Act
+      const result = FileSystemUtil.walkFileTree(path);
+
+      // Assert
+      expect(result).not.toBeNull();
+      expect(result).toMatchSnapshot();
+    });
+
+    test("returns node for a valid single directory with no children", () => {
+      // Arrange
+      const path = ["test"];
+
+      // Act
+      const result = FileSystemUtil.walkFileTree(path);
+
+      // Assert
+      expect(result).not.toBeNull();
+      expect(result).toMatchSnapshot();
+    });
+
     test("returns root node for an empty path", () => {
       // Arrange
       const path: string[] = [];
@@ -409,6 +436,144 @@ describe("FileSystemUtil", () => {
 
       // Assert
       expect(result).toBeNull();
+    });
+  });
+
+  describe("doesFileExist", () => {
+    test("returns false for a directory path that exists", () => {
+      // Arrange
+      const path = ["src", "main", "foo"];
+
+      // Act
+      const result = FileSystemUtil.doesFileExist(path);
+
+      // Assert
+      expect(result).toBeFalsy();
+    });
+
+    test("returns true for a file path that exists", () => {
+      // Arrange
+      const path: string[] = ["src", "index.ts"];
+
+      // Act
+      const result = FileSystemUtil.doesFileExist(path);
+
+      // Assert
+      expect(result).toBeTruthy();
+    });
+
+    test("returns false for an empty path (root directory)", () => {
+      // Arrange
+      const path: string[] = [];
+
+      // Act
+      const result = FileSystemUtil.doesFileExist(path);
+
+      // Assert
+      expect(result).toBeFalsy();
+    });
+
+    test("returns false for a path that does not exist", () => {
+      // Arrange
+      const path = ["some", "fake", "path"];
+
+      // Act
+      const result = FileSystemUtil.doesFileExist(path);
+
+      // Assert
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe("doesDirectoryExist", () => {
+    test("returns true for a directory path that exists", () => {
+      // Arrange
+      const path = ["src", "main", "foo"];
+
+      // Act
+      const result = FileSystemUtil.doesDirectoryExist(path);
+
+      // Assert
+      expect(result).toBeTruthy();
+    });
+
+    test("returns false for a file path that exists", () => {
+      // Arrange
+      const path: string[] = ["src", "index.ts"];
+
+      // Act
+      const result = FileSystemUtil.doesDirectoryExist(path);
+
+      // Assert
+      expect(result).toBeFalsy();
+    });
+
+    test("returns true for an empty path (root directory)", () => {
+      // Arrange
+      const path: string[] = [];
+
+      // Act
+      const result = FileSystemUtil.doesDirectoryExist(path);
+
+      // Assert
+      expect(result).toBeTruthy();
+    });
+
+    test("returns false for a path that does not exist", () => {
+      // Arrange
+      const path = ["some", "fake", "path"];
+
+      // Act
+      const result = FileSystemUtil.doesDirectoryExist(path);
+
+      // Assert
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe("doesFileOrDirectoryExist", () => {
+    test("returns true for a directory path that exists", () => {
+      // Arrange
+      const path = ["src", "main", "foo"];
+
+      // Act
+      const result = FileSystemUtil.doesFileOrDirectoryExist(path);
+
+      // Assert
+      expect(result).toBeTruthy();
+    });
+
+    test("returns true for a file path that exists", () => {
+      // Arrange
+      const path: string[] = ["src", "index.ts"];
+
+      // Act
+      const result = FileSystemUtil.doesFileOrDirectoryExist(path);
+
+      // Assert
+      expect(result).toBeTruthy();
+    });
+
+    test("returns true for an empty path (root directory)", () => {
+      // Arrange
+      const path: string[] = [];
+
+      // Act
+      const result = FileSystemUtil.doesFileOrDirectoryExist(path);
+
+      // Assert
+      expect(result).toBeTruthy();
+    });
+
+    test("returns false for a path that does not exist", () => {
+      // Arrange
+      const path = ["some", "fake", "path"];
+
+      // Act
+      const result = FileSystemUtil.doesFileOrDirectoryExist(path);
+
+      // Assert
+      expect(result).toBeFalsy();
     });
   });
 });

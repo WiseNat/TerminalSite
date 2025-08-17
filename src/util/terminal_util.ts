@@ -1,6 +1,7 @@
 import HtmlUtil from "./html_util.ts";
 import { zeroWidthSpace } from "../constant/char.ts";
 import { escape, unescape } from "lodash-es";
+import FileSystemUtil from "./file_system_util.ts";
 
 export default class TerminalUtil {
   /**
@@ -127,6 +128,20 @@ export default class TerminalUtil {
       "--prompt-content",
       `"${escapedPrompt}"`,
     );
+  }
+
+  /**
+   * Sets the prompt using the provided path.
+   *
+   * @param path
+   */
+  public static setPromptPath(path: string) {
+    const splitPath = FileSystemUtil.splitPath(path);
+
+    const pathSeparator = "\\";
+    const prompt = `C:${pathSeparator}${splitPath.join(pathSeparator)}>`;
+
+    this.setPrompt(prompt);
   }
 
   /**

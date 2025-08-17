@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from "vitest";
 import CommandUtil from "../../../../../src/util/command_util";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 
-describe("Echo", () => {
+describe("Cd", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
@@ -11,7 +11,7 @@ describe("Echo", () => {
 
   test("should run with CommandUtil", () => {
     // Arrange
-    const commandName = "echo";
+    const commandName = "cd";
 
     // Act & Assert
     expect(

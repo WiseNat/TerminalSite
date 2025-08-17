@@ -26,6 +26,65 @@ exports[`FileSystemUtil > walkFileTree > returns node for a valid path 1`] = `
 }
 `;
 
+exports[`FileSystemUtil > walkFileTree > returns node for a valid single directory with children 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "isDirectory": true,
+              "name": "bar",
+              "path": "src/main/foo",
+            },
+            {
+              "isDirectory": false,
+              "name": "bazzing.gaz",
+              "path": "src/main/foo",
+            },
+            {
+              "isDirectory": false,
+              "name": "daz",
+              "path": "src/main/foo",
+            },
+          ],
+          "isDirectory": true,
+          "name": "foo",
+          "path": "src/main",
+        },
+        {
+          "isDirectory": false,
+          "name": ".testing",
+          "path": "src/main",
+        },
+      ],
+      "isDirectory": true,
+      "name": "main",
+      "path": "src",
+    },
+    {
+      "isDirectory": false,
+      "name": "index.ts",
+      "path": "src",
+    },
+  ],
+  "isDirectory": true,
+  "name": "src",
+  "path": "",
+}
+`;
+
+exports[`FileSystemUtil > walkFileTree > returns node for a valid single directory with no children 1`] = `
+{
+  "children": [],
+  "isDirectory": true,
+  "name": "test",
+  "path": "",
+}
+`;
+
 exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`] = `
 {
   "children": [
