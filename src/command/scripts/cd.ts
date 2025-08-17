@@ -4,8 +4,6 @@ import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 
-// TODO: Clean up code! Make it readable
-
 let workingDirectories: string[] = [];
 
 /**
@@ -59,14 +57,10 @@ function changeDirectory(path: string) {
     return;
   }
 
-  const doesFileExist = FileSystemUtil.doesFileExist(resolvedPathParts);
-  const doesDirectoryExist =
-    FileSystemUtil.doesDirectoryExist(resolvedPathParts);
-
-  if (doesFileExist) {
+  if (FileSystemUtil.doesFileExist(resolvedPathParts)) {
     TerminalUtil.appendOutput(`\nbash: cd: ${path}: Not a directory`);
     return;
-  } else if (!doesDirectoryExist) {
+  } else if (!FileSystemUtil.doesDirectoryExist(resolvedPathParts)) {
     TerminalUtil.appendOutput(`\nbash: cd: ${path}: No such file or directory`);
     return;
   }
@@ -74,26 +68,28 @@ function changeDirectory(path: string) {
   const formattedPath = FileSystemUtil.formatPath(resolvedPathParts);
 
   FileSystemUtil.setCurrentWorkingDirectory(formattedPath);
+  addWorkingDirectory(formattedPath);
 
   const pathSeparator = "\\";
   const prompt = `C:${pathSeparator}${resolvedPathParts.join(pathSeparator)}>`;
   TerminalUtil.setPrompt(prompt);
-
-  addWorkingDirectory(formattedPath);
 }
 
 const cd: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions: ParsedOptions = getopts(args);
 
+    if (parsedOptions._.length > 1) {
+      TerminalUtil.appendOutput("\nbash: cd: too many arguments");
+      return;
+    }
+
     if (parsedOptions._.length === 0) {
       const homeDirectory = FileSystemUtil.formatPath(
         FileSystemUtil.getHomeDirectory(),
       );
+
       changeDirectory(homeDirectory);
-      return;
-    } else if (parsedOptions._.length > 1) {
-      TerminalUtil.appendOutput("\nbash: cd: too many arguments");
       return;
     }
 
@@ -108,6 +104,7 @@ const cd: CommandScript = {
       }
 
       changeDirectory(previousWorkingDirectory);
+
       TerminalUtil.appendOutput(`\n${previousWorkingDirectory}`);
     } else {
       changeDirectory(path);
