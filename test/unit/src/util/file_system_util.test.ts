@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import FileSystemUtil from "../../../../src/util/file_system_util";
 
 describe("FileSystemUtil", () => {
@@ -117,6 +117,9 @@ describe("FileSystemUtil", () => {
   });
 
   describe("resolvePathParts", () => {
+    // Mocks
+    vi.mock("../../../../src/util/terminal_util");
+
     interface TestCase {
       type: string;
       path: string;

@@ -9,11 +9,7 @@ import {
   promptSelector,
 } from "../../helper/constant/generic";
 import { Page } from "@playwright/test";
-
-function getExpectedPrompt(path: string) {
-  const splitPath = path.split("/").filter(Boolean);
-  return `C:\\${splitPath.join("\\")}>`;
-}
+import { getExpectedPrompt } from "../../helper/util/terminal_util";
 
 async function checkCurrentWorkingDirectory(
   page: Page,
@@ -160,7 +156,7 @@ test.describe("Cd", () => {
 
     // Assert
     await expect(page.locator(outputSelector)).exactTextInElement(
-      `${previousOutput}\n${defaultUserPrompt}${input}\n${previousWorkingDirectory}`,
+      `${previousOutput}\n${getExpectedPrompt(previousDirectory)}${input}\n${previousWorkingDirectory}`,
     );
     await expect(page.locator(promptSelector)).exactTextInElement(
       getExpectedPrompt(previousWorkingDirectory),

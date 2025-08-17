@@ -1,4 +1,5 @@
 import { fileTree, FileTreeNode } from "virtual:file-tree";
+import TerminalUtil from "./terminal_util.ts";
 
 export default class FileSystemUtil {
   private static currentWorkingDirectory: string[] = [];
@@ -44,6 +45,8 @@ export default class FileSystemUtil {
   ): void {
     const resolvedPath = this.resolvePathParts(currentWorkingDirectory);
     this.currentWorkingDirectory = resolvedPath ?? [];
+
+    TerminalUtil.setPromptPath(this.formatPath(this.currentWorkingDirectory));
   }
 
   /**

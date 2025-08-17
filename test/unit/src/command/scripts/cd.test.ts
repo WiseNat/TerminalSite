@@ -21,7 +21,6 @@ describe("Cd", () => {
       FileSystemUtil,
       "setCurrentWorkingDirectory",
     );
-    const setPrompt = vi.spyOn(TerminalUtil, "setPrompt");
     const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
     // Mock
@@ -39,7 +38,6 @@ describe("Cd", () => {
         expect(setCurrentWorkingDirectory).toHaveBeenCalledExactlyOnceWith(
           directoryPath,
         );
-        expect(setPrompt).toHaveBeenCalledExactlyOnceWith("C:\\src\\main>");
         expect(appendOutput).not.toHaveBeenCalled();
       });
 
@@ -55,7 +53,6 @@ describe("Cd", () => {
         expect(setCurrentWorkingDirectory).toHaveBeenCalledExactlyOnceWith(
           homeDirectory,
         );
-        expect(setPrompt).toHaveBeenCalledExactlyOnceWith("C:\\test>");
         expect(appendOutput).not.toHaveBeenCalled();
       });
 
@@ -83,11 +80,6 @@ describe("Cd", () => {
           3,
           previousWorkingDirectory,
         );
-
-        expect(setCurrentWorkingDirectory).toHaveBeenCalledTimes(3);
-        expect(setPrompt).toHaveBeenNthCalledWith(1, "C:\\src\\main>");
-        expect(setPrompt).toHaveBeenNthCalledWith(2, "C:\\test>");
-        expect(setPrompt).toHaveBeenNthCalledWith(3, "C:\\src\\main>");
 
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
           `\n${previousWorkingDirectory}`,
@@ -129,9 +121,6 @@ describe("Cd", () => {
           previousWorkingDirectory,
         );
 
-        expect(setPrompt).toHaveBeenCalledTimes(directoryPaths.length + 1);
-        // Too lazy to sort the exact calls.
-
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
           `\n${previousWorkingDirectory}`,
         );
@@ -145,7 +134,6 @@ describe("Cd", () => {
 
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
-        expect(setPrompt).not.toHaveBeenCalled();
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
           "\nbash: cd: too many arguments",
         );
@@ -157,7 +145,6 @@ describe("Cd", () => {
 
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
-        expect(setPrompt).not.toHaveBeenCalled();
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
           "\nbash: cd: OLDPWD not set",
         );
@@ -172,7 +159,6 @@ describe("Cd", () => {
 
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
-        expect(setPrompt).not.toHaveBeenCalled();
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
           `\nbash: cd: ${directoryPath}: Not a directory`,
         );
@@ -187,7 +173,6 @@ describe("Cd", () => {
 
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
-        expect(setPrompt).not.toHaveBeenCalled();
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
           `\nbash: cd: ${directoryPath}: No such file or directory`,
         );
@@ -202,7 +187,6 @@ describe("Cd", () => {
 
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
-        expect(setPrompt).not.toHaveBeenCalled();
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
           `\nbash: cd: ${directoryPath}: No such file or directory`,
         );

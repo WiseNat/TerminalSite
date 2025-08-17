@@ -69,10 +69,6 @@ function changeDirectory(path: string) {
 
   FileSystemUtil.setCurrentWorkingDirectory(formattedPath);
   addWorkingDirectory(formattedPath);
-
-  const pathSeparator = "\\";
-  const prompt = `C:${pathSeparator}${resolvedPathParts.join(pathSeparator)}>`;
-  TerminalUtil.setPrompt(prompt);
 }
 
 const cd: CommandScript = {

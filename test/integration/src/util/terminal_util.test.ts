@@ -218,6 +218,41 @@ describe("Prompt", () => {
       expect(promptElement.textContent).toBe(text);
     });
 
+    describe("setPromptPath", () => {
+      test("should set the prompt when provided a path", async () => {
+        // Arrange
+        const text = "/some/fake/path";
+
+        // Act
+        TerminalUtil.setPromptPath(text);
+
+        // Assert
+        expect(promptElement.textContent).toBe("C:\\some\\fake\\path>");
+      });
+
+      test("should set the prompt as a nearly empty prompt with an empty path", async () => {
+        // Arrange
+        const text = "";
+
+        // Act
+        TerminalUtil.setPromptPath(text);
+
+        // Assert
+        expect(promptElement.textContent).toBe("C:\\>");
+      });
+
+      test("should set the prompt as a nearly empty prompt with a root path", async () => {
+        // Arrange
+        const text = "";
+
+        // Act
+        TerminalUtil.setPromptPath(text);
+
+        // Assert
+        expect(promptElement.textContent).toBe("C:\\>");
+      });
+    });
+
     test("should set text in the prompt element when the prompt element had content", async () => {
       // Arrange
       const text = "foo";

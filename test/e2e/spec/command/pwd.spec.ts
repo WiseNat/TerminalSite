@@ -7,6 +7,7 @@ import {
   outputSelector,
   promptSelector,
 } from "../../helper/constant/generic";
+import { getExpectedPrompt } from "../../helper/util/terminal_util";
 
 test.describe("Pwd", () => {
   test("should output the current working directory", async ({ page }) => {
@@ -44,7 +45,7 @@ test.describe("Pwd", () => {
 
     // Assert
     await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${cdInput}\n${defaultUserPrompt}${input}\n${changedDirectory}`,
+      `${defaultInitialPrompt}\n${defaultUserPrompt}${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}\n${changedDirectory}`,
     );
   });
 });

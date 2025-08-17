@@ -30,3 +30,8 @@ export async function setCaretAtCharIndex(
     { selector, charIndex },
   );
 }
+
+export function getExpectedPrompt(path: string) {
+  const splitPath = path.split("/").filter(Boolean);
+  return `C:\\${splitPath.join("\\")}>`;
+}
