@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { zeroWidthSpace } from "../../../e2e/helper/constant/generic";
 
@@ -16,6 +16,8 @@ beforeEach(() => {
   inputElement = document.getElementById("input")!;
   promptElement = document.getElementById("prompt")!;
   outputElement = document.getElementById("output")!;
+
+  Element.prototype.scrollIntoView = vi.fn();
 });
 
 describe("Input", () => {
