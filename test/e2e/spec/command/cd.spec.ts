@@ -20,13 +20,14 @@ async function checkCurrentWorkingDirectory(
   expectedCurrentWorkingDirectory: string,
 ) {
   const previousOutput = await page.locator(outputSelector).textContent();
+  const previousPrompt = await page.locator(promptSelector).textContent();
 
   const pwd = "pwd";
   await page.locator(inputSelector).pressSequentially(pwd);
   await page.locator(inputSelector).press("Enter");
 
   await expect(page.locator(outputSelector)).elementToStartWith(
-    `${previousOutput}\n${defaultUserPrompt}${pwd}\n${expectedCurrentWorkingDirectory}`,
+    `${previousOutput}\n${previousPrompt}${pwd}\n${expectedCurrentWorkingDirectory}`,
   );
   await expect(page.locator(promptSelector)).exactTextInElement(
     getExpectedPrompt(expectedCurrentWorkingDirectory),
@@ -105,8 +106,8 @@ test.describe("Cd", () => {
     await expect(page.locator(outputSelector)).exactTextInElement(
       `${defaultInitialPrompt}` +
         `\n${defaultUserPrompt}cd ${previousWorkingDirectory}` +
-        `\n${defaultUserPrompt}cd ${currentWorkingDirectory}` +
-        `\n${defaultUserPrompt}cd -` +
+        `\n${getExpectedPrompt(previousWorkingDirectory)}cd ${currentWorkingDirectory}` +
+        `\n${getExpectedPrompt(currentWorkingDirectory)}cd -` +
         `\n${previousWorkingDirectory}`,
     );
     await expect(page.locator(promptSelector)).exactTextInElement(
@@ -129,6 +130,7 @@ test.describe("Cd", () => {
       "/etc/opt",
     ];
     const previousWorkingDirectory = directories[directories.length - 2];
+    let previousDirectory = defaultCurrentWorkingDirectory;
 
     for (const directory of directories) {
       const previousOutput = await page.locator(outputSelector).textContent();
@@ -137,12 +139,14 @@ test.describe("Cd", () => {
       await page.locator(inputSelector).press("Enter");
 
       await expect(page.locator(outputSelector)).exactTextInElement(
-        `${previousOutput}\n${defaultUserPrompt}cd ${directory}`,
+        `${previousOutput}\n${getExpectedPrompt(previousDirectory)}cd ${directory}`,
       );
       await expect(page.locator(promptSelector)).exactTextInElement(
         getExpectedPrompt(directory),
       );
       await expect(page.locator(inputSelector)).exactTextInElement("");
+
+      previousDirectory = directory;
 
       await checkCurrentWorkingDirectory(page, directory);
     }
