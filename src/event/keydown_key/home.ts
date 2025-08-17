@@ -14,4 +14,6 @@ export async function processHome(event: KeyboardEvent) {
   } else {
     TerminalUtil.cursorToIndex(0);
   }
+
+  TerminalUtil.scrollTo("start");
 }

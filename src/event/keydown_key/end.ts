@@ -9,4 +9,5 @@ export async function processEnd(event: KeyboardEvent) {
   event.preventDefault();
 
   TerminalUtil.cursorToEnd();
+  TerminalUtil.scrollTo("end");
 }

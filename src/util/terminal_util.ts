@@ -109,6 +109,7 @@ export default class TerminalUtil {
 
     this.input.textContent = text;
     this.cursorToEnd();
+    this.scrollTo("end");
   }
 
   /**
@@ -137,6 +138,7 @@ export default class TerminalUtil {
    */
   public static setOutput(text: string) {
     this.output.innerHTML = escape(text);
+    this.scrollTo("start");
   }
 
   /**
@@ -148,6 +150,7 @@ export default class TerminalUtil {
    */
   public static setRawOutput(text: string) {
     this.output.innerHTML = text;
+    this.scrollTo("start");
   }
 
   /**
@@ -162,6 +165,7 @@ export default class TerminalUtil {
     } else {
       this.input.textContent += text;
       this.cursorToEnd();
+      this.scrollTo("end");
     }
   }
 
@@ -200,6 +204,8 @@ export default class TerminalUtil {
     }
 
     this.output.innerHTML += text;
+
+    this.scrollTo("start");
   }
 
   /**
@@ -251,5 +257,14 @@ export default class TerminalUtil {
     selection.addRange(range);
 
     this.input.focus();
+  }
+
+  /**
+   * Scrolls instantly to a part of the Input element, based on the provided `block`.
+   *
+   * @param block see https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView#block
+   */
+  public static scrollTo(block: ScrollLogicalPosition | undefined) {
+    this.input.scrollIntoView({ behavior: "instant", block: block });
   }
 }
