@@ -18,7 +18,9 @@ export function _resetWorkingDirectories() {
   workingDirectories = [];
 }
 
-// TODO: JSDoc
+/**
+ * @returns the Previous Working Directory or null if it does not exist.
+ */
 function getPreviousWorkingDirectory(): string | null {
   if (workingDirectories.length !== 2) {
     return null;
@@ -27,7 +29,13 @@ function getPreviousWorkingDirectory(): string | null {
   return workingDirectories[0];
 }
 
-// TODO: JSDoc
+/**
+ * Adds a working directory to a cache.
+ * <p>
+ * This is used to determine the Previous Working Directory, see {@link getPreviousWorkingDirectory}.
+ *
+ * @param directory the working directory to add.
+ */
 function addWorkingDirectory(directory: string) {
   workingDirectories.push(directory);
 
@@ -36,11 +44,16 @@ function addWorkingDirectory(directory: string) {
   }
 }
 
-// TODO: JSDoc
+/**
+ * Changes the directory & prompt to the provided path if it is valid.
+ * <p>
+ * A series of error messages are created on the frontend if the path is not valid.
+ *
+ * @param path the path to change to.
+ */
 function changeDirectory(path: string) {
   const resolvedPathParts = FileSystemUtil.resolvePathParts(path);
 
-  // TODO: walkFileTree causes issues for files that exist...
   if (resolvedPathParts === null) {
     TerminalUtil.appendOutput(`\nbash: cd: ${path}: No such file or directory`);
     return;
