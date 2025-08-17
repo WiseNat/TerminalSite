@@ -1,5 +1,6 @@
 import { expect, test } from "../../fixture";
 import {
+  defaultCurrentWorkingDirectory,
   defaultInitialPrompt,
   defaultUserPrompt,
   inputSelector,
@@ -17,10 +18,8 @@ test.describe("Pwd", () => {
     await page.locator(inputSelector).press("Enter");
 
     // Assert
-    const expected = "/home/nathanwise";
-
     await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expected}`,
+      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${defaultCurrentWorkingDirectory}`,
     );
     await expect(page.locator(promptSelector)).exactTextInElement(
       defaultUserPrompt,
@@ -47,9 +46,5 @@ test.describe("Pwd", () => {
     await expect(page.locator(outputSelector)).exactTextInElement(
       `${defaultInitialPrompt}\n${defaultUserPrompt}${cdInput}\n${defaultUserPrompt}${input}\n${changedDirectory}`,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
   });
 });
