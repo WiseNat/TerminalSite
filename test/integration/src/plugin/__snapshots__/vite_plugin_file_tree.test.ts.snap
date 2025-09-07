@@ -4,9 +4,234 @@ exports[`walk > .gitkeep files are not included in the file tree 1`] = `
 [
   {
     "children": [],
+    "fileSize": 0,
+    "group": "root",
     "isDirectory": true,
+    "lastModifiedTime": "",
     "name": "foo",
+    "owner": "root",
     "path": "",
+    "permissions": [
+      6,
+      6,
+      4,
+    ],
+  },
+]
+`;
+
+exports[`walk > .meta files are not included in the file tree 1`] = `
+[
+  {
+    "children": [],
+    "fileSize": 0,
+    "group": "root",
+    "isDirectory": true,
+    "lastModifiedTime": "",
+    "name": "foo",
+    "owner": "root",
+    "path": "",
+    "permissions": [
+      6,
+      6,
+      4,
+    ],
+  },
+]
+`;
+
+exports[`walk > should return a valid file tree with a default owner/root based on the home directory 1`] = `
+[
+  {
+    "children": [
+      {
+        "children": [],
+        "fileSize": 0,
+        "group": "root",
+        "isDirectory": true,
+        "lastModifiedTime": "",
+        "name": "bar",
+        "owner": "root",
+        "path": "foo",
+        "permissions": [
+          6,
+          6,
+          4,
+        ],
+      },
+    ],
+    "fileSize": 0,
+    "group": "root",
+    "isDirectory": true,
+    "lastModifiedTime": "",
+    "name": "foo",
+    "owner": "root",
+    "path": "",
+    "permissions": [
+      6,
+      6,
+      4,
+    ],
+  },
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": undefined,
+            "fileSize": 0,
+            "group": "bazzing.gaz",
+            "isDirectory": false,
+            "lastModifiedTime": "",
+            "name": "bazzing.gaz",
+            "owner": "bazzing.gaz",
+            "path": "some/home",
+            "permissions": [
+              6,
+              6,
+              4,
+            ],
+          },
+          {
+            "children": [
+              {
+                "children": undefined,
+                "fileSize": 0,
+                "group": "daz",
+                "isDirectory": false,
+                "lastModifiedTime": "",
+                "name": "test",
+                "owner": "daz",
+                "path": "some/home/daz",
+                "permissions": [
+                  6,
+                  6,
+                  4,
+                ],
+              },
+            ],
+            "fileSize": 0,
+            "group": "daz",
+            "isDirectory": true,
+            "lastModifiedTime": "",
+            "name": "daz",
+            "owner": "daz",
+            "path": "some/home",
+            "permissions": [
+              6,
+              6,
+              4,
+            ],
+          },
+          {
+            "children": [
+              {
+                "children": undefined,
+                "fileSize": 0,
+                "group": "gaz",
+                "isDirectory": false,
+                "lastModifiedTime": "",
+                "name": "test",
+                "owner": "gaz",
+                "path": "some/home/gaz",
+                "permissions": [
+                  6,
+                  6,
+                  4,
+                ],
+              },
+            ],
+            "fileSize": 0,
+            "group": "gaz",
+            "isDirectory": true,
+            "lastModifiedTime": "",
+            "name": "gaz",
+            "owner": "gaz",
+            "path": "some/home",
+            "permissions": [
+              6,
+              6,
+              4,
+            ],
+          },
+        ],
+        "fileSize": 0,
+        "group": "root",
+        "isDirectory": true,
+        "lastModifiedTime": "",
+        "name": "home",
+        "owner": "root",
+        "path": "some",
+        "permissions": [
+          6,
+          6,
+          4,
+        ],
+      },
+    ],
+    "fileSize": 0,
+    "group": "root",
+    "isDirectory": true,
+    "lastModifiedTime": "",
+    "name": "some",
+    "owner": "root",
+    "path": "",
+    "permissions": [
+      6,
+      6,
+      4,
+    ],
+  },
+]
+`;
+
+exports[`walk > should return a valid file tree with data from a .meta file 1`] = `
+[
+  {
+    "children": [
+      {
+        "children": undefined,
+        "fileSize": 0,
+        "group": "root",
+        "isDirectory": false,
+        "lastModifiedTime": "",
+        "name": "baz.txt",
+        "owner": "some value",
+        "path": "bar",
+        "permissions": [
+          4,
+          5,
+          6,
+        ],
+      },
+    ],
+    "fileSize": 0,
+    "group": "root",
+    "isDirectory": true,
+    "lastModifiedTime": "",
+    "name": "bar",
+    "owner": "root",
+    "path": "",
+    "permissions": [
+      6,
+      6,
+      4,
+    ],
+  },
+  {
+    "children": [],
+    "fileSize": 0,
+    "group": "ing",
+    "isDirectory": true,
+    "lastModifiedTime": "",
+    "name": "foo",
+    "owner": "test",
+    "path": "",
+    "permissions": [
+      1,
+      2,
+      3,
+    ],
   },
 ]
 `;
@@ -15,34 +240,79 @@ exports[`walk > should return the correct file tree 1`] = `
 [
   {
     "children": undefined,
+    "fileSize": 0,
+    "group": "root",
     "isDirectory": false,
+    "lastModifiedTime": "",
     "name": "bazzing.gaz",
+    "owner": "root",
     "path": "",
+    "permissions": [
+      6,
+      6,
+      4,
+    ],
   },
   {
     "children": [
       {
         "children": undefined,
+        "fileSize": 0,
+        "group": "root",
         "isDirectory": false,
+        "lastModifiedTime": "",
         "name": ".testing",
+        "owner": "root",
         "path": "foo",
+        "permissions": [
+          6,
+          6,
+          4,
+        ],
       },
       {
         "children": [],
+        "fileSize": 0,
+        "group": "root",
         "isDirectory": true,
+        "lastModifiedTime": "",
         "name": "bar",
+        "owner": "root",
         "path": "foo",
+        "permissions": [
+          6,
+          6,
+          4,
+        ],
       },
       {
         "children": undefined,
+        "fileSize": 0,
+        "group": "root",
         "isDirectory": false,
+        "lastModifiedTime": "",
         "name": "daz",
+        "owner": "root",
         "path": "foo",
+        "permissions": [
+          6,
+          6,
+          4,
+        ],
       },
     ],
+    "fileSize": 0,
+    "group": "root",
     "isDirectory": true,
+    "lastModifiedTime": "",
     "name": "foo",
+    "owner": "root",
     "path": "",
+    "permissions": [
+      6,
+      6,
+      4,
+    ],
   },
 ]
 `;

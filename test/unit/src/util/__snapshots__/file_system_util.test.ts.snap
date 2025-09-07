@@ -142,8 +142,13 @@ exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`]
       "path": "",
     },
   ],
+  "fileSize": 0,
+  "group": "",
   "isDirectory": true,
+  "lastModifiedTime": "",
   "name": "",
+  "owner": "",
   "path": "",
+  "permissions": [],
 }
 `;

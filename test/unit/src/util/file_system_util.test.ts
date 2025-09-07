@@ -424,6 +424,8 @@ describe("FileSystemUtil", () => {
 
       // Assert
       expect(result).not.toBeNull();
+
+      result.lastModifiedTime = ""; // this value is unpredictable, even for snapshots
       expect(result).toMatchSnapshot();
     });
 

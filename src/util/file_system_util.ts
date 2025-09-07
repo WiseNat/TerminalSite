@@ -305,6 +305,11 @@ export default class FileSystemUtil {
       path: "",
       isDirectory: true,
       children: currentNodes,
+      lastModifiedTime: new Date(),
+      fileSize: 0,
+      permissions: [],
+      owner: "",
+      group: "",
     };
 
     for (const segment of path) {
