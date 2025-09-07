@@ -11,12 +11,12 @@ exports[`FileSystemUtil > walkFileTree > returns node for a valid path 1`] = `
     },
     {
       "isDirectory": false,
-      "name": "bazzing.gaz",
+      "name": "daz",
       "path": "src/main/foo",
     },
     {
       "isDirectory": false,
-      "name": "daz",
+      "name": "bazzing.gaz",
       "path": "src/main/foo",
     },
   ],
@@ -41,12 +41,12 @@ exports[`FileSystemUtil > walkFileTree > returns node for a valid single directo
             },
             {
               "isDirectory": false,
-              "name": "bazzing.gaz",
+              "name": "daz",
               "path": "src/main/foo",
             },
             {
               "isDirectory": false,
-              "name": "daz",
+              "name": "bazzing.gaz",
               "path": "src/main/foo",
             },
           ],
@@ -57,6 +57,30 @@ exports[`FileSystemUtil > walkFileTree > returns node for a valid single directo
         {
           "isDirectory": false,
           "name": ".testing",
+          "path": "src/main",
+        },
+        {
+          "children": [],
+          "isDirectory": true,
+          "name": ".empty",
+          "path": "src/main",
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "isDirectory": true,
+              "name": "someEmptyDir",
+              "path": "src/main/.full",
+            },
+            {
+              "isDirectory": false,
+              "name": "aFile",
+              "path": "src/main/.full",
+            },
+          ],
+          "isDirectory": true,
+          "name": ".full",
           "path": "src/main",
         },
       ],
@@ -102,12 +126,12 @@ exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`]
                 },
                 {
                   "isDirectory": false,
-                  "name": "bazzing.gaz",
+                  "name": "daz",
                   "path": "src/main/foo",
                 },
                 {
                   "isDirectory": false,
-                  "name": "daz",
+                  "name": "bazzing.gaz",
                   "path": "src/main/foo",
                 },
               ],
@@ -118,6 +142,30 @@ exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`]
             {
               "isDirectory": false,
               "name": ".testing",
+              "path": "src/main",
+            },
+            {
+              "children": [],
+              "isDirectory": true,
+              "name": ".empty",
+              "path": "src/main",
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "isDirectory": true,
+                  "name": "someEmptyDir",
+                  "path": "src/main/.full",
+                },
+                {
+                  "isDirectory": false,
+                  "name": "aFile",
+                  "path": "src/main/.full",
+                },
+              ],
+              "isDirectory": true,
+              "name": ".full",
               "path": "src/main",
             },
           ],
@@ -142,7 +190,6 @@ exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`]
       "path": "",
     },
   ],
-  "fileSize": 0,
   "group": "",
   "isDirectory": true,
   "lastModifiedTime": "",
@@ -150,5 +197,6 @@ exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`]
   "owner": "",
   "path": "",
   "permissions": [],
+  "size": 0,
 }
 `;

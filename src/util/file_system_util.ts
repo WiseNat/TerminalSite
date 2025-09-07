@@ -306,7 +306,7 @@ export default class FileSystemUtil {
       isDirectory: true,
       children: currentNodes,
       lastModifiedTime: new Date(),
-      fileSize: 0,
+      size: 0,
       permissions: [],
       owner: "",
       group: "",

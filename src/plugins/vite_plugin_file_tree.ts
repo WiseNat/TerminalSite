@@ -59,7 +59,7 @@ export function walk(
       isDirectory: isDirectory,
       children: isDirectory ? [] : undefined,
       lastModifiedTime: getLastModifiedTime(absolutePath),
-      fileSize: getFileSize(absolutePath),
+      size: getFileSize(absolutePath),
       permissions: additionalMetaData.permissions,
       owner: additionalMetaData.owner,
       group: additionalMetaData.group,

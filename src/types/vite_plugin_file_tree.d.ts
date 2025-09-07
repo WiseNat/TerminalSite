@@ -5,7 +5,7 @@ declare module "virtual:file-tree" {
     isDirectory: boolean;
     children?: FileTreeNode[];
     lastModifiedTime: Date;
-    fileSize: number;
+    size: number;
     permissions: number[];
     owner: string;
     group: string;

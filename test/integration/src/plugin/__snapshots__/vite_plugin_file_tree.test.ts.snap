@@ -4,7 +4,6 @@ exports[`walk > .gitkeep files are not included in the file tree 1`] = `
 [
   {
     "children": [],
-    "fileSize": 0,
     "group": "root",
     "isDirectory": true,
     "lastModifiedTime": "",
@@ -16,6 +15,7 @@ exports[`walk > .gitkeep files are not included in the file tree 1`] = `
       6,
       4,
     ],
+    "size": 0,
   },
 ]
 `;
@@ -24,7 +24,6 @@ exports[`walk > .meta files are not included in the file tree 1`] = `
 [
   {
     "children": [],
-    "fileSize": 0,
     "group": "root",
     "isDirectory": true,
     "lastModifiedTime": "",
@@ -36,6 +35,7 @@ exports[`walk > .meta files are not included in the file tree 1`] = `
       6,
       4,
     ],
+    "size": 0,
   },
 ]
 `;
@@ -46,7 +46,6 @@ exports[`walk > should return a valid file tree with a default owner/root based 
     "children": [
       {
         "children": [],
-        "fileSize": 0,
         "group": "root",
         "isDirectory": true,
         "lastModifiedTime": "",
@@ -58,9 +57,9 @@ exports[`walk > should return a valid file tree with a default owner/root based 
           6,
           4,
         ],
+        "size": 0,
       },
     ],
-    "fileSize": 0,
     "group": "root",
     "isDirectory": true,
     "lastModifiedTime": "",
@@ -72,6 +71,7 @@ exports[`walk > should return a valid file tree with a default owner/root based 
       6,
       4,
     ],
+    "size": 0,
   },
   {
     "children": [
@@ -79,7 +79,6 @@ exports[`walk > should return a valid file tree with a default owner/root based 
         "children": [
           {
             "children": undefined,
-            "fileSize": 0,
             "group": "bazzing.gaz",
             "isDirectory": false,
             "lastModifiedTime": "",
@@ -91,12 +90,12 @@ exports[`walk > should return a valid file tree with a default owner/root based 
               6,
               4,
             ],
+            "size": 0,
           },
           {
             "children": [
               {
                 "children": undefined,
-                "fileSize": 0,
                 "group": "daz",
                 "isDirectory": false,
                 "lastModifiedTime": "",
@@ -108,9 +107,9 @@ exports[`walk > should return a valid file tree with a default owner/root based 
                   6,
                   4,
                 ],
+                "size": 0,
               },
             ],
-            "fileSize": 0,
             "group": "daz",
             "isDirectory": true,
             "lastModifiedTime": "",
@@ -122,12 +121,12 @@ exports[`walk > should return a valid file tree with a default owner/root based 
               6,
               4,
             ],
+            "size": 0,
           },
           {
             "children": [
               {
                 "children": undefined,
-                "fileSize": 0,
                 "group": "gaz",
                 "isDirectory": false,
                 "lastModifiedTime": "",
@@ -139,9 +138,9 @@ exports[`walk > should return a valid file tree with a default owner/root based 
                   6,
                   4,
                 ],
+                "size": 0,
               },
             ],
-            "fileSize": 0,
             "group": "gaz",
             "isDirectory": true,
             "lastModifiedTime": "",
@@ -153,9 +152,9 @@ exports[`walk > should return a valid file tree with a default owner/root based 
               6,
               4,
             ],
+            "size": 0,
           },
         ],
-        "fileSize": 0,
         "group": "root",
         "isDirectory": true,
         "lastModifiedTime": "",
@@ -167,9 +166,9 @@ exports[`walk > should return a valid file tree with a default owner/root based 
           6,
           4,
         ],
+        "size": 0,
       },
     ],
-    "fileSize": 0,
     "group": "root",
     "isDirectory": true,
     "lastModifiedTime": "",
@@ -181,6 +180,7 @@ exports[`walk > should return a valid file tree with a default owner/root based 
       6,
       4,
     ],
+    "size": 0,
   },
 ]
 `;
@@ -191,7 +191,6 @@ exports[`walk > should return a valid file tree with data from a .meta file 1`] 
     "children": [
       {
         "children": undefined,
-        "fileSize": 0,
         "group": "root",
         "isDirectory": false,
         "lastModifiedTime": "",
@@ -203,9 +202,9 @@ exports[`walk > should return a valid file tree with data from a .meta file 1`] 
           5,
           6,
         ],
+        "size": 0,
       },
     ],
-    "fileSize": 0,
     "group": "root",
     "isDirectory": true,
     "lastModifiedTime": "",
@@ -217,10 +216,10 @@ exports[`walk > should return a valid file tree with data from a .meta file 1`] 
       6,
       4,
     ],
+    "size": 0,
   },
   {
     "children": [],
-    "fileSize": 0,
     "group": "ing",
     "isDirectory": true,
     "lastModifiedTime": "",
@@ -232,6 +231,7 @@ exports[`walk > should return a valid file tree with data from a .meta file 1`] 
       2,
       3,
     ],
+    "size": 0,
   },
 ]
 `;
@@ -240,7 +240,6 @@ exports[`walk > should return the correct file tree 1`] = `
 [
   {
     "children": undefined,
-    "fileSize": 0,
     "group": "root",
     "isDirectory": false,
     "lastModifiedTime": "",
@@ -252,12 +251,12 @@ exports[`walk > should return the correct file tree 1`] = `
       6,
       4,
     ],
+    "size": 0,
   },
   {
     "children": [
       {
         "children": undefined,
-        "fileSize": 0,
         "group": "root",
         "isDirectory": false,
         "lastModifiedTime": "",
@@ -269,10 +268,10 @@ exports[`walk > should return the correct file tree 1`] = `
           6,
           4,
         ],
+        "size": 0,
       },
       {
         "children": [],
-        "fileSize": 0,
         "group": "root",
         "isDirectory": true,
         "lastModifiedTime": "",
@@ -284,10 +283,10 @@ exports[`walk > should return the correct file tree 1`] = `
           6,
           4,
         ],
+        "size": 0,
       },
       {
         "children": undefined,
-        "fileSize": 0,
         "group": "root",
         "isDirectory": false,
         "lastModifiedTime": "",
@@ -299,9 +298,9 @@ exports[`walk > should return the correct file tree 1`] = `
           6,
           4,
         ],
+        "size": 0,
       },
     ],
-    "fileSize": 0,
     "group": "root",
     "isDirectory": true,
     "lastModifiedTime": "",
@@ -313,6 +312,7 @@ exports[`walk > should return the correct file tree 1`] = `
       6,
       4,
     ],
+    "size": 0,
   },
 ]
 `;

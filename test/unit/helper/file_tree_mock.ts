@@ -24,12 +24,12 @@ export const fileTree: FileTreeNode = [
                 children: [],
               },
               {
-                name: "bazzing.gaz",
+                name: "daz",
                 path: "src/main/foo",
                 isDirectory: false,
               },
               {
-                name: "daz",
+                name: "bazzing.gaz",
                 path: "src/main/foo",
                 isDirectory: false,
               },
@@ -39,6 +39,30 @@ export const fileTree: FileTreeNode = [
             name: ".testing",
             path: "src/main",
             isDirectory: false,
+          },
+          {
+            name: ".empty",
+            path: "src/main",
+            isDirectory: true,
+            children: [],
+          },
+          {
+            name: ".full",
+            path: "src/main",
+            isDirectory: true,
+            children: [
+              {
+                name: "someEmptyDir",
+                path: "src/main/.full",
+                isDirectory: true,
+                children: [],
+              },
+              {
+                name: "aFile",
+                path: "src/main/.full",
+                isDirectory: false,
+              },
+            ],
           },
         ],
       },
