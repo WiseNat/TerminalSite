@@ -4,7 +4,8 @@ import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
-import ColourUtil from "../../util/colour_util.ts";
+import ColourUtil, { Style } from "../../util/colour_util.ts";
+import { clone } from "lodash-es";
 
 interface EntryNode {
   name: string;
@@ -27,6 +28,11 @@ interface PathResults {
   directoryEntries: EntryNode[];
 }
 
+// TODO: add all formatting flags (e.g. -a, -l, -s, -h, -1) into this!
+interface FormatFlags {
+  a: boolean;
+}
+
 /**
  * Processes all paths into a single {@link PathResults} object.
  * This will find and segment out the following arguments:
@@ -40,7 +46,6 @@ interface PathResults {
  * @param paths list of paths to process.
  * @returns the {@link PathResults} object.
  */
-// TODO: pass processing flags (e.g. -a) into this method!
 function processPaths(paths: string[]): PathResults {
   const results: PathResults = {
     unknownPaths: [],
@@ -114,10 +119,13 @@ function createEntryNode(fileTreeNode: FileTreeNode): EntryNode {
  * 3. Directories (alphabetically order segments with alphabetically ordered files)
  *
  * @param pathResults the object to format.
+ * @param flags all format related flags.
  * @returns structured human-readable text.
  */
-// TODO: pass formatting flags (e.g. -l, -s, -h, -1) into this method!
-function formatPathResults(pathResults: PathResults): string {
+function formatPathResults(
+  pathResults: PathResults,
+  flags: FormatFlags,
+): string {
   let output = "";
 
   const unknownPathOutput = formatUnknownPaths(pathResults.unknownPaths);
@@ -138,6 +146,7 @@ function formatPathResults(pathResults: PathResults): string {
   const directoryEntriesOutput = formatDirectoryEntries(
     pathResults.directoryEntries,
     isPreviousOutput,
+    flags,
   );
   if (directoryEntriesOutput !== "") {
     if (output !== "") {
@@ -183,7 +192,7 @@ function formatFileEntries(fileEntries: EntryNode[]): string {
     outputs.push(fileEntry.fullPath);
   }
 
-  outputs.sort((a, b) => a.localeCompare(b));
+  sortPaths(outputs);
 
   return outputs.join("\t");
 }
@@ -199,19 +208,22 @@ function formatFileEntries(fileEntries: EntryNode[]): string {
  *
  * @param directoryEntries the known directories entries, must only be directories.
  * @param isPreviousOutput whether or not the other formatting methods (Unknown paths & File Entries) have provided an output.
+ * @param flags flags for formatting.
  * @returns the formatted directory entries.
  */
 function formatDirectoryEntries(
   directoryEntries: EntryNode[],
   isPreviousOutput: boolean,
+  flags: FormatFlags,
 ) {
   const outputs: string[] = [];
 
-  directoryEntries.sort((a, b) => a.fullPath.localeCompare(b.fullPath));
+  sortEntryNodes(directoryEntries);
 
   for (const directoryEntry of directoryEntries) {
     const children: string[] = formatDirectoryEntryChildren(
-      directoryEntry.children,
+      directoryEntry,
+      flags,
     );
 
     if (directoryEntries.length === 1 && !isPreviousOutput) {
@@ -234,16 +246,40 @@ function formatDirectoryEntries(
  * <p>
  * Children will be coloured based on {@link ColourUtil.getFileSystemEntryStyle}.
  *
- * @param children
+ * @param directoryEntry the directory entry to format the children of
+ * @param flags flags for formatting.
  * @returns a list of formatted children.
  */
-function formatDirectoryEntryChildren(children: EntryNode[]): string[] {
-  children.sort((a, b) => a.name.localeCompare(b.name));
+function formatDirectoryEntryChildren(
+  directoryEntry: EntryNode,
+  flags: FormatFlags,
+): string[] {
+  const children = directoryEntry.children;
+
+  sortEntryNodes(children);
+
+  // Add after sorting to ensure these appear first
+  if (flags.a) {
+    const shallowDirectoryEntryClone = clone(directoryEntry);
+    shallowDirectoryEntryClone.name = ".";
+
+    const parentPathSegments = FileSystemUtil.splitPath(directoryEntry.path);
+    const parentDirectory = FileSystemUtil.walkFileTree(parentPathSegments);
+
+    const parentEntry: EntryNode =
+      parentDirectory === null
+        ? shallowDirectoryEntryClone
+        : createEntryNode(parentDirectory);
+    parentEntry.name = "..";
+
+    children.unshift(parentEntry);
+    children.unshift(shallowDirectoryEntryClone);
+  }
 
   const formattedChildren: string[] = [];
 
   for (const child of children) {
-    if (isDotEntry(child.name)) {
+    if (!flags.a && isDotEntry(child.name)) {
       continue;
     }
 
@@ -258,15 +294,7 @@ function formatDirectoryEntryChildren(children: EntryNode[]): string[] {
       group: child.group,
     });
 
-    const styleString = [
-      style.foreground === null ? null : `color: ${style.foreground}`,
-      style.background === null ? null : `background: ${style.background}`,
-      style.fontWeight === null ? null : `font-weight: ${style.fontWeight}`,
-    ]
-      .filter(function (val) {
-        return val !== null;
-      })
-      .join("; ");
+    const styleString = createStyleString(style);
 
     if (styleString === "") {
       formattedChildren.push(child.name);
@@ -281,6 +309,37 @@ function formatDirectoryEntryChildren(children: EntryNode[]): string[] {
 }
 
 /**
+ * Sorts EntryNodes alphabetically by their `fullPath`, ignoring any starting
+ * '.' characters.
+ *
+ * @param nodes the nodes to sort inline.
+ * @see stripLeadingDots
+ */
+function sortEntryNodes(nodes: EntryNode[]) {
+  nodes.sort((a, b) => {
+    const aString = FileSystemUtil.stripDots(a.fullPath);
+    const bString = FileSystemUtil.stripDots(b.fullPath);
+
+    return aString.localeCompare(bString);
+  });
+}
+
+/**
+ * Sorts paths alphabetically, ignoring any starting '.' characters.
+ *
+ * @param paths the paths to sort inline.
+ * @see stripLeadingDots
+ */
+function sortPaths(paths: string[]) {
+  paths.sort((a, b) => {
+    a = FileSystemUtil.stripDots(a);
+    b = FileSystemUtil.stripDots(b);
+
+    return a.localeCompare(b);
+  });
+}
+
+/**
  * @param name the file name to check
  * @returns true if the file is a dot-file or dot-directory, false otherwise.
  */
@@ -288,9 +347,33 @@ function isDotEntry(name: string): boolean {
   return name.startsWith(".");
 }
 
+/**
+ * Creates an HTML CSS Style String for use in elements based on the provided
+ * `style`.
+ *
+ * @param style the value to use to create the style string.
+ * @returns an HTML CSS Style String.
+ */
+function createStyleString(style: Style): string {
+  return [
+    style.foreground === null ? null : `color: ${style.foreground}`,
+    style.background === null ? null : `background: ${style.background}`,
+    style.fontWeight === null ? null : `font-weight: ${style.fontWeight}`,
+  ]
+    .filter(function (val) {
+      return val !== null;
+    })
+    .join("; ");
+}
+
 const ls: CommandScript = {
   async run(args: string[]): Promise<void> {
-    const parsedOptions: ParsedOptions = getopts(args);
+    const parsedOptions: ParsedOptions = getopts(args, {
+      default: { a: false },
+      alias: {
+        all: ["a"],
+      },
+    });
 
     // const path: string[] = parsedOptions._.length > 0 : parsedOptions._ : [FileSystemUtil.getCurrentWorkingDirectory()];
     const paths: string[] =
@@ -303,7 +386,7 @@ const ls: CommandScript = {
           ];
 
     const pathResults = processPaths(paths);
-    const output = formatPathResults(pathResults);
+    const output = formatPathResults(pathResults, { a: parsedOptions.a });
 
     if (output !== "") {
       TerminalUtil.appendRawOutput(`\n${output}`);

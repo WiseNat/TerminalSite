@@ -2,7 +2,7 @@ import { FileTreeNode } from "virtual:file-tree";
 import { BLUE, CYAN, GREEN, MAGENTA, RED } from "../constant/colour.ts";
 import FileSystemUtil from "./file_system_util.ts";
 
-interface Style {
+export interface Style {
   foreground: string | null;
   background: string | null;
   fontWeight: string | null;

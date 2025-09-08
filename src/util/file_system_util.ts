@@ -385,6 +385,17 @@ export default class FileSystemUtil {
   }
 
   /**
+   * Strips any occurrences of '.' within the provided `path`. This does not
+   * normalise the path. For path normalisation see {@link normalisePath}.
+   *
+   * @param path the path to clean.
+   * @returns a path without any instances of '.'.
+   */
+  public static stripDots(path: string): string {
+    return path.replace(/\./g, "");
+  }
+
+  /**
    * Gets the extension in the given filename.
    *
    * @param filename the filename to pull the extension from.

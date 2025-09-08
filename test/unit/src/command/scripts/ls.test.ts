@@ -38,15 +38,13 @@ describe("Ls", () => {
 
     test("Given a non-empty regular directory argument, outputs the contents of the directory", async () => {
       // Arrange
-      const args: string[] = ["/src/main/foo"];
+      const args: string[] = ["/src/main"];
 
       // Act
       await ls.run(args);
 
       // Assert
-      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-        "\nbar\tbazzing.gaz\tdaz",
-      );
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith("\nfoo");
     });
 
     test("Given an empty regular directory argument, outputs nothing", async () => {
@@ -206,8 +204,9 @@ describe("Ls", () => {
       await ls.run(args);
 
       // Assert
+      // foo/bazzing.gaz  foo/daz  .full/aFile  index.ts  .testing
       const expected =
-        "\n/src/index.ts\t/src/main/.full/aFile\t/src/main/.testing\t/src/main/foo/bazzing.gaz\t/src/main/foo/daz";
+        "\n/src/index.ts\t/src/main/foo/bazzing.gaz\t/src/main/foo/daz\t/src/main/.full/aFile\t/src/main/.testing";
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
     });
 
@@ -229,10 +228,10 @@ describe("Ls", () => {
         "\n/src:" +
         "\nindex.ts\tmain" +
         "\n\n/src/main/.empty:" +
-        "\n\n/src/main/.full:" +
-        "\naFile\tsomeEmptyDir" +
         "\n\n/src/main/foo:" +
         "\nbar\tbazzing.gaz\tdaz" +
+        "\n\n/src/main/.full:" +
+        "\naFile\tsomeEmptyDir" +
         "\n\n/test:";
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
     });
@@ -265,6 +264,19 @@ describe("Ls", () => {
           "\nbar\tbazzing.gaz\tdaz";
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
+    });
+
+    test("Given a directory argument with an -a flag, outputs the entire of the directory including dot-files & dot-dirs", async () => {
+      // Arrange
+      const args: string[] = ["/src/main", "-a"];
+
+      // Act
+      await ls.run(args);
+
+      // Assert
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
+        "\n.\t..\t.empty\tfoo\t.full\t.testing",
+      );
     });
   });
 });

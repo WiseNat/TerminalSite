@@ -579,6 +579,47 @@ describe("FileSystemUtil", () => {
     });
   });
 
+  describe("stripDots", () => {
+    test("returns the same path when given a path without dots", () => {
+      // Arrange
+      const path = "/some/example/path";
+
+      // Act
+      const result = FileSystemUtil.stripDots(path);
+
+      // Assert
+      expect(result).toEqual(path);
+    });
+
+    [
+      "/some/example/path",
+      "some/example/path",
+      "some/example/path/",
+      "/some/example/path/",
+    ].forEach((path) => {
+      test(`returns a path with the same starting & ending path separators when given '${path}'`, () => {
+        // Act
+        const result = FileSystemUtil.stripDots(path);
+
+        // Assert
+        expect(result).toEqual(path);
+      });
+    });
+
+    test("returns a path with all dots removed", () => {
+      // Arrange
+      const path =
+        "/some/.example/..path/with.multiple/dots./in.various/.places/";
+
+      // Act
+      const result = FileSystemUtil.stripDots(path);
+
+      // Assert
+      const expected = "/some/example/path/withmultiple/dots/invarious/places/";
+      expect(result).toEqual(expected);
+    });
+  });
+
   describe("getExtension", () => {
     [
       {

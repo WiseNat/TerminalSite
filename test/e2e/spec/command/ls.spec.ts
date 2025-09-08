@@ -185,4 +185,35 @@ test.describe("Ls", () => {
       await checkForColouredSpans(page, counts);
     });
   });
+
+  ["-a", "--all"].forEach((flag) => {
+    test(`Should output the entire contents of a directory when the '${flag}' flag is provided`, async ({
+      page,
+    }) => {
+      // Arrange
+      const input = `ls ${existingDirectory} ${flag}`;
+
+      // Act
+      await page.locator(inputSelector).pressSequentially(input);
+      await page.locator(inputSelector).press("Enter");
+
+      // Assert
+      const expected = "\n.\t..\tabout.txt\tCV.pdf\tEducation\tskills.md\t.tmp";
+      await expect(page.locator(outputSelector)).exactTextInElement(
+        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+      );
+      await expect(page.locator(promptSelector)).exactTextInElement(
+        defaultUserPrompt,
+      );
+      await expect(page.locator(inputSelector)).exactTextInElement("");
+
+      await checkForColouredSpans(page, {
+        directory: 3,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+      });
+    });
+  });
 });
