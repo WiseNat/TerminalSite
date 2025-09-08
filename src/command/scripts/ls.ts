@@ -369,7 +369,7 @@ function createStyleString(style: Style): string {
 const ls: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions: ParsedOptions = getopts(args, {
-      default: { a: false },
+      boolean: ["a"],
       alias: {
         all: ["a"],
       },
