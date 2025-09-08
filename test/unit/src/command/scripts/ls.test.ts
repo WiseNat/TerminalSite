@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import FileSystemUtil from "../../../../../src/util/file_system_util";
 import ls from "../../../../../src/command/scripts/ls";
 import TerminalUtil from "../../../../../src/util/terminal_util";
+import ColourUtil from "../../../../../src/util/colour_util";
 
 describe("Ls", () => {
   beforeEach(() => {
@@ -11,10 +12,18 @@ describe("Ls", () => {
 
   describe("run", () => {
     // Spy
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+    const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
 
     // Mock
     vi.mock("../../../../../src/util/terminal_util");
+    vi.mock("../../../../../src/util/colour_util");
+
+    // Mocked
+    vi.mocked(ColourUtil.getFileSystemEntryStyle).mockReturnValue({
+      foreground: null,
+      background: null,
+      fontWeight: null,
+    });
 
     test("Given no arguments, outputs the contents of the current working directory", async () => {
       // Arrange
@@ -24,7 +33,7 @@ describe("Ls", () => {
       await ls.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith("\nfoo");
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith("\nfoo");
     });
 
     test("Given a non-empty regular directory argument, outputs the contents of the directory", async () => {
@@ -35,7 +44,7 @@ describe("Ls", () => {
       await ls.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         "\nbar\tbazzing.gaz\tdaz",
       );
     });
@@ -48,7 +57,7 @@ describe("Ls", () => {
       await ls.run(args);
 
       // Assert
-      expect(appendOutput).not.toHaveBeenCalled();
+      expect(appendRawOutput).not.toHaveBeenCalled();
     });
 
     test("Given a non-empty dot-directory argument, outputs the contents of the directory", async () => {
@@ -59,7 +68,7 @@ describe("Ls", () => {
       await ls.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         "\naFile\tsomeEmptyDir",
       );
     });
@@ -72,7 +81,7 @@ describe("Ls", () => {
       await ls.run(args);
 
       // Assert
-      expect(appendOutput).not.toHaveBeenCalled();
+      expect(appendRawOutput).not.toHaveBeenCalled();
     });
 
     test("Given a regular file argument, outputs the path of the file", async () => {
@@ -83,7 +92,9 @@ describe("Ls", () => {
       await ls.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith("\n/src/index.ts");
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
+        "\n/src/index.ts",
+      );
     });
 
     test("Given a dot-file argument, outputs the path of the file", async () => {
@@ -94,7 +105,7 @@ describe("Ls", () => {
       await ls.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         "\n/src/main/.testing",
       );
     });
@@ -116,7 +127,7 @@ describe("Ls", () => {
         await ls.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
           `\nls: cannot access '${expected}': No such file or directory`,
         );
       });
@@ -177,7 +188,7 @@ describe("Ls", () => {
         await ls.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(expected);
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
     });
 
@@ -197,7 +208,7 @@ describe("Ls", () => {
       // Assert
       const expected =
         "\n/src/index.ts\t/src/main/.full/aFile\t/src/main/.testing\t/src/main/foo/bazzing.gaz\t/src/main/foo/daz";
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(expected);
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
     });
 
     test("Given multiple directory arguments, all directory entries & inner file entries are outputted alphabetically and directory entries are prefixed with '${path}:'", async () => {
@@ -223,7 +234,7 @@ describe("Ls", () => {
         "\n\n/src/main/foo:" +
         "\nbar\tbazzing.gaz\tdaz" +
         "\n\n/test:";
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(expected);
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
     });
 
     [
@@ -252,7 +263,7 @@ describe("Ls", () => {
           `\n${typeExpected}` +
           "\n\n/src/main/foo:" +
           "\nbar\tbazzing.gaz\tdaz";
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(expected);
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
     });
   });

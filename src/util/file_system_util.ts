@@ -1,5 +1,10 @@
 import { fileTree, FileTreeNode } from "virtual:file-tree";
 import TerminalUtil from "./terminal_util.ts";
+import {
+  ARCHIVE_EXTENSIONS,
+  AUDIO_EXTENSIONS,
+  GRAPHIC_EXTENSIONS,
+} from "../constant/extensions.ts";
 
 export default class FileSystemUtil {
   private static currentWorkingDirectory: string[] = [];
@@ -377,5 +382,66 @@ export default class FileSystemUtil {
    */
   public static doesFileOrDirectoryExist(path: string[]): boolean {
     return this.walkFileTree(path) !== null;
+  }
+
+  /**
+   * Gets the extension in the given filename.
+   *
+   * @param filename the filename to pull the extension from.
+   * @returns the extension or an empty string if it does not exist.
+   */
+  public static getExtension(filename: string): string {
+    const index = filename.lastIndexOf(".");
+    if (index === -1) {
+      return "";
+    }
+
+    return filename.slice(index + 1);
+  }
+
+  /**
+   * Checks if the permissions have at least one executable bit in any group.
+   * <p>
+   * Permissions values are denoted in octal form where, in binary, `XX1` means a
+   * permission has an executable bit.
+   *
+   * @param permissions
+   * @returns true if at least one executable bit is found, false otherwise
+   */
+  public static isExecutable(permissions: number[]): boolean {
+    return permissions.some((n) => (n & 1) === 1);
+  }
+
+  /**
+   * Checks if the `filename` has a known archive file extension.
+   *
+   * @param filename the filename to check the extension of.
+   * @returns true if the file is an archive file, false otherwise.
+   */
+  public static isArchiveFile(filename: string): boolean {
+    const extension = this.getExtension(filename);
+    return ARCHIVE_EXTENSIONS.includes(extension);
+  }
+
+  /**
+   * Checks if the `filename` has a known graphics file extension.
+   *
+   * @param filename the filename to check the extension of.
+   * @returns true if the file is a graphics file, false otherwise.
+   */
+  public static isGraphicsFile(filename: string): boolean {
+    const extension = this.getExtension(filename);
+    return GRAPHIC_EXTENSIONS.includes(extension);
+  }
+
+  /**
+   * Checks if the `filename` has a known audio file extension.
+   *
+   * @param filename the filename to check the extension of.
+   * @returns true if the file is an audio file, false otherwise.
+   */
+  public static isAudioFile(filename: string): boolean {
+    const extension = this.getExtension(filename);
+    return AUDIO_EXTENSIONS.includes(extension);
   }
 }

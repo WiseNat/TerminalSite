@@ -6,6 +6,14 @@ import {
   outputSelector,
   promptSelector,
 } from "../../helper/constant/generic";
+import {
+  BLUE,
+  CYAN,
+  GREEN,
+  MAGENTA,
+  RED,
+} from "../../../../src/constant/colour";
+import { Page } from "@playwright/test";
 
 test.describe("Ls", () => {
   // TODO: test cases...
@@ -18,7 +26,6 @@ test.describe("Ls", () => {
   //    - Show human readable file size file size with -ls flag
   //    - Show one line per file (no columns) with -1 flag
   // TODO: Run this locally to have a good example of how everything works: 'ls ~ ~/Desktop/webstorm.desktop /asdaasdasdasdasd ~/.bashrc /asdasd /'
-  // TODO: somehow parameterise the above with flags into no arg, directory arg, file arg?
 
   const existingDirectory = "/home/nathanwise/Documents";
   const existingEmptyDirectory = "/boot";
@@ -26,39 +33,117 @@ test.describe("Ls", () => {
   const existingDotFile = "~/Projects/this/.external";
   const fakePath = "/some/fake/path";
 
-  // TODO: update with coloured text
+  interface ColouredCounts {
+    directory: number;
+    executables: number;
+    archives: number;
+    graphics: number;
+    audios: number;
+  }
+
+  function getColouredSpanLocator(colour: string): string {
+    return `//span[contains(@style, "color: ${colour}") and contains(@style, "font-weight: bold")]`;
+  }
+
+  async function checkForColouredSpans(
+    page: Page,
+    colouredCounts: ColouredCounts,
+  ) {
+    await expect(
+      page.locator(outputSelector).locator(getColouredSpanLocator(BLUE)),
+    ).toHaveCount(colouredCounts.directory);
+
+    await expect(
+      page.locator(outputSelector).locator(getColouredSpanLocator(GREEN)),
+    ).toHaveCount(colouredCounts.executables);
+
+    await expect(
+      page.locator(outputSelector).locator(getColouredSpanLocator(RED)),
+    ).toHaveCount(colouredCounts.archives);
+
+    await expect(
+      page.locator(outputSelector).locator(getColouredSpanLocator(MAGENTA)),
+    ).toHaveCount(colouredCounts.graphics);
+
+    await expect(
+      page.locator(outputSelector).locator(getColouredSpanLocator(CYAN)),
+    ).toHaveCount(colouredCounts.audios);
+  }
+
   [
     {
       type: "Should show non-dotfiles in the current working directory when no path argument is given",
       args: [],
       expected:
         "\ncontact.txt\tDesktop\tDocuments\tDownloads\thelp.txt\tMusic\tPictures\tProjects\tPublic\tTemplates\tVideos",
+      counts: {
+        directory: 9,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+      },
     },
     {
       type: "Should show non-dotfiles in the given directory when a Directory path is provided",
       args: [existingDirectory],
       expected: "\nabout.txt\tCV.pdf\tEducation\tskills.md",
+      counts: {
+        directory: 1,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+      },
     },
     {
       type: "Should show just the non-dotfile file when a non-dotfile File path is provided",
       args: [existingFile],
       expected: "\n/etc/hosts",
+      counts: {
+        directory: 0,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+      },
     },
     {
       type: "Should show just the dotfile file when a dotfile File path is provided",
       args: [existingDotFile],
       expected: "\n/home/nathanwise/Projects/this/.external",
+      counts: {
+        directory: 0,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+      },
     },
     {
       type: "Should show an error when an unknown path is provided",
       args: [fakePath],
       expected:
         "\nls: cannot access '/some/fake/path': No such file or directory",
+      counts: {
+        directory: 0,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+      },
     },
     {
       type: "Should output nothing when given a Directory path with no children",
       args: [existingEmptyDirectory],
       expected: "",
+      counts: {
+        directory: 0,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+      },
     },
     {
       type: "Should output information for each argument when multiple Paths are provided",
@@ -68,8 +153,15 @@ test.describe("Ls", () => {
         "\n/etc/hosts\t/home/nathanwise/Projects/this/.external" +
         "\n\n/home/nathanwise/Documents:" +
         "\nabout.txt\tCV.pdf\tEducation\tskills.md",
+      counts: {
+        directory: 1,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+      },
     },
-  ].forEach(({ type, args, expected }) => {
+  ].forEach(({ type, args, expected, counts }) => {
     test(type, async ({ page }) => {
       // Arrange
       let input = "ls";
@@ -89,6 +181,8 @@ test.describe("Ls", () => {
         defaultUserPrompt,
       );
       await expect(page.locator(inputSelector)).exactTextInElement("");
+
+      await checkForColouredSpans(page, counts);
     });
   });
 });

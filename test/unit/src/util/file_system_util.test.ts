@@ -578,4 +578,145 @@ describe("FileSystemUtil", () => {
       expect(result).toBeFalsy();
     });
   });
+
+  describe("getExtension", () => {
+    [
+      {
+        type: "returns the extension for an normal file",
+        filename: "foo.txt",
+        expected: "txt",
+      },
+      {
+        type: "returns nothing for an empty string",
+        filename: "",
+        expected: "",
+      },
+      {
+        type: "returns nothing for file ending with a dot",
+        filename: "test.",
+        expected: "",
+      },
+      {
+        type: "returns nothing for file ending without a dot",
+        filename: "test",
+        expected: "",
+      },
+      {
+        type: "returns the extension for file with multiple dots",
+        filename: "test.ing.txt",
+        expected: "txt",
+      },
+    ].forEach(({ type, filename, expected }) => {
+      test(type, () => {
+        // Act
+        const extension = FileSystemUtil.getExtension(filename);
+
+        // Assert
+        expect(extension).toEqual(expected);
+      });
+    });
+  });
+
+  describe("isExecutable", () => {
+    [
+      [1, 0, 0],
+      [7, 7, 7],
+      [2, 3, 2],
+      [4, 4, 5],
+      [1, 1, 1],
+      [3, 4, 4],
+      [6, 6, 5],
+    ].forEach((permissions) => {
+      test("returns true when at least one executable bit is present", () => {
+        // Act
+        const result = FileSystemUtil.isExecutable(permissions);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
+    });
+
+    [
+      [0, 0, 0],
+      [2, 4, 4],
+      [0, 6, 0],
+      [4, 4, 0],
+      [6, 6, 6],
+      [0, 2, 2],
+    ].forEach((permissions) => {
+      test("returns false when no executable bits are present", () => {
+        // Act
+        const result = FileSystemUtil.isExecutable(permissions);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
+
+  describe("isArchiveFile", () => {
+    ["some.zip", "archive.tar", "example.txt.7z"].forEach((filename) => {
+      test("returns true when given a file with an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isArchiveFile(filename);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
+    });
+
+    ["empty", "example.txt", "foo.mp3"].forEach((filename) => {
+      test("returns false when given a file without an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isArchiveFile(filename);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
+
+  describe("isGraphicsFile", () => {
+    ["some.png", "archive.jpeg", "example.txt.mp4"].forEach((filename) => {
+      test("returns true when given a file with an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isGraphicsFile(filename);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
+    });
+
+    ["empty", "example.txt", "foo.mp3"].forEach((filename) => {
+      test("returns false when given a file without an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isGraphicsFile(filename);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
+
+  describe("isAudioFile", () => {
+    ["some.midi", "archive.mp3", "example.txt.ogg"].forEach((filename) => {
+      test("returns true when given a file with an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isAudioFile(filename);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
+    });
+
+    ["empty", "example.txt", "foo.mp4"].forEach((filename) => {
+      test("returns false when given a file without an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isAudioFile(filename);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
 });

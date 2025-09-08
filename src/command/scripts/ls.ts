@@ -4,11 +4,13 @@ import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
+import ColourUtil from "../../util/colour_util.ts";
 
 interface EntryNode {
   name: string;
   path: string;
   fullPath: string;
+  isDirectory: boolean;
   children: EntryNode[];
   lastModifiedTime: Date;
   size: number;
@@ -90,6 +92,7 @@ function createEntryNode(fileTreeNode: FileTreeNode): EntryNode {
     name: fileTreeNode.name,
     path: fileTreeNode.path,
     fullPath: fullPath,
+    isDirectory: fileTreeNode.isDirectory,
     children: [],
     lastModifiedTime: fileTreeNode.lastModifiedTime,
     size: fileTreeNode.size,
@@ -207,15 +210,9 @@ function formatDirectoryEntries(
   directoryEntries.sort((a, b) => a.fullPath.localeCompare(b.fullPath));
 
   for (const directoryEntry of directoryEntries) {
-    const children: string[] = [];
-    for (const child of directoryEntry.children) {
-      if (isDotEntry(child.name)) {
-        continue;
-      }
-
-      children.push(child.name);
-    }
-    children.sort((a, b) => a.localeCompare(b));
+    const children: string[] = formatDirectoryEntryChildren(
+      directoryEntry.children,
+    );
 
     if (directoryEntries.length === 1 && !isPreviousOutput) {
       outputs.push(`${children.join("\t")}`);
@@ -230,6 +227,57 @@ function formatDirectoryEntries(
   }
 
   return outputs.join("\n\n");
+}
+
+/**
+ * Sorts and Formats Directory Entry Children.
+ * <p>
+ * Children will be coloured based on {@link ColourUtil.getFileSystemEntryStyle}.
+ *
+ * @param children
+ * @returns a list of formatted children.
+ */
+function formatDirectoryEntryChildren(children: EntryNode[]): string[] {
+  children.sort((a, b) => a.name.localeCompare(b.name));
+
+  const formattedChildren: string[] = [];
+
+  for (const child of children) {
+    if (isDotEntry(child.name)) {
+      continue;
+    }
+
+    const style = ColourUtil.getFileSystemEntryStyle({
+      name: child.name,
+      path: child.path,
+      isDirectory: child.isDirectory,
+      lastModifiedTime: child.lastModifiedTime,
+      size: child.size,
+      permissions: child.permissions,
+      owner: child.owner,
+      group: child.group,
+    });
+
+    const styleString = [
+      style.foreground === null ? null : `color: ${style.foreground}`,
+      style.background === null ? null : `background: ${style.background}`,
+      style.fontWeight === null ? null : `font-weight: ${style.fontWeight}`,
+    ]
+      .filter(function (val) {
+        return val !== null;
+      })
+      .join("; ");
+
+    if (styleString === "") {
+      formattedChildren.push(child.name);
+    } else {
+      formattedChildren.push(
+        `<span style='${styleString}'>${child.name}</span>`,
+      );
+    }
+  }
+
+  return formattedChildren;
 }
 
 /**
@@ -257,9 +305,8 @@ const ls: CommandScript = {
     const pathResults = processPaths(paths);
     const output = formatPathResults(pathResults);
 
-    // TODO: appendRawOutput for colours?
     if (output !== "") {
-      TerminalUtil.appendOutput(`\n${output}`);
+      TerminalUtil.appendRawOutput(`\n${output}`);
     }
   },
 };
