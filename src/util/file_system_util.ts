@@ -4,6 +4,7 @@ import {
   ARCHIVE_EXTENSIONS,
   AUDIO_EXTENSIONS,
   GRAPHIC_EXTENSIONS,
+  RUBBISH_EXTENSIONS,
 } from "../constant/extensions.ts";
 
 export default class FileSystemUtil {
@@ -454,5 +455,16 @@ export default class FileSystemUtil {
   public static isAudioFile(filename: string): boolean {
     const extension = this.getExtension(filename);
     return AUDIO_EXTENSIONS.includes(extension);
+  }
+
+  /**
+   * Checks if the `filename` has a known rubbish file extension.
+   *
+   * @param filename the filename to check the extension of.
+   * @returns true if the file is a rubbish file, false otherwise.
+   */
+  public static isRubbishFile(filename: string): boolean {
+    const extension = this.getExtension(filename);
+    return RUBBISH_EXTENSIONS.includes(extension);
   }
 }

@@ -760,4 +760,26 @@ describe("FileSystemUtil", () => {
       });
     });
   });
+
+  describe("isRubbishFile", () => {
+    ["some.old", "archive.tmp", "example.txt.dpkg-new"].forEach((filename) => {
+      test("returns true when given a file with an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isRubbishFile(filename);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
+    });
+
+    ["empty", "example.txt", "foo.mp4"].forEach((filename) => {
+      test("returns false when given a file without an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isRubbishFile(filename);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
 });

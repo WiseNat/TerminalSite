@@ -1,5 +1,5 @@
 import { FileTreeNode } from "virtual:file-tree";
-import { BLUE, CYAN, GREEN, MAGENTA, RED } from "../constant/colour.ts";
+import { BLACK, BLUE, CYAN, GREEN, MAGENTA, RED } from "../constant/colour.ts";
 import FileSystemUtil from "./file_system_util.ts";
 
 export interface Style {
@@ -37,6 +37,8 @@ export default class ColourUtil {
     } else if (FileSystemUtil.isAudioFile(node.name)) {
       foreground = CYAN;
       fontWeight = "bold";
+    } else if (FileSystemUtil.isRubbishFile(node.name)) {
+      foreground = BLACK;
     }
 
     return {

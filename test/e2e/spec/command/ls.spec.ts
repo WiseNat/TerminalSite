@@ -7,6 +7,7 @@ import {
   promptSelector,
 } from "../../helper/constant/generic";
 import {
+  BLACK,
   BLUE,
   CYAN,
   GREEN,
@@ -39,6 +40,7 @@ test.describe("Ls", () => {
     archives: number;
     graphics: number;
     audios: number;
+    rubbish: number;
   }
 
   function getColouredSpanLocator(colour: string): string {
@@ -68,6 +70,12 @@ test.describe("Ls", () => {
     await expect(
       page.locator(outputSelector).locator(getColouredSpanLocator(CYAN)),
     ).toHaveCount(colouredCounts.audios);
+
+    await expect(
+      page
+        .locator(outputSelector)
+        .locator(`//span[contains(@style, "color: ${BLACK}")]`),
+    ).toHaveCount(colouredCounts.rubbish);
   }
 
   [
@@ -82,6 +90,7 @@ test.describe("Ls", () => {
         archives: 0,
         graphics: 0,
         audios: 0,
+        rubbish: 0,
       },
     },
     {
@@ -94,6 +103,7 @@ test.describe("Ls", () => {
         archives: 0,
         graphics: 0,
         audios: 0,
+        rubbish: 0,
       },
     },
     {
@@ -106,6 +116,7 @@ test.describe("Ls", () => {
         archives: 0,
         graphics: 0,
         audios: 0,
+        rubbish: 0,
       },
     },
     {
@@ -118,6 +129,7 @@ test.describe("Ls", () => {
         archives: 0,
         graphics: 0,
         audios: 0,
+        rubbish: 0,
       },
     },
     {
@@ -131,6 +143,7 @@ test.describe("Ls", () => {
         archives: 0,
         graphics: 0,
         audios: 0,
+        rubbish: 0,
       },
     },
     {
@@ -143,6 +156,7 @@ test.describe("Ls", () => {
         archives: 0,
         graphics: 0,
         audios: 0,
+        rubbish: 0,
       },
     },
     {
@@ -159,6 +173,7 @@ test.describe("Ls", () => {
         archives: 0,
         graphics: 0,
         audios: 0,
+        rubbish: 0,
       },
     },
   ].forEach(({ type, args, expected, counts }) => {
@@ -213,6 +228,7 @@ test.describe("Ls", () => {
         archives: 0,
         graphics: 0,
         audios: 0,
+        rubbish: 1,
       });
     });
   });

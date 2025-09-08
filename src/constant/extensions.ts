@@ -119,3 +119,24 @@ export const AUDIO_EXTENSIONS = [
   "spx",
   "xspf",
 ];
+
+export const RUBBISH_EXTENSIONS = [
+  "bak",
+  "crdownload",
+  "dpkg-dist",
+  "dpkg-new",
+  "dpkg-old",
+  "dpkg-tmp",
+  "old",
+  "orig",
+  "part",
+  "rej",
+  "rpmnew",
+  "rpmorig",
+  "rpmsave",
+  "swp",
+  "tmp",
+  "ucf-dist",
+  "ucf-new",
+  "ucf-old",
+];
