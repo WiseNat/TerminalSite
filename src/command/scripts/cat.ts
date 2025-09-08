@@ -45,6 +45,7 @@ const cat: CommandScript = {
       if (fileContents === null) {
         const resolvedFilePath = FileSystemUtil.resolvePath(filePath);
 
+        // TODO: WHAT IF IT IS A DIRECTORY, SHOULD OUTPUT 'cat: /home/nathan/Desktop/: Is a directory'
         output.push(
           `cat: ${resolvedFilePath ?? filePath}: No such file or directory`,
         );

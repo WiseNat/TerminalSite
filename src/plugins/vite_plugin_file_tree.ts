@@ -170,7 +170,8 @@ function getAdditionalMetaData(
     return defaultMetaData;
   }
 
-  console.info(`Found a metadata file for ${path}`);
+  // TODO: Log this properly. Currently interrupts the build logs
+  // console.info(`Found a metadata file for ${path}`);
   const fileContents = readFileSync(metaDataFilePath, { encoding: "utf8" });
   const additionalMetaData: AdditionalMetaData = JSON.parse(fileContents);
   additionalMetaData.permissions ??= defaultMetaData.permissions;
