@@ -220,17 +220,21 @@ function formatDirectoryEntries(
   sortEntryNodes(directoryEntries);
 
   for (const directoryEntry of directoryEntries) {
-    const children: string[] = formatDirectoryEntryChildren(
+    const directoryEntryChildren = getSortedDirectoryEntryChildren(
       directoryEntry,
+      flags,
+    );
+    const formattedChildren: string[] = formatDirectoryEntryChildren(
+      directoryEntryChildren,
       flags,
     );
 
     if (directoryEntries.length === 1 && !isPreviousOutput) {
-      outputs.push(`${children.join("\t")}`);
+      outputs.push(`${formattedChildren.join("\t")}`);
     } else {
       let output = `${directoryEntry.fullPath}:`;
-      if (children.length !== 0) {
-        output += `\n${children.join("\t")}`;
+      if (formattedChildren.length !== 0) {
+        output += `\n${formattedChildren.join("\t")}`;
       }
 
       outputs.push(output);
@@ -241,18 +245,18 @@ function formatDirectoryEntries(
 }
 
 /**
- * Sorts and Formats Directory Entry Children.
+ * Gets the Sorted children from the provided `directoryEntry`.
  * <p>
- * Children will be coloured based on {@link ColourUtil.getFileSystemEntryStyle}.
+ * This also gets the current directory and parent directory if the `a` format
+ * flag is true.
  *
- * @param directoryEntry the directory entry to format the children of
- * @param flags flags for formatting.
- * @returns a list of formatted children.
+ * @param directoryEntry the directory entry with children to get.
+ * @param flags format flags.
  */
-function formatDirectoryEntryChildren(
+function getSortedDirectoryEntryChildren(
   directoryEntry: EntryNode,
   flags: FormatFlags,
-): string[] {
+): EntryNode[] {
   const children = directoryEntry.children;
 
   sortEntryNodes(children);
@@ -275,6 +279,22 @@ function formatDirectoryEntryChildren(
     children.unshift(shallowDirectoryEntryClone);
   }
 
+  return children;
+}
+
+/**
+ * Sorts and Formats Directory Entry Children.
+ * <p>
+ * Children will be coloured based on {@link ColourUtil.getFileSystemEntryStyle}.
+ *
+ * @param children list of directory entry children.
+ * @param flags flags for formatting.
+ * @returns a list of formatted children.
+ */
+function formatDirectoryEntryChildren(
+  children: EntryNode[],
+  flags: FormatFlags,
+): string[] {
   const formattedChildren: string[] = [];
 
   for (const child of children) {
@@ -378,7 +398,6 @@ const ls: CommandScript = {
       return;
     }
 
-    // const path: string[] = parsedOptions._.length > 0 : parsedOptions._ : [FileSystemUtil.getCurrentWorkingDirectory()];
     const paths: string[] =
       parsedOptions._.length > 0
         ? parsedOptions._
