@@ -266,7 +266,7 @@ describe("Ls", () => {
       });
     });
 
-    test("Given a directory argument with an -a flag, outputs the entire of the directory including dot-files & dot-dirs", async () => {
+    test("Given a directory argument with the -a flag, outputs the entire of the directory including dot-files & dot-dirs", async () => {
       // Arrange
       const args: string[] = ["/src/main", "-a"];
 
@@ -276,6 +276,19 @@ describe("Ls", () => {
       // Assert
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         "\n.\t..\t.empty\tfoo\t.full\t.testing",
+      );
+    });
+
+    test("Given a directory argument with the -1 flag, outputs the contents of the directory on individual lines", async () => {
+      // Arrange
+      const args: string[] = ["/src/main/foo", "-1"];
+
+      // Act
+      await ls.run(args);
+
+      // Assert
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
+        "\nbar\nbazzing.gaz\ndaz",
       );
     });
   });

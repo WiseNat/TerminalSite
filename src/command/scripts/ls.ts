@@ -30,6 +30,7 @@ interface PathResults {
 // TODO: add all formatting flags (e.g. -a, -l, -s, -h, -1) into this!
 interface FormatFlags {
   a: boolean;
+  1: boolean;
 }
 
 /**
@@ -229,12 +230,14 @@ function formatDirectoryEntries(
       flags,
     );
 
+    const joinChar = flags["1"] ? "\n" : "\t";
+
     if (directoryEntries.length === 1 && !isPreviousOutput) {
-      outputs.push(`${formattedChildren.join("\t")}`);
+      outputs.push(`${formattedChildren.join(joinChar)}`);
     } else {
       let output = `${directoryEntry.fullPath}:`;
       if (formattedChildren.length !== 0) {
-        output += `\n${formattedChildren.join("\t")}`;
+        output += `\n${formattedChildren.join(joinChar)}`;
       }
 
       outputs.push(output);
@@ -388,7 +391,7 @@ function createStyleString(style: Style): string {
 const ls: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("ls", args, {
-      boolean: ["a"],
+      boolean: ["a", "1"],
       alias: {
         all: ["a"],
       },
@@ -408,7 +411,10 @@ const ls: CommandScript = {
           ];
 
     const pathResults = processPaths(paths);
-    const output = formatPathResults(pathResults, { a: parsedOptions.a });
+    const output = formatPathResults(pathResults, {
+      a: parsedOptions.a,
+      "1": parsedOptions["1"],
+    });
 
     if (output !== "") {
       TerminalUtil.appendRawOutput(`\n${output}`);
