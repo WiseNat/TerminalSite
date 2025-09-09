@@ -6,12 +6,13 @@ import TerminalUtil from "../../../../src/util/terminal_util";
 import { unmock } from "../../helper/unmock";
 import MetaImportUtil from "../../../../src/util/meta_import_util";
 import { userPrompt } from "../../../../src/constant/prompt";
+import { Options } from "getopts";
 
 describe("CommandUtil", () => {
-  describe("executeCommand", () => {
-    // Spy
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+  // Spy
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
+  describe("executeCommand", () => {
     // Mock
     vi.mock("../../../../src/util/terminal_util");
     vi.mock("../../../../src/util/meta_import_util");
@@ -165,6 +166,98 @@ describe("CommandUtil", () => {
 
       // Assert
       expect(result).toBeNull();
+    });
+  });
+
+  describe("parseArgs", () => {
+    [
+      {
+        type: "should return the parsed options when given valid args and valid options",
+        args: ["example", "-f", "data", "--bar", "bar data"],
+        options: {
+          boolean: ["f"],
+          string: ["b"],
+          alias: {
+            bar: ["b"],
+          },
+        },
+        expected: {
+          _: ["example", "data"],
+          b: "bar data",
+          bar: "bar data",
+          f: true,
+        },
+      },
+      {
+        type: "should return empty parsed options when given no args and valid options",
+        args: [],
+        options: {
+          boolean: ["f"],
+          string: ["b"],
+          alias: {
+            bar: ["b"],
+          },
+        },
+        expected: {
+          _: [],
+          b: "",
+          bar: "",
+          f: false,
+        },
+      },
+      {
+        type: "should return empty parsed options when given no args and no options",
+        args: [],
+        options: {},
+        expected: {
+          _: [],
+        },
+      },
+    ].forEach(({ type, args, options, expected }) => {
+      test(type, async () => {
+        // Act
+        const result = CommandUtil.parseArgs("myCommand", args, options);
+
+        // Assert
+        expect(appendOutput).not.toHaveBeenCalled();
+
+        expect(result).not.toBeNull();
+        expect(result).toEqual(expected);
+      });
+    });
+
+    [
+      {
+        type: "single unknown flag",
+        args: ["example", "-f", "data", "-z", "--bar", "bar data"],
+        unknownFlag: "z",
+      },
+      {
+        type: "multiple unknown flags",
+        args: ["example", "-f", "data", "--baz", "-z", "--bar", "bar data"],
+        unknownFlag: "baz",
+      },
+    ].forEach(({ type, args, unknownFlag }) => {
+      test(`should output an error when given args with a ${type}`, async () => {
+        // Arrange
+        const options: Options = {
+          boolean: ["f"],
+          string: ["b"],
+          alias: {
+            bar: ["b"],
+          },
+        };
+
+        // Act
+        const result = CommandUtil.parseArgs("myCommand", args, options);
+
+        // Assert
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+          `\nmyCommand: invalid option -- '${unknownFlag}'`,
+        );
+
+        expect(result).toBeNull();
+      });
     });
   });
 });

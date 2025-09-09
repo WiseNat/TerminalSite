@@ -1,11 +1,10 @@
-// @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
-import getopts, { ParsedOptions } from "getopts";
 import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
 import ColourUtil, { Style } from "../../util/colour_util.ts";
 import { clone } from "lodash-es";
+import CommandUtil from "../../util/command_util.ts";
 
 interface EntryNode {
   name: string;
@@ -368,12 +367,16 @@ function createStyleString(style: Style): string {
 
 const ls: CommandScript = {
   async run(args: string[]): Promise<void> {
-    const parsedOptions: ParsedOptions = getopts(args, {
+    const parsedOptions = CommandUtil.parseArgs("ls", args, {
       boolean: ["a"],
       alias: {
         all: ["a"],
       },
     });
+
+    if (parsedOptions === null) {
+      return;
+    }
 
     // const path: string[] = parsedOptions._.length > 0 : parsedOptions._ : [FileSystemUtil.getCurrentWorkingDirectory()];
     const paths: string[] =
