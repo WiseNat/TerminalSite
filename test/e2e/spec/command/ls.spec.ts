@@ -19,13 +19,9 @@ import { Page } from "@playwright/test";
 test.describe("Ls", () => {
   // TODO: test cases...
   //  - Flags
-  //    - Show all files in CWD when no arg is passed with -a flag
-  //    - Show all files in given Dir when a Dir is passed with -a flag
   //    - Show long listing with -l flag
   //    - Show long listing with human readable file size with -lh flag
-  //    - Show file size with -s flag
   //    - Show human readable file size file size with -ls flag
-  //    - Show one line per file (no columns) with -1 flag
   // TODO: Run this locally to have a good example of how everything works: 'ls ~ ~/Desktop/webstorm.desktop /asdaasdasdasdasd ~/.bashrc /asdasd /'
 
   const existingDirectory = "/home/nathanwise/Documents";
@@ -202,49 +198,59 @@ test.describe("Ls", () => {
   });
 
   ["-a", "--all"].forEach((flag) => {
-    test(`Should output the entire contents of a directory when the '${flag}' flag is provided`, async ({
-      page,
-    }) => {
-      // Arrange
-      const input = `ls ${existingDirectory} ${flag}`;
+    test.describe(`${flag} flag`, () => {
+      test(`Should output all files including dotfiles when the '${flag}' flag is provided with a directory arg`, async ({
+        page,
+      }) => {
+        // Arrange
+        const input = `ls ${flag} ${existingDotFile} ${existingFile} ${existingDirectory} ${fakePath}`;
 
-      // Act
-      await page.locator(inputSelector).pressSequentially(input);
-      await page.locator(inputSelector).press("Enter");
+        // Act
+        await page.locator(inputSelector).pressSequentially(input);
+        await page.locator(inputSelector).press("Enter");
 
-      // Assert
-      const expected = "\n.\t..\tabout.txt\tCV.pdf\tEducation\tskills.md\t.tmp";
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
-      );
-      await expect(page.locator(promptSelector)).exactTextInElement(
-        defaultUserPrompt,
-      );
-      await expect(page.locator(inputSelector)).exactTextInElement("");
+        // Assert
+        const expected =
+          "\nls: cannot access '/some/fake/path': No such file or directory" +
+          "\n/etc/hosts\t/home/nathanwise/Projects/this/.external" +
+          "\n\n/home/nathanwise/Documents:" +
+          "\n.\t..\tabout.txt\tCV.pdf\tEducation\tskills.md\t.tmp";
+        await expect(page.locator(outputSelector)).exactTextInElement(
+          `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+        );
+        await expect(page.locator(promptSelector)).exactTextInElement(
+          defaultUserPrompt,
+        );
+        await expect(page.locator(inputSelector)).exactTextInElement("");
 
-      await checkForColouredSpans(page, {
-        directory: 3,
-        executables: 0,
-        archives: 0,
-        graphics: 0,
-        audios: 0,
-        rubbish: 1,
+        await checkForColouredSpans(page, {
+          directory: 3,
+          executables: 0,
+          archives: 0,
+          graphics: 0,
+          audios: 0,
+          rubbish: 1,
+        });
       });
     });
   });
 
-  test("Should output the contents of a directory on newlines when the '1' flag is provided", async ({
+  test("Should output everything on newlines when the '1' flag is provided", async ({
     page,
   }) => {
     // Arrange
-    const input = `ls ${existingDirectory} -1`;
+    const input = `ls -1 ${existingDotFile} ${existingFile} ${existingDirectory} ${fakePath}`;
 
     // Act
     await page.locator(inputSelector).pressSequentially(input);
     await page.locator(inputSelector).press("Enter");
 
     // Assert
-    const expected = "\nabout.txt\nCV.pdf\nEducation\nskills.md";
+    const expected =
+      "\nls: cannot access '/some/fake/path': No such file or directory" +
+      "\n/etc/hosts\n/home/nathanwise/Projects/this/.external" +
+      "\n\n/home/nathanwise/Documents:" +
+      "\nabout.txt\nCV.pdf\nEducation\nskills.md";
     await expect(page.locator(outputSelector)).exactTextInElement(
       `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
     );
@@ -264,67 +270,71 @@ test.describe("Ls", () => {
   });
 
   ["-s", "--size"].forEach((flag) => {
-    test(`Should output the contents of a directory with their block sizes when the '${flag}' flag is provided`, async ({
-      page,
-    }) => {
-      // Arrange
-      const input = `ls ${existingDirectory} ${flag}`;
+    test.describe(`${flag} flag`, () => {
+      test(`Should output the contents of a directory with their block sizes when the '${flag}' flag is provided`, async ({
+        page,
+      }) => {
+        // Arrange
+        const input = `ls ${flag} ${existingDotFile} ${existingFile} ${existingDirectory} ${fakePath}`;
 
-      // Act
-      await page.locator(inputSelector).pressSequentially(input);
-      await page.locator(inputSelector).press("Enter");
+        // Act
+        await page.locator(inputSelector).pressSequentially(input);
+        await page.locator(inputSelector).press("Enter");
 
-      // Assert
-      const expected =
-        "\ntotal: 320\n 12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md";
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
-      );
-      await expect(page.locator(promptSelector)).exactTextInElement(
-        defaultUserPrompt,
-      );
-      await expect(page.locator(inputSelector)).exactTextInElement("");
+        // Assert
+        const expected =
+          "\nls: cannot access '/some/fake/path': No such file or directory\n" +
+          "12 /etc/hosts\t12 /home/nathanwise/Projects/this/.external\n\n" +
+          "/home/nathanwise/Documents:\n" +
+          "total: 320\n" +
+          " 12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md";
+        await expect(page.locator(outputSelector)).exactTextInElement(
+          `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+        );
+        await expect(page.locator(promptSelector)).exactTextInElement(
+          defaultUserPrompt,
+        );
+        await expect(page.locator(inputSelector)).exactTextInElement("");
 
-      await checkForColouredSpans(page, {
-        directory: 1,
-        executables: 0,
-        archives: 0,
-        graphics: 0,
-        audios: 0,
-        rubbish: 0,
+        await checkForColouredSpans(page, {
+          directory: 1,
+          executables: 0,
+          archives: 0,
+          graphics: 0,
+          audios: 0,
+          rubbish: 0,
+        });
       });
-    });
-  });
 
-  ["-s", "--size"].forEach((flag) => {
-    test(`Should output the contents of a directory with increased total blocks when the '${flag}' & 'a'`, async ({
-      page,
-    }) => {
-      // Arrange
-      const input = `ls ${existingDirectory} ${flag} -a`;
+      test(`Should output the contents of a directory with increased total blocks when the '${flag}' & 'a'`, async ({
+        page,
+      }) => {
+        // Arrange
+        const input = `ls ${existingDirectory} ${flag} -a`;
 
-      // Act
-      await page.locator(inputSelector).pressSequentially(input);
-      await page.locator(inputSelector).press("Enter");
+        // Act
+        await page.locator(inputSelector).pressSequentially(input);
+        await page.locator(inputSelector).press("Enter");
 
-      // Assert
-      const expected =
-        "\ntotal: 340\n 4 .\t4 ..\t12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md\t12 .tmp";
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
-      );
-      await expect(page.locator(promptSelector)).exactTextInElement(
-        defaultUserPrompt,
-      );
-      await expect(page.locator(inputSelector)).exactTextInElement("");
+        // Assert
+        const expected =
+          "\ntotal: 340\n 4 .\t4 ..\t12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md\t12 .tmp";
+        await expect(page.locator(outputSelector)).exactTextInElement(
+          `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+        );
+        await expect(page.locator(promptSelector)).exactTextInElement(
+          defaultUserPrompt,
+        );
+        await expect(page.locator(inputSelector)).exactTextInElement("");
 
-      await checkForColouredSpans(page, {
-        directory: 3,
-        executables: 0,
-        archives: 0,
-        graphics: 0,
-        audios: 0,
-        rubbish: 1,
+        await checkForColouredSpans(page, {
+          directory: 3,
+          executables: 0,
+          archives: 0,
+          graphics: 0,
+          audios: 0,
+          rubbish: 1,
+        });
       });
     });
   });

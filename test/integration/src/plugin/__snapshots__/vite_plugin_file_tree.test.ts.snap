@@ -3,6 +3,7 @@
 exports[`walk > .gitkeep files are not included in the file tree 1`] = `
 [
   {
+    "blocks": 1,
     "children": [],
     "group": "root",
     "isDirectory": true,
@@ -23,6 +24,7 @@ exports[`walk > .gitkeep files are not included in the file tree 1`] = `
 exports[`walk > .meta files are not included in the file tree 1`] = `
 [
   {
+    "blocks": 1,
     "children": [],
     "group": "root",
     "isDirectory": true,
@@ -43,8 +45,10 @@ exports[`walk > .meta files are not included in the file tree 1`] = `
 exports[`walk > should return a valid file tree with a default owner/root based on the home directory 1`] = `
 [
   {
+    "blocks": 1,
     "children": [
       {
+        "blocks": 1,
         "children": [],
         "group": "root",
         "isDirectory": true,
@@ -74,10 +78,13 @@ exports[`walk > should return a valid file tree with a default owner/root based 
     "size": 0,
   },
   {
+    "blocks": 1,
     "children": [
       {
+        "blocks": 1,
         "children": [
           {
+            "blocks": 1,
             "children": undefined,
             "group": "bazzing.gaz",
             "isDirectory": false,
@@ -93,8 +100,10 @@ exports[`walk > should return a valid file tree with a default owner/root based 
             "size": 0,
           },
           {
+            "blocks": 1,
             "children": [
               {
+                "blocks": 1,
                 "children": undefined,
                 "group": "daz",
                 "isDirectory": false,
@@ -124,8 +133,10 @@ exports[`walk > should return a valid file tree with a default owner/root based 
             "size": 0,
           },
           {
+            "blocks": 1,
             "children": [
               {
+                "blocks": 1,
                 "children": undefined,
                 "group": "gaz",
                 "isDirectory": false,
@@ -188,8 +199,10 @@ exports[`walk > should return a valid file tree with a default owner/root based 
 exports[`walk > should return a valid file tree with data from a .meta file 1`] = `
 [
   {
+    "blocks": 1,
     "children": [
       {
+        "blocks": 1,
         "children": undefined,
         "group": "root",
         "isDirectory": false,
@@ -219,6 +232,7 @@ exports[`walk > should return a valid file tree with data from a .meta file 1`] 
     "size": 0,
   },
   {
+    "blocks": 1,
     "children": [],
     "group": "ing",
     "isDirectory": true,
@@ -239,6 +253,7 @@ exports[`walk > should return a valid file tree with data from a .meta file 1`] 
 exports[`walk > should return the correct file tree 1`] = `
 [
   {
+    "blocks": 1,
     "children": undefined,
     "group": "root",
     "isDirectory": false,
@@ -254,8 +269,10 @@ exports[`walk > should return the correct file tree 1`] = `
     "size": 0,
   },
   {
+    "blocks": 1,
     "children": [
       {
+        "blocks": 1,
         "children": undefined,
         "group": "root",
         "isDirectory": false,
@@ -271,6 +288,7 @@ exports[`walk > should return the correct file tree 1`] = `
         "size": 0,
       },
       {
+        "blocks": 1,
         "children": [],
         "group": "root",
         "isDirectory": true,
@@ -286,6 +304,7 @@ exports[`walk > should return the correct file tree 1`] = `
         "size": 0,
       },
       {
+        "blocks": 1,
         "children": undefined,
         "group": "root",
         "isDirectory": false,

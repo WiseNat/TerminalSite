@@ -270,19 +270,34 @@ describe("Ls", () => {
       });
     });
 
-    describe("-a flag", () => {
-      ["-a", "--all"].forEach((flag) => {
+    ["-a", "--all"].forEach((flag) => {
+      describe(`${flag} flag`, () => {
         test(`Given a directory argument with the ${flag} flag, outputs the entire of the directory including dot-files & dot-dirs`, async () => {
           // Arrange
-          const args: string[] = ["/src/main", flag];
+          const args: string[] = [
+            flag,
+            "/some/fake/path",
+            "/src/main/foo",
+            "/src/index.ts",
+            "/some/other/fake/path",
+            "/test",
+            "/src/main/.testing",
+          ];
 
           // Act
           await ls.run(args);
 
           // Assert
-          expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-            "\n.\t..\t.empty\tfoo\t.full\t.testing",
-          );
+          const expected =
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n/src/index.ts\t/src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\n.\t..\tbar\tbazzing.gaz\tdaz" +
+            "\n\n/test:" +
+            "\n.\t..";
+
+          expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
         });
       });
     });
@@ -290,31 +305,93 @@ describe("Ls", () => {
     describe("-1 flag", () => {
       test("Given a directory argument with the -1 flag, outputs the contents of the directory on individual lines", async () => {
         // Arrange
-        const args: string[] = ["/src/main/foo", "-1"];
-
+        const args: string[] = [
+          "-1",
+          "/some/fake/path",
+          "/src/main/foo",
+          "/src/index.ts",
+          "/some/other/fake/path",
+          "/test",
+          "/src/main/.testing",
+        ];
         // Act
         await ls.run(args);
 
         // Assert
-        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-          "\nbar\nbazzing.gaz\ndaz",
-        );
+        const expected =
+          "\nls: cannot access '/some/fake/path': No such file or directory" +
+          "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+          "\n/src/index.ts" +
+          "\n/src/main/.testing" +
+          "\n\n/src/main/foo:" +
+          "\nbar" +
+          "\nbazzing.gaz" +
+          "\ndaz" +
+          "\n\n/test:";
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
     });
 
-    describe("-s flag", () => {
-      ["-s", "--size"].forEach((flag) => {
+    ["-s", "--size"].forEach((flag) => {
+      describe(`${flag} flag`, () => {
         test(`Given a directory argument with the ${flag} flag, outputs the contents of the directory with block sizes`, async () => {
           // Arrange
-          const args: string[] = ["/src/main/foo", flag];
+          const args: string[] = [
+            flag,
+            "/some/fake/path",
+            "/src/main/foo",
+            "/src/index.ts",
+            "/some/other/fake/path",
+            "/test",
+            "/src/main/.testing",
+          ];
 
           // Act
           await ls.run(args);
 
           // Assert
-          expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-            "\ntotal: 22\n 4 bar\t12 bazzing.gaz\t6 daz",
-          );
+          const expected =
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n26 /src/index.ts\t10 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 22" +
+            "\n 4 bar\t12 bazzing.gaz\t6 daz" +
+            "\n\n/test:" +
+            "\ntotal: 0";
+
+          expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+        });
+
+        test(`Given a directory argument with the ${flag} flag and -a flag, outputs the contents of the directory with increased block sizes`, async () => {
+          // Arrange
+          const args: string[] = [
+            flag,
+            "-a",
+            "/some/fake/path",
+            "/src/main/foo",
+            "/src/index.ts",
+            "/some/other/fake/path",
+            "/test",
+            "/src/main/.testing",
+          ];
+
+          // Act
+          await ls.run(args);
+
+          // Assert
+          const expected =
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n26 /src/index.ts\t10 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 30" +
+            "\n 4 .\t4 ..\t4 bar\t12 bazzing.gaz\t6 daz" +
+            "\n\n/test:" +
+            "\ntotal: 4" +
+            "\n 4 .\t0 ..";
+
+          expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
         });
       });
     });

@@ -2,19 +2,23 @@
 
 exports[`FileSystemUtil > walkFileTree > returns node for a valid path 1`] = `
 {
+  "blocks": 8,
   "children": [
     {
+      "blocks": 8,
       "children": [],
       "isDirectory": true,
       "name": "bar",
       "path": "src/main/foo",
     },
     {
+      "blocks": 12,
       "isDirectory": false,
       "name": "daz",
       "path": "src/main/foo",
     },
     {
+      "blocks": 23,
       "isDirectory": false,
       "name": "bazzing.gaz",
       "path": "src/main/foo",
@@ -28,23 +32,29 @@ exports[`FileSystemUtil > walkFileTree > returns node for a valid path 1`] = `
 
 exports[`FileSystemUtil > walkFileTree > returns node for a valid single directory with children 1`] = `
 {
+  "blocks": 8,
   "children": [
     {
+      "blocks": 8,
       "children": [
         {
+          "blocks": 8,
           "children": [
             {
+              "blocks": 8,
               "children": [],
               "isDirectory": true,
               "name": "bar",
               "path": "src/main/foo",
             },
             {
+              "blocks": 12,
               "isDirectory": false,
               "name": "daz",
               "path": "src/main/foo",
             },
             {
+              "blocks": 23,
               "isDirectory": false,
               "name": "bazzing.gaz",
               "path": "src/main/foo",
@@ -55,17 +65,20 @@ exports[`FileSystemUtil > walkFileTree > returns node for a valid single directo
           "path": "src/main",
         },
         {
+          "blocks": 19,
           "isDirectory": false,
           "name": ".testing",
           "path": "src/main",
         },
         {
+          "blocks": 8,
           "children": [],
           "isDirectory": true,
           "name": ".empty",
           "path": "src/main",
         },
         {
+          "blocks": 8,
           "children": [
             {
               "children": [],
@@ -74,6 +87,7 @@ exports[`FileSystemUtil > walkFileTree > returns node for a valid single directo
               "path": "src/main/.full",
             },
             {
+              "blocks": 12,
               "isDirectory": false,
               "name": "aFile",
               "path": "src/main/.full",
@@ -89,6 +103,7 @@ exports[`FileSystemUtil > walkFileTree > returns node for a valid single directo
       "path": "src",
     },
     {
+      "blocks": 52,
       "isDirectory": false,
       "name": "index.ts",
       "path": "src",
@@ -102,6 +117,7 @@ exports[`FileSystemUtil > walkFileTree > returns node for a valid single directo
 
 exports[`FileSystemUtil > walkFileTree > returns node for a valid single directory with no children 1`] = `
 {
+  "blocks": 8,
   "children": [],
   "isDirectory": true,
   "name": "test",
@@ -111,25 +127,32 @@ exports[`FileSystemUtil > walkFileTree > returns node for a valid single directo
 
 exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`] = `
 {
+  "blocks": 0,
   "children": [
     {
+      "blocks": 8,
       "children": [
         {
+          "blocks": 8,
           "children": [
             {
+              "blocks": 8,
               "children": [
                 {
+                  "blocks": 8,
                   "children": [],
                   "isDirectory": true,
                   "name": "bar",
                   "path": "src/main/foo",
                 },
                 {
+                  "blocks": 12,
                   "isDirectory": false,
                   "name": "daz",
                   "path": "src/main/foo",
                 },
                 {
+                  "blocks": 23,
                   "isDirectory": false,
                   "name": "bazzing.gaz",
                   "path": "src/main/foo",
@@ -140,17 +163,20 @@ exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`]
               "path": "src/main",
             },
             {
+              "blocks": 19,
               "isDirectory": false,
               "name": ".testing",
               "path": "src/main",
             },
             {
+              "blocks": 8,
               "children": [],
               "isDirectory": true,
               "name": ".empty",
               "path": "src/main",
             },
             {
+              "blocks": 8,
               "children": [
                 {
                   "children": [],
@@ -159,6 +185,7 @@ exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`]
                   "path": "src/main/.full",
                 },
                 {
+                  "blocks": 12,
                   "isDirectory": false,
                   "name": "aFile",
                   "path": "src/main/.full",
@@ -174,6 +201,7 @@ exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`]
           "path": "src",
         },
         {
+          "blocks": 52,
           "isDirectory": false,
           "name": "index.ts",
           "path": "src",
@@ -184,6 +212,7 @@ exports[`FileSystemUtil > walkFileTree > returns root node for an empty path 1`]
       "path": "",
     },
     {
+      "blocks": 8,
       "children": [],
       "isDirectory": true,
       "name": "test",

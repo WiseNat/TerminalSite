@@ -136,7 +136,7 @@ function formatPathResults(
     output += unknownPathOutput;
   }
 
-  const fileEntriesOutput = formatFileEntries(pathResults.fileEntries);
+  const fileEntriesOutput = formatFileEntries(pathResults.fileEntries, flags);
   if (fileEntriesOutput !== "") {
     if (output !== "") {
       output += "\n";
@@ -187,17 +187,24 @@ function formatUnknownPaths(unknownPaths: string[]): string {
  * The final text is ordered alphabetically.
  *
  * @param fileEntries the known file entries, must only be files.
+ * @param flags flags for formatting.
  * @returns the formatted file entries.
  */
-function formatFileEntries(fileEntries: EntryNode[]): string {
+function formatFileEntries(
+  fileEntries: EntryNode[],
+  flags: FormatFlags,
+): string {
+  sortEntryNodes(fileEntries);
+
   const outputs: string[] = [];
   for (const fileEntry of fileEntries) {
-    outputs.push(fileEntry.fullPath);
+    const formattedFileEntry = formatEntry(fileEntry, flags, false);
+    outputs.push(formattedFileEntry);
   }
 
-  sortPaths(outputs);
+  const joinChar = flags["1"] ? "\n" : "\t";
 
-  return outputs.join("\t");
+  return outputs.join(joinChar);
 }
 
 /**
@@ -228,6 +235,7 @@ function formatDirectoryEntries(
       directoryEntry,
       flags,
     );
+
     const formattedChildren: string[] = formatDirectoryEntryChildren(
       directoryEntryChildren,
       flags,
@@ -238,13 +246,10 @@ function formatDirectoryEntries(
     if (directoryEntries.length !== 1 || isPreviousOutput) {
       output += `${directoryEntry.fullPath}:`;
 
-      if (formattedChildren.length !== 0) {
+      if (formattedChildren.length !== 0 || flags.s) {
         output += "\n";
       }
     }
-
-    const joinChar = flags["1"] ? "\n" : "\t";
-    output += `${formattedChildren.join(joinChar)}`;
 
     if (flags.s) {
       let totalBlockSize = directoryEntryChildren.reduce(
@@ -259,8 +264,15 @@ function formatDirectoryEntries(
         1024,
       );
 
-      output = `total: ${totalBlockSize}\n ${output}`;
+      output += `total: ${totalBlockSize}`;
+
+      if (formattedChildren.length !== 0) {
+        output += "\n ";
+      }
     }
+
+    const joinChar = flags["1"] ? "\n" : "\t";
+    output += `${formattedChildren.join(joinChar)}`;
 
     outputs.push(output);
   }
@@ -324,38 +336,54 @@ function formatDirectoryEntryChildren(
   const formattedChildren: string[] = [];
 
   for (const child of children) {
-    const style = ColourUtil.getFileSystemEntryStyle({
-      name: child.name,
-      path: child.path,
-      isDirectory: child.isDirectory,
-      lastModifiedTime: child.lastModifiedTime,
-      size: child.size,
-      permissions: child.permissions,
-      owner: child.owner,
-      group: child.group,
-      blocks: child.blocks,
-    });
-
-    const styleString = createStyleString(style);
-
-    let formattedChild: string;
-    if (styleString === "") {
-      formattedChild = child.name;
-    } else {
-      formattedChild = `<span style='${styleString}'>${child.name}</span>`;
-    }
-
-    if (flags.s) {
-      // Default block size is 1024 in ls
-      const blockSize = FileSystemUtil.calculateBlocks(child.blocks, 512, 1024);
-
-      formattedChild = `${blockSize} ${formattedChild}`;
-    }
-
+    const formattedChild = formatEntry(child, flags, true);
     formattedChildren.push(formattedChild);
   }
 
   return formattedChildren;
+}
+
+/**
+ * Formats a single entry, either a File or Directory. This applies appropriate
+ * colouring, naming, and flag related formatting.
+ *
+ * @param entry the entry to format.
+ * @param flags the formatting flags.
+ * @param useShortName true to use the entry name, false to use the full path.
+ */
+function formatEntry(
+  entry: EntryNode,
+  flags: FormatFlags,
+  useShortName: boolean,
+) {
+  const style = ColourUtil.getFileSystemEntryStyle({
+    name: entry.name,
+    path: entry.path,
+    isDirectory: entry.isDirectory,
+    lastModifiedTime: entry.lastModifiedTime,
+    size: entry.size,
+    permissions: entry.permissions,
+    owner: entry.owner,
+    group: entry.group,
+    blocks: entry.blocks,
+  });
+
+  const styleString = createStyleString(style);
+
+  let formattedChild: string;
+  if (styleString === "") {
+    formattedChild = useShortName ? entry.name : entry.fullPath;
+  } else {
+    formattedChild = `<span style='${styleString}'>${useShortName ? entry.name : entry.fullPath}</span>`;
+  }
+
+  if (flags.s) {
+    // Default block size is 1024 in ls
+    const blockSize = FileSystemUtil.calculateBlocks(entry.blocks, 512, 1024);
+    formattedChild = `${blockSize} ${formattedChild}`;
+  }
+
+  return formattedChild;
 }
 
 /**
@@ -371,21 +399,6 @@ function sortEntryNodes(nodes: EntryNode[]) {
     const bString = FileSystemUtil.stripDots(b.fullPath);
 
     return aString.localeCompare(bString);
-  });
-}
-
-/**
- * Sorts paths alphabetically, ignoring any starting '.' characters.
- *
- * @param paths the paths to sort inline.
- * @see stripLeadingDots
- */
-function sortPaths(paths: string[]) {
-  paths.sort((a, b) => {
-    a = FileSystemUtil.stripDots(a);
-    b = FileSystemUtil.stripDots(b);
-
-    return a.localeCompare(b);
   });
 }
 
