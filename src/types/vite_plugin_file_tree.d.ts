@@ -9,6 +9,7 @@ declare module "virtual:file-tree" {
     permissions: number[];
     owner: string;
     group: string;
+    blocks: number;
   };
 
   export const fileTree: FileTreeNode[];

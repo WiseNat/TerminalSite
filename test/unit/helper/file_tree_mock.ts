@@ -6,32 +6,38 @@ export const fileTree: FileTreeNode = [
     name: "src",
     path: "",
     isDirectory: true,
+    blocks: 8,
     children: [
       {
         name: "main",
         path: "src",
         isDirectory: true,
+        blocks: 8,
         children: [
           {
             name: "foo",
             path: "src/main",
             isDirectory: true,
+            blocks: 8,
             children: [
               {
                 name: "bar",
                 path: "src/main/foo",
                 isDirectory: true,
+                blocks: 8,
                 children: [],
               },
               {
                 name: "daz",
                 path: "src/main/foo",
                 isDirectory: false,
+                blocks: 12,
               },
               {
                 name: "bazzing.gaz",
                 path: "src/main/foo",
                 isDirectory: false,
+                blocks: 23,
               },
             ],
           },
@@ -39,17 +45,20 @@ export const fileTree: FileTreeNode = [
             name: ".testing",
             path: "src/main",
             isDirectory: false,
+            blocks: 19,
           },
           {
             name: ".empty",
             path: "src/main",
             isDirectory: true,
+            blocks: 8,
             children: [],
           },
           {
             name: ".full",
             path: "src/main",
             isDirectory: true,
+            blocks: 8,
             children: [
               {
                 name: "someEmptyDir",
@@ -61,6 +70,7 @@ export const fileTree: FileTreeNode = [
                 name: "aFile",
                 path: "src/main/.full",
                 isDirectory: false,
+                blocks: 12,
               },
             ],
           },
@@ -70,6 +80,7 @@ export const fileTree: FileTreeNode = [
         name: "index.ts",
         path: "src",
         isDirectory: false,
+        blocks: 52,
       },
     ],
   },
@@ -77,6 +88,7 @@ export const fileTree: FileTreeNode = [
     name: "test",
     path: "",
     isDirectory: true,
+    blocks: 8,
     children: [],
   },
 ];

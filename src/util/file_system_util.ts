@@ -316,6 +316,7 @@ export default class FileSystemUtil {
       permissions: [],
       owner: "",
       group: "",
+      blocks: 0,
     };
 
     for (const segment of path) {
@@ -466,5 +467,20 @@ export default class FileSystemUtil {
   public static isRubbishFile(filename: string): boolean {
     const extension = this.getExtension(filename);
     return RUBBISH_EXTENSIONS.includes(extension);
+  }
+
+  /**
+   * Calculates the amount of Blocks based on the current `blocks`, `from`, and the `to`.
+   *
+   * @param blocks the current amount of blocks.
+   * @param from the current block size for the current blocks.
+   * @param to the new block size.
+   */
+  public static calculateBlocks(
+    blocks: number,
+    from: number,
+    to: number,
+  ): number {
+    return Math.ceil((blocks * from) / to);
   }
 }

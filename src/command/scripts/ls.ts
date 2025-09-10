@@ -18,6 +18,7 @@ interface EntryNode {
   owner: string;
   group: string;
   hardLinks: number;
+  blocks: number;
 }
 
 // TODO: Rename?
@@ -31,6 +32,7 @@ interface PathResults {
 interface FormatFlags {
   a: boolean;
   1: boolean;
+  s: boolean;
 }
 
 /**
@@ -108,6 +110,7 @@ function createEntryNode(fileTreeNode: FileTreeNode): EntryNode {
       fileTreeNode.children === undefined
         ? 1
         : 1 + fileTreeNode.children.length,
+    blocks: fileTreeNode.blocks,
   };
 }
 
@@ -230,18 +233,36 @@ function formatDirectoryEntries(
       flags,
     );
 
-    const joinChar = flags["1"] ? "\n" : "\t";
+    let output: string = "";
 
-    if (directoryEntries.length === 1 && !isPreviousOutput) {
-      outputs.push(`${formattedChildren.join(joinChar)}`);
-    } else {
-      let output = `${directoryEntry.fullPath}:`;
+    if (directoryEntries.length !== 1 || isPreviousOutput) {
+      output += `${directoryEntry.fullPath}:`;
+
       if (formattedChildren.length !== 0) {
-        output += `\n${formattedChildren.join(joinChar)}`;
+        output += "\n";
       }
-
-      outputs.push(output);
     }
+
+    const joinChar = flags["1"] ? "\n" : "\t";
+    output += `${formattedChildren.join(joinChar)}`;
+
+    if (flags.s) {
+      let totalBlockSize = directoryEntryChildren.reduce(
+        (sum, child) => sum + child.blocks,
+        0,
+      );
+
+      // Default block size is 1024
+      totalBlockSize = FileSystemUtil.calculateBlocks(
+        totalBlockSize,
+        512,
+        1024,
+      );
+
+      output = `total: ${totalBlockSize}\n ${output}`;
+    }
+
+    outputs.push(output);
   }
 
   return outputs.join("\n\n");
@@ -260,7 +281,7 @@ function getSortedDirectoryEntryChildren(
   directoryEntry: EntryNode,
   flags: FormatFlags,
 ): EntryNode[] {
-  const children = directoryEntry.children;
+  let children = directoryEntry.children;
 
   sortEntryNodes(children);
 
@@ -280,6 +301,8 @@ function getSortedDirectoryEntryChildren(
 
     children.unshift(parentEntry);
     children.unshift(shallowDirectoryEntryClone);
+  } else {
+    children = children.filter((entry) => !isDotEntry(entry.name));
   }
 
   return children;
@@ -301,10 +324,6 @@ function formatDirectoryEntryChildren(
   const formattedChildren: string[] = [];
 
   for (const child of children) {
-    if (!flags.a && isDotEntry(child.name)) {
-      continue;
-    }
-
     const style = ColourUtil.getFileSystemEntryStyle({
       name: child.name,
       path: child.path,
@@ -314,17 +333,26 @@ function formatDirectoryEntryChildren(
       permissions: child.permissions,
       owner: child.owner,
       group: child.group,
+      blocks: child.blocks,
     });
 
     const styleString = createStyleString(style);
 
+    let formattedChild: string;
     if (styleString === "") {
-      formattedChildren.push(child.name);
+      formattedChild = child.name;
     } else {
-      formattedChildren.push(
-        `<span style='${styleString}'>${child.name}</span>`,
-      );
+      formattedChild = `<span style='${styleString}'>${child.name}</span>`;
     }
+
+    if (flags.s) {
+      // Default block size is 1024 in ls
+      const blockSize = FileSystemUtil.calculateBlocks(child.blocks, 512, 1024);
+
+      formattedChild = `${blockSize} ${formattedChild}`;
+    }
+
+    formattedChildren.push(formattedChild);
   }
 
   return formattedChildren;
@@ -391,9 +419,10 @@ function createStyleString(style: Style): string {
 const ls: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("ls", args, {
-      boolean: ["a", "1"],
+      boolean: ["a", "1", "s"],
       alias: {
         all: ["a"],
+        size: ["s"],
       },
     });
 
@@ -414,6 +443,7 @@ const ls: CommandScript = {
     const output = formatPathResults(pathResults, {
       a: parsedOptions.a,
       "1": parsedOptions["1"],
+      s: parsedOptions.s,
     });
 
     if (output !== "") {

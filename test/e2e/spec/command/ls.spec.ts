@@ -262,4 +262,70 @@ test.describe("Ls", () => {
       rubbish: 0,
     });
   });
+
+  ["-s", "--size"].forEach((flag) => {
+    test(`Should output the contents of a directory with their block sizes when the '${flag}' flag is provided`, async ({
+      page,
+    }) => {
+      // Arrange
+      const input = `ls ${existingDirectory} ${flag}`;
+
+      // Act
+      await page.locator(inputSelector).pressSequentially(input);
+      await page.locator(inputSelector).press("Enter");
+
+      // Assert
+      const expected =
+        "\ntotal: 320\n 12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md";
+      await expect(page.locator(outputSelector)).exactTextInElement(
+        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+      );
+      await expect(page.locator(promptSelector)).exactTextInElement(
+        defaultUserPrompt,
+      );
+      await expect(page.locator(inputSelector)).exactTextInElement("");
+
+      await checkForColouredSpans(page, {
+        directory: 1,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+        rubbish: 0,
+      });
+    });
+  });
+
+  ["-s", "--size"].forEach((flag) => {
+    test(`Should output the contents of a directory with increased total blocks when the '${flag}' & 'a'`, async ({
+      page,
+    }) => {
+      // Arrange
+      const input = `ls ${existingDirectory} ${flag} -a`;
+
+      // Act
+      await page.locator(inputSelector).pressSequentially(input);
+      await page.locator(inputSelector).press("Enter");
+
+      // Assert
+      const expected =
+        "\ntotal: 340\n 4 .\t4 ..\t12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md\t12 .tmp";
+      await expect(page.locator(outputSelector)).exactTextInElement(
+        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+      );
+      await expect(page.locator(promptSelector)).exactTextInElement(
+        defaultUserPrompt,
+      );
+      await expect(page.locator(inputSelector)).exactTextInElement("");
+
+      await checkForColouredSpans(page, {
+        directory: 3,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+        rubbish: 1,
+      });
+    });
+  });
 });

@@ -782,4 +782,32 @@ describe("FileSystemUtil", () => {
       });
     });
   });
+
+  describe("calculateBlockSize", () => {
+    test("returns correct block size when provided with a new block size and current block size", () => {
+      // Arrange
+      const blocks = 500;
+      const from = 1024;
+      const to = 2056;
+
+      // Act
+      const result = FileSystemUtil.calculateBlocks(blocks, from, to);
+
+      // Assert
+      expect(result).toEqual(250);
+    });
+
+    test("returns the same block size when provided with an equivalent new block size and current block size", () => {
+      // Arrange
+      const blocks = 123;
+      const from = 1024;
+      const to = 1024;
+
+      // Act
+      const result = FileSystemUtil.calculateBlocks(blocks, from, to);
+
+      // Assert
+      expect(result).toEqual(blocks);
+    });
+  });
 });

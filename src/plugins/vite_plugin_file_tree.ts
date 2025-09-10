@@ -53,16 +53,19 @@ export function walk(
       homeDirectory,
     );
 
+    const stats = statSync(absolutePath);
+
     const node: FileTreeNode = {
       name: filename,
       path: isRootChild ? "" : parentRelativePath,
       isDirectory: isDirectory,
       children: isDirectory ? [] : undefined,
       lastModifiedTime: getLastModifiedTime(absolutePath),
-      size: getFileSize(absolutePath),
+      size: stats.size,
       permissions: additionalMetaData.permissions,
       owner: additionalMetaData.owner,
       group: additionalMetaData.group,
+      blocks: stats.blocks,
     };
 
     nodeMap.set(relativePath, node);
@@ -115,15 +118,6 @@ function getLastModifiedTime(path: string): Date {
   } catch {
     return new Date(statSync(path).mtime);
   }
-}
-
-/**
- * @param path an absolute path to a File or Directory
- * @returns the File Size of the given `path`.
- */
-function getFileSize(path: string): number {
-  const stats = statSync(path);
-  return stats.size;
 }
 
 /**
