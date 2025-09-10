@@ -483,4 +483,34 @@ export default class FileSystemUtil {
   ): number {
     return Math.ceil((blocks * from) / to);
   }
+
+  /**
+   * Converts bytes into a human-readable format.
+   * This will turn the give amount of bytes into the smallest possible number
+   * rounded up. The possible units are `K, M, G`.
+   * <p>
+   * @example
+   * FileSystemUtil.getHumanReadableSize(1)              // 1K
+   * FileSystemUtil.getHumanReadableSize(0)              // 1K
+   * FileSystemUtil.getHumanReadableSize(5121)           // 5K
+   * FileSystemUtil.getHumanReadableSize(6442450944)     // 6G
+   * FileSystemUtil.getHumanReadableSize(5497558138880)  // 5120G
+   *
+   * @param bytes
+   */
+  public static getHumanReadableSize(bytes: number): string {
+    const units = ["K", "M", "G"];
+    let unitIndex = 0;
+    const kilobyte = 1024;
+
+    bytes = bytes / kilobyte;
+
+    while (bytes > kilobyte && unitIndex < units.length - 1) {
+      bytes = bytes / kilobyte;
+      unitIndex += 1;
+    }
+
+    bytes = Math.ceil(bytes);
+    return `${bytes === 0 ? 1 : bytes}${units[unitIndex]}`;
+  }
 }

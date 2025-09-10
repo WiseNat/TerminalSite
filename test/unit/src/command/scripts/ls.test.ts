@@ -395,5 +395,41 @@ describe("Ls", () => {
         });
       });
     });
+
+    ["-h", "--human-readable"].forEach((flag) => {
+      describe(`${flag} flag`, () => {
+        test(`Given a directory argument with the ${flag} and -s flag, outputs human readable files sizes of files and directories`, async () => {
+          // Arrange
+          const args: string[] = [
+            flag,
+            "-s",
+            "/some/fake/path",
+            "/src/main/foo",
+            "/src/index.ts",
+            "/some/other/fake/path",
+            "/test",
+            "/src/main/.testing",
+          ];
+
+          // Act
+          await ls.run(args);
+
+          // Assert
+          const expected =
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n26K /src/index.ts\t10K /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 22K" +
+            "\n 4K bar\t12K bazzing.gaz\t6K daz" +
+            "\n\n/test:" +
+            "\ntotal: 1K";
+
+          expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+        });
+
+        // TODO: -l flag
+      });
+    });
   });
 });

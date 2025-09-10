@@ -810,4 +810,68 @@ describe("FileSystemUtil", () => {
       expect(result).toEqual(blocks);
     });
   });
+
+  describe("getHumanReadableSize", () => {
+    [0, 1, 200, 1000, 1023, 1024].forEach((bytes) => {
+      test("returns 1K for bytes <= 1KB", () => {
+        // Act
+        const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+        // Assert
+        expect(result).toEqual("1K");
+      });
+    });
+
+    [5121, 5300, 6143].forEach((bytes) => {
+      test("returns 6K for 5KB < bytes <= 6KB", () => {
+        // Act
+        const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+        // Assert
+        expect(result).toEqual("6K");
+      });
+    });
+
+    [2097153, 3000000, 3145728].forEach((bytes) => {
+      test("returns 3M for 2MB < bytes <= 3MB", () => {
+        // Act
+        const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+        // Assert
+        expect(result).toEqual("3M");
+      });
+    });
+
+    test("returns 6GB for exactly 6GB", () => {
+      // Arrange
+      const bytes = 6442450944;
+
+      // Act
+      const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+      // Assert
+      expect(result).toEqual("6G");
+    });
+
+    [6442450945, 6700000000, 7516192768].forEach((bytes) => {
+      test("returns 7B for 6GB < bytes <= 7GB", () => {
+        // Act
+        const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+        // Assert
+        expect(result).toEqual("7G");
+      });
+    });
+
+    test("returns 5120G for 5TB worth of bytes", () => {
+      // Arrange
+      const bytes = 5497558138880;
+
+      // Act
+      const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+      // Assert
+      expect(result).toEqual("5120G");
+    });
+  });
 });

@@ -33,6 +33,7 @@ interface FormatFlags {
   a: boolean;
   1: boolean;
   s: boolean;
+  h: boolean;
 }
 
 /**
@@ -252,19 +253,8 @@ function formatDirectoryEntries(
     }
 
     if (flags.s) {
-      let totalBlockSize = directoryEntryChildren.reduce(
-        (sum, child) => sum + child.blocks,
-        0,
-      );
-
-      // Default block size is 1024
-      totalBlockSize = FileSystemUtil.calculateBlocks(
-        totalBlockSize,
-        512,
-        1024,
-      );
-
-      output += `total: ${totalBlockSize}`;
+      const totalSize = getTotalSize(directoryEntryChildren, flags);
+      output += `total: ${totalSize}`;
 
       if (formattedChildren.length !== 0) {
         output += "\n ";
@@ -378,9 +368,8 @@ function formatEntry(
   }
 
   if (flags.s) {
-    // Default block size is 1024 in ls
-    const blockSize = FileSystemUtil.calculateBlocks(entry.blocks, 512, 1024);
-    formattedChild = `${blockSize} ${formattedChild}`;
+    const size: string = getSize(entry, flags);
+    formattedChild = `${size} ${formattedChild}`;
   }
 
   return formattedChild;
@@ -400,6 +389,50 @@ function sortEntryNodes(nodes: EntryNode[]) {
 
     return aString.localeCompare(bString);
   });
+}
+
+/**
+ * Gets the size of the `entry` with a value dependent on `flags.h`.
+ * - If `flags.h` is true, then a human-readable `blocks * 512` value is returned.
+ * - If `flags.h` is false, then a 1024 sized blocks value is returned.
+ *
+ * @param entry the entry to get the size of.
+ * @param flags the formatting flags.
+ */
+function getSize(entry: EntryNode, flags: FormatFlags): string {
+  return flags.h
+    ? FileSystemUtil.getHumanReadableSize(entry.blocks * 512)
+    : `${FileSystemUtil.calculateBlocks(entry.blocks, 512, 1024)}`;
+}
+
+/**
+ * Gets the total size of all the `entries` with a value dependent on `flags.h`.
+ * - If `flags.h` is true, then a human-readable `blocks * 512` value is returned.
+ * - If `flags.h` is false, then a 1024 sized blocks value is returned.
+ *
+ * @param entries the entries to get the total size of.
+ * @param flags the formatting flags.
+ */
+function getTotalSize(entries: EntryNode[], flags: FormatFlags): string {
+  let output: string;
+
+  if (flags.h) {
+    const totalSize = entries.reduce(
+      (sum, child) => sum + child.blocks * 512,
+      0,
+    );
+
+    output = FileSystemUtil.getHumanReadableSize(totalSize);
+  } else {
+    let totalSize = entries.reduce((sum, child) => sum + child.blocks, 0);
+
+    // Default block size is 1024
+    totalSize = FileSystemUtil.calculateBlocks(totalSize, 512, 1024);
+
+    output = `${totalSize}`;
+  }
+
+  return output;
 }
 
 /**
@@ -432,10 +465,11 @@ function createStyleString(style: Style): string {
 const ls: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("ls", args, {
-      boolean: ["a", "1", "s"],
+      boolean: ["a", "1", "s", "h"],
       alias: {
         all: ["a"],
         size: ["s"],
+        "human-readable": ["h"],
       },
     });
 
@@ -457,6 +491,7 @@ const ls: CommandScript = {
       a: parsedOptions.a,
       "1": parsedOptions["1"],
       s: parsedOptions.s,
+      h: parsedOptions.h,
     });
 
     if (output !== "") {
