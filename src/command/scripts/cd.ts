@@ -70,6 +70,10 @@ function changeDirectory(path: string) {
   addWorkingDirectory(formattedPath);
 }
 
+// TODO: Add test for:
+//  1. cd into <DIR>
+//  2. cd -
+//  3. Should CD successfully and not output an error!
 const cd: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("cd", args, {});
