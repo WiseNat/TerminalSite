@@ -13,6 +13,7 @@ describe("Ls", () => {
   describe("run", () => {
     // Spy
     const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
+    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
     // Mock
     vi.mock("../../../../../src/util/terminal_util");
@@ -35,6 +36,7 @@ describe("Ls", () => {
 
         // Assert
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith("\nfoo");
+        expect(appendOutput).not.toHaveBeenCalled();
       });
 
       test("Given a non-empty regular directory argument, outputs the contents of the directory", async () => {
@@ -46,6 +48,7 @@ describe("Ls", () => {
 
         // Assert
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith("\nfoo");
+        expect(appendOutput).not.toHaveBeenCalled();
       });
 
       test("Given an empty regular directory argument, outputs nothing", async () => {
@@ -57,6 +60,7 @@ describe("Ls", () => {
 
         // Assert
         expect(appendRawOutput).not.toHaveBeenCalled();
+        expect(appendOutput).not.toHaveBeenCalled();
       });
 
       test("Given a non-empty dot-directory argument, outputs the contents of the directory", async () => {
@@ -70,6 +74,7 @@ describe("Ls", () => {
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
           "\naFile\tsomeEmptyDir",
         );
+        expect(appendOutput).not.toHaveBeenCalled();
       });
 
       test("Given an empty dot-directory argument, outputs nothing", async () => {
@@ -81,6 +86,7 @@ describe("Ls", () => {
 
         // Assert
         expect(appendRawOutput).not.toHaveBeenCalled();
+        expect(appendOutput).not.toHaveBeenCalled();
       });
 
       test("Given a regular file argument, outputs the path of the file", async () => {
@@ -94,6 +100,7 @@ describe("Ls", () => {
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
           "\n/src/index.ts",
         );
+        expect(appendOutput).not.toHaveBeenCalled();
       });
 
       test("Given a dot-file argument, outputs the path of the file", async () => {
@@ -107,6 +114,7 @@ describe("Ls", () => {
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
           "\n/src/main/.testing",
         );
+        expect(appendOutput).not.toHaveBeenCalled();
       });
 
       [
@@ -129,6 +137,7 @@ describe("Ls", () => {
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
             `\nls: cannot access '${expected}': No such file or directory`,
           );
+          expect(appendOutput).not.toHaveBeenCalled();
         });
       });
 
@@ -190,6 +199,7 @@ describe("Ls", () => {
 
           // Assert
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          expect(appendOutput).not.toHaveBeenCalled();
         });
       });
 
@@ -211,6 +221,7 @@ describe("Ls", () => {
         const expected =
           "\n/src/index.ts\t/src/main/foo/bazzing.gaz\t/src/main/foo/daz\t/src/main/.full/aFile\t/src/main/.testing";
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+        expect(appendOutput).not.toHaveBeenCalled();
       });
 
       test("Given multiple directory arguments, all directory entries & inner file entries are outputted alphabetically and directory entries are prefixed with '${path}:'", async () => {
@@ -237,6 +248,7 @@ describe("Ls", () => {
           "\naFile\tsomeEmptyDir" +
           "\n\n/test:";
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+        expect(appendOutput).not.toHaveBeenCalled();
       });
 
       [
@@ -266,6 +278,7 @@ describe("Ls", () => {
             "\n\n/src/main/foo:" +
             "\nbar\tbazzing.gaz\tdaz";
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          expect(appendOutput).not.toHaveBeenCalled();
         });
       });
     });
@@ -298,6 +311,7 @@ describe("Ls", () => {
             "\n.\t..";
 
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          expect(appendOutput).not.toHaveBeenCalled();
         });
       });
     });
@@ -329,6 +343,7 @@ describe("Ls", () => {
           "\ndaz" +
           "\n\n/test:";
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+        expect(appendOutput).not.toHaveBeenCalled();
       });
     });
 
@@ -361,6 +376,7 @@ describe("Ls", () => {
             "\ntotal: 0";
 
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          expect(appendOutput).not.toHaveBeenCalled();
         });
 
         test(`Given a directory argument with the ${flag} flag and -a flag, outputs the contents of the directory with increased block sizes`, async () => {
@@ -392,6 +408,7 @@ describe("Ls", () => {
             "\n 4 .\t0 ..";
 
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          expect(appendOutput).not.toHaveBeenCalled();
         });
       });
     });
@@ -426,10 +443,186 @@ describe("Ls", () => {
             "\ntotal: 1K";
 
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          expect(appendOutput).not.toHaveBeenCalled();
         });
 
         // TODO: -l flag
       });
+    });
+
+    // TODO: -l flag for some of these
+    describe("--block-size flag", () => {
+      [
+        {
+          flags: ["-s"],
+          blockSize: 1,
+          expected:
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n26624 /src/index.ts\t9728 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 22016" +
+            "\n 4096 bar\t11776 bazzing.gaz\t6144 daz" +
+            "\n\n/test:" +
+            "\ntotal: 0",
+        },
+        {
+          flags: ["-s"],
+          blockSize: 512,
+          expected:
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n52 /src/index.ts\t19 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 43" +
+            "\n 8 bar\t23 bazzing.gaz\t12 daz" +
+            "\n\n/test:" +
+            "\ntotal: 0",
+        },
+        {
+          flags: ["-s"],
+          blockSize: 2048,
+          expected:
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n13 /src/index.ts\t5 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 11" +
+            "\n 2 bar\t6 bazzing.gaz\t3 daz" +
+            "\n\n/test:" +
+            "\ntotal: 0",
+        },
+        {
+          flags: [],
+          blockSize: 2048,
+          expected:
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n/src/index.ts\t/src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\nbar\tbazzing.gaz\tdaz" +
+            "\n\n/test:",
+        },
+      ].forEach(({ flags, blockSize, expected }) => {
+        test(`Given a arguments with the --block-size=${blockSize} flag and ${flags}, outputs an altered block size of files`, async () => {
+          // Arrange
+          const args: string[] = [
+            `--block-size=${blockSize}`,
+            "/some/fake/path",
+            "/src/main/foo",
+            "/src/index.ts",
+            "/some/other/fake/path",
+            "/test",
+            "/src/main/.testing",
+          ];
+
+          args.push(...flags);
+
+          // Act
+          await ls.run(args);
+
+          // Assert
+          expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          expect(appendOutput).not.toHaveBeenCalled();
+        });
+      });
+
+      [
+        {
+          blockSize: 1,
+          expected:
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n26624 /src/index.ts\t9728 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 22016" +
+            "\n 4096 bar\t11776 bazzing.gaz\t6144 daz" +
+            "\n\n/test:" +
+            "\ntotal: 0",
+        },
+        {
+          blockSize: 512,
+          expected:
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n52 /src/index.ts\t19 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 43" +
+            "\n 8 bar\t23 bazzing.gaz\t12 daz" +
+            "\n\n/test:" +
+            "\ntotal: 0",
+        },
+        {
+          blockSize: 1024,
+          expected:
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n26 /src/index.ts\t10 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 22" +
+            "\n 4 bar\t12 bazzing.gaz\t6 daz" +
+            "\n\n/test:" +
+            "\ntotal: 0",
+        },
+        {
+          blockSize: 2048,
+          expected:
+            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n13 /src/index.ts\t5 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 11" +
+            "\n 2 bar\t6 bazzing.gaz\t3 daz" +
+            "\n\n/test:" +
+            "\ntotal: 0",
+        },
+      ].forEach(({ blockSize, expected }) => {
+        test(`Given arguments with --block-size=${blockSize} and -sh, overrides the human readable sizes`, async () => {
+          // Arrange
+          const args: string[] = [
+            `--block-size=${blockSize}`,
+            "-sh",
+            "/some/fake/path",
+            "/src/main/foo",
+            "/src/index.ts",
+            "/some/other/fake/path",
+            "/test",
+            "/src/main/.testing",
+          ];
+
+          // Act
+          await ls.run(args);
+
+          // Assert
+          expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          expect(appendOutput).not.toHaveBeenCalled();
+        });
+      });
+
+      [0, -1, -53, "foo", "a", "/", ".", "3.", "1.55", "7.145.3"].forEach(
+        (blockSize) => {
+          test(`Given arguments with --block-size=${blockSize}, an error is outputted`, async () => {
+            // Arrange
+            const args: string[] = [
+              `--block-size=${blockSize}`,
+              "/some/fake/path",
+              "/src/main/foo",
+              "/src/index.ts",
+              "/some/other/fake/path",
+              "/test",
+              "/src/main/.testing",
+            ];
+
+            // Act
+            await ls.run(args);
+
+            // Assert
+            const expected = `ls: invalid --block-size argument '${blockSize}'`;
+            expect(appendRawOutput).not.toHaveBeenCalled();
+            expect(appendOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          });
+        },
+      );
     });
   });
 });

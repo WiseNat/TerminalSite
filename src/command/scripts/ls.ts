@@ -34,6 +34,7 @@ interface FormatFlags {
   1: boolean;
   s: boolean;
   h: boolean;
+  blockSize: number | null;
 }
 
 /**
@@ -400,9 +401,12 @@ function sortEntryNodes(nodes: EntryNode[]) {
  * @param flags the formatting flags.
  */
 function getSize(entry: EntryNode, flags: FormatFlags): string {
-  return flags.h
-    ? FileSystemUtil.getHumanReadableSize(entry.blocks * 512)
-    : `${FileSystemUtil.calculateBlocks(entry.blocks, 512, 1024)}`;
+  if (flags.h && !flags.blockSize) {
+    return FileSystemUtil.getHumanReadableSize(entry.blocks * 512);
+  }
+
+  const to = !flags.blockSize ? 1024 : flags.blockSize;
+  return `${FileSystemUtil.calculateBlocks(entry.blocks, 512, to)}`;
 }
 
 /**
@@ -416,7 +420,7 @@ function getSize(entry: EntryNode, flags: FormatFlags): string {
 function getTotalSize(entries: EntryNode[], flags: FormatFlags): string {
   let output: string;
 
-  if (flags.h) {
+  if (flags.h && !flags.blockSize) {
     const totalSize = entries.reduce(
       (sum, child) => sum + child.blocks * 512,
       0,
@@ -426,8 +430,8 @@ function getTotalSize(entries: EntryNode[], flags: FormatFlags): string {
   } else {
     let totalSize = entries.reduce((sum, child) => sum + child.blocks, 0);
 
-    // Default block size is 1024
-    totalSize = FileSystemUtil.calculateBlocks(totalSize, 512, 1024);
+    const to = !flags.blockSize ? 1024 : flags.blockSize;
+    totalSize = FileSystemUtil.calculateBlocks(totalSize, 512, to);
 
     output = `${totalSize}`;
   }
@@ -466,6 +470,7 @@ const ls: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("ls", args, {
       boolean: ["a", "1", "s", "h"],
+      string: ["block-size"],
       alias: {
         all: ["a"],
         size: ["s"],
@@ -475,6 +480,19 @@ const ls: CommandScript = {
 
     if (parsedOptions === null) {
       return;
+    }
+
+    let blockSize: number | null = null;
+    const blockSizeRaw: string = parsedOptions["block-size"];
+    if (blockSizeRaw) {
+      blockSize = parseInt(blockSizeRaw);
+
+      if (blockSizeRaw.includes(".") || isNaN(blockSize) || blockSize < 1) {
+        TerminalUtil.appendOutput(
+          `ls: invalid --block-size argument '${parsedOptions["block-size"]}'`,
+        );
+        return;
+      }
     }
 
     const paths: string[] =
@@ -492,6 +510,7 @@ const ls: CommandScript = {
       "1": parsedOptions["1"],
       s: parsedOptions.s,
       h: parsedOptions.h,
+      blockSize: blockSize,
     });
 
     if (output !== "") {

@@ -383,4 +383,88 @@ test.describe("Ls", () => {
       // TODO: test case for -l flag
     });
   });
+
+  test.describe("--block-size flag", () => {
+    // TODO: test case for -l flag
+    [
+      {
+        flags: ["-s"],
+        blockSize: 1,
+        expected:
+          "\nls: cannot access '/some/fake/path': No such file or directory\n" +
+          "12288 /etc/hosts\t12288 /home/nathanwise/Projects/this/.external\n\n" +
+          "/home/nathanwise/Documents:\n" +
+          "total: 327680\n" +
+          " 12288 about.txt\t299008 CV.pdf\t4096 Education\t12288 skills.md",
+      },
+      {
+        flags: ["-s", "-h"],
+        blockSize: 1,
+        expected:
+          "\nls: cannot access '/some/fake/path': No such file or directory\n" +
+          "12288 /etc/hosts\t12288 /home/nathanwise/Projects/this/.external\n\n" +
+          "/home/nathanwise/Documents:\n" +
+          "total: 327680\n" +
+          " 12288 about.txt\t299008 CV.pdf\t4096 Education\t12288 skills.md",
+      },
+      {
+        flags: ["-s"],
+        blockSize: 512,
+        expected:
+          "\nls: cannot access '/some/fake/path': No such file or directory\n" +
+          "24 /etc/hosts\t24 /home/nathanwise/Projects/this/.external\n\n" +
+          "/home/nathanwise/Documents:\n" +
+          "total: 640\n" +
+          " 24 about.txt\t584 CV.pdf\t8 Education\t24 skills.md",
+      },
+      {
+        flags: ["-s", "-h"],
+        blockSize: 2048,
+        expected:
+          "\nls: cannot access '/some/fake/path': No such file or directory\n" +
+          "6 /etc/hosts\t6 /home/nathanwise/Projects/this/.external\n\n" +
+          "/home/nathanwise/Documents:\n" +
+          "total: 160\n" +
+          " 6 about.txt\t146 CV.pdf\t2 Education\t6 skills.md",
+      },
+      {
+        flags: [],
+        blockSize: 2048,
+        expected:
+          "\nls: cannot access '/some/fake/path': No such file or directory" +
+          "\n/etc/hosts\t/home/nathanwise/Projects/this/.external" +
+          "\n\n/home/nathanwise/Documents:" +
+          "\nabout.txt\tCV.pdf\tEducation\tskills.md",
+      },
+    ].forEach(({ flags, blockSize, expected }) => {
+      test(`Should alter the Block Size of Files when ${flags} is present with block size ${blockSize}`, async ({
+        page,
+      }) => {
+        // Arrange
+        const input = `ls ${flags.join(" ")} --block-size=${blockSize} ${existingDotFile} ${existingFile} ${existingDirectory} ${fakePath}`;
+
+        // Act
+        await page.locator(inputSelector).pressSequentially(input);
+        await page.locator(inputSelector).press("Enter");
+
+        // Assert
+        await expect(page.locator(outputSelector)).exactTextInElement(
+          `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+        );
+        await expect(page.locator(promptSelector)).exactTextInElement(
+          defaultUserPrompt,
+        );
+        await expect(page.locator(inputSelector)).exactTextInElement("");
+
+        await checkForColouredSpans(page, {
+          directory: 1,
+          executables: 0,
+          archives: 0,
+          graphics: 0,
+          audios: 0,
+          rubbish: 0,
+        });
+      });
+    });
+  });
 });
