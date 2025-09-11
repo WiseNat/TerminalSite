@@ -4,6 +4,7 @@ import { Plugin } from "vite";
 import { FileTreeNode } from "virtual:file-tree";
 import { execSync } from "node:child_process";
 import { existsSync, readFileSync, statSync } from "node:fs";
+import * as devalue from "devalue";
 
 interface AdditionalMetaData {
   permissions: number[];
@@ -269,8 +270,7 @@ export default function FileTree(
         }
 
         const tree = walk(absoluteRootPath, homeDirectory);
-
-        return `export const fileTree = ${JSON.stringify(tree, null, 2)}`;
+        return `export const fileTree = ${devalue.uneval(tree)}`;
       }
     },
 

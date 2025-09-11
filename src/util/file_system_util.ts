@@ -485,6 +485,33 @@ export default class FileSystemUtil {
   }
 
   /**
+   * Calculates the Hard Links for the provided `fileTreeNode`.
+   * <p>
+   * Hard links are the sum of hard-links to a given file. For a file in this
+   * site, this will always be 1. For a directory, this will be 2 (mimicking a
+   * hard link to itself . and it's parent ..) plus the amount of immediate
+   * directory children.
+   *
+   * @param fileTreeNode the file tree node to calculate the hard links for.
+   */
+  public static calculateHardLinks(fileTreeNode: FileTreeNode): number {
+    let hardLinks: number;
+    if (fileTreeNode.isDirectory) {
+      hardLinks = 2;
+
+      for (const child of fileTreeNode.children!) {
+        if (child.isDirectory) {
+          hardLinks++;
+        }
+      }
+    } else {
+      hardLinks = 1;
+    }
+
+    return hardLinks;
+  }
+
+  /**
    * Converts bytes into a human-readable format.
    * This will turn the give amount of bytes into the smallest possible number
    * rounded up. The possible units are `K, M, G`.
@@ -512,5 +539,26 @@ export default class FileSystemUtil {
 
     bytes = Math.ceil(bytes);
     return `${bytes === 0 ? 1 : bytes}${units[unitIndex]}`;
+  }
+
+  /**
+   * Converts the permissions into a human-readable format.
+   * This will convert permissions from 'octal' numbers into rwx values.
+   * <p>
+   * @example
+   * FileSystemUtil.getHumanReadablePermissions([0, 0, 0], false) // ----------
+   * FileSystemUtil.getHumanReadablePermissions([1, 2, 3], false) // ---x-w--wx
+   * FileSystemUtil.getHumanReadablePermissions([4, 5, 6], true) // dr--r-xrw-
+   *
+   * @param permissions the permissions to transform.
+   * @param isDirectory whether the permissions are for a file or directory.
+   */
+  public static getHumanReadablePermissions(
+    permissions: number[],
+    isDirectory: boolean,
+  ): string {
+    const symbols = ["---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx"];
+    const typeChar = isDirectory ? "d" : "-";
+    return typeChar + permissions.map((p) => symbols[p]).join("");
   }
 }

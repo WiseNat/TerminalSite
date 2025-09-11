@@ -21,19 +21,18 @@ interface EntryNode {
   blocks: number;
 }
 
-// TODO: Rename?
 interface PathResults {
   unknownPaths: string[];
   fileEntries: EntryNode[];
   directoryEntries: EntryNode[];
 }
 
-// TODO: add all formatting flags (e.g. -a, -l, -s, -h, -1) into this!
 interface FormatFlags {
   a: boolean;
   1: boolean;
   s: boolean;
   h: boolean;
+  l: boolean;
   blockSize: number | null;
 }
 
@@ -108,10 +107,7 @@ function createEntryNode(fileTreeNode: FileTreeNode): EntryNode {
     permissions: fileTreeNode.permissions,
     owner: fileTreeNode.owner,
     group: fileTreeNode.group,
-    hardLinks:
-      fileTreeNode.children === undefined
-        ? 1
-        : 1 + fileTreeNode.children.length,
+    hardLinks: FileSystemUtil.calculateHardLinks(fileTreeNode),
     blocks: fileTreeNode.blocks,
   };
 }
@@ -204,7 +200,7 @@ function formatFileEntries(
     outputs.push(formattedFileEntry);
   }
 
-  const joinChar = flags["1"] ? "\n" : "\t";
+  const joinChar = flags["1"] || flags.l ? "\n" : "\t";
 
   return outputs.join(joinChar);
 }
@@ -253,16 +249,16 @@ function formatDirectoryEntries(
       }
     }
 
-    if (flags.s) {
-      const totalSize = getTotalSize(directoryEntryChildren, flags);
+    if (flags.s || flags.l) {
+      const totalSize = getTotalBlockSize(directoryEntryChildren, flags);
       output += `total: ${totalSize}`;
 
       if (formattedChildren.length !== 0) {
-        output += "\n ";
+        output += "\n";
       }
     }
 
-    const joinChar = flags["1"] ? "\n" : "\t";
+    const joinChar = flags["1"] || flags.l ? "\n" : "\t";
     output += `${formattedChildren.join(joinChar)}`;
 
     outputs.push(output);
@@ -368,8 +364,19 @@ function formatEntry(
     formattedChild = `<span style='${styleString}'>${useShortName ? entry.name : entry.fullPath}</span>`;
   }
 
+  if (flags.l) {
+    const permissionsString = FileSystemUtil.getHumanReadablePermissions(
+      entry.permissions,
+      entry.isDirectory,
+    );
+    const dateTime = formatDateTime(entry.lastModifiedTime);
+    const size = getSize(entry, flags);
+
+    formattedChild = `${permissionsString} ${entry.hardLinks} ${entry.owner} ${entry.group}\t${size} ${dateTime} ${formattedChild}`;
+  }
+
   if (flags.s) {
-    const size: string = getSize(entry, flags);
+    const size: string = getBlockSize(entry, flags);
     formattedChild = `${size} ${formattedChild}`;
   }
 
@@ -394,13 +401,37 @@ function sortEntryNodes(nodes: EntryNode[]) {
 
 /**
  * Gets the size of the `entry` with a value dependent on `flags.h`.
- * - If `flags.h` is true, then a human-readable `blocks * 512` value is returned.
- * - If `flags.h` is false, then a 1024 sized blocks value is returned.
+ * - If `flags.h` is true, then a human-readable `size` value is returned.
+ * - If `flags.h` is false, then a 'blockSize' sized value is returned.
  *
  * @param entry the entry to get the size of.
  * @param flags the formatting flags.
  */
 function getSize(entry: EntryNode, flags: FormatFlags): string {
+  if (flags.h && !flags.blockSize) {
+    /*
+    Functionally this is wrong. FileSystemUtil.getHumanReadableSize does NOT return the same values we'd expect in a
+    'ls -lh' call - this provides values such as '272' and '4.0K'. I care a lot about 'parity' with actual commands
+    but this just seems redundant to fix, especially with the looming complexity of ls as it is.
+     */
+    return flags.h && !flags.blockSize
+      ? FileSystemUtil.getHumanReadableSize(entry.size)
+      : `${entry.size}`;
+  }
+
+  const to = !flags.blockSize ? 1 : flags.blockSize;
+  return `${FileSystemUtil.calculateBlocks(entry.size, 1, to)}`;
+}
+
+/**
+ * Gets the block size of the `entry` with a value dependent on `flags.h`.
+ * - If `flags.h` is true, then a human-readable `blocks * 512` value is returned.
+ * - If `flags.h` is false, then a 'blockSize' sized block value is returned.
+ *
+ * @param entry the entry to get the size of.
+ * @param flags the formatting flags.
+ */
+function getBlockSize(entry: EntryNode, flags: FormatFlags): string {
   if (flags.h && !flags.blockSize) {
     return FileSystemUtil.getHumanReadableSize(entry.blocks * 512);
   }
@@ -410,14 +441,14 @@ function getSize(entry: EntryNode, flags: FormatFlags): string {
 }
 
 /**
- * Gets the total size of all the `entries` with a value dependent on `flags.h`.
+ * Gets the total block size of all the `entries` with a value dependent on `flags.h`.
  * - If `flags.h` is true, then a human-readable `blocks * 512` value is returned.
- * - If `flags.h` is false, then a 1024 sized blocks value is returned.
+ * - If `flags.h` is false, then the sum of 'blockSize' sized block values is returned.
  *
  * @param entries the entries to get the total size of.
  * @param flags the formatting flags.
  */
-function getTotalSize(entries: EntryNode[], flags: FormatFlags): string {
+function getTotalBlockSize(entries: EntryNode[], flags: FormatFlags): string {
   let output: string;
 
   if (flags.h && !flags.blockSize) {
@@ -466,10 +497,30 @@ function createStyleString(style: Style): string {
     .join("; ");
 }
 
+/**
+ * Formats the provided `dateTime` into a string.
+ * @param datetime the datetime to convert.
+ * @returns a datetime string, e.g. `17 Aug 00:33`.
+ */
+function formatDateTime(datetime: Date): string {
+  return datetime
+    .toLocaleString(undefined, {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
+    .replace(",", "");
+}
+
+// TODO: 'ls -1s' works but 'ls -s1' does not work. This is an issue with the getopts
+//  library. Planning on investigating a more maintained alternative so this is
+//  a low priority issue for now.
 const ls: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("ls", args, {
-      boolean: ["a", "1", "s", "h"],
+      boolean: ["a", "1", "s", "h", "l"],
       string: ["block-size"],
       alias: {
         all: ["a"],
@@ -510,6 +561,7 @@ const ls: CommandScript = {
       "1": parsedOptions["1"],
       s: parsedOptions.s,
       h: parsedOptions.h,
+      l: parsedOptions.l,
       blockSize: blockSize,
     });
 

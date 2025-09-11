@@ -811,6 +811,79 @@ describe("FileSystemUtil", () => {
     });
   });
 
+  describe("calculateHardLinks", () => {
+    [
+      {
+        type: "file",
+        node: {
+          isDirectory: false,
+        },
+        expected: 1,
+      },
+      {
+        type: "directory with no children",
+        node: {
+          isDirectory: true,
+          children: [],
+        },
+        expected: 2,
+      },
+      {
+        type: "directory with only file children",
+        node: {
+          isDirectory: true,
+          children: [
+            {
+              isDirectory: false,
+            },
+            {
+              isDirectory: false,
+            },
+          ],
+        },
+        expected: 2,
+      },
+      {
+        type: "directory with only directory children",
+        node: {
+          isDirectory: true,
+          children: [
+            {
+              isDirectory: true,
+            },
+            {
+              isDirectory: true,
+            },
+          ],
+        },
+        expected: 4,
+      },
+      {
+        type: "directory with file & directory children",
+        node: {
+          isDirectory: true,
+          children: [
+            {
+              isDirectory: true,
+            },
+            {
+              isDirectory: false,
+            },
+          ],
+        },
+        expected: 3,
+      },
+    ].forEach(({ type, node, expected }) => {
+      test(`returns ${expected} for ${type}`, () => {
+        // Act
+        const result = FileSystemUtil.calculateHardLinks(node);
+
+        // Assert
+        expect(result).toEqual(expected);
+      });
+    });
+  });
+
   describe("getHumanReadableSize", () => {
     [0, 1, 200, 1000, 1023, 1024].forEach((bytes) => {
       test("returns 1K for bytes <= 1KB", () => {
@@ -872,6 +945,47 @@ describe("FileSystemUtil", () => {
 
       // Assert
       expect(result).toEqual("5120G");
+    });
+  });
+
+  describe("getHumanReadablePermissions", () => {
+    [
+      {
+        permissions: [0, 0, 0],
+        isDirectory: false,
+        expected: "----------",
+      },
+      {
+        permissions: [0, 0, 0],
+        isDirectory: true,
+        expected: "d---------",
+      },
+      {
+        permissions: [1, 2, 3],
+        isDirectory: false,
+        expected: "---x-w--wx",
+      },
+      {
+        permissions: [4, 5, 6],
+        isDirectory: true,
+        expected: "dr--r-xrw-",
+      },
+      {
+        permissions: [7, 7, 7],
+        isDirectory: false,
+        expected: "-rwxrwxrwx",
+      },
+    ].forEach(({ permissions, isDirectory, expected }) => {
+      test(`returns ${expected} for permissions='${permissions}' and isDirectory=${isDirectory}`, () => {
+        // Act
+        const result = FileSystemUtil.getHumanReadablePermissions(
+          permissions,
+          isDirectory,
+        );
+
+        // Assert
+        expect(result).toEqual(expected);
+      });
     });
   });
 });

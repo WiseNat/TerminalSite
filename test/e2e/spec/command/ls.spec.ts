@@ -17,13 +17,6 @@ import {
 import { Page } from "@playwright/test";
 
 test.describe("Ls", () => {
-  // TODO: test cases...
-  //  - Flags
-  //    - Show long listing with -l flag
-  //    - Show long listing with human readable file size with -lh flag
-  //    - Show human readable file size file size with -ls flag
-  // TODO: Run this locally to have a good example of how everything works: 'ls ~ ~/Desktop/webstorm.desktop /asdaasdasdasdasd ~/.bashrc /asdasd /'
-
   const existingDirectory = "/home/nathanwise/Documents";
   const existingEmptyDirectory = "/boot";
   const existingFile = "/etc/hosts";
@@ -287,7 +280,7 @@ test.describe("Ls", () => {
           "12 /etc/hosts\t12 /home/nathanwise/Projects/this/.external\n\n" +
           "/home/nathanwise/Documents:\n" +
           "total: 320\n" +
-          " 12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md";
+          "12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md";
         await expect(page.locator(outputSelector)).exactTextInElement(
           `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
         );
@@ -322,7 +315,7 @@ test.describe("Ls", () => {
           "12 /etc/hosts\t12 /home/nathanwise/Projects/this/.external\n\n" +
           "/home/nathanwise/Documents:\n" +
           "total: 340\n" +
-          " 4 .\t4 ..\t12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md\t12 .tmp";
+          "4 .\t4 ..\t12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md\t12 .tmp";
         await expect(page.locator(outputSelector)).exactTextInElement(
           `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
         );
@@ -361,7 +354,7 @@ test.describe("Ls", () => {
           "12K /etc/hosts\t12K /home/nathanwise/Projects/this/.external\n\n" +
           "/home/nathanwise/Documents:\n" +
           "total: 320K\n" +
-          " 12K about.txt\t292K CV.pdf\t4K Education\t12K skills.md";
+          "12K about.txt\t292K CV.pdf\t4K Education\t12K skills.md";
         await expect(page.locator(outputSelector)).exactTextInElement(
           `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
         );
@@ -380,74 +373,27 @@ test.describe("Ls", () => {
         });
       });
 
-      // TODO: test case for -l flag
-    });
-  });
-
-  test.describe("--block-size flag", () => {
-    // TODO: test case for -l flag
-    [
-      {
-        flags: ["-s"],
-        blockSize: 1,
-        expected:
-          "\nls: cannot access '/some/fake/path': No such file or directory\n" +
-          "12288 /etc/hosts\t12288 /home/nathanwise/Projects/this/.external\n\n" +
-          "/home/nathanwise/Documents:\n" +
-          "total: 327680\n" +
-          " 12288 about.txt\t299008 CV.pdf\t4096 Education\t12288 skills.md",
-      },
-      {
-        flags: ["-s", "-h"],
-        blockSize: 1,
-        expected:
-          "\nls: cannot access '/some/fake/path': No such file or directory\n" +
-          "12288 /etc/hosts\t12288 /home/nathanwise/Projects/this/.external\n\n" +
-          "/home/nathanwise/Documents:\n" +
-          "total: 327680\n" +
-          " 12288 about.txt\t299008 CV.pdf\t4096 Education\t12288 skills.md",
-      },
-      {
-        flags: ["-s"],
-        blockSize: 512,
-        expected:
-          "\nls: cannot access '/some/fake/path': No such file or directory\n" +
-          "24 /etc/hosts\t24 /home/nathanwise/Projects/this/.external\n\n" +
-          "/home/nathanwise/Documents:\n" +
-          "total: 640\n" +
-          " 24 about.txt\t584 CV.pdf\t8 Education\t24 skills.md",
-      },
-      {
-        flags: ["-s", "-h"],
-        blockSize: 2048,
-        expected:
-          "\nls: cannot access '/some/fake/path': No such file or directory\n" +
-          "6 /etc/hosts\t6 /home/nathanwise/Projects/this/.external\n\n" +
-          "/home/nathanwise/Documents:\n" +
-          "total: 160\n" +
-          " 6 about.txt\t146 CV.pdf\t2 Education\t6 skills.md",
-      },
-      {
-        flags: [],
-        blockSize: 2048,
-        expected:
-          "\nls: cannot access '/some/fake/path': No such file or directory" +
-          "\n/etc/hosts\t/home/nathanwise/Projects/this/.external" +
-          "\n\n/home/nathanwise/Documents:" +
-          "\nabout.txt\tCV.pdf\tEducation\tskills.md",
-      },
-    ].forEach(({ flags, blockSize, expected }) => {
-      test(`Should alter the Block Size of Files when ${flags} is present with block size ${blockSize}`, async ({
+      test("Should replace Block Size with File Size when -h and -l are present", async ({
         page,
       }) => {
         // Arrange
-        const input = `ls ${flags.join(" ")} --block-size=${blockSize} ${existingDotFile} ${existingFile} ${existingDirectory} ${fakePath}`;
+        const input = `ls -lh ${existingDotFile} ${existingFile} ${existingDirectory} ${fakePath}`;
 
         // Act
         await page.locator(inputSelector).pressSequentially(input);
         await page.locator(inputSelector).press("Enter");
 
         // Assert
+        const expected =
+          "\nls: cannot access '/some/fake/path': No such file or directory" +
+          "\n-rw-rw-r-- 1 root root\t1K Aug 17 00:28 /etc/hosts" +
+          "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Aug 17 00:33 /home/nathanwise/Projects/this/.external" +
+          "\n\n/home/nathanwise/Documents:" +
+          "\ntotal: 320K" +
+          "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Jul 21 00:50 about.txt" +
+          "\n-rw-rw-r-- 1 nathanwise nathanwise\t282K Jul 21 00:50 CV.pdf" +
+          "\ndrw-rw-r-- 2 nathanwise nathanwise\t4K Aug 17 00:33 Education" +
+          "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Jul 21 00:50 skills.md";
         await expect(page.locator(outputSelector)).exactTextInElement(
           `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
         );
@@ -464,6 +410,248 @@ test.describe("Ls", () => {
           audios: 0,
           rubbish: 0,
         });
+      });
+    });
+  });
+
+  test.describe("--block-size flag", () => {
+    test("Does nothing when only a --block-size flag is provided", async ({
+      page,
+    }) => {
+      // Arrange
+      const input = `ls --block-size=2048 ${existingDotFile} ${existingFile} ${existingDirectory} ${fakePath}`;
+
+      // Act
+      await page.locator(inputSelector).pressSequentially(input);
+      await page.locator(inputSelector).press("Enter");
+
+      // Assert
+      const expected =
+        "\nls: cannot access '/some/fake/path': No such file or directory" +
+        "\n/etc/hosts\t/home/nathanwise/Projects/this/.external" +
+        "\n\n/home/nathanwise/Documents:" +
+        "\nabout.txt\tCV.pdf\tEducation\tskills.md";
+      await expect(page.locator(outputSelector)).exactTextInElement(
+        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+      );
+      await expect(page.locator(promptSelector)).exactTextInElement(
+        defaultUserPrompt,
+      );
+      await expect(page.locator(inputSelector)).exactTextInElement("");
+
+      await checkForColouredSpans(page, {
+        directory: 1,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+        rubbish: 0,
+      });
+    });
+  });
+
+  [
+    {
+      flags: ["-s"],
+      blockSize: 1,
+      expected:
+        "\nls: cannot access '/some/fake/path': No such file or directory\n" +
+        "12288 /etc/hosts\t12288 /home/nathanwise/Projects/this/.external\n\n" +
+        "/home/nathanwise/Documents:\n" +
+        "total: 327680\n" +
+        "12288 about.txt\t299008 CV.pdf\t4096 Education\t12288 skills.md",
+    },
+    {
+      flags: ["-s", "-h"],
+      blockSize: 1,
+      expected:
+        "\nls: cannot access '/some/fake/path': No such file or directory\n" +
+        "12288 /etc/hosts\t12288 /home/nathanwise/Projects/this/.external\n\n" +
+        "/home/nathanwise/Documents:\n" +
+        "total: 327680\n" +
+        "12288 about.txt\t299008 CV.pdf\t4096 Education\t12288 skills.md",
+    },
+    {
+      flags: ["-s"],
+      blockSize: 512,
+      expected:
+        "\nls: cannot access '/some/fake/path': No such file or directory\n" +
+        "24 /etc/hosts\t24 /home/nathanwise/Projects/this/.external\n\n" +
+        "/home/nathanwise/Documents:\n" +
+        "total: 640\n" +
+        "24 about.txt\t584 CV.pdf\t8 Education\t24 skills.md",
+    },
+    {
+      flags: ["-s", "-h"],
+      blockSize: 2048,
+      expected:
+        "\nls: cannot access '/some/fake/path': No such file or directory\n" +
+        "6 /etc/hosts\t6 /home/nathanwise/Projects/this/.external\n\n" +
+        "/home/nathanwise/Documents:\n" +
+        "total: 160\n" +
+        "6 about.txt\t146 CV.pdf\t2 Education\t6 skills.md",
+    },
+    {
+      flags: ["-l"],
+      blockSize: 1,
+      expected:
+        "\nls: cannot access '/some/fake/path': No such file or directory" +
+        "\n-rw-rw-r-- 1 root root\t51 Aug 17 00:28 /etc/hosts" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t84 Aug 17 00:33 /home/nathanwise/Projects/this/.external" +
+        "\n\n/home/nathanwise/Documents:" +
+        "\ntotal: 327680" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t272 Jul 21 00:50 about.txt" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t288626 Jul 21 00:50 CV.pdf" +
+        "\ndrw-rw-r-- 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t375 Jul 21 00:50 skills.md",
+    },
+    {
+      flags: ["-l", "-h"],
+      blockSize: 1,
+      expected:
+        "\nls: cannot access '/some/fake/path': No such file or directory" +
+        "\n-rw-rw-r-- 1 root root\t51 Aug 17 00:28 /etc/hosts" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t84 Aug 17 00:33 /home/nathanwise/Projects/this/.external" +
+        "\n\n/home/nathanwise/Documents:" +
+        "\ntotal: 327680" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t272 Jul 21 00:50 about.txt" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t288626 Jul 21 00:50 CV.pdf" +
+        "\ndrw-rw-r-- 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t375 Jul 21 00:50 skills.md",
+    },
+    {
+      flags: ["-l"],
+      blockSize: 512,
+      expected:
+        "\nls: cannot access '/some/fake/path': No such file or directory" +
+        "\n-rw-rw-r-- 1 root root\t1 Aug 17 00:28 /etc/hosts" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Aug 17 00:33 /home/nathanwise/Projects/this/.external" +
+        "\n\n/home/nathanwise/Documents:" +
+        "\ntotal: 640" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Jul 21 00:50 about.txt" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t564 Jul 21 00:50 CV.pdf" +
+        "\ndrw-rw-r-- 2 nathanwise nathanwise\t8 Aug 17 00:33 Education" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Jul 21 00:50 skills.md",
+    },
+    {
+      flags: ["-l", "-h"],
+      blockSize: 2048,
+      expected:
+        "\nls: cannot access '/some/fake/path': No such file or directory" +
+        "\n-rw-rw-r-- 1 root root\t1 Aug 17 00:28 /etc/hosts" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Aug 17 00:33 /home/nathanwise/Projects/this/.external" +
+        "\n\n/home/nathanwise/Documents:" +
+        "\ntotal: 160" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Jul 21 00:50 about.txt" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t141 Jul 21 00:50 CV.pdf" +
+        "\ndrw-rw-r-- 2 nathanwise nathanwise\t2 Aug 17 00:33 Education" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Jul 21 00:50 skills.md",
+    },
+  ].forEach(({ flags, blockSize, expected }) => {
+    test(`Should alter the Block Size of Files when ${flags} is present with block size ${blockSize}`, async ({
+      page,
+    }) => {
+      // Arrange
+      const input = `ls ${flags.join(" ")} --block-size=${blockSize} ${existingDotFile} ${existingFile} ${existingDirectory} ${fakePath}`;
+
+      // Act
+      await page.locator(inputSelector).pressSequentially(input);
+      await page.locator(inputSelector).press("Enter");
+
+      // Assert
+      await expect(page.locator(outputSelector)).exactTextInElement(
+        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+      );
+      await expect(page.locator(promptSelector)).exactTextInElement(
+        defaultUserPrompt,
+      );
+      await expect(page.locator(inputSelector)).exactTextInElement("");
+
+      await checkForColouredSpans(page, {
+        directory: 1,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+        rubbish: 0,
+      });
+    });
+  });
+
+  test.describe("-l flag", () => {
+    test("Should output information in the long file format", async ({
+      page,
+    }) => {
+      // Arrange
+      const input = `ls -l ${existingDotFile} ${existingFile} ${existingDirectory} ${fakePath}`;
+
+      // Act
+      await page.locator(inputSelector).pressSequentially(input);
+      await page.locator(inputSelector).press("Enter");
+
+      // Assert
+      const expected =
+        "\nls: cannot access '/some/fake/path': No such file or directory" +
+        "\n-rw-rw-r-- 1 root root\t51 Aug 17 00:28 /etc/hosts" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t84 Aug 17 00:33 /home/nathanwise/Projects/this/.external" +
+        "\n\n/home/nathanwise/Documents:" +
+        "\ntotal: 320" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t272 Jul 21 00:50 about.txt" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t288626 Jul 21 00:50 CV.pdf" +
+        "\ndrw-rw-r-- 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t375 Jul 21 00:50 skills.md";
+      await expect(page.locator(outputSelector)).exactTextInElement(
+        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+      );
+      await expect(page.locator(promptSelector)).exactTextInElement(
+        defaultUserPrompt,
+      );
+      await expect(page.locator(inputSelector)).exactTextInElement("");
+
+      await checkForColouredSpans(page, {
+        directory: 1,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+        rubbish: 0,
+      });
+    });
+
+    test("Should override the -1 flag", async ({ page }) => {
+      // Arrange
+      const input = `ls -l ${existingDotFile} ${existingFile} ${existingDirectory} ${fakePath}`;
+
+      // Act
+      await page.locator(inputSelector).pressSequentially(input);
+      await page.locator(inputSelector).press("Enter");
+
+      // Assert
+      const expected =
+        "\nls: cannot access '/some/fake/path': No such file or directory" +
+        "\n-rw-rw-r-- 1 root root\t51 Aug 17 00:28 /etc/hosts" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t84 Aug 17 00:33 /home/nathanwise/Projects/this/.external" +
+        "\n\n/home/nathanwise/Documents:" +
+        "\ntotal: 320" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t272 Jul 21 00:50 about.txt" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t288626 Jul 21 00:50 CV.pdf" +
+        "\ndrw-rw-r-- 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t375 Jul 21 00:50 skills.md";
+      await expect(page.locator(outputSelector)).exactTextInElement(
+        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
+      );
+      await expect(page.locator(promptSelector)).exactTextInElement(
+        defaultUserPrompt,
+      );
+      await expect(page.locator(inputSelector)).exactTextInElement("");
+
+      await checkForColouredSpans(page, {
+        directory: 1,
+        executables: 0,
+        archives: 0,
+        graphics: 0,
+        audios: 0,
+        rubbish: 0,
       });
     });
   });

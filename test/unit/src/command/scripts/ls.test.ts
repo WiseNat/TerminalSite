@@ -371,7 +371,7 @@ describe("Ls", () => {
             "\n26 /src/index.ts\t10 /src/main/.testing" +
             "\n\n/src/main/foo:" +
             "\ntotal: 22" +
-            "\n 4 bar\t12 bazzing.gaz\t6 daz" +
+            "\n4 bar\t12 bazzing.gaz\t6 daz" +
             "\n\n/test:" +
             "\ntotal: 0";
 
@@ -402,10 +402,10 @@ describe("Ls", () => {
             "\n26 /src/index.ts\t10 /src/main/.testing" +
             "\n\n/src/main/foo:" +
             "\ntotal: 30" +
-            "\n 4 .\t4 ..\t4 bar\t12 bazzing.gaz\t6 daz" +
+            "\n4 .\t4 ..\t4 bar\t12 bazzing.gaz\t6 daz" +
             "\n\n/test:" +
             "\ntotal: 4" +
-            "\n 4 .\t0 ..";
+            "\n4 .\t0 ..";
 
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
           expect(appendOutput).not.toHaveBeenCalled();
@@ -438,7 +438,7 @@ describe("Ls", () => {
             "\n26K /src/index.ts\t10K /src/main/.testing" +
             "\n\n/src/main/foo:" +
             "\ntotal: 22K" +
-            "\n 4K bar\t12K bazzing.gaz\t6K daz" +
+            "\n4K bar\t12K bazzing.gaz\t6K daz" +
             "\n\n/test:" +
             "\ntotal: 1K";
 
@@ -462,7 +462,7 @@ describe("Ls", () => {
             "\n26624 /src/index.ts\t9728 /src/main/.testing" +
             "\n\n/src/main/foo:" +
             "\ntotal: 22016" +
-            "\n 4096 bar\t11776 bazzing.gaz\t6144 daz" +
+            "\n4096 bar\t11776 bazzing.gaz\t6144 daz" +
             "\n\n/test:" +
             "\ntotal: 0",
         },
@@ -475,7 +475,7 @@ describe("Ls", () => {
             "\n52 /src/index.ts\t19 /src/main/.testing" +
             "\n\n/src/main/foo:" +
             "\ntotal: 43" +
-            "\n 8 bar\t23 bazzing.gaz\t12 daz" +
+            "\n8 bar\t23 bazzing.gaz\t12 daz" +
             "\n\n/test:" +
             "\ntotal: 0",
         },
@@ -488,7 +488,7 @@ describe("Ls", () => {
             "\n13 /src/index.ts\t5 /src/main/.testing" +
             "\n\n/src/main/foo:" +
             "\ntotal: 11" +
-            "\n 2 bar\t6 bazzing.gaz\t3 daz" +
+            "\n2 bar\t6 bazzing.gaz\t3 daz" +
             "\n\n/test:" +
             "\ntotal: 0",
         },
@@ -536,7 +536,7 @@ describe("Ls", () => {
             "\n26624 /src/index.ts\t9728 /src/main/.testing" +
             "\n\n/src/main/foo:" +
             "\ntotal: 22016" +
-            "\n 4096 bar\t11776 bazzing.gaz\t6144 daz" +
+            "\n4096 bar\t11776 bazzing.gaz\t6144 daz" +
             "\n\n/test:" +
             "\ntotal: 0",
         },
@@ -548,7 +548,7 @@ describe("Ls", () => {
             "\n52 /src/index.ts\t19 /src/main/.testing" +
             "\n\n/src/main/foo:" +
             "\ntotal: 43" +
-            "\n 8 bar\t23 bazzing.gaz\t12 daz" +
+            "\n8 bar\t23 bazzing.gaz\t12 daz" +
             "\n\n/test:" +
             "\ntotal: 0",
         },
@@ -560,7 +560,7 @@ describe("Ls", () => {
             "\n26 /src/index.ts\t10 /src/main/.testing" +
             "\n\n/src/main/foo:" +
             "\ntotal: 22" +
-            "\n 4 bar\t12 bazzing.gaz\t6 daz" +
+            "\n4 bar\t12 bazzing.gaz\t6 daz" +
             "\n\n/test:" +
             "\ntotal: 0",
         },
@@ -572,7 +572,7 @@ describe("Ls", () => {
             "\n13 /src/index.ts\t5 /src/main/.testing" +
             "\n\n/src/main/foo:" +
             "\ntotal: 11" +
-            "\n 2 bar\t6 bazzing.gaz\t3 daz" +
+            "\n2 bar\t6 bazzing.gaz\t3 daz" +
             "\n\n/test:" +
             "\ntotal: 0",
         },
@@ -624,5 +624,10 @@ describe("Ls", () => {
         },
       );
     });
+  });
+
+  describe("-l flag", () => {
+    // TODO: this!
+    test("TODO!", () => {});
   });
 });
