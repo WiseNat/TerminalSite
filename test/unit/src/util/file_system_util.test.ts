@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import FileSystemUtil from "../../../../src/util/file_system_util";
+import { FileTreeNode } from "virtual:file-tree";
 
 describe("FileSystemUtil", () => {
   describe("joinPaths", () => {
@@ -425,7 +426,7 @@ describe("FileSystemUtil", () => {
       // Assert
       expect(result).not.toBeNull();
 
-      result.lastModifiedTime = ""; // this value is unpredictable, even for snapshots
+      result!.lastModifiedTime = new Date(2000, 0); // this value is unpredictable, even for snapshots
       expect(result).toMatchSnapshot();
     });
 
@@ -812,11 +813,23 @@ describe("FileSystemUtil", () => {
   });
 
   describe("calculateHardLinks", () => {
-    [
+    const testCases: {
+      type: string;
+      expected: number;
+      node: FileTreeNode;
+    }[] = [
       {
         type: "file",
         node: {
           isDirectory: false,
+          name: "",
+          path: "",
+          lastModifiedTime: new Date(),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
         },
         expected: 1,
       },
@@ -825,6 +838,14 @@ describe("FileSystemUtil", () => {
         node: {
           isDirectory: true,
           children: [],
+          name: "",
+          path: "",
+          lastModifiedTime: new Date(),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
         },
         expected: 2,
       },
@@ -835,11 +856,35 @@ describe("FileSystemUtil", () => {
           children: [
             {
               isDirectory: false,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
             },
             {
               isDirectory: false,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
             },
           ],
+          name: "",
+          path: "",
+          lastModifiedTime: new Date(),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
         },
         expected: 2,
       },
@@ -850,11 +895,35 @@ describe("FileSystemUtil", () => {
           children: [
             {
               isDirectory: true,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
             },
             {
               isDirectory: true,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
             },
           ],
+          name: "",
+          path: "",
+          lastModifiedTime: new Date(),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
         },
         expected: 4,
       },
@@ -865,15 +934,41 @@ describe("FileSystemUtil", () => {
           children: [
             {
               isDirectory: true,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
             },
             {
               isDirectory: false,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
             },
           ],
+          name: "",
+          path: "",
+          lastModifiedTime: new Date(),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
         },
         expected: 3,
       },
-    ].forEach(({ type, node, expected }) => {
+    ];
+
+    testCases.forEach(({ type, node, expected }) => {
       test(`returns ${expected} for ${type}`, () => {
         // Act
         const result = FileSystemUtil.calculateHardLinks(node);

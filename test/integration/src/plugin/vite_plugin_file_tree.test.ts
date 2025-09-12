@@ -2,14 +2,13 @@ import { beforeEach, describe, expect, test } from "vitest";
 import fs from "fs";
 import { walk } from "../../../../src/plugins/vite_plugin_file_tree";
 import { sortBy } from "lodash-es";
-// @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
 import { FileTreeNode } from "virtual:file-tree";
 import { vol } from "memfs";
 
 function deepSortTree(nodes: FileTreeNode[]): FileTreeNode[] {
   return sortBy(nodes, "name").map((node) => ({
     ...node,
-    lastModifiedTime: "", // this value is unpredictable, even for snapshots
+    lastModifiedTime: new Date(2020, 0), // this value is unpredictable, even for snapshots
     children: node.children ? deepSortTree(node.children) : undefined,
   }));
 }

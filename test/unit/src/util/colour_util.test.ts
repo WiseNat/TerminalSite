@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 import ColourUtil from "../../../../src/util/colour_util";
-// @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
 import { FileTreeNode } from "virtual:file-tree";
 import {
   BLUE,
@@ -21,6 +20,7 @@ describe("ColourUtil", () => {
       permissions: number[],
     ): FileTreeNode {
       return {
+        blocks: 0,
         name: name,
         path: "",
         isDirectory: isDirectory,
