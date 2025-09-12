@@ -624,10 +624,40 @@ describe("Ls", () => {
         },
       );
     });
-  });
 
-  describe("-l flag", () => {
-    // TODO: this!
-    test("TODO!", () => {});
+    describe("-l flag", () => {
+      test("Given varying args, should output information in the long file format", async () => {
+        // Arrange
+        const args: string[] = [
+          "-l",
+          "/some/fake/path",
+          "/src/main/foo",
+          "/src/index.ts",
+          "/some/other/fake/path",
+          "/test",
+          "/src/main/.testing",
+        ];
+
+        // Act
+        await ls.run(args);
+
+        // Assert
+        const expected =
+          "\nls: cannot access '/some/fake/path': No such file or directory" +
+          "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+          "\n-rw-rw-r-- 1 nathanwise nathanwise\t0 Jan 1 00:00 /src/index.ts" +
+          "\n-rw-rw-r-- 1 nathanwise nathanwise\t0 Jan 1 00:00 /src/main/.testing" +
+          "\n\n/src/main/foo:" +
+          "\ntotal: 22" +
+          "\ndrw-rw-r-- 2 nathanwise nathanwise\t0 Jan 1 00:00 bar" +
+          "\n-rw-rw-r-- 1 nathanwise nathanwise\t0 Jan 1 00:00 bazzing.gaz" +
+          "\n-rw-rw-r-- 1 nathanwise nathanwise\t0 Jan 1 00:00 daz" +
+          "\n\n/test:" +
+          "\ntotal: 0";
+
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+        expect(appendOutput).not.toHaveBeenCalled();
+      });
+    });
   });
 });

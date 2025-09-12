@@ -244,7 +244,7 @@ function formatDirectoryEntries(
     if (directoryEntries.length !== 1 || isPreviousOutput) {
       output += `${directoryEntry.fullPath}:`;
 
-      if (formattedChildren.length !== 0 || flags.s) {
+      if (formattedChildren.length !== 0 || flags.s || flags.l) {
         output += "\n";
       }
     }
@@ -504,7 +504,7 @@ function createStyleString(style: Style): string {
  */
 function formatDateTime(datetime: Date): string {
   return datetime
-    .toLocaleString(undefined, {
+    .toLocaleString("en-US", {
       month: "short",
       day: "numeric",
       hour: "2-digit",
