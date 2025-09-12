@@ -12,5 +12,11 @@ declare module "virtual:file-tree" {
     blocks: number;
   };
 
+  export type AdditionalMetaData = {
+    permissions: number[];
+    owner: string;
+    group: string;
+  };
+
   export const fileTree: FileTreeNode[];
 }

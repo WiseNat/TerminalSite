@@ -1,16 +1,10 @@
 import fs from "fs";
 import PathUtil from "path";
 import { Plugin } from "vite";
-import { FileTreeNode } from "virtual:file-tree";
+import { AdditionalMetaData, FileTreeNode } from "virtual:file-tree";
 import { execSync } from "node:child_process";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import * as devalue from "devalue";
-
-interface AdditionalMetaData {
-  permissions: number[];
-  owner: string;
-  group: string;
-}
 
 /**
  * Walks along the provided {@code rootDirPath} recursively, returning a view of all the identified files and
