@@ -1,5 +1,11 @@
 import { fileTree, FileTreeNode } from "virtual:file-tree";
 import TerminalUtil from "./terminal_util.ts";
+import {
+  ARCHIVE_EXTENSIONS,
+  AUDIO_EXTENSIONS,
+  GRAPHIC_EXTENSIONS,
+  RUBBISH_EXTENSIONS,
+} from "../constant/extensions.ts";
 
 export default class FileSystemUtil {
   private static currentWorkingDirectory: string[] = [];
@@ -305,6 +311,12 @@ export default class FileSystemUtil {
       path: "",
       isDirectory: true,
       children: currentNodes,
+      lastModifiedTime: new Date(),
+      size: 0,
+      permissions: [],
+      owner: "",
+      group: "",
+      blocks: 0,
     };
 
     for (const segment of path) {
@@ -372,5 +384,181 @@ export default class FileSystemUtil {
    */
   public static doesFileOrDirectoryExist(path: string[]): boolean {
     return this.walkFileTree(path) !== null;
+  }
+
+  /**
+   * Strips any occurrences of '.' within the provided `path`. This does not
+   * normalise the path. For path normalisation see {@link normalisePath}.
+   *
+   * @param path the path to clean.
+   * @returns a path without any instances of '.'.
+   */
+  public static stripDots(path: string): string {
+    return path.replace(/\./g, "");
+  }
+
+  /**
+   * Gets the extension in the given filename.
+   *
+   * @param filename the filename to pull the extension from.
+   * @returns the extension or an empty string if it does not exist.
+   */
+  public static getExtension(filename: string): string {
+    const index = filename.lastIndexOf(".");
+    if (index === -1) {
+      return "";
+    }
+
+    return filename.slice(index + 1);
+  }
+
+  /**
+   * Checks if the permissions have at least one executable bit in any group.
+   * <p>
+   * Permissions values are denoted in octal form where, in binary, `XX1` means a
+   * permission has an executable bit.
+   *
+   * @param permissions
+   * @returns true if at least one executable bit is found, false otherwise
+   */
+  public static isExecutable(permissions: number[]): boolean {
+    return permissions.some((n) => (n & 1) === 1);
+  }
+
+  /**
+   * Checks if the `filename` has a known archive file extension.
+   *
+   * @param filename the filename to check the extension of.
+   * @returns true if the file is an archive file, false otherwise.
+   */
+  public static isArchiveFile(filename: string): boolean {
+    const extension = this.getExtension(filename);
+    return ARCHIVE_EXTENSIONS.includes(extension);
+  }
+
+  /**
+   * Checks if the `filename` has a known graphics file extension.
+   *
+   * @param filename the filename to check the extension of.
+   * @returns true if the file is a graphics file, false otherwise.
+   */
+  public static isGraphicsFile(filename: string): boolean {
+    const extension = this.getExtension(filename);
+    return GRAPHIC_EXTENSIONS.includes(extension);
+  }
+
+  /**
+   * Checks if the `filename` has a known audio file extension.
+   *
+   * @param filename the filename to check the extension of.
+   * @returns true if the file is an audio file, false otherwise.
+   */
+  public static isAudioFile(filename: string): boolean {
+    const extension = this.getExtension(filename);
+    return AUDIO_EXTENSIONS.includes(extension);
+  }
+
+  /**
+   * Checks if the `filename` has a known rubbish file extension.
+   *
+   * @param filename the filename to check the extension of.
+   * @returns true if the file is a rubbish file, false otherwise.
+   */
+  public static isRubbishFile(filename: string): boolean {
+    const extension = this.getExtension(filename);
+    return RUBBISH_EXTENSIONS.includes(extension);
+  }
+
+  /**
+   * Calculates the amount of Blocks based on the current `blocks`, `from`, and the `to`.
+   *
+   * @param blocks the current amount of blocks.
+   * @param from the current block size for the current blocks.
+   * @param to the new block size.
+   */
+  public static calculateBlocks(
+    blocks: number,
+    from: number,
+    to: number,
+  ): number {
+    return Math.ceil((blocks * from) / to);
+  }
+
+  /**
+   * Calculates the Hard Links for the provided `fileTreeNode`.
+   * <p>
+   * Hard links are the sum of hard-links to a given file. For a file in this
+   * site, this will always be 1. For a directory, this will be 2 (mimicking a
+   * hard link to itself . and it's parent ..) plus the amount of immediate
+   * directory children.
+   *
+   * @param fileTreeNode the file tree node to calculate the hard links for.
+   */
+  public static calculateHardLinks(fileTreeNode: FileTreeNode): number {
+    let hardLinks: number;
+    if (fileTreeNode.isDirectory) {
+      hardLinks = 2;
+
+      for (const child of fileTreeNode.children!) {
+        if (child.isDirectory) {
+          hardLinks++;
+        }
+      }
+    } else {
+      hardLinks = 1;
+    }
+
+    return hardLinks;
+  }
+
+  /**
+   * Converts bytes into a human-readable format.
+   * This will turn the give amount of bytes into the smallest possible number
+   * rounded up. The possible units are `K, M, G`.
+   * <p>
+   * @example
+   * FileSystemUtil.getHumanReadableSize(1)              // 1K
+   * FileSystemUtil.getHumanReadableSize(0)              // 1K
+   * FileSystemUtil.getHumanReadableSize(5121)           // 5K
+   * FileSystemUtil.getHumanReadableSize(6442450944)     // 6G
+   * FileSystemUtil.getHumanReadableSize(5497558138880)  // 5120G
+   *
+   * @param bytes
+   */
+  public static getHumanReadableSize(bytes: number): string {
+    const units = ["K", "M", "G"];
+    let unitIndex = 0;
+    const kilobyte = 1024;
+
+    bytes = bytes / kilobyte;
+
+    while (bytes > kilobyte && unitIndex < units.length - 1) {
+      bytes = bytes / kilobyte;
+      unitIndex += 1;
+    }
+
+    bytes = Math.ceil(bytes);
+    return `${bytes === 0 ? 1 : bytes}${units[unitIndex]}`;
+  }
+
+  /**
+   * Converts the permissions into a human-readable format.
+   * This will convert permissions from 'octal' numbers into rwx values.
+   * <p>
+   * @example
+   * FileSystemUtil.getHumanReadablePermissions([0, 0, 0], false) // ----------
+   * FileSystemUtil.getHumanReadablePermissions([1, 2, 3], false) // ---x-w--wx
+   * FileSystemUtil.getHumanReadablePermissions([4, 5, 6], true) // dr--r-xrw-
+   *
+   * @param permissions the permissions to transform.
+   * @param isDirectory whether the permissions are for a file or directory.
+   */
+  public static getHumanReadablePermissions(
+    permissions: number[],
+    isDirectory: boolean,
+  ): string {
+    const symbols = ["---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx"];
+    const typeChar = isDirectory ? "d" : "-";
+    return typeChar + permissions.map((p) => symbols[p]).join("");
   }
 }

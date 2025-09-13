@@ -1,7 +1,10 @@
 import fs from "fs";
-import path from "path";
+import PathUtil from "path";
 import { Plugin } from "vite";
-import { FileTreeNode } from "virtual:file-tree";
+import { AdditionalMetaData, FileTreeNode } from "virtual:file-tree";
+import { execSync } from "node:child_process";
+import { existsSync, readFileSync, statSync } from "node:fs";
+import * as devalue from "devalue";
 
 /**
  * Walks along the provided {@code rootDirPath} recursively, returning a view of all the identified files and
@@ -11,8 +14,12 @@ import { FileTreeNode } from "virtual:file-tree";
  * and so if an empty directory is wanted for this function to find, it must contain a `.gitkeep` file.
  *
  * @param rootDirPath the root path to walk down.
+ * @param homeDirectory the user home directory, if defined.
  */
-export function walk(rootDirPath: string): FileTreeNode[] {
+export function walk(
+  rootDirPath: string,
+  homeDirectory?: string,
+): FileTreeNode[] {
   const allEntries = fs.readdirSync(rootDirPath, {
     withFileTypes: true,
     recursive: true,
@@ -27,20 +34,34 @@ export function walk(rootDirPath: string): FileTreeNode[] {
       continue;
     }
 
-    const relativePath = path.relative(
-      rootDirPath,
-      path.join(entry.parentPath, entry.name),
-    );
-    const parentRelativePath = path.dirname(relativePath);
+    const filename = entry.name;
+    const absoluteParentPath = entry.parentPath;
+    const absolutePath = PathUtil.join(absoluteParentPath, filename);
+    const relativePath = PathUtil.relative(rootDirPath, absolutePath);
+    const parentRelativePath = PathUtil.dirname(relativePath);
 
     const isRootChild = parentRelativePath === ".";
     const isDirectory = entry.isDirectory();
+    const additionalMetaData = getAdditionalMetaData(
+      absolutePath,
+      relativePath,
+      isDirectory,
+      homeDirectory,
+    );
+
+    const stats = statSync(absolutePath);
 
     const node: FileTreeNode = {
-      name: entry.name,
+      name: filename,
       path: isRootChild ? "" : parentRelativePath,
       isDirectory: isDirectory,
       children: isDirectory ? [] : undefined,
+      lastModifiedTime: getLastModifiedTime(absolutePath),
+      size: stats.size,
+      permissions: additionalMetaData.permissions,
+      owner: additionalMetaData.owner,
+      group: additionalMetaData.group,
+      blocks: stats.blocks,
     };
 
     nodeMap.set(relativePath, node);
@@ -68,7 +89,99 @@ export function walk(rootDirPath: string): FileTreeNode[] {
  * @returns true if the entry is ignorable, false otherwise
  */
 function isIgnoredFile(entry: fs.Dirent): boolean {
-  return entry.name === ".gitkeep" && !entry.isDirectory();
+  return (
+    (entry.name === ".gitkeep" || entry.name.endsWith(".meta")) &&
+    !entry.isDirectory()
+  );
+}
+
+/**
+ * Gets the Last Modified Time of a File/Directory in the given `path`.
+ * <p>
+ * If this file is in a Git repo, the last time the file had changes committed will be used. Otherwise, the last file
+ * modification date will be used instead.
+ *
+ * @param path an absolute path to a File or Directory
+ * @returns a `Date` of the last modified time of the `path`
+ */
+function getLastModifiedTime(path: string): Date {
+  try {
+    return new Date(
+      execSync(`git log -1 --format=%ci -- "${path}"`, {
+        encoding: "utf-8",
+      }).trim(),
+    );
+  } catch {
+    return new Date(statSync(path).mtime);
+  }
+}
+
+/**
+ * Retrieves the {@link AdditionalMetaData} of the file at the given `parentPath/fileName` path.
+ * This will be pulled from `.meta` files with the same name as a given file. For example, if a Directory `foo` exists
+ * then a `foo.meta` file will be searched for. The contents of this file will contain the {@link AdditionalMetaData} of
+ *  the `foo` directory.
+ * <p>
+ * If no `.meta` file is found for a given File or Directory, or if the `.meta` file is missing fields, the following
+ * default values will apply:
+ * - `permissions` [6, 6, 4]
+ * - `owner` 'root' unless the path is within the `homeDirectory`, in which case the user of the home directory
+ * - `group` 'root' unless the path is within the `homeDirectory`, in which case the user of the home directory
+ *
+ * @param path the absolute path of the File or Directory.
+ * @param relativePath the path of the File or Directory relative to the `rootDirPath`.
+ * @param isDirectory whether the metadata is for a Directory.
+ * @param homeDirectory the directory containing user home directories.
+ */
+function getAdditionalMetaData(
+  path: string,
+  relativePath: string,
+  isDirectory: boolean,
+  homeDirectory?: string,
+): AdditionalMetaData {
+  const metaDataFilePath = `${path}.meta`;
+
+  let user = "root";
+  if (homeDirectory !== undefined && relativePath.startsWith(homeDirectory)) {
+    const homeUser = PathUtil.relative(homeDirectory, relativePath).split(
+      PathUtil.sep,
+    )[0];
+
+    if (homeUser !== "") {
+      user = homeUser;
+    }
+  }
+
+  let defaultPermissions: number[];
+  if (isDirectory) {
+    if (user === "root") {
+      defaultPermissions = [7, 5, 5];
+    } else {
+      defaultPermissions = [7, 7, 5];
+    }
+  } else {
+    defaultPermissions = [6, 6, 4];
+  }
+
+  const defaultMetaData = {
+    permissions: defaultPermissions,
+    group: user,
+    owner: user,
+  };
+
+  if (!existsSync(metaDataFilePath)) {
+    return defaultMetaData;
+  }
+
+  // TODO: Log this properly. Currently interrupts the build logs
+  // console.info(`Found a metadata file for ${path}`);
+  const fileContents = readFileSync(metaDataFilePath, { encoding: "utf8" });
+  const additionalMetaData: AdditionalMetaData = JSON.parse(fileContents);
+  additionalMetaData.permissions ??= defaultMetaData.permissions;
+  additionalMetaData.group ??= defaultMetaData.group;
+  additionalMetaData.owner ??= defaultMetaData.owner;
+
+  return additionalMetaData;
 }
 
 /**
@@ -95,7 +208,7 @@ function attachOrphanChildren(
  *
  * @param parentPath relative path of the expected parent
  * @param node the orphan
- * @param orphanMap existing map of orpahsn
+ * @param orphanMap existing map of orphans
  */
 function storeAsOrphan(
   parentPath: string,
@@ -114,6 +227,7 @@ function storeAsOrphan(
  * from a `fileTree` import.
  *
  * @param rootPath the path relative to the project root directory that the file tree should be built from.
+ * @param homeDirectory the 'home' directory containing user home directories. Used for determining file metadata.
  * @constructor
  *
  * @example vite.config.ts
@@ -132,7 +246,10 @@ function storeAsOrphan(
  *
  * console.info(fileTree);
  */
-export default function FileTree(rootPath?: string): Plugin {
+export default function FileTree(
+  rootPath?: string,
+  homeDirectory?: string,
+): Plugin {
   rootPath ??= "./";
 
   const name = "file-tree";
@@ -151,7 +268,7 @@ export default function FileTree(rootPath?: string): Plugin {
     load(id) {
       if (id === resolvedVirtualModuleId) {
         const projectRoot = process.cwd();
-        const absoluteRootPath = path.resolve(projectRoot, rootPath);
+        const absoluteRootPath = PathUtil.resolve(projectRoot, rootPath);
 
         if (!absoluteRootPath.startsWith(projectRoot)) {
           this.error(
@@ -160,18 +277,17 @@ export default function FileTree(rootPath?: string): Plugin {
           );
         }
 
-        const tree = walk(absoluteRootPath);
-
-        return `export const fileTree = ${JSON.stringify(tree, null, 2)}`;
+        const tree = walk(absoluteRootPath, homeDirectory);
+        return `export const fileTree = ${devalue.uneval(tree)}`;
       }
     },
 
     configureServer(server) {
       server.watcher.on("all", async (_eventName: string, filePath: string) => {
         const projectRoot = process.cwd();
-        const relativePath = path.relative(
+        const relativePath = PathUtil.relative(
           projectRoot,
-          path.normalize(filePath),
+          PathUtil.normalize(filePath),
         );
 
         if (relativePath.startsWith(rootPath)) {

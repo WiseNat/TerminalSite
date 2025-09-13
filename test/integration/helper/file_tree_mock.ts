@@ -1,11 +1,29 @@
-// @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
 import { FileTreeNode } from "virtual:file-tree";
 
-export const fileTree: FileTreeNode = [
+// noinspection JSUnusedGlobalSymbols
+export const fileTree: FileTreeNode[] = [
   {
-    children: [{ name: "index.ts", path: "src", isDirectory: false }],
+    children: [
+      {
+        name: "index.ts",
+        path: "src",
+        isDirectory: false,
+        lastModifiedTime: new Date(2020),
+        size: 0,
+        permissions: [],
+        owner: "",
+        group: "",
+        blocks: 0,
+      },
+    ],
     isDirectory: true,
     name: "src",
     path: "",
+    lastModifiedTime: new Date(2020, 0),
+    size: 0,
+    permissions: [],
+    owner: "",
+    group: "",
+    blocks: 0,
   },
 ];

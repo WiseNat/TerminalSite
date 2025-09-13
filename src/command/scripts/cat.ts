@@ -1,10 +1,9 @@
-// @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
-import getopts, { ParsedOptions } from "getopts";
 import { CommandScript } from "../command_script.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import FileImportUtil from "../../util/file_import_util.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import { escape } from "lodash-es";
+import CommandUtil from "../../util/command_util.ts";
 
 /**
  * Replaces Markdown URLs with an Anchor Element.
@@ -31,9 +30,9 @@ function insertAnchorElements(text: string): string {
 
 const cat: CommandScript = {
   async run(args: string[]): Promise<void> {
-    const parsedOptions: ParsedOptions = getopts(args);
+    const parsedOptions = CommandUtil.parseArgs("cat", args, {});
 
-    if (parsedOptions._.length === 0) {
+    if (parsedOptions === null || parsedOptions._.length === 0) {
       return;
     }
 
@@ -45,6 +44,7 @@ const cat: CommandScript = {
       if (fileContents === null) {
         const resolvedFilePath = FileSystemUtil.resolvePath(filePath);
 
+        // TODO: WHAT IF IT IS A DIRECTORY, SHOULD OUTPUT 'cat: /home/nathan/Desktop/: Is a directory'
         output.push(
           `cat: ${resolvedFilePath ?? filePath}: No such file or directory`,
         );

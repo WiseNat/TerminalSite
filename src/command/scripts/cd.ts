@@ -1,8 +1,7 @@
-// @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
-import getopts, { ParsedOptions } from "getopts";
 import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
+import CommandUtil from "../../util/command_util.ts";
 
 let workingDirectories: string[] = [];
 
@@ -71,9 +70,17 @@ function changeDirectory(path: string) {
   addWorkingDirectory(formattedPath);
 }
 
+// TODO: Add test for:
+//  1. cd into <DIR>
+//  2. cd -
+//  3. Should CD successfully and not output an error!
 const cd: CommandScript = {
   async run(args: string[]): Promise<void> {
-    const parsedOptions: ParsedOptions = getopts(args);
+    const parsedOptions = CommandUtil.parseArgs("cd", args, {});
+
+    if (parsedOptions === null) {
+      return;
+    }
 
     if (parsedOptions._.length > 1) {
       TerminalUtil.appendOutput("\nbash: cd: too many arguments");

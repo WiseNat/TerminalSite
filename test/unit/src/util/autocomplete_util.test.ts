@@ -187,7 +187,7 @@ describe("AutocompleteUtil", () => {
       expect(result).toStrictEqual([]);
     });
 
-    test("provides a dot file when provided a path ending with a dot", () => {
+    test("provides a dot file/dir when provided a path ending with a dot", () => {
       // Arrange
       const searchPath = "/src/main/.";
 
@@ -198,6 +198,8 @@ describe("AutocompleteUtil", () => {
       // Assert
       const expected: Suggestion[] = [
         { visual: ".testing ", actual: "testing " },
+        { visual: ".empty/", actual: "empty/" },
+        { visual: ".full/", actual: "full/" },
       ];
 
       expect(result).toStrictEqual(expected);
@@ -223,7 +225,7 @@ describe("AutocompleteUtil", () => {
       expect(result).toStrictEqual([]);
     });
 
-    test("provides nothing when provided a path ending with a dot", () => {
+    test("provides a dot dir when provided a path ending with a dot", () => {
       // Arrange
       const searchPath = "/src/main/.";
 
@@ -231,7 +233,12 @@ describe("AutocompleteUtil", () => {
       const result = AutocompleteUtil.getDirectorySuggestions(searchPath);
 
       // Assert
-      expect(result).toStrictEqual([]);
+      const expected: Suggestion[] = [
+        { visual: ".empty/", actual: "empty/" },
+        { visual: ".full/", actual: "full/" },
+      ];
+
+      expect(result).toStrictEqual(expected);
     });
   });
 

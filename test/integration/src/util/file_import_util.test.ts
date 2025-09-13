@@ -29,7 +29,6 @@ describe("readFile", () => {
     // Arrange
     // Keep this up to date with "an" existing file path
     const input = "./" + path.join("home", "nathanwise", "help.txt");
-    console.warn(input);
 
     // Act
     const result = await FileImportUtil.readFile(input);

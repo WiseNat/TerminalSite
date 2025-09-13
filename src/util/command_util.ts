@@ -1,3 +1,5 @@
+// @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
+import getopts, { Options, ParsedOptions } from "getopts";
 import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
 import TerminalUtil from "./terminal_util.ts";
@@ -133,5 +135,56 @@ export default class CommandUtil {
     }
 
     return commandScript.default;
+  }
+
+  /**
+   * Parses args into {@link ParsedOptions}.
+   * <p>
+   * Any args that aren't specified in `options` will cause an error message to
+   * be outputted in the terminal for the first unknown argument.
+   *
+   * @example
+   * const commandName = "myCommand"
+   * const args = ["example", "-foo", "--bar"];
+   * const options = {
+   *   boolean: ["a", "b"],
+   *   alias: {
+   *     bar: ["b"],
+   *   }
+   * }
+   *
+   * const parsedOptions = CommandUtil.parseArgs(commandName, args, options);
+   * // myCommand: invalid option -- 'f'
+   *
+   * if (parsedOptions === null) {
+   *   return;
+   * }
+   *
+   * @param commandName the name of the command that the args are being parsed for.
+   * @param args list of string args to pass, can include flags.
+   * @param options series of options for {@link getopts}.
+   * @returns {@link ParsedOptions} if the args were passed successfully, null otherwise
+   */
+  public static parseArgs(
+    commandName: string,
+    args: string[],
+    options: Options,
+  ): ParsedOptions | null {
+    let unknownFlag: string | null = null;
+    options.unknown = (option: string) => {
+      unknownFlag ??= option;
+      return false;
+    };
+
+    const parsedOptions: ParsedOptions = getopts(args, options);
+
+    if (unknownFlag !== null) {
+      TerminalUtil.appendOutput(
+        `\n${commandName}: invalid option -- '${unknownFlag}'`,
+      );
+      return null;
+    }
+
+    return parsedOptions;
   }
 }

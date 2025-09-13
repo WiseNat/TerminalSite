@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import FileSystemUtil from "../../../../src/util/file_system_util";
+import { FileTreeNode } from "virtual:file-tree";
 
 describe("FileSystemUtil", () => {
   describe("joinPaths", () => {
@@ -424,6 +425,8 @@ describe("FileSystemUtil", () => {
 
       // Assert
       expect(result).not.toBeNull();
+
+      result!.lastModifiedTime = new Date(2000, 0); // this value is unpredictable, even for snapshots
       expect(result).toMatchSnapshot();
     });
 
@@ -574,6 +577,510 @@ describe("FileSystemUtil", () => {
 
       // Assert
       expect(result).toBeFalsy();
+    });
+  });
+
+  describe("stripDots", () => {
+    test("returns the same path when given a path without dots", () => {
+      // Arrange
+      const path = "/some/example/path";
+
+      // Act
+      const result = FileSystemUtil.stripDots(path);
+
+      // Assert
+      expect(result).toEqual(path);
+    });
+
+    [
+      "/some/example/path",
+      "some/example/path",
+      "some/example/path/",
+      "/some/example/path/",
+    ].forEach((path) => {
+      test(`returns a path with the same starting & ending path separators when given '${path}'`, () => {
+        // Act
+        const result = FileSystemUtil.stripDots(path);
+
+        // Assert
+        expect(result).toEqual(path);
+      });
+    });
+
+    test("returns a path with all dots removed", () => {
+      // Arrange
+      const path =
+        "/some/.example/..path/with.multiple/dots./in.various/.places/";
+
+      // Act
+      const result = FileSystemUtil.stripDots(path);
+
+      // Assert
+      const expected = "/some/example/path/withmultiple/dots/invarious/places/";
+      expect(result).toEqual(expected);
+    });
+  });
+
+  describe("getExtension", () => {
+    [
+      {
+        type: "returns the extension for an normal file",
+        filename: "foo.txt",
+        expected: "txt",
+      },
+      {
+        type: "returns nothing for an empty string",
+        filename: "",
+        expected: "",
+      },
+      {
+        type: "returns nothing for file ending with a dot",
+        filename: "test.",
+        expected: "",
+      },
+      {
+        type: "returns nothing for file ending without a dot",
+        filename: "test",
+        expected: "",
+      },
+      {
+        type: "returns the extension for file with multiple dots",
+        filename: "test.ing.txt",
+        expected: "txt",
+      },
+    ].forEach(({ type, filename, expected }) => {
+      test(type, () => {
+        // Act
+        const extension = FileSystemUtil.getExtension(filename);
+
+        // Assert
+        expect(extension).toEqual(expected);
+      });
+    });
+  });
+
+  describe("isExecutable", () => {
+    [
+      [1, 0, 0],
+      [7, 7, 7],
+      [2, 3, 2],
+      [4, 4, 5],
+      [1, 1, 1],
+      [3, 4, 4],
+      [6, 6, 5],
+    ].forEach((permissions) => {
+      test("returns true when at least one executable bit is present", () => {
+        // Act
+        const result = FileSystemUtil.isExecutable(permissions);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
+    });
+
+    [
+      [0, 0, 0],
+      [2, 4, 4],
+      [0, 6, 0],
+      [4, 4, 0],
+      [6, 6, 6],
+      [0, 2, 2],
+    ].forEach((permissions) => {
+      test("returns false when no executable bits are present", () => {
+        // Act
+        const result = FileSystemUtil.isExecutable(permissions);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
+
+  describe("isArchiveFile", () => {
+    ["some.zip", "archive.tar", "example.txt.7z"].forEach((filename) => {
+      test("returns true when given a file with an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isArchiveFile(filename);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
+    });
+
+    ["empty", "example.txt", "foo.mp3"].forEach((filename) => {
+      test("returns false when given a file without an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isArchiveFile(filename);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
+
+  describe("isGraphicsFile", () => {
+    ["some.png", "archive.jpeg", "example.txt.mp4"].forEach((filename) => {
+      test("returns true when given a file with an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isGraphicsFile(filename);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
+    });
+
+    ["empty", "example.txt", "foo.mp3"].forEach((filename) => {
+      test("returns false when given a file without an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isGraphicsFile(filename);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
+
+  describe("isAudioFile", () => {
+    ["some.midi", "archive.mp3", "example.txt.ogg"].forEach((filename) => {
+      test("returns true when given a file with an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isAudioFile(filename);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
+    });
+
+    ["empty", "example.txt", "foo.mp4"].forEach((filename) => {
+      test("returns false when given a file without an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isAudioFile(filename);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
+
+  describe("isRubbishFile", () => {
+    ["some.old", "archive.tmp", "example.txt.dpkg-new"].forEach((filename) => {
+      test("returns true when given a file with an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isRubbishFile(filename);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
+    });
+
+    ["empty", "example.txt", "foo.mp4"].forEach((filename) => {
+      test("returns false when given a file without an archive extension", () => {
+        // Act
+        const result = FileSystemUtil.isRubbishFile(filename);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
+
+  describe("calculateBlockSize", () => {
+    test("returns correct block size when provided with a new block size and current block size", () => {
+      // Arrange
+      const blocks = 500;
+      const from = 1024;
+      const to = 2056;
+
+      // Act
+      const result = FileSystemUtil.calculateBlocks(blocks, from, to);
+
+      // Assert
+      expect(result).toEqual(250);
+    });
+
+    test("returns the same block size when provided with an equivalent new block size and current block size", () => {
+      // Arrange
+      const blocks = 123;
+      const from = 1024;
+      const to = 1024;
+
+      // Act
+      const result = FileSystemUtil.calculateBlocks(blocks, from, to);
+
+      // Assert
+      expect(result).toEqual(blocks);
+    });
+  });
+
+  describe("calculateHardLinks", () => {
+    const testCases: {
+      type: string;
+      expected: number;
+      node: FileTreeNode;
+    }[] = [
+      {
+        type: "file",
+        node: {
+          isDirectory: false,
+          name: "",
+          path: "",
+          lastModifiedTime: new Date(),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+        expected: 1,
+      },
+      {
+        type: "directory with no children",
+        node: {
+          isDirectory: true,
+          children: [],
+          name: "",
+          path: "",
+          lastModifiedTime: new Date(),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+        expected: 2,
+      },
+      {
+        type: "directory with only file children",
+        node: {
+          isDirectory: true,
+          children: [
+            {
+              isDirectory: false,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
+            },
+            {
+              isDirectory: false,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
+            },
+          ],
+          name: "",
+          path: "",
+          lastModifiedTime: new Date(),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+        expected: 2,
+      },
+      {
+        type: "directory with only directory children",
+        node: {
+          isDirectory: true,
+          children: [
+            {
+              isDirectory: true,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
+            },
+            {
+              isDirectory: true,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
+            },
+          ],
+          name: "",
+          path: "",
+          lastModifiedTime: new Date(),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+        expected: 4,
+      },
+      {
+        type: "directory with file & directory children",
+        node: {
+          isDirectory: true,
+          children: [
+            {
+              isDirectory: true,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
+            },
+            {
+              isDirectory: false,
+              name: "",
+              path: "",
+              lastModifiedTime: new Date(),
+              size: 0,
+              permissions: [],
+              owner: "",
+              group: "",
+              blocks: 0,
+            },
+          ],
+          name: "",
+          path: "",
+          lastModifiedTime: new Date(),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+        expected: 3,
+      },
+    ];
+
+    testCases.forEach(({ type, node, expected }) => {
+      test(`returns ${expected} for ${type}`, () => {
+        // Act
+        const result = FileSystemUtil.calculateHardLinks(node);
+
+        // Assert
+        expect(result).toEqual(expected);
+      });
+    });
+  });
+
+  describe("getHumanReadableSize", () => {
+    [0, 1, 200, 1000, 1023, 1024].forEach((bytes) => {
+      test("returns 1K for bytes <= 1KB", () => {
+        // Act
+        const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+        // Assert
+        expect(result).toEqual("1K");
+      });
+    });
+
+    [5121, 5300, 6143].forEach((bytes) => {
+      test("returns 6K for 5KB < bytes <= 6KB", () => {
+        // Act
+        const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+        // Assert
+        expect(result).toEqual("6K");
+      });
+    });
+
+    [2097153, 3000000, 3145728].forEach((bytes) => {
+      test("returns 3M for 2MB < bytes <= 3MB", () => {
+        // Act
+        const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+        // Assert
+        expect(result).toEqual("3M");
+      });
+    });
+
+    test("returns 6GB for exactly 6GB", () => {
+      // Arrange
+      const bytes = 6442450944;
+
+      // Act
+      const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+      // Assert
+      expect(result).toEqual("6G");
+    });
+
+    [6442450945, 6700000000, 7516192768].forEach((bytes) => {
+      test("returns 7B for 6GB < bytes <= 7GB", () => {
+        // Act
+        const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+        // Assert
+        expect(result).toEqual("7G");
+      });
+    });
+
+    test("returns 5120G for 5TB worth of bytes", () => {
+      // Arrange
+      const bytes = 5497558138880;
+
+      // Act
+      const result = FileSystemUtil.getHumanReadableSize(bytes);
+
+      // Assert
+      expect(result).toEqual("5120G");
+    });
+  });
+
+  describe("getHumanReadablePermissions", () => {
+    [
+      {
+        permissions: [0, 0, 0],
+        isDirectory: false,
+        expected: "----------",
+      },
+      {
+        permissions: [0, 0, 0],
+        isDirectory: true,
+        expected: "d---------",
+      },
+      {
+        permissions: [1, 2, 3],
+        isDirectory: false,
+        expected: "---x-w--wx",
+      },
+      {
+        permissions: [4, 5, 6],
+        isDirectory: true,
+        expected: "dr--r-xrw-",
+      },
+      {
+        permissions: [7, 7, 7],
+        isDirectory: false,
+        expected: "-rwxrwxrwx",
+      },
+    ].forEach(({ permissions, isDirectory, expected }) => {
+      test(`returns ${expected} for permissions='${permissions}' and isDirectory=${isDirectory}`, () => {
+        // Act
+        const result = FileSystemUtil.getHumanReadablePermissions(
+          permissions,
+          isDirectory,
+        );
+
+        // Assert
+        expect(result).toEqual(expected);
+      });
     });
   });
 });
