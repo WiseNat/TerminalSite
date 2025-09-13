@@ -45,6 +45,7 @@ export function walk(
     const additionalMetaData = getAdditionalMetaData(
       absolutePath,
       relativePath,
+      isDirectory,
       homeDirectory,
     );
 
@@ -129,11 +130,13 @@ function getLastModifiedTime(path: string): Date {
  *
  * @param path the absolute path of the File or Directory.
  * @param relativePath the path of the File or Directory relative to the `rootDirPath`.
+ * @param isDirectory whether the metadata is for a Directory.
  * @param homeDirectory the directory containing user home directories.
  */
 function getAdditionalMetaData(
   path: string,
   relativePath: string,
+  isDirectory: boolean,
   homeDirectory?: string,
 ): AdditionalMetaData {
   const metaDataFilePath = `${path}.meta`;
@@ -149,8 +152,19 @@ function getAdditionalMetaData(
     }
   }
 
+  let defaultPermissions: number[];
+  if (isDirectory) {
+    if (user === "root") {
+      defaultPermissions = [7, 5, 5];
+    } else {
+      defaultPermissions = [7, 7, 5];
+    }
+  } else {
+    defaultPermissions = [6, 6, 4];
+  }
+
   const defaultMetaData = {
-    permissions: [6, 6, 4],
+    permissions: defaultPermissions,
     group: user,
     owner: user,
   };

@@ -392,7 +392,7 @@ test.describe("Ls", () => {
           "\ntotal: 320K" +
           "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Jul 21 00:50 about.txt" +
           "\n-rw-rw-r-- 1 nathanwise nathanwise\t282K Jul 21 00:50 CV.pdf" +
-          "\ndrw-rw-r-- 2 nathanwise nathanwise\t4K Aug 17 00:33 Education" +
+          "\ndrwxrwxr-x 2 nathanwise nathanwise\t4K Aug 17 00:33 Education" +
           "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Jul 21 00:50 skills.md";
         await expect(page.locator(outputSelector)).exactTextInElement(
           `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
@@ -502,7 +502,7 @@ test.describe("Ls", () => {
         "\ntotal: 327680" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t272 Jul 21 00:50 about.txt" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t288626 Jul 21 00:50 CV.pdf" +
-        "\ndrw-rw-r-- 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
+        "\ndrwxrwxr-x 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t375 Jul 21 00:50 skills.md",
     },
     {
@@ -516,7 +516,7 @@ test.describe("Ls", () => {
         "\ntotal: 327680" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t272 Jul 21 00:50 about.txt" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t288626 Jul 21 00:50 CV.pdf" +
-        "\ndrw-rw-r-- 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
+        "\ndrwxrwxr-x 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t375 Jul 21 00:50 skills.md",
     },
     {
@@ -530,7 +530,7 @@ test.describe("Ls", () => {
         "\ntotal: 640" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Jul 21 00:50 about.txt" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t564 Jul 21 00:50 CV.pdf" +
-        "\ndrw-rw-r-- 2 nathanwise nathanwise\t8 Aug 17 00:33 Education" +
+        "\ndrwxrwxr-x 2 nathanwise nathanwise\t8 Aug 17 00:33 Education" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Jul 21 00:50 skills.md",
     },
     {
@@ -544,7 +544,7 @@ test.describe("Ls", () => {
         "\ntotal: 160" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Jul 21 00:50 about.txt" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t141 Jul 21 00:50 CV.pdf" +
-        "\ndrw-rw-r-- 2 nathanwise nathanwise\t2 Aug 17 00:33 Education" +
+        "\ndrwxrwxr-x 2 nathanwise nathanwise\t2 Aug 17 00:33 Education" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Jul 21 00:50 skills.md",
     },
   ].forEach(({ flags, blockSize, expected }) => {
@@ -598,7 +598,7 @@ test.describe("Ls", () => {
         "\ntotal: 320" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t272 Jul 21 00:50 about.txt" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t288626 Jul 21 00:50 CV.pdf" +
-        "\ndrw-rw-r-- 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
+        "\ndrwxrwxr-x 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t375 Jul 21 00:50 skills.md";
       await expect(page.locator(outputSelector)).exactTextInElement(
         `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
@@ -635,7 +635,7 @@ test.describe("Ls", () => {
         "\ntotal: 320" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t272 Jul 21 00:50 about.txt" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t288626 Jul 21 00:50 CV.pdf" +
-        "\ndrw-rw-r-- 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
+        "\ndrwxrwxr-x 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t375 Jul 21 00:50 skills.md";
       await expect(page.locator(outputSelector)).exactTextInElement(
         `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
