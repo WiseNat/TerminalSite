@@ -10,6 +10,12 @@ describe("Ls", () => {
     FileSystemUtil.setCurrentWorkingDirectory("~");
   });
 
+  vi.mocked(ColourUtil.getFileSystemEntry).mockImplementation(
+    (node, useShortName) => {
+      return useShortName ? node.name : "/" + node.path + "/" + node.name;
+    },
+  );
+
   describe("run", () => {
     // Spy
     const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");

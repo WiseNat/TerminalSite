@@ -9,6 +9,26 @@ export interface Style {
 }
 
 export default class ColourUtil {
+  // TODO: JSDoc
+  // TODO: Unit tests
+  public static getFileSystemEntry(
+    node: FileTreeNode,
+    useShortName: boolean,
+  ): string {
+    const style = ColourUtil.getFileSystemEntryStyle(node);
+
+    const styleString = this.createStyleString(style);
+    const path = useShortName
+      ? node.name
+      : FileSystemUtil.joinPaths(node.path, node.name);
+
+    if (styleString === "") {
+      return path;
+    }
+
+    return `<span style='${styleString}'>${path}</span>`;
+  }
+
   /**
    * Gets the CSS Styling information for the given {@link FileTreeNode}. Styling includes colours for the foreground &
    * background alongside font weighting.
@@ -46,5 +66,24 @@ export default class ColourUtil {
       background: background,
       fontWeight: fontWeight,
     };
+  }
+
+  /**
+   * Creates an HTML CSS Style String for use in elements based on the provided
+   * `style`.
+   *
+   * @param style the value to use to create the style string.
+   * @returns an HTML CSS Style String.
+   */
+  private static createStyleString(style: Style) {
+    return [
+      style.foreground === null ? null : `color: ${style.foreground}`,
+      style.background === null ? null : `background: ${style.background}`,
+      style.fontWeight === null ? null : `font-weight: ${style.fontWeight}`,
+    ]
+      .filter(function (val) {
+        return val !== null;
+      })
+      .join("; ");
   }
 }

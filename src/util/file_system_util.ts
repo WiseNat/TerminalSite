@@ -15,6 +15,7 @@ export default class FileSystemUtil {
   public static readonly homeDirectorySymbol = "~";
   public static readonly currentWorkingDirectorySymbol = ".";
   public static readonly parentDirectorySymbol = "..";
+  public static readonly dotEntrySymbol = ".";
 
   public static readonly username = "nathanwise";
 
@@ -397,6 +398,15 @@ export default class FileSystemUtil {
     return path.replace(/\./g, "");
   }
 
+  // TODO: Unit tests
+  /**
+   * @param filename the file name to check
+   * @returns true if the file is a dot-file or dot-directory, false otherwise.
+   */
+  public static isDotEntry(filename: string): boolean {
+    return filename.startsWith(this.dotEntrySymbol);
+  }
+
   /**
    * Gets the extension in the given filename.
    *
@@ -560,5 +570,23 @@ export default class FileSystemUtil {
     const symbols = ["---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx"];
     const typeChar = isDirectory ? "d" : "-";
     return typeChar + permissions.map((p) => symbols[p]).join("");
+  }
+
+  // TODO: unit test me!
+  public static sortNodes(nodes: FileTreeNode[]): FileTreeNode[] {
+    nodes = nodes.slice();
+
+    nodes.sort((a, b) => {
+      const aString = FileSystemUtil.stripDots(
+        FileSystemUtil.joinPaths(a.path, a.name),
+      );
+      const bString = FileSystemUtil.stripDots(
+        FileSystemUtil.joinPaths(b.path, b.name),
+      );
+
+      return aString.localeCompare(bString);
+    });
+
+    return nodes;
   }
 }
