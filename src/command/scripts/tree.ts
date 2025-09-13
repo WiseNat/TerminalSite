@@ -77,7 +77,7 @@ function generateTreeFromNode(node: FileTreeNode): TreeView {
     directoryCount: 0,
   };
 
-  tree.content = ColourUtil.getFileSystemEntry(node, false);
+  tree.content += ColourUtil.getFileSystemEntry(node, false);
 
   if (node.children === undefined || node.children.length === 0) {
     return tree;
@@ -110,7 +110,8 @@ function generateTreeFromNode(node: FileTreeNode): TreeView {
   while (stack.length > 0) {
     const { node, prefix, isLast } = stack.pop()!;
 
-    tree.content += `${prefix}${isLast ? "└── " : "├── "}${node.name}\n`;
+    const filename = ColourUtil.getFileSystemEntry(node, true);
+    tree.content += `${prefix}${isLast ? "└── " : "├── "}${filename}\n`;
 
     if (node.isDirectory) {
       tree.directoryCount++;
@@ -177,7 +178,7 @@ const tree: CommandScript = {
 
     const output: string = generateOutput(paths);
 
-    TerminalUtil.appendRawOutput(output);
+    TerminalUtil.appendRawOutput(`\n${output}`);
   },
 };
 

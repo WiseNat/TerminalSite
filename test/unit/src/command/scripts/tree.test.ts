@@ -17,9 +17,17 @@ describe("Tree", () => {
     vi.mock("../../../../../src/util/terminal_util");
     vi.mock("../../../../../src/util/colour_util");
 
-    vi.mocked(ColourUtil.getFileSystemEntry).mockImplementation((node) => {
-      return node.path + "/" + node.name;
-    });
+    vi.mocked(ColourUtil.getFileSystemEntry).mockImplementation(
+      (node, useShortName) => {
+        if (useShortName) {
+          return node.name;
+        }
+
+        return node.path === ""
+          ? `/${node.name}`
+          : `/${node.path}/${node.name}`;
+      },
+    );
 
     test("given no path, should output a tree for the current working directory", async () => {
       // Arrange
@@ -30,7 +38,7 @@ describe("Tree", () => {
 
       // Assert
       const expected =
-        "src/main\n" +
+        "\n/src/main\n" +
         "└── foo\n" +
         "    ├── bar\n" +
         "    ├── bazzing.gaz\n" +
@@ -49,7 +57,7 @@ describe("Tree", () => {
 
       // Assert
       const expected =
-        "src/main/foo/daz  [error opening dir]\n" +
+        "\n/src/main/foo/daz  [error opening dir]\n" +
         "\n" +
         "0 directories, 1 file";
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
@@ -64,7 +72,7 @@ describe("Tree", () => {
 
       // Assert
       const expected =
-        "/some/fake/path  [error opening dir]\n" +
+        "\n/some/fake/path  [error opening dir]\n" +
         "\n" +
         "0 directories, 0 files";
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
@@ -79,7 +87,7 @@ describe("Tree", () => {
 
       // Assert
       const expected =
-        "src/main/foo\n" +
+        "\n/src/main/foo\n" +
         "├── bar\n" +
         "├── bazzing.gaz\n" +
         "└── daz\n" +
@@ -96,7 +104,7 @@ describe("Tree", () => {
       await tree.run(args);
 
       // Assert
-      const expected = "/test\n" + "\n" + "0 directories, 0 files";
+      const expected = "\n/test\n" + "\n" + "0 directories, 0 files";
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
     });
 
@@ -109,7 +117,7 @@ describe("Tree", () => {
 
       // Assert
       const expected =
-        "src/main/.full\n" +
+        "\n/src/main/.full\n" +
         "├── aFile\n" +
         "└── someEmptyDir\n" +
         "\n" +
@@ -126,7 +134,7 @@ describe("Tree", () => {
 
       // Assert
       const expected =
-        "/\n" +
+        "\n/\n" +
         "├── src\n" +
         "│   ├── index.ts\n" +
         "│   └── main\n" +
@@ -145,11 +153,11 @@ describe("Tree", () => {
         type: "given multiple directory paths, should output trees for both",
         args: ["./foo", "./"],
         expected:
-          "src/main/foo\n" +
+          "\n/src/main/foo\n" +
           "├── bar\n" +
           "├── bazzing.gaz\n" +
           "└── daz\n" +
-          "src/main\n" +
+          "/src/main\n" +
           "└── foo\n" +
           "    ├── bar\n" +
           "    ├── bazzing.gaz\n" +
@@ -161,8 +169,8 @@ describe("Tree", () => {
         type: "given multiple file paths, should output errors for both",
         args: ["foo/daz", ".full/aFile"],
         expected:
-          "src/main/foo/daz  [error opening dir]\n" +
-          "src/main/.full/aFile  [error opening dir]\n" +
+          "\n/src/main/foo/daz  [error opening dir]\n" +
+          "/src/main/.full/aFile  [error opening dir]\n" +
           "\n" +
           "0 directories, 2 files",
       },
@@ -170,11 +178,11 @@ describe("Tree", () => {
         type: "given a directory and file path, should output a tree and an error",
         args: ["foo", "foo/daz"],
         expected:
-          "src/main/foo\n" +
+          "\n/src/main/foo\n" +
           "├── bar\n" +
           "├── bazzing.gaz\n" +
           "└── daz\n" +
-          "src/main/foo/daz  [error opening dir]\n" +
+          "/src/main/foo/daz  [error opening dir]\n" +
           "\n" +
           "2 directories, 3 files",
       },
@@ -182,8 +190,8 @@ describe("Tree", () => {
         type: "given file and directory path, should output an error and a tree",
         args: ["foo/daz", "foo"],
         expected:
-          "src/main/foo/daz  [error opening dir]\n" +
-          "src/main/foo\n" +
+          "\n/src/main/foo/daz  [error opening dir]\n" +
+          "/src/main/foo\n" +
           "├── bar\n" +
           "├── bazzing.gaz\n" +
           "└── daz\n" +

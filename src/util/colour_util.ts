@@ -20,7 +20,8 @@ export default class ColourUtil {
     const styleString = this.createStyleString(style);
     const path = useShortName
       ? node.name
-      : FileSystemUtil.joinPaths(node.path, node.name);
+      : FileSystemUtil.pathSeparator +
+        FileSystemUtil.joinPaths(node.path, node.name);
 
     if (styleString === "") {
       return path;
