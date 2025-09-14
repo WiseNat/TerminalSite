@@ -16,7 +16,53 @@ export default defineConfig([
     rules: {
       "@stylistic/semi": ["error", "always"],
       "@stylistic/quotes": ["error", "double"],
-      "eqeqeq": ["error", "smart"]
+      eqeqeq: ["error", "smart"],
+      "@typescript-eslint/naming-convention": [
+        "error",
+
+        // Destructured Variables (ignore formatting as per https://typescript-eslint.io/rules/naming-convention/#ignore-destructured-names)
+        {
+          selector: "variable",
+          modifiers: ["destructured"],
+          format: null,
+        },
+
+        // Variables (not Global Const)
+        {
+          selector: "variable",
+          format: ["camelCase"],
+        },
+
+        // Global Const Variables
+        {
+          selector: "variable",
+          modifiers: ["const", "global"],
+          format: ["UPPER_CASE"],
+        },
+
+        // Classes
+        {
+          selector: "class",
+          format: ["PascalCase"],
+        },
+
+        // Functions
+        {
+          selector: "function",
+          format: ["camelCase"],
+          leadingUnderscore: "allow",
+        },
+
+        // Enums
+        {
+          selector: "enum",
+          format: ["PascalCase"],
+        },
+        {
+          selector: "enumMember",
+          format: ["UPPER_CASE"],
+        },
+      ],
     },
   },
   {
