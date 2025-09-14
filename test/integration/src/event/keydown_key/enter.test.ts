@@ -16,7 +16,7 @@ describe("Enter", () => {
   vi.mock("../../../../../src/util/command_util");
 
   beforeEach(() => {
-    CommandHistoryUtil.resetHistory();
+    CommandHistoryUtil._resetHistory();
   });
 
   describe("without 'Shift'", () => {
@@ -44,7 +44,7 @@ describe("Enter", () => {
       expect(addToHistory).toHaveBeenCalledWith(userInput);
       expect(addToHistory).toHaveBeenCalledWith("");
       expect(setHistoricCommand).not.toHaveBeenCalled();
-      expect(CommandHistoryUtil.getHistoryIndex()).toEqual(0);
+      expect(CommandHistoryUtil._getHistoryIndex()).toEqual(0);
       expect(CommandHistoryUtil.getHistory()).toStrictEqual(["", userInput]);
     });
 
@@ -64,7 +64,7 @@ describe("Enter", () => {
       // Assert
       expect(setHistoricCommand).toHaveBeenCalledExactlyOnceWith(userInput);
       expect(addToHistory).toHaveBeenCalledExactlyOnceWith("");
-      expect(CommandHistoryUtil.getHistoryIndex()).toEqual(0);
+      expect(CommandHistoryUtil._getHistoryIndex()).toEqual(0);
       expect(CommandHistoryUtil.getHistory()).toStrictEqual([
         "",
         userInput,
@@ -90,7 +90,7 @@ describe("Enter", () => {
       // Assert
       expect(setHistoricCommand).toHaveBeenCalledExactlyOnceWith(userInput);
       expect(addToHistory).toHaveBeenCalledExactlyOnceWith("");
-      expect(CommandHistoryUtil.getHistoryIndex()).toEqual(0);
+      expect(CommandHistoryUtil._getHistoryIndex()).toEqual(0);
       expect(CommandHistoryUtil.getHistory()).toStrictEqual([
         "",
         userInput,

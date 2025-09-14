@@ -109,10 +109,9 @@ function getPreviousWorkingDirectory(): string | null {
 }
 
 /**
- * Resets the working directories variable. Intended to only be used by Unit Tests
- * to reset state.
+ * Resets the working directories variable.
  *
- * @internal
+ * @internal **intended to be solely used by Tests**
  */
 export function _resetWorkingDirectories() {
   workingDirectories = [];

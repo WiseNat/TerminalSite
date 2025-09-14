@@ -4,15 +4,19 @@ export default class CommandHistoryUtil {
 
   /**
    * Gets the history index which acts as a pointer to the current location in history.
+   *
+   * @internal **intended to be solely used by Tests**
    */
-  public static getHistoryIndex() {
+  public static _getHistoryIndex() {
     return this.historyIndex;
   }
 
   /**
    * Resets the command history to be empty and resets the history index to match.
+   *
+   * @internal **intended to be solely used by Tests**
    */
-  public static resetHistory() {
+  public static _resetHistory() {
     this.history = [];
     this.resetHistoryIndex();
   }
