@@ -211,7 +211,7 @@ describe("Tree", () => {
     });
 
     describe("-a flag", () => {
-      test("given a directory path, should output a tree for the directory including dotfiles", async () => {
+      test("given a directory path with the -a flag, should output a tree for the directory including dotfiles", async () => {
         // Arrange
         const args = ["../..", "foo/daz", "/some/fake/path", "-a"];
 
@@ -238,6 +238,56 @@ describe("Tree", () => {
           "/some/fake/path  [error opening dir]\n" +
           "\n" +
           "9 directories, 6 files";
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+      });
+    });
+
+    describe("-d flag", () => {
+      test("given a directory path with the -d flag, should output a tree for the directory skipping all files", async () => {
+        // Arrange
+        const args = ["../..", "foo/daz", "/some/fake/path", "-d"];
+
+        // Act
+        await tree.run(args);
+
+        // Assert
+        const expected =
+          "\n/\n" +
+          "├── src\n" +
+          "│   └── main\n" +
+          "│       └── foo\n" +
+          "│           └── bar\n" +
+          "└── test\n" +
+          "/src/main/foo/daz  [error opening dir]\n" +
+          "/some/fake/path  [error opening dir]\n" +
+          "\n" +
+          "6 directories";
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+      });
+
+      test("given a directory path with the -d & -a flags, should output a tree for the directory skipping all files but including dot-dirs", async () => {
+        // Arrange
+        const args = ["../..", "foo/daz", "/some/fake/path", "-ad"];
+
+        // Act
+        await tree.run(args);
+
+        // Assert
+        const expected =
+          "\n/\n" +
+          "├── src\n" +
+          "│   └── main\n" +
+          "│       ├── .empty\n" +
+          "│       ├── foo\n" +
+          "│       │   └── bar\n" +
+          "│       └── .full\n" +
+          "│           └── someEmptyDir\n" +
+          "└── test\n" +
+          "/src/main/foo/daz  [error opening dir]\n" +
+          "/some/fake/path  [error opening dir]\n" +
+          "\n" +
+          "9 directories";
+
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
     });

@@ -9,6 +9,7 @@ import { FileTreeNode } from "virtual:file-tree";
 
 interface Flags {
   a: boolean;
+  d: boolean;
 }
 
 interface TreeView {
@@ -30,15 +31,15 @@ function generateOutput(paths: string[], flags: Flags): string {
     totalFileCount += tree.fileCount;
   }
 
-  const directorySuffix: string =
-    totalDirectoryCount === 1 ? "directory" : "directories";
-  const fileSuffix: string = totalFileCount === 1 ? "file" : "files";
+  const directorySegment = `${totalDirectoryCount} ${totalDirectoryCount === 1 ? "directory" : "directories"}`;
+  const output = `${trees.join("\n")}\n\n${directorySegment}`;
 
-  return (
-    trees.join("\n") +
-    "\n\n" +
-    `${totalDirectoryCount} ${directorySuffix}, ${totalFileCount} ${fileSuffix}`
-  );
+  if (flags.d) {
+    return output;
+  }
+
+  const fileSegment = `${totalFileCount} ${totalFileCount === 1 ? "file" : "files"}`;
+  return `${output}, ${fileSegment}`;
 }
 
 function getTreeViewForPath(path: string, flags: Flags): TreeView {
@@ -162,17 +163,21 @@ function sortNodes(nodes: FileTreeNode[]): FileTreeNode[] {
 }
 
 function filterNodes(nodes: FileTreeNode[], flags: Flags): FileTreeNode[] {
-  if (flags.a) {
-    return nodes;
+  if (flags.d) {
+    nodes = nodes.filter((node) => node.isDirectory);
   }
 
-  return nodes.filter((node) => !FileSystemUtil.isDotEntry(node.name));
+  if (!flags.a) {
+    nodes = nodes.filter((node) => !FileSystemUtil.isDotEntry(node.name));
+  }
+
+  return nodes;
 }
 
 const tree: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("tree", args, {
-      boolean: ["a"],
+      boolean: ["a", "d"],
     });
 
     if (parsedOptions === null) {
@@ -188,7 +193,10 @@ const tree: CommandScript = {
             ),
           ];
 
-    const output: string = generateOutput(paths, { a: parsedOptions.a });
+    const output: string = generateOutput(paths, {
+      a: parsedOptions.a,
+      d: parsedOptions.d,
+    });
 
     TerminalUtil.appendRawOutput(`\n${output}`);
   },
