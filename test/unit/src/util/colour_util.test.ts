@@ -10,29 +10,67 @@ import {
 } from "../../../../src/constant/colour";
 
 describe("ColourUtil", () => {
-  describe("getFileSystemEntryStyle", () => {
-    /**
-     * Creates a minimal node with modifications to the fields that matter for `getFileSystemEntryStyle`
-     */
-    function createNode(
-      name: string,
-      isDirectory: boolean,
-      permissions: number[],
-    ): FileTreeNode {
-      return {
-        blocks: 0,
-        name: name,
-        path: "",
-        isDirectory: isDirectory,
-        children: [],
-        lastModifiedTime: new Date(),
-        size: 0,
-        permissions: permissions,
-        owner: "",
-        group: "",
-      };
-    }
+  /**
+   * Creates a minimal node with modifications to the fields that matter for `getFileSystemEntryStyle`
+   */
+  function createNode(
+    name: string,
+    isDirectory: boolean,
+    permissions: number[],
+    path?: string,
+  ): FileTreeNode {
+    return {
+      blocks: 0,
+      name: name,
+      path: path === undefined ? "" : path,
+      isDirectory: isDirectory,
+      children: [],
+      lastModifiedTime: new Date(),
+      size: 0,
+      permissions: permissions,
+      owner: "",
+      group: "",
+    };
+  }
 
+  describe("getFileSystemEntry", () => {
+    [
+      {
+        type: "returns a short name when given a txt file node and useShortName=true",
+        node: createNode("file.txt", false, [6, 6, 4], "some/path"),
+        useShortName: true,
+        expected: "file.txt",
+      },
+      {
+        type: "returns a long name when given a txt file node and useShortName=false",
+        node: createNode("file.txt", false, [6, 6, 4], "some/path"),
+        useShortName: false,
+        expected: "/some/path/file.txt",
+      },
+      {
+        type: "returns a span with colour and a short name when given an executable file node and useShortName=true",
+        node: createNode("file.txt", false, [7, 7, 7], "some/path"),
+        useShortName: true,
+        expected: `<span style='color: ${GREEN}; font-weight: bold'>file.txt</span>`,
+      },
+      {
+        type: "returns a span with colour and a long name when given an executable file node and useShortName=false",
+        node: createNode("file.txt", false, [7, 7, 7], "some/path"),
+        useShortName: false,
+        expected: `<span style='color: ${GREEN}; font-weight: bold'>/some/path/file.txt</span>`,
+      },
+    ].forEach(({ type, node, useShortName, expected }) => {
+      test(type, () => {
+        // Act
+        const result = ColourUtil.getFileSystemEntry(node, useShortName);
+
+        // Assert
+        expect(result).toEqual(expected);
+      });
+    });
+  });
+
+  describe("getFileSystemEntryStyle", () => {
     test("normal file should have no styling", () => {
       // Arrange
       const node = createNode("example.txt", false, [6, 6, 4]);

@@ -6,15 +6,7 @@ import {
   outputSelector,
   promptSelector,
 } from "../../helper/constant/generic";
-import {
-  BLACK,
-  BLUE,
-  CYAN,
-  GREEN,
-  MAGENTA,
-  RED,
-} from "../../../../src/constant/colour";
-import { Page } from "@playwright/test";
+import { checkForColouredSpans } from "../../helper/util/element_util.ts";
 
 test.describe("Ls", () => {
   const existingDirectory = "/home/nathanwise/Documents";
@@ -22,50 +14,6 @@ test.describe("Ls", () => {
   const existingFile = "/etc/hosts";
   const existingDotFile = "~/Projects/this/.external";
   const fakePath = "/some/fake/path";
-
-  interface ColouredCounts {
-    directory: number;
-    executables: number;
-    archives: number;
-    graphics: number;
-    audios: number;
-    rubbish: number;
-  }
-
-  function getColouredSpanLocator(colour: string): string {
-    return `//span[contains(@style, "color: ${colour}") and contains(@style, "font-weight: bold")]`;
-  }
-
-  async function checkForColouredSpans(
-    page: Page,
-    colouredCounts: ColouredCounts,
-  ) {
-    await expect(
-      page.locator(outputSelector).locator(getColouredSpanLocator(BLUE)),
-    ).toHaveCount(colouredCounts.directory);
-
-    await expect(
-      page.locator(outputSelector).locator(getColouredSpanLocator(GREEN)),
-    ).toHaveCount(colouredCounts.executables);
-
-    await expect(
-      page.locator(outputSelector).locator(getColouredSpanLocator(RED)),
-    ).toHaveCount(colouredCounts.archives);
-
-    await expect(
-      page.locator(outputSelector).locator(getColouredSpanLocator(MAGENTA)),
-    ).toHaveCount(colouredCounts.graphics);
-
-    await expect(
-      page.locator(outputSelector).locator(getColouredSpanLocator(CYAN)),
-    ).toHaveCount(colouredCounts.audios);
-
-    await expect(
-      page
-        .locator(outputSelector)
-        .locator(`//span[contains(@style, "color: ${BLACK}")]`),
-    ).toHaveCount(colouredCounts.rubbish);
-  }
 
   [
     {

@@ -2,7 +2,7 @@ import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
-import ColourUtil, { Style } from "../../util/colour_util.ts";
+import ColourUtil from "../../util/colour_util.ts";
 import { clone } from "lodash-es";
 import CommandUtil from "../../util/command_util.ts";
 
@@ -301,7 +301,9 @@ function getSortedDirectoryEntryChildren(
     children.unshift(parentEntry);
     children.unshift(shallowDirectoryEntryClone);
   } else {
-    children = children.filter((entry) => !isDotEntry(entry.name));
+    children = children.filter(
+      (entry) => !FileSystemUtil.isDotEntry(entry.name),
+    );
   }
 
   return children;
@@ -310,7 +312,7 @@ function getSortedDirectoryEntryChildren(
 /**
  * Sorts and Formats Directory Entry Children.
  * <p>
- * Children will be coloured based on {@link ColourUtil.getFileSystemEntryStyle}.
+ * Children will be coloured based on {@link ColourUtil.getFileSystemEntry}.
  *
  * @param children list of directory entry children.
  * @param flags flags for formatting.
@@ -343,27 +345,22 @@ function formatEntry(
   flags: FormatFlags,
   useShortName: boolean,
 ) {
-  const style = ColourUtil.getFileSystemEntryStyle({
-    name: entry.name,
-    path: entry.path,
-    isDirectory: entry.isDirectory,
-    lastModifiedTime: entry.lastModifiedTime,
-    size: entry.size,
-    permissions: entry.permissions,
-    owner: entry.owner,
-    group: entry.group,
-    blocks: entry.blocks,
-  });
-
-  const styleString = createStyleString(style);
+  const fileSystemEntry = ColourUtil.getFileSystemEntry(
+    {
+      name: entry.name,
+      path: entry.path,
+      isDirectory: entry.isDirectory,
+      lastModifiedTime: entry.lastModifiedTime,
+      size: entry.size,
+      permissions: entry.permissions,
+      owner: entry.owner,
+      group: entry.group,
+      blocks: entry.blocks,
+    },
+    useShortName,
+  );
 
   let formattedChild: string;
-  if (styleString === "") {
-    formattedChild = useShortName ? entry.name : entry.fullPath;
-  } else {
-    formattedChild = `<span style='${styleString}'>${useShortName ? entry.name : entry.fullPath}</span>`;
-  }
-
   if (flags.l) {
     const permissionsString = FileSystemUtil.getHumanReadablePermissions(
       entry.permissions,
@@ -372,13 +369,15 @@ function formatEntry(
     const dateTime = formatDateTime(entry.lastModifiedTime);
     const size = getSize(entry, flags);
 
-    formattedChild = `${permissionsString} ${entry.hardLinks} ${entry.owner} ${entry.group}\t${size} ${dateTime} ${formattedChild}`;
+    formattedChild = `${permissionsString} ${entry.hardLinks} ${entry.owner} ${entry.group}\t${size} ${dateTime} ${fileSystemEntry}`;
   }
 
   if (flags.s) {
     const size: string = getBlockSize(entry, flags);
-    formattedChild = `${size} ${formattedChild}`;
+    formattedChild = `${size} ${fileSystemEntry}`;
   }
+
+  formattedChild ??= fileSystemEntry;
 
   return formattedChild;
 }
@@ -468,33 +467,6 @@ function getTotalBlockSize(entries: EntryNode[], flags: FormatFlags): string {
   }
 
   return output;
-}
-
-/**
- * @param name the file name to check
- * @returns true if the file is a dot-file or dot-directory, false otherwise.
- */
-function isDotEntry(name: string): boolean {
-  return name.startsWith(".");
-}
-
-/**
- * Creates an HTML CSS Style String for use in elements based on the provided
- * `style`.
- *
- * @param style the value to use to create the style string.
- * @returns an HTML CSS Style String.
- */
-function createStyleString(style: Style): string {
-  return [
-    style.foreground === null ? null : `color: ${style.foreground}`,
-    style.background === null ? null : `background: ${style.background}`,
-    style.fontWeight === null ? null : `font-weight: ${style.fontWeight}`,
-  ]
-    .filter(function (val) {
-      return val !== null;
-    })
-    .join("; ");
 }
 
 /**

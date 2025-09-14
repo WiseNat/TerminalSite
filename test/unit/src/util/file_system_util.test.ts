@@ -621,6 +621,41 @@ describe("FileSystemUtil", () => {
     });
   });
 
+  describe("isDotEntry", () => {
+    test("returns false for a filename that is not a dot entry", () => {
+      // Arrange
+      const filename = "someFile.txt";
+
+      // Act
+      const result = FileSystemUtil.isDotEntry(filename);
+
+      // Assert
+      expect(result).toBeFalsy();
+    });
+
+    test("returns false for an empty filename", () => {
+      // Arrange
+      const filename = "";
+
+      // Act
+      const result = FileSystemUtil.isDotEntry(filename);
+
+      // Assert
+      expect(result).toBeFalsy();
+    });
+
+    test("returns true for a filename that is a dot entry", () => {
+      // Arrange
+      const filename = ".anExample.txt";
+
+      // Act
+      const result = FileSystemUtil.isDotEntry(filename);
+
+      // Assert
+      expect(result).toBeTruthy();
+    });
+  });
+
   describe("getExtension", () => {
     [
       {
@@ -1081,6 +1116,120 @@ describe("FileSystemUtil", () => {
         // Assert
         expect(result).toEqual(expected);
       });
+    });
+  });
+
+  describe("sortNodes", () => {
+    test("returns no nodes when no nodes are provided", () => {
+      // Arrange
+      const nodes: FileTreeNode[] = [];
+
+      // Act
+      const result = FileSystemUtil.sortNodes(nodes);
+
+      // Assert
+      expect(result).toEqual([]);
+    });
+
+    test("returns alphabetically sorted nodes when nodes without '.' in their names/paths are provided", () => {
+      // Arrange
+      const nodes: FileTreeNode[] = [
+        {
+          name: "zFile",
+          path: "/a/path",
+          isDirectory: false,
+          lastModifiedTime: new Date(2020, 0),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+        {
+          name: "aFile",
+          path: "/z/path",
+          isDirectory: false,
+          lastModifiedTime: new Date(2020, 0),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+        {
+          name: "someFile",
+          path: "/",
+          isDirectory: false,
+          lastModifiedTime: new Date(2020, 0),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+      ];
+
+      // Act
+      const result = FileSystemUtil.sortNodes(nodes);
+
+      // Assert
+      expect(result).toMatchSnapshot();
+    });
+
+    test("returns alphabetically sorted nodes when nodes with various '.' in their names/paths are provided", () => {
+      // Arrange
+      const nodes: FileTreeNode[] = [
+        {
+          name: ".zFile.txt",
+          path: "/a/path",
+          isDirectory: false,
+          lastModifiedTime: new Date(2020, 0),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+        {
+          name: ".zFile.a",
+          path: "/a/path",
+          isDirectory: false,
+          lastModifiedTime: new Date(2020, 0),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+        {
+          name: "zFile.a",
+          path: "/a/path",
+          isDirectory: false,
+          lastModifiedTime: new Date(2020, 0),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+        {
+          name: ".zFile",
+          path: "/.a//path",
+          isDirectory: false,
+          lastModifiedTime: new Date(2020, 0),
+          size: 0,
+          permissions: [],
+          owner: "",
+          group: "",
+          blocks: 0,
+        },
+      ];
+
+      // Act
+      const result = FileSystemUtil.sortNodes(nodes);
+
+      // Assert
+      expect(result).toMatchSnapshot();
     });
   });
 });

@@ -1,5 +1,130 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`FileSystemUtil > sortNodes > returns alphabetically sorted nodes when nodes with various '.' in their names/paths are provided 1`] = `
+[
+  {
+    "blocks": 0,
+    "group": "",
+    "isDirectory": false,
+    "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+    "name": ".zFile",
+    "owner": "",
+    "path": "/.a//path",
+    "permissions": [],
+    "size": 0,
+  },
+  {
+    "blocks": 0,
+    "group": "",
+    "isDirectory": false,
+    "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+    "name": ".zFile.a",
+    "owner": "",
+    "path": "/a/path",
+    "permissions": [],
+    "size": 0,
+  },
+  {
+    "blocks": 0,
+    "group": "",
+    "isDirectory": false,
+    "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+    "name": "zFile.a",
+    "owner": "",
+    "path": "/a/path",
+    "permissions": [],
+    "size": 0,
+  },
+  {
+    "blocks": 0,
+    "group": "",
+    "isDirectory": false,
+    "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+    "name": ".zFile.txt",
+    "owner": "",
+    "path": "/a/path",
+    "permissions": [],
+    "size": 0,
+  },
+]
+`;
+
+exports[`FileSystemUtil > sortNodes > returns alphabetically sorted nodes when nodes without '.' in their names are provided 1`] = `
+[
+  {
+    "blocks": 0,
+    "group": "",
+    "isDirectory": false,
+    "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+    "name": "zFile",
+    "owner": "",
+    "path": "/a/path",
+    "permissions": [],
+    "size": 0,
+  },
+  {
+    "blocks": 0,
+    "group": "",
+    "isDirectory": false,
+    "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+    "name": "someFile",
+    "owner": "",
+    "path": "/",
+    "permissions": [],
+    "size": 0,
+  },
+  {
+    "blocks": 0,
+    "group": "",
+    "isDirectory": false,
+    "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+    "name": "aFile",
+    "owner": "",
+    "path": "/z/path",
+    "permissions": [],
+    "size": 0,
+  },
+]
+`;
+
+exports[`FileSystemUtil > sortNodes > returns alphabetically sorted nodes when nodes without '.' in their names/paths are provided 1`] = `
+[
+  {
+    "blocks": 0,
+    "group": "",
+    "isDirectory": false,
+    "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+    "name": "zFile",
+    "owner": "",
+    "path": "/a/path",
+    "permissions": [],
+    "size": 0,
+  },
+  {
+    "blocks": 0,
+    "group": "",
+    "isDirectory": false,
+    "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+    "name": "someFile",
+    "owner": "",
+    "path": "/",
+    "permissions": [],
+    "size": 0,
+  },
+  {
+    "blocks": 0,
+    "group": "",
+    "isDirectory": false,
+    "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+    "name": "aFile",
+    "owner": "",
+    "path": "/z/path",
+    "permissions": [],
+    "size": 0,
+  },
+]
+`;
+
 exports[`FileSystemUtil > walkFileTree > returns node for a valid path 1`] = `
 {
   "blocks": 8,
