@@ -8,6 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prepare": "husky",
+    "eslint:check": "eslint",
+    "eslint:fix": "eslint . --fix",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "vitest run --project Unit",
     "test:integration": "vitest run --project Integration",

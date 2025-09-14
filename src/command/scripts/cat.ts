@@ -28,7 +28,7 @@ function insertAnchorElements(text: string): string {
   );
 }
 
-const cat: CommandScript = {
+const CAT: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("cat", args, {});
 
@@ -62,4 +62,4 @@ const cat: CommandScript = {
 };
 
 // noinspection JSUnusedGlobalSymbols
-export default cat;
+export default CAT;

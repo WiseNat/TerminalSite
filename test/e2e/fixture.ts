@@ -8,6 +8,7 @@ import {
 import { escapeRegExp } from "lodash-es";
 
 // Test
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const test = baseTest.extend({
   page: async ({ page }, use) => {
     await page.goto("/");
@@ -88,6 +89,7 @@ function buildMessage(
     `${errorMessage}\n\nLocator: ${locator}\nExpected: ${expectedMessage}\n${receivedMessage}`;
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const expect = baseExpect.extend({
   /**
    * Checks whether the given element contains the exact provided text.

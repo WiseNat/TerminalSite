@@ -1,1 +1,1 @@
-export const zeroWidthSpace = "\u200B";
+export const ZERO_WIDTH_SPACE = "\u200B";

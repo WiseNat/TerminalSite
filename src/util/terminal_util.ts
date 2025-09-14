@@ -1,5 +1,5 @@
 import HtmlUtil from "./html_util.ts";
-import { zeroWidthSpace } from "../constant/char.ts";
+import { ZERO_WIDTH_SPACE } from "../constant/char.ts";
 import { escape, unescape } from "lodash-es";
 import FileSystemUtil from "./file_system_util.ts";
 
@@ -79,7 +79,7 @@ export default class TerminalUtil {
    * @see getRawInput
    */
   public static getInput(): string {
-    return this.getRawInput().replace(zeroWidthSpace, "");
+    return this.getRawInput().replace(ZERO_WIDTH_SPACE, "");
   }
 
   /**
@@ -105,7 +105,7 @@ export default class TerminalUtil {
    */
   public static setInput(text: string) {
     if (text === "") {
-      text = zeroWidthSpace;
+      text = ZERO_WIDTH_SPACE;
     }
 
     this.input.textContent = text;
@@ -175,7 +175,7 @@ export default class TerminalUtil {
    * @param text text to append
    */
   public static appendInput(text: string) {
-    if (this.getRawInput() === zeroWidthSpace) {
+    if (this.getRawInput() === ZERO_WIDTH_SPACE) {
       this.setInput(text);
     } else {
       this.input.textContent += text;

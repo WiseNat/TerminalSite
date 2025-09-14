@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../../src/util/terminal_util";
-import clear from "../../../../../src/command/scripts/clear";
+import CLEAR from "../../../../../src/command/scripts/clear";
 
 describe("Clear", () => {
   describe("run", () => {
@@ -15,7 +15,7 @@ describe("Clear", () => {
       const args = ["foo", "bar"];
 
       // Act
-      await clear.run(args);
+      await CLEAR.run(args);
 
       // Assert
       expect(setOutput).toHaveBeenCalledWith("");

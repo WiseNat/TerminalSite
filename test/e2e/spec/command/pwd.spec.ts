@@ -1,11 +1,11 @@
 import { expect, test } from "../../fixture";
 import {
-  defaultCurrentWorkingDirectory,
-  defaultInitialPrompt,
-  defaultUserPrompt,
-  inputSelector,
-  outputSelector,
-  promptSelector,
+  DEFAULT_CURRENT_WORKING_DIRECTORY,
+  DEFAULT_INITIAL_PROMPT,
+  DEFAULT_USER_PROMPT,
+  INPUT_SELECTOR,
+  OUTPUT_SELECTOR,
+  PROMPT_SELECTOR,
 } from "../../helper/constant/generic";
 import { getExpectedPrompt } from "../../helper/util/terminal_util";
 
@@ -15,17 +15,17 @@ test.describe("Pwd", () => {
     const input = "pwd";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await page.locator(INPUT_SELECTOR).pressSequentially(input);
+    await page.locator(INPUT_SELECTOR).press("Enter");
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${defaultCurrentWorkingDirectory}`,
+    await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${DEFAULT_CURRENT_WORKING_DIRECTORY}`,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
+    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+      DEFAULT_USER_PROMPT,
     );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
+    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
   });
 
   test("should output the changed current working directory when the current working directory is changed", async ({
@@ -34,18 +34,18 @@ test.describe("Pwd", () => {
     // Arrange
     const changedDirectory = "/usr/local/etc";
     const cdInput = `cd ${changedDirectory}`;
-    await page.locator(inputSelector).pressSequentially(cdInput);
-    await page.locator(inputSelector).press("Enter");
+    await page.locator(INPUT_SELECTOR).pressSequentially(cdInput);
+    await page.locator(INPUT_SELECTOR).press("Enter");
 
     const input = "pwd";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await page.locator(INPUT_SELECTOR).pressSequentially(input);
+    await page.locator(INPUT_SELECTOR).press("Enter");
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}\n${changedDirectory}`,
+    await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}\n${changedDirectory}`,
     );
   });
 });

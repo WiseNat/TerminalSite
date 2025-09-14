@@ -2,7 +2,7 @@
 // .gitkeep should not be included, see 'walk' in 'vite_plugin_file_tree.ts' for in-depth explanation.
 import FileSystemUtil from "./file_system_util.ts";
 
-const files = import.meta.glob<{ default: string }>(
+const FILES = import.meta.glob<{ default: string }>(
   ["./**/*", "!./**/*.gitkeep"],
   {
     exhaustive: true,
@@ -23,11 +23,11 @@ export default class FileImportUtil {
     // '.' is required at the start due to how import meta glob imports work
     filePath = "." + FileSystemUtil.resolvePath(filePath);
 
-    if (!(filePath in files)) {
+    if (!(filePath in FILES)) {
       return null;
     }
 
-    const loader = files[filePath];
+    const loader = FILES[filePath];
     const fileContent = await loader();
     return fileContent.default;
   }

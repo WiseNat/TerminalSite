@@ -235,7 +235,7 @@ function filterNodes(nodes: FileTreeNode[], flags: Flags): FileTreeNode[] {
   return nodes;
 }
 
-const tree: CommandScript = {
+const TREE: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("tree", args, {
       boolean: ["a", "d", "prune", "f"],
@@ -281,4 +281,4 @@ const tree: CommandScript = {
 };
 
 // noinspection JSUnusedGlobalSymbols
-export default tree;
+export default TREE;

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../src/util/terminal_util";
-import { zeroWidthSpace } from "../../../e2e/helper/constant/generic";
+import { ZERO_WIDTH_SPACE } from "../../../e2e/helper/constant/generic";
 
 let inputElement: HTMLElement;
 let promptElement: HTMLElement;
@@ -82,7 +82,7 @@ describe("Input", () => {
 
       test(`should ${returnZeroWidth ? "" : "not "}return a zero-width space`, async () => {
         // Arrange
-        const insertedContent = zeroWidthSpace;
+        const insertedContent = ZERO_WIDTH_SPACE;
         inputElement.textContent = insertedContent;
 
         // Act
@@ -131,7 +131,7 @@ describe("Input", () => {
       TerminalUtil.setInput(text);
 
       // Assert
-      expect(inputElement.textContent).toBe(zeroWidthSpace);
+      expect(inputElement.textContent).toBe(ZERO_WIDTH_SPACE);
     });
   });
   describe("appendInput", () => {
@@ -151,7 +151,7 @@ describe("Input", () => {
     test("should set instead of append the input if the current input is a zero-width space", async () => {
       // Arrange
       const appendedText = "bar";
-      inputElement.textContent = zeroWidthSpace;
+      inputElement.textContent = ZERO_WIDTH_SPACE;
 
       // Act
       TerminalUtil.appendInput(appendedText);

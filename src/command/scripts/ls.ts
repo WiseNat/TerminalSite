@@ -489,7 +489,7 @@ function formatDateTime(datetime: Date): string {
 // TODO: 'ls -1s' works but 'ls -s1' does not work. This is an issue with the getopts
 //  library. Planning on investigating a more maintained alternative so this is
 //  a low priority issue for now.
-const ls: CommandScript = {
+const LS: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("ls", args, {
       boolean: ["a", "1", "s", "h", "l"],
@@ -544,4 +544,4 @@ const ls: CommandScript = {
 };
 
 // noinspection JSUnusedGlobalSymbols
-export default ls;
+export default LS;

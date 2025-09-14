@@ -74,7 +74,7 @@ function changeDirectory(path: string) {
 //  1. cd into <DIR>
 //  2. cd -
 //  3. Should CD successfully and not output an error!
-const cd: CommandScript = {
+const CD: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("cd", args, {});
 
@@ -116,4 +116,4 @@ const cd: CommandScript = {
 };
 
 // noinspection JSUnusedGlobalSymbols
-export default cd;
+export default CD;

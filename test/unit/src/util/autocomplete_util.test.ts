@@ -3,7 +3,7 @@ import MetaImportUtil from "../../../../src/util/meta_import_util";
 import AutocompleteUtil from "../../../../src/util/autocomplete_util";
 import { unmock } from "../../helper/unmock";
 import TerminalUtil from "../../../../src/util/terminal_util";
-import { userPrompt } from "../../../../src/constant/prompt";
+import { USER_PROMPT } from "../../../../src/constant/prompt";
 import { Suggestion } from "../../../../src/command/command_script";
 
 describe("AutocompleteUtil", () => {
@@ -94,7 +94,7 @@ describe("AutocompleteUtil", () => {
             expect(appendOutput).not.toHaveBeenCalled();
           } else {
             expect(appendOutput).toHaveBeenCalledWith(
-              `${userPrompt}${userInput}\n${expectedAppendText}`,
+              `${USER_PROMPT}${userInput}\n${expectedAppendText}`,
               true,
             );
           }

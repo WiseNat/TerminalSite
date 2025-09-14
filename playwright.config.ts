@@ -8,7 +8,7 @@ import { defineConfig, devices } from "@playwright/test";
  * - https://playwright.dev/docs/api/class-testconfig
  */
 
-const serverUrl = "http://localhost:5173";
+const SERVER_URL = "http://localhost:5173";
 
 // noinspection JSUnusedGlobalSymbols
 export default defineConfig({
@@ -25,7 +25,7 @@ export default defineConfig({
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    baseURL: serverUrl,
+    baseURL: SERVER_URL,
     headless: true,
     trace: "on-first-retry",
   },
@@ -90,7 +90,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: "npm run dev",
-    url: serverUrl,
+    url: SERVER_URL,
     reuseExistingServer: !process.env.CI,
   },
 });

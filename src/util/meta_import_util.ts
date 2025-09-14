@@ -1,10 +1,13 @@
 import { CommandScript } from "../command/command_script.ts";
 
 // Does not function correctly as a readonly within MetaImportUtil
-const commandFiles = import.meta.glob<{ default: CommandScript }>("./**/*.ts", {
-  eager: true,
-  base: "/src/command/scripts",
-});
+const COMMAND_FILES = import.meta.glob<{ default: CommandScript }>(
+  "./**/*.ts",
+  {
+    eager: true,
+    base: "/src/command/scripts",
+  },
+);
 
 export default class MetaImportUtil {
   // Vite Glob imports with a base always have './' appended to the start of files found as per https://vite.dev/guide/features.html#base-path
@@ -17,7 +20,7 @@ export default class MetaImportUtil {
    */
   // prettier-ignore
   public static getCommandScripts(): Record<string, { default: CommandScript }> {
-    return commandFiles;
+    return COMMAND_FILES;
   }
 
   /**

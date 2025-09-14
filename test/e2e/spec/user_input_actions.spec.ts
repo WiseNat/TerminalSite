@@ -1,10 +1,10 @@
 import { expect, test } from "../fixture";
 import {
-  defaultInitialPrompt,
-  defaultUserPrompt,
-  inputSelector,
-  outputSelector,
-  promptSelector,
+  DEFAULT_INITIAL_PROMPT,
+  DEFAULT_USER_PROMPT,
+  INPUT_SELECTOR,
+  OUTPUT_SELECTOR,
+  PROMPT_SELECTOR,
 } from "../helper/constant/generic";
 import {
   ALPHANUMERIC,
@@ -36,16 +36,16 @@ test.describe("Keyboard", () => {
         page,
       }) => {
         // Arrange & Act
-        await page.locator(inputSelector).pressSequentially(values);
+        await page.locator(INPUT_SELECTOR).pressSequentially(values);
 
         // Assert
-        await expect(page.locator(outputSelector)).exactTextInElement(
-          defaultInitialPrompt,
+        await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+          DEFAULT_INITIAL_PROMPT,
         );
-        await expect(page.locator(promptSelector)).exactTextInElement(
-          defaultUserPrompt,
+        await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+          DEFAULT_USER_PROMPT,
         );
-        await expect(page.locator(inputSelector)).exactTextInElement(values);
+        await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(values);
       });
     });
 
@@ -59,19 +59,19 @@ test.describe("Keyboard", () => {
         // Act
         for (const char of NEWLINES) {
           newlineCounter++;
-          await page.locator(inputSelector).pressSequentially(char);
+          await page.locator(INPUT_SELECTOR).pressSequentially(char);
         }
 
         // Assert
-        const prompts = `\n${defaultUserPrompt}`.repeat(newlineCounter);
+        const prompts = `\n${DEFAULT_USER_PROMPT}`.repeat(newlineCounter);
 
-        await expect(page.locator(outputSelector)).exactTextInElement(
-          `${defaultInitialPrompt}${prompts}`,
+        await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+          `${DEFAULT_INITIAL_PROMPT}${prompts}`,
         );
-        await expect(page.locator(promptSelector)).exactTextInElement(
-          defaultUserPrompt,
+        await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+          DEFAULT_USER_PROMPT,
         );
-        await expect(page.locator(inputSelector)).exactTextInElement("");
+        await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
       });
 
       test("With Shift can be typed in the user input", async ({ page }) => {
@@ -83,25 +83,25 @@ test.describe("Keyboard", () => {
           newlineCounter++;
 
           await page.keyboard.down("Shift");
-          await page.locator(inputSelector).pressSequentially(char);
+          await page.locator(INPUT_SELECTOR).pressSequentially(char);
           await page.keyboard.up("Shift");
         }
 
         // Assert
         const newlines = "\n".repeat(newlineCounter);
 
-        await expect(page.locator(outputSelector)).exactTextInElement(
-          defaultInitialPrompt,
+        await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+          DEFAULT_INITIAL_PROMPT,
         );
-        await expect(page.locator(promptSelector)).exactTextInElement(
-          defaultUserPrompt,
+        await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+          DEFAULT_USER_PROMPT,
         );
 
         // A Regular Character is required as most Browsers will obscure Newlines, causing this test to fail, even
         // though it actually passes.
         const character = "a";
-        await page.locator(inputSelector).pressSequentially(character);
-        await expect(page.locator(inputSelector)).exactTextInElement(
+        await page.locator(INPUT_SELECTOR).pressSequentially(character);
+        await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(
           newlines + character,
         );
       });
@@ -120,16 +120,16 @@ test.describe("Keyboard", () => {
       browser,
     }) => {
       // Arrange & Act
-      await simulatePaste(page.locator(inputSelector), browser, values);
+      await simulatePaste(page.locator(INPUT_SELECTOR), browser, values);
 
       // Assert
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        defaultInitialPrompt,
+      await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+        DEFAULT_INITIAL_PROMPT,
       );
-      await expect(page.locator(promptSelector)).exactTextInElement(
-        defaultUserPrompt,
+      await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+        DEFAULT_USER_PROMPT,
       );
-      await expect(page.locator(inputSelector)).exactTextInElement(values);
+      await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(values);
     });
   });
 });

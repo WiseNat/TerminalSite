@@ -1,7 +1,7 @@
 import { describe, test, expect, vi } from "vitest";
 import { processHome } from "../../../../../src/event/keydown_key/home";
 import TerminalUtil from "../../../../../src/util/terminal_util";
-import { zeroWidthSpace } from "../../../../e2e/helper/constant/generic";
+import { ZERO_WIDTH_SPACE } from "../../../../e2e/helper/constant/generic";
 
 describe("Home", () => {
   describe("processHome", () => {
@@ -28,7 +28,7 @@ describe("Home", () => {
     test("moves the cursor to the first index when a zero-width space is present", async () => {
       // Arrange
       vi.mocked(TerminalUtil.getRawInput).mockReturnValue(
-        `${zeroWidthSpace}foo bar`,
+        `${ZERO_WIDTH_SPACE}foo bar`,
       );
 
       // Act

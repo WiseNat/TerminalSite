@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import FileSystemUtil from "../../../../../src/util/file_system_util";
-import ls from "../../../../../src/command/scripts/ls";
+import LS from "../../../../../src/command/scripts/ls";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 import ColourUtil from "../../../../../src/util/colour_util";
 
@@ -38,7 +38,7 @@ describe("Ls", () => {
         const args: string[] = [];
 
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith("\nfoo");
@@ -50,7 +50,7 @@ describe("Ls", () => {
         const args: string[] = ["/src/main"];
 
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith("\nfoo");
@@ -62,7 +62,7 @@ describe("Ls", () => {
         const args: string[] = ["/test"];
 
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         expect(appendRawOutput).not.toHaveBeenCalled();
@@ -74,7 +74,7 @@ describe("Ls", () => {
         const args: string[] = ["/src/main/.full"];
 
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
@@ -88,7 +88,7 @@ describe("Ls", () => {
         const args: string[] = ["/src/main/.empty"];
 
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         expect(appendRawOutput).not.toHaveBeenCalled();
@@ -100,7 +100,7 @@ describe("Ls", () => {
         const args: string[] = ["/src/index.ts"];
 
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
@@ -114,7 +114,7 @@ describe("Ls", () => {
         const args: string[] = ["/src/main/.testing"];
 
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
@@ -137,7 +137,7 @@ describe("Ls", () => {
       ].forEach(({ type, args, expected }) => {
         test(`Given ${type}, outputs an error`, async () => {
           // Act
-          await ls.run(args);
+          await LS.run(args);
 
           // Assert
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
@@ -201,7 +201,7 @@ describe("Ls", () => {
       ].forEach(({ type, args, expected }) => {
         test(`Given multiple arguments (${type}), outputs everything in a structured way`, async () => {
           // Act
-          await ls.run(args);
+          await LS.run(args);
 
           // Assert
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
@@ -220,7 +220,7 @@ describe("Ls", () => {
         ];
 
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         // foo/bazzing.gaz  foo/daz  .full/aFile  index.ts  .testing
@@ -241,7 +241,7 @@ describe("Ls", () => {
         ];
 
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         const expected =
@@ -276,7 +276,7 @@ describe("Ls", () => {
           args.push(arg);
 
           // Act
-          await ls.run(args);
+          await LS.run(args);
 
           // Assert
           const expected =
@@ -304,7 +304,7 @@ describe("Ls", () => {
           ];
 
           // Act
-          await ls.run(args);
+          await LS.run(args);
 
           // Assert
           const expected =
@@ -335,7 +335,7 @@ describe("Ls", () => {
           "/src/main/.testing",
         ];
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         const expected =
@@ -368,7 +368,7 @@ describe("Ls", () => {
           ];
 
           // Act
-          await ls.run(args);
+          await LS.run(args);
 
           // Assert
           const expected =
@@ -399,7 +399,7 @@ describe("Ls", () => {
           ];
 
           // Act
-          await ls.run(args);
+          await LS.run(args);
 
           // Assert
           const expected =
@@ -435,7 +435,7 @@ describe("Ls", () => {
           ];
 
           // Act
-          await ls.run(args);
+          await LS.run(args);
 
           // Assert
           const expected =
@@ -525,7 +525,7 @@ describe("Ls", () => {
           args.push(...flags);
 
           // Act
-          await ls.run(args);
+          await LS.run(args);
 
           // Assert
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
@@ -597,7 +597,7 @@ describe("Ls", () => {
           ];
 
           // Act
-          await ls.run(args);
+          await LS.run(args);
 
           // Assert
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
@@ -620,7 +620,7 @@ describe("Ls", () => {
             ];
 
             // Act
-            await ls.run(args);
+            await LS.run(args);
 
             // Assert
             const expected = `ls: invalid --block-size argument '${blockSize}'`;
@@ -645,7 +645,7 @@ describe("Ls", () => {
         ];
 
         // Act
-        await ls.run(args);
+        await LS.run(args);
 
         // Assert
         const expected =

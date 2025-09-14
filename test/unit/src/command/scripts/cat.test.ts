@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../../src/util/terminal_util";
-import cat from "../../../../../src/command/scripts/cat";
+import CAT from "../../../../../src/command/scripts/cat";
 import FileImportUtil from "../../../../../src/util/file_import_util";
 import FileSystemUtil from "../../../../../src/util/file_system_util";
 
@@ -20,7 +20,7 @@ describe("Cat", () => {
       const args: string[] = [];
 
       // Act
-      await cat.run(args);
+      await CAT.run(args);
 
       // Assert
       expect(appendRawOutput).not.toHaveBeenCalled();
@@ -33,7 +33,7 @@ describe("Cat", () => {
       vi.mocked(FileImportUtil.readFile).mockResolvedValueOnce(fileContents);
 
       // Act
-      await cat.run(args);
+      await CAT.run(args);
 
       // Assert
       expect(readFile).toHaveBeenCalledOnce();
@@ -49,7 +49,7 @@ describe("Cat", () => {
       vi.mocked(FileImportUtil.readFile).mockResolvedValueOnce(null);
 
       // Act
-      await cat.run(args);
+      await CAT.run(args);
 
       // Assert
       expect(readFile).toHaveBeenCalledOnce();
@@ -71,7 +71,7 @@ describe("Cat", () => {
         .mockResolvedValueOnce(fileContentsSecond);
 
       // Act
-      await cat.run(args);
+      await CAT.run(args);
 
       // Assert
       expect(readFile).toHaveBeenCalledTimes(2);
@@ -87,7 +87,7 @@ describe("Cat", () => {
       vi.mocked(FileImportUtil.readFile).mockResolvedValue(null);
 
       // Act
-      await cat.run(args);
+      await CAT.run(args);
 
       // Assert
       expect(readFile).toHaveBeenCalledTimes(2);
@@ -109,7 +109,7 @@ describe("Cat", () => {
         .mockResolvedValueOnce(fileContentsFirst);
 
       // Act
-      await cat.run(args);
+      await CAT.run(args);
 
       // Assert
       expect(readFile).toHaveBeenCalledTimes(2);
@@ -127,7 +127,7 @@ describe("Cat", () => {
       vi.mocked(FileImportUtil.readFile).mockResolvedValueOnce(null);
 
       // Act
-      await cat.run(args);
+      await CAT.run(args);
 
       // Assert
       expect(readFile).toHaveBeenCalledOnce();
@@ -146,7 +146,7 @@ describe("Cat", () => {
       vi.mocked(FileImportUtil.readFile).mockResolvedValueOnce(fileContents);
 
       // Act
-      await cat.run(args);
+      await CAT.run(args);
 
       // Assert
       expect(readFile).toHaveBeenCalledOnce();

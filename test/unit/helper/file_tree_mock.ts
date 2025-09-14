@@ -1,7 +1,9 @@
 import { FileTreeNode } from "virtual:file-tree";
 
+/* eslint-disable @typescript-eslint/naming-convention */
 // noinspection JSUnusedGlobalSymbols
 export const fileTree: FileTreeNode[] = [
+  /* eslint-enable @typescript-eslint/naming-convention */
   {
     name: "src",
     path: "",

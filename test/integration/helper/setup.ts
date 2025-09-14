@@ -1,4 +1,5 @@
 import { vi } from "vitest";
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const { fs } = await import("memfs");
 
 vi.mock("node:fs", async () => {
