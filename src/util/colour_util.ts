@@ -9,7 +9,6 @@ export interface Style {
 }
 
 export default class ColourUtil {
-  // TODO: Unit tests
   /**
    * Gets a file system entry in HTML for the provided `node`.
    *

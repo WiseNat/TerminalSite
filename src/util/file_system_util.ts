@@ -398,7 +398,6 @@ export default class FileSystemUtil {
     return path.replace(/\./g, "");
   }
 
-  // TODO: Unit tests
   /**
    * @param filename the file name to check
    * @returns true if the file is a dot-file or dot-directory, false otherwise.
@@ -572,7 +571,6 @@ export default class FileSystemUtil {
     return typeChar + permissions.map((p) => symbols[p]).join("");
   }
 
-  // TODO: unit test me!
   /**
    * Sorts the given `nodes` alphabetically, ignoring any `.` chars that exist.
    *
