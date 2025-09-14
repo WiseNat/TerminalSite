@@ -14,10 +14,6 @@ test.describe("Tree", () => {
   const existingEmptyDirectory = "/boot";
   const existingFile = "/etc/hosts";
 
-  // TODO; test cases:
-  //  - [/] No arg, generate CWD tree (UNIT TEST ONLY FUCK DOING THAT IN E2E)!!!
-  //  - [/] Arg, generate tree
-
   test("Should show a tree for the current working directory when no argument is given", async ({
     page,
   }) => {
