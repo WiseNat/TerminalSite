@@ -5,6 +5,54 @@ import TerminalUtil from "../../util/terminal_util.ts";
 import ColourUtil from "../../util/colour_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
 
+const TREE: CommandScript = {
+  async run(args: string[]): Promise<void> {
+    const parsedOptions = CommandUtil.parseArgs("tree", args, {
+      boolean: ["a", "d", "prune", "f"],
+      string: ["L"],
+    });
+
+    if (parsedOptions === null) {
+      return;
+    }
+
+    const paths: string[] =
+      parsedOptions._.length > 0
+        ? parsedOptions._
+        : [
+            FileSystemUtil.formatPath(
+              FileSystemUtil.getCurrentWorkingDirectory(),
+            ),
+          ];
+
+    let lFlagValue: number = -1;
+    const lFlagValueRaw: string = parsedOptions.L;
+    if (lFlagValueRaw) {
+      lFlagValue = parseInt(lFlagValueRaw);
+
+      if (isNaN(lFlagValue) || lFlagValue < 1) {
+        TerminalUtil.appendOutput(
+          "\ntree: Invalid level, must be greater than 0.",
+        );
+        return;
+      }
+    }
+
+    const output: string = generateOutput(paths, {
+      a: parsedOptions.a,
+      d: parsedOptions.d,
+      prune: parsedOptions.prune,
+      f: parsedOptions.f,
+      L: lFlagValue,
+    });
+
+    TerminalUtil.appendRawOutput(`\n${output}`);
+  },
+};
+
+// noinspection JSUnusedGlobalSymbols
+export default TREE;
+
 interface Flags {
   a: boolean;
   d: boolean;
@@ -234,51 +282,3 @@ function filterNodes(nodes: FileTreeNode[], flags: Flags): FileTreeNode[] {
 
   return nodes;
 }
-
-const TREE: CommandScript = {
-  async run(args: string[]): Promise<void> {
-    const parsedOptions = CommandUtil.parseArgs("tree", args, {
-      boolean: ["a", "d", "prune", "f"],
-      string: ["L"],
-    });
-
-    if (parsedOptions === null) {
-      return;
-    }
-
-    const paths: string[] =
-      parsedOptions._.length > 0
-        ? parsedOptions._
-        : [
-            FileSystemUtil.formatPath(
-              FileSystemUtil.getCurrentWorkingDirectory(),
-            ),
-          ];
-
-    let lFlagValue: number = -1;
-    const lFlagValueRaw: string = parsedOptions.L;
-    if (lFlagValueRaw) {
-      lFlagValue = parseInt(lFlagValueRaw);
-
-      if (isNaN(lFlagValue) || lFlagValue < 1) {
-        TerminalUtil.appendOutput(
-          "\ntree: Invalid level, must be greater than 0.",
-        );
-        return;
-      }
-    }
-
-    const output: string = generateOutput(paths, {
-      a: parsedOptions.a,
-      d: parsedOptions.d,
-      prune: parsedOptions.prune,
-      f: parsedOptions.f,
-      L: lFlagValue,
-    });
-
-    TerminalUtil.appendRawOutput(`\n${output}`);
-  },
-};
-
-// noinspection JSUnusedGlobalSymbols
-export default TREE;
