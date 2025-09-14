@@ -573,6 +573,11 @@ export default class FileSystemUtil {
   }
 
   // TODO: unit test me!
+  /**
+   * Sorts the given `nodes` alphabetically, ignoring any `.` chars that exist.
+   *
+   * @param nodes list of nodes to sort.
+   */
   public static sortNodes(nodes: FileTreeNode[]): FileTreeNode[] {
     nodes = nodes.slice();
 

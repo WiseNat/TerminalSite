@@ -5,8 +5,6 @@ import TerminalUtil from "../../util/terminal_util.ts";
 import ColourUtil from "../../util/colour_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
 
-// TODO: JSDocs..
-
 interface Flags {
   a: boolean;
   d: boolean;
@@ -21,6 +19,14 @@ interface TreeView {
   fileCount: number;
 }
 
+/**
+ * Consolidates the {@link TreeView} outputs from attempting to generate trees
+ * for all the given `paths`, combining them into a single string.
+ *
+ * @param paths a list of paths to generate trees for.
+ * @param flags flags for processing & formatting.
+ * @returns a consolidated output.
+ */
 function generateOutput(paths: string[], flags: Flags): string {
   const trees: string[] = [];
   let totalDirectoryCount: number = 0;
@@ -45,6 +51,13 @@ function generateOutput(paths: string[], flags: Flags): string {
   return `${output}, ${fileSegment}`;
 }
 
+/**
+ * Attempts to generate a {@link TreeView} tree for the provided path.
+ *
+ * @param path the path to generate a tree for.
+ * @param flags flags for processing and formatting.
+ * @returns either an error or a tree for the given `path`.
+ */
 function getTreeViewForPath(path: string, flags: Flags): TreeView {
   const tree: TreeView = {
     content: "",
@@ -78,6 +91,37 @@ function getTreeViewForPath(path: string, flags: Flags): TreeView {
   return generateTreeFromNode(node, flags);
 }
 
+/**
+ * @param path an unknown path.
+ * @returns an error for an unknown path.
+ */
+function getUnknownPathError(path: string): string {
+  return getPathError(path);
+}
+
+/**
+ * @param node a file node.
+ * @returns an error for a path to a file.
+ */
+function getFilePathError(node: FileTreeNode): string {
+  const fileSystemEntry: string = ColourUtil.getFileSystemEntry(node, false);
+  return getPathError(fileSystemEntry);
+}
+
+/**
+ * Helper method to generate errors for invalid paths.
+ * @param path the path to generate the error for.
+ */
+function getPathError(path: string): string {
+  return `${path}  [error opening dir]`;
+}
+
+/**
+ * Generates a visual tree for the given `node`, based on the provided `flags`.
+ *
+ * @param node the root node to generate a tree for.
+ * @param flags flags for processing and formatting.
+ */
 function generateTreeFromNode(node: FileTreeNode, flags: Flags): TreeView {
   const tree: TreeView = {
     content: "",
@@ -151,23 +195,25 @@ function generateTreeFromNode(node: FileTreeNode, flags: Flags): TreeView {
   return tree;
 }
 
-function getUnknownPathError(path: string): string {
-  return getPathError(path);
-}
-
-function getFilePathError(node: FileTreeNode): string {
-  const fileSystemEntry: string = ColourUtil.getFileSystemEntry(node, false);
-  return getPathError(fileSystemEntry);
-}
-
-function getPathError(path: string): string {
-  return `${path}  [error opening dir]`;
-}
-
+/**
+ * Sorts the provided list of nodes.
+ *
+ * @param nodes the nodes to sort.
+ * @see FileSystem.sortNodes
+ */
 function sortNodes(nodes: FileTreeNode[]): FileTreeNode[] {
   return FileSystemUtil.sortNodes(nodes);
 }
 
+/**
+ * Filters nodes based on the given `flags`:
+ * - `d`: remove files
+ * - `a`: show hidden files
+ * - `prune`: remove empty directories
+ *
+ * @param nodes the nodes to filter.
+ * @param flags dictate how filtering occurs.
+ */
 function filterNodes(nodes: FileTreeNode[], flags: Flags): FileTreeNode[] {
   if (flags.d) {
     nodes = nodes.filter((node) => node.isDirectory);

@@ -9,8 +9,15 @@ export interface Style {
 }
 
 export default class ColourUtil {
-  // TODO: JSDoc
   // TODO: Unit tests
+  /**
+   * Gets a file system entry in HTML for the provided `node`.
+   *
+   * @param node the file/dir entry to get the HTML element for.
+   * @param useShortName whether to use a short name or not for the file name.
+   * @see ColourUtil.getFileSystemEntryStyle
+   * @returns a coloured span for the given `node`.
+   */
   public static getFileSystemEntry(
     node: FileTreeNode,
     useShortName: boolean,
