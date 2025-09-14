@@ -10,6 +10,7 @@ import { FileTreeNode } from "virtual:file-tree";
 interface Flags {
   a: boolean;
   d: boolean;
+  prune: boolean;
 }
 
 interface TreeView {
@@ -171,13 +172,22 @@ function filterNodes(nodes: FileTreeNode[], flags: Flags): FileTreeNode[] {
     nodes = nodes.filter((node) => !FileSystemUtil.isDotEntry(node.name));
   }
 
+  if (flags.prune) {
+    nodes = nodes.filter(
+      (node) =>
+        !node.isDirectory ||
+        node.children === undefined ||
+        node.children.length > 0,
+    );
+  }
+
   return nodes;
 }
 
 const tree: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("tree", args, {
-      boolean: ["a", "d"],
+      boolean: ["a", "d", "prune"],
     });
 
     if (parsedOptions === null) {
@@ -196,6 +206,7 @@ const tree: CommandScript = {
     const output: string = generateOutput(paths, {
       a: parsedOptions.a,
       d: parsedOptions.d,
+      prune: parsedOptions.prune,
     });
 
     TerminalUtil.appendRawOutput(`\n${output}`);

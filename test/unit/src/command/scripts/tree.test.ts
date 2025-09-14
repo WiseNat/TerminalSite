@@ -291,5 +291,58 @@ describe("Tree", () => {
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
     });
+
+    describe("--prune flag", () => {
+      test("given a directory path with the --prune flag, should output a tree for the directory excluding empty directories", async () => {
+        // Arrange
+        const args = ["../..", "foo/daz", "/some/fake/path", "--prune"];
+
+        // Act
+        await tree.run(args);
+
+        // Assert
+        const expected =
+          "\n/\n" +
+          "└── src\n" +
+          "    ├── index.ts\n" +
+          "    └── main\n" +
+          "        └── foo\n" +
+          "            ├── bazzing.gaz\n" +
+          "            └── daz\n" +
+          "/src/main/foo/daz  [error opening dir]\n" +
+          "/some/fake/path  [error opening dir]\n" +
+          "\n" +
+          "4 directories, 4 files";
+
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+      });
+
+      test("given a directory path with the --prune & -a flags, should output a tree for the directory excluding empty directories", async () => {
+        // Arrange
+        const args = ["../..", "foo/daz", "/some/fake/path", "--prune", "-a"];
+
+        // Act
+        await tree.run(args);
+
+        // Assert
+        const expected =
+          "\n/\n" +
+          "└── src\n" +
+          "    ├── index.ts\n" +
+          "    └── main\n" +
+          "        ├── foo\n" +
+          "        │   ├── bazzing.gaz\n" +
+          "        │   └── daz\n" +
+          "        ├── .full\n" +
+          "        │   └── aFile\n" +
+          "        └── .testing\n" +
+          "/src/main/foo/daz  [error opening dir]\n" +
+          "/some/fake/path  [error opening dir]\n" +
+          "\n" +
+          "5 directories, 6 files";
+
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+      });
+    });
   });
 });
