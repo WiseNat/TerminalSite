@@ -317,7 +317,7 @@ describe("Tree", () => {
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
-      test("given a directory path with the --prune & -a flags, should output a tree for the directory excluding empty directories", async () => {
+      test("given a directory path with the --prune & -a flags, should output a tree for the directory excluding empty directories but including hidden files & directories", async () => {
         // Arrange
         const args = ["../..", "foo/daz", "/some/fake/path", "--prune", "-a"];
 
@@ -340,6 +340,65 @@ describe("Tree", () => {
           "/some/fake/path  [error opening dir]\n" +
           "\n" +
           "5 directories, 6 files";
+
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+      });
+    });
+
+    describe("-f flag", () => {
+      test("given a directory path with the -f flag, should output a tree for the directory with full path names for each directory & file", async () => {
+        // Arrange
+        const args = ["../..", "foo/daz", "/some/fake/path", "-f"];
+
+        // Act
+        await tree.run(args);
+
+        // Assert
+        const expected =
+          "\n/\n" +
+          "├── /src\n" +
+          "│   ├── /src/index.ts\n" +
+          "│   └── /src/main\n" +
+          "│       └── /src/main/foo\n" +
+          "│           ├── /src/main/foo/bar\n" +
+          "│           ├── /src/main/foo/bazzing.gaz\n" +
+          "│           └── /src/main/foo/daz\n" +
+          "└── /test\n" +
+          "/src/main/foo/daz  [error opening dir]\n" +
+          "/some/fake/path  [error opening dir]\n" +
+          "\n" +
+          "6 directories, 4 files";
+
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+      });
+
+      test("given a directory path with the -f & -a flags, should output a tree for the directory including hidden files & dirs with full path names for each directory & file", async () => {
+        // Arrange
+        const args = ["../..", "foo/daz", "/some/fake/path", "-fa"];
+
+        // Act
+        await tree.run(args);
+
+        // Assert
+        const expected =
+          "\n/\n" +
+          "├── /src\n" +
+          "│   ├── /src/index.ts\n" +
+          "│   └── /src/main\n" +
+          "│       ├── /src/main/.empty\n" +
+          "│       ├── /src/main/foo\n" +
+          "│       │   ├── /src/main/foo/bar\n" +
+          "│       │   ├── /src/main/foo/bazzing.gaz\n" +
+          "│       │   └── /src/main/foo/daz\n" +
+          "│       ├── /src/main/.full\n" +
+          "│       │   ├── /src/main/.full/aFile\n" +
+          "│       │   └── /src/main/.full/someEmptyDir\n" +
+          "│       └── /src/main/.testing\n" +
+          "└── /test\n" +
+          "/src/main/foo/daz  [error opening dir]\n" +
+          "/some/fake/path  [error opening dir]\n" +
+          "\n" +
+          "9 directories, 6 files";
 
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });

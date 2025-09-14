@@ -11,6 +11,7 @@ interface Flags {
   a: boolean;
   d: boolean;
   prune: boolean;
+  f: boolean;
 }
 
 interface TreeView {
@@ -116,7 +117,7 @@ function generateTreeFromNode(node: FileTreeNode, flags: Flags): TreeView {
   while (stack.length > 0) {
     const { node, prefix, isLast } = stack.pop()!;
 
-    const filename = ColourUtil.getFileSystemEntry(node, true);
+    const filename = ColourUtil.getFileSystemEntry(node, !flags.f);
     tree.content += `${prefix}${isLast ? "└── " : "├── "}${filename}\n`;
 
     if (node.isDirectory) {
@@ -187,7 +188,7 @@ function filterNodes(nodes: FileTreeNode[], flags: Flags): FileTreeNode[] {
 const tree: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("tree", args, {
-      boolean: ["a", "d", "prune"],
+      boolean: ["a", "d", "prune", "f"],
     });
 
     if (parsedOptions === null) {
@@ -207,6 +208,7 @@ const tree: CommandScript = {
       a: parsedOptions.a,
       d: parsedOptions.d,
       prune: parsedOptions.prune,
+      f: parsedOptions.f,
     });
 
     TerminalUtil.appendRawOutput(`\n${output}`);
