@@ -12,6 +12,7 @@ interface Flags {
   d: boolean;
   prune: boolean;
   f: boolean;
+  L: number;
 }
 
 interface TreeView {
@@ -92,14 +93,15 @@ function generateTreeFromNode(node: FileTreeNode, flags: Flags): TreeView {
 
   tree.content += "\n";
 
-  // Tree has a strange behaviour where if the given path is not an empty dir
-  // the directory itself count towards the total directories.
+  // The Linux tree command has strange behaviour where, if the given path is
+  // not an empty dir, the directory itself count towards the total directories.
   tree.directoryCount++;
 
   type StackEntry = {
     node: FileTreeNode;
     prefix: string;
     isLast: boolean;
+    depth: number;
   };
 
   const stack: StackEntry[] = [];
@@ -111,11 +113,12 @@ function generateTreeFromNode(node: FileTreeNode, flags: Flags): TreeView {
       node: immediateChildren[index],
       prefix: "",
       isLast: index === immediateChildren.length - 1,
+      depth: 1,
     });
   }
 
   while (stack.length > 0) {
-    const { node, prefix, isLast } = stack.pop()!;
+    const { node, prefix, isLast, depth } = stack.pop()!;
 
     const filename = ColourUtil.getFileSystemEntry(node, !flags.f);
     tree.content += `${prefix}${isLast ? "└── " : "├── "}${filename}\n`;
@@ -126,7 +129,7 @@ function generateTreeFromNode(node: FileTreeNode, flags: Flags): TreeView {
       tree.fileCount++;
     }
 
-    if (node.children === undefined) {
+    if (node.children === undefined || (flags.L > 0 && depth + 1 > flags.L)) {
       continue;
     }
 
@@ -138,6 +141,7 @@ function generateTreeFromNode(node: FileTreeNode, flags: Flags): TreeView {
         node: children[index],
         prefix: childPrefix,
         isLast: index === children.length - 1,
+        depth: depth + 1,
       });
     }
   }
@@ -189,6 +193,7 @@ const tree: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("tree", args, {
       boolean: ["a", "d", "prune", "f"],
+      string: ["L"],
     });
 
     if (parsedOptions === null) {
@@ -204,11 +209,25 @@ const tree: CommandScript = {
             ),
           ];
 
+    let lFlagValue: number = -1;
+    const lFlagValueRaw: string = parsedOptions.L;
+    if (lFlagValueRaw) {
+      lFlagValue = parseInt(lFlagValueRaw);
+
+      if (isNaN(lFlagValue) || lFlagValue < 1) {
+        TerminalUtil.appendOutput(
+          "\ntree: Invalid level, must be greater than 0.",
+        );
+        return;
+      }
+    }
+
     const output: string = generateOutput(paths, {
       a: parsedOptions.a,
       d: parsedOptions.d,
       prune: parsedOptions.prune,
       f: parsedOptions.f,
+      L: lFlagValue,
     });
 
     TerminalUtil.appendRawOutput(`\n${output}`);

@@ -12,6 +12,7 @@ describe("Tree", () => {
   describe("run", () => {
     // Spy
     const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
+    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
     // Mock
     vi.mock("../../../../../src/util/terminal_util");
@@ -46,6 +47,7 @@ describe("Tree", () => {
           "    └── daz\n" +
           "\n" +
           "3 directories, 2 files";
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
@@ -61,6 +63,7 @@ describe("Tree", () => {
           "\n/src/main/foo/daz  [error opening dir]\n" +
           "\n" +
           "0 directories, 1 file";
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
@@ -76,6 +79,7 @@ describe("Tree", () => {
           "\n/some/fake/path  [error opening dir]\n" +
           "\n" +
           "0 directories, 0 files";
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
@@ -94,6 +98,7 @@ describe("Tree", () => {
           "└── daz\n" +
           "\n" +
           "2 directories, 2 files";
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
@@ -106,6 +111,7 @@ describe("Tree", () => {
 
         // Assert
         const expected = "\n/test\n" + "\n" + "0 directories, 0 files";
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
@@ -123,6 +129,7 @@ describe("Tree", () => {
           "└── someEmptyDir\n" +
           "\n" +
           "2 directories, 1 file";
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
@@ -146,6 +153,7 @@ describe("Tree", () => {
           "└── test\n" +
           "\n" +
           "6 directories, 3 files";
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
@@ -205,6 +213,7 @@ describe("Tree", () => {
           await tree.run(args);
 
           // Assert
+          expect(appendOutput).not.toHaveBeenCalled();
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
         });
       });
@@ -238,6 +247,7 @@ describe("Tree", () => {
           "/some/fake/path  [error opening dir]\n" +
           "\n" +
           "9 directories, 6 files";
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
     });
@@ -262,6 +272,7 @@ describe("Tree", () => {
           "/some/fake/path  [error opening dir]\n" +
           "\n" +
           "6 directories";
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
@@ -288,6 +299,7 @@ describe("Tree", () => {
           "\n" +
           "9 directories";
 
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
     });
@@ -314,6 +326,7 @@ describe("Tree", () => {
           "\n" +
           "4 directories, 4 files";
 
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
@@ -341,6 +354,7 @@ describe("Tree", () => {
           "\n" +
           "5 directories, 6 files";
 
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
     });
@@ -369,6 +383,7 @@ describe("Tree", () => {
           "\n" +
           "6 directories, 4 files";
 
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
 
@@ -400,7 +415,103 @@ describe("Tree", () => {
           "\n" +
           "9 directories, 6 files";
 
+        expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+      });
+    });
+
+    describe("-L flag", () => {
+      [
+        {
+          depth: 1,
+          expectedDepth: 1,
+          expected:
+            "\n/\n" +
+            "├── src\n" +
+            "└── test\n" +
+            "/src/main/foo/daz  [error opening dir]\n" +
+            "/some/fake/path  [error opening dir]\n" +
+            "\n" +
+            "3 directories, 1 file",
+        },
+        {
+          depth: 2,
+          expectedDepth: 2,
+          expected:
+            "\n/\n" +
+            "├── src\n" +
+            "│   ├── index.ts\n" +
+            "│   └── main\n" +
+            "└── test\n" +
+            "/src/main/foo/daz  [error opening dir]\n" +
+            "/some/fake/path  [error opening dir]\n" +
+            "\n" +
+            "4 directories, 2 files",
+        },
+        {
+          depth: 3,
+          expectedDepth: 3,
+          expected:
+            "\n/\n" +
+            "├── src\n" +
+            "│   ├── index.ts\n" +
+            "│   └── main\n" +
+            "│       └── foo\n" +
+            "└── test\n" +
+            "/src/main/foo/daz  [error opening dir]\n" +
+            "/some/fake/path  [error opening dir]\n" +
+            "\n" +
+            "5 directories, 2 files",
+        },
+        {
+          depth: 3.9,
+          expectedDepth: 3,
+          expected:
+            "\n/\n" +
+            "├── src\n" +
+            "│   ├── index.ts\n" +
+            "│   └── main\n" +
+            "│       └── foo\n" +
+            "└── test\n" +
+            "/src/main/foo/daz  [error opening dir]\n" +
+            "/some/fake/path  [error opening dir]\n" +
+            "\n" +
+            "5 directories, 2 files",
+        },
+      ].forEach(({ depth, expectedDepth, expected }) => {
+        test(`given a directory path with the -L ${depth} flag, should output a tree for the directory at a depth of ${expectedDepth}`, async () => {
+          // Arrange
+          const args = [
+            "../..",
+            "foo/daz",
+            "/some/fake/path",
+            "-L",
+            `${depth}`,
+          ];
+
+          // Act
+          await tree.run(args);
+
+          // Assert
+          expect(appendOutput).not.toHaveBeenCalled();
+          expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+        });
+      });
+
+      ["0", "a", "/", "."].forEach((value) => {
+        test(`given a directory path with the -L ${value} flag, should output an error`, async () => {
+          // Arrange
+          const args = ["../..", "foo/daz", "/some/fake/path", "-L", value];
+
+          // Act
+          await tree.run(args);
+
+          // Assert
+          const expected = "\ntree: Invalid level, must be greater than 0.";
+
+          expect(appendOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          expect(appendRawOutput).not.toHaveBeenCalled();
+        });
       });
     });
   });
