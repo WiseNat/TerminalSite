@@ -7,14 +7,15 @@ import { USER_PROMPT } from "../../../../src/constant/prompt";
 import { Suggestion } from "../../../../src/command/command_script";
 
 describe("AutocompleteUtil", () => {
+  // Spy
+  const appendInput = vi.spyOn(TerminalUtil, "appendInput");
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+
+  // Mock
+  vi.mock("../../../../src/util/terminal_util");
+  vi.mock("../../../../src/util/meta_import_util");
+
   describe("autocomplete", () => {
-    // Spy
-    const appendInput = vi.spyOn(TerminalUtil, "appendInput");
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-    // Mock
-    vi.mock("../../../../src/util/terminal_util");
-
     describe("Input Insert", () => {
       [
         {
@@ -104,9 +105,6 @@ describe("AutocompleteUtil", () => {
   });
 
   describe("getCommandSuggestions", () => {
-    // Mock
-    vi.mock("../../../../src/util/meta_import_util");
-
     // Other
     beforeEach(async () => {
       await unmock("../../../src/util/meta_import_util", [

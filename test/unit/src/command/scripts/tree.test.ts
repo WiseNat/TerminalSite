@@ -5,31 +5,29 @@ import TerminalUtil from "../../../../../src/util/terminal_util.ts";
 import ColourUtil from "../../../../../src/util/colour_util.ts";
 
 describe("Tree", () => {
+  // Spy
+  const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+
+  // Mock
+  vi.mock("../../../../../src/util/terminal_util");
+  vi.mock("../../../../../src/util/colour_util");
+
+  vi.mocked(ColourUtil.getFileSystemEntry).mockImplementation(
+    (node, useShortName) => {
+      if (useShortName) {
+        return node.name;
+      }
+
+      return node.path === "" ? `/${node.name}` : `/${node.path}/${node.name}`;
+    },
+  );
+
   beforeEach(() => {
     FileSystemUtil.setCurrentWorkingDirectory("/src/main");
   });
 
   describe("run", () => {
-    // Spy
-    const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
-    vi.mock("../../../../../src/util/colour_util");
-
-    vi.mocked(ColourUtil.getFileSystemEntry).mockImplementation(
-      (node, useShortName) => {
-        if (useShortName) {
-          return node.name;
-        }
-
-        return node.path === ""
-          ? `/${node.name}`
-          : `/${node.path}/${node.name}`;
-      },
-    );
-
     describe("No flags", () => {
       test("given no path, should output a tree for the current working directory", async () => {
         // Arrange

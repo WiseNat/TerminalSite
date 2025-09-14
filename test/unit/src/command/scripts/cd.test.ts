@@ -6,6 +6,16 @@ import FileSystemUtil from "../../../../../src/util/file_system_util";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 
 describe("Cd", () => {
+  // Spy
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+  const setCurrentWorkingDirectory = vi.spyOn(
+    FileSystemUtil,
+    "setCurrentWorkingDirectory",
+  );
+
+  // Mock
+  vi.mock("../../../../../src/util/terminal_util");
+
   beforeEach(() => {
     FileSystemUtil.setHomeDirectory("/home/nathanwise");
     FileSystemUtil.setCurrentWorkingDirectory("~");
@@ -16,16 +26,6 @@ describe("Cd", () => {
   });
 
   describe("run", () => {
-    // Spy
-    const setCurrentWorkingDirectory = vi.spyOn(
-      FileSystemUtil,
-      "setCurrentWorkingDirectory",
-    );
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
-
     describe("Successfully changes directory", () => {
       test("an existing directory path argument changes directory to that path", async () => {
         // Arrange

@@ -3,13 +3,13 @@ import { processA } from "../../../../../src/event/keydown_key/a";
 import * as homeModule from "../../../../../src/event/keydown_key/home";
 
 describe("A", () => {
+  // Spy
+  const processHome = vi.spyOn(homeModule, "processHome");
+
+  // Mock
+  vi.mock("../../../../../src/event/keydown_key/home");
+
   describe("processA", async () => {
-    // Spy
-    const processHome = vi.spyOn(homeModule, "processHome");
-
-    // Mock
-    vi.mock("../../../../../src/event/keydown_key/home");
-
     test("with 'Ctrl' moves the cursor to the start of the user input", async () => {
       // Arrange
       const event = new KeyboardEvent("keydown", { ctrlKey: true });

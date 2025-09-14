@@ -5,9 +5,19 @@ import TerminalUtil from "../../../../../src/util/terminal_util";
 import ColourUtil from "../../../../../src/util/colour_util";
 
 describe("Ls", () => {
-  beforeEach(() => {
-    FileSystemUtil.setHomeDirectory("/src/main");
-    FileSystemUtil.setCurrentWorkingDirectory("~");
+  // Spy
+  const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+
+  // Mock
+  vi.mock("../../../../../src/util/terminal_util");
+  vi.mock("../../../../../src/util/colour_util");
+
+  // Mocked
+  vi.mocked(ColourUtil.getFileSystemEntryStyle).mockReturnValue({
+    foreground: null,
+    background: null,
+    fontWeight: null,
   });
 
   vi.mocked(ColourUtil.getFileSystemEntry).mockImplementation(
@@ -16,22 +26,12 @@ describe("Ls", () => {
     },
   );
 
+  beforeEach(() => {
+    FileSystemUtil.setHomeDirectory("/src/main");
+    FileSystemUtil.setCurrentWorkingDirectory("~");
+  });
+
   describe("run", () => {
-    // Spy
-    const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
-    vi.mock("../../../../../src/util/colour_util");
-
-    // Mocked
-    vi.mocked(ColourUtil.getFileSystemEntryStyle).mockReturnValue({
-      foreground: null,
-      background: null,
-      fontWeight: null,
-    });
-
     describe("No flags", () => {
       test("Given no arguments, outputs the contents of the current working directory", async () => {
         // Arrange

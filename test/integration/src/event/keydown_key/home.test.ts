@@ -11,7 +11,6 @@ describe("Home", () => {
     // Mock
     vi.mock("../../../../../src/util/terminal_util");
 
-    // Other
     const event = new KeyboardEvent("keydown");
 
     test("moves the cursor to the start of the user input when no zero-width space is present", async () => {

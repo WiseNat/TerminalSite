@@ -5,16 +5,16 @@ import FileImportUtil from "../../../../../src/util/file_import_util";
 import FileSystemUtil from "../../../../../src/util/file_system_util";
 
 describe("Cat", () => {
+  // Spy
+  const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
+  const readFile = vi.spyOn(FileImportUtil, "readFile");
+  const resolvePath = vi.spyOn(FileSystemUtil, "resolvePath");
+
+  // Mock
+  vi.mock("../../../../../src/util/terminal_util");
+  vi.mock("../../../../../src/util/file_import_util");
+
   describe("run", async () => {
-    // Spy
-    const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
-    const readFile = vi.spyOn(FileImportUtil, "readFile");
-    const resolvePath = vi.spyOn(FileSystemUtil, "resolvePath");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
-    vi.mock("../../../../../src/util/file_import_util");
-
     test("should output nothing when no args are passed", async () => {
       // Arrange
       const args: string[] = [];

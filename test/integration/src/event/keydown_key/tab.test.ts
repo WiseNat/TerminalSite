@@ -6,26 +6,25 @@ import CommandUtil from "../../../../../src/util/command_util";
 import AutocompleteUtil from "../../../../../src/util/autocomplete_util";
 
 describe("Tab", () => {
+  // Spy
+  const getCommandScript = vi.spyOn(CommandUtil, "getCommandScript");
+  const getCommandSuggestions = vi.spyOn(
+    AutocompleteUtil,
+    "getCommandSuggestions",
+  );
+  const getFileAndDirectorySuggestions = vi.spyOn(
+    AutocompleteUtil,
+    "getFileAndDirectorySuggestions",
+  );
+  const autocomplete = vi.spyOn(AutocompleteUtil, "autocomplete");
+
+  // Mock
+  vi.mock("../../../../../src/util/terminal_util");
+  vi.mock("../../../../../src/util/meta_import_util");
+
+  const event = new KeyboardEvent("keydown");
+
   describe("processTab", () => {
-    // Spy
-    const getCommandScript = vi.spyOn(CommandUtil, "getCommandScript");
-    const getCommandSuggestions = vi.spyOn(
-      AutocompleteUtil,
-      "getCommandSuggestions",
-    );
-    const getFileAndDirectorySuggestions = vi.spyOn(
-      AutocompleteUtil,
-      "getFileAndDirectorySuggestions",
-    );
-    const autocomplete = vi.spyOn(AutocompleteUtil, "autocomplete");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
-    vi.mock("../../../../../src/util/meta_import_util");
-
-    // Other
-    const event = new KeyboardEvent("keydown");
-
     describe("Default autocompletion", () => {
       test("Autocompletes a command name when typing a command", async () => {
         // Arrange

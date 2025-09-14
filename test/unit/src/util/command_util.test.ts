@@ -12,16 +12,15 @@ describe("CommandUtil", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
+  // Mock
+  vi.mock("../../../../src/util/terminal_util");
+  vi.mock("../../../../src/util/meta_import_util");
+
+  beforeEach(async () => {
+    await unmock("../../../src/util/meta_import_util", ["default", "getKey"]);
+  });
+
   describe("executeCommand", () => {
-    // Mock
-    vi.mock("../../../../src/util/terminal_util");
-    vi.mock("../../../../src/util/meta_import_util");
-
-    // Other
-    beforeEach(async () => {
-      await unmock("../../../src/util/meta_import_util", ["default", "getKey"]);
-    });
-
     test("runs a command when it is found", async () => {
       // Arrange
       const mockCommandFile: CommandScript = { run: vi.fn() };
@@ -132,10 +131,6 @@ describe("CommandUtil", () => {
   });
 
   describe("getCommandScripts", () => {
-    // Mock
-    vi.mock("../../../../src/util/meta_import_util");
-
-    // Other
     beforeEach(async () => {
       await unmock("../../../src/util/meta_import_util", ["default", "getKey"]);
     });

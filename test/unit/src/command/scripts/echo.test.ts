@@ -3,13 +3,13 @@ import ECHO from "../../../../../src/command/scripts/echo";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 
 describe("Echo", () => {
+  // Spy
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+
+  // Mock
+  vi.mock("../../../../../src/util/terminal_util");
+
   describe("run", async () => {
-    // Spy
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
-
     test("should join and append all args", async () => {
       // Arrange
       const args = ["foo", "bar"];

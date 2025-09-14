@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, test } from "vitest";
 import CommandHistoryUtil from "../../../../src/util/command_history_util";
 
-beforeEach(() => {
-  CommandHistoryUtil.resetHistory();
-  CommandHistoryUtil.resetHistoryIndex();
-});
-
 describe("CommandHistoryUtil", () => {
+  beforeEach(() => {
+    CommandHistoryUtil.resetHistory();
+    CommandHistoryUtil.resetHistoryIndex();
+  });
+
   describe("resetHistory", () => {
     test("resets the history when nothing has been changed", () => {
       // Arrange & Act

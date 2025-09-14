@@ -4,13 +4,13 @@ import FileSystemUtil from "../../../../../src/util/file_system_util";
 import PWD from "../../../../../src/command/scripts/pwd";
 
 describe("Pwd", () => {
+  // Spy
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+
+  // Mock
+  vi.mock("../../../../../src/util/terminal_util");
+
   describe("run", () => {
-    // Spy
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
-
     test("should output the current working directory", async () => {
       // Arrange
       const currentWorkingDirectory = "/home/nathanwise/Desktop";
