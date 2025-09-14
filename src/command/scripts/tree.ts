@@ -7,19 +7,23 @@ import { FileTreeNode } from "virtual:file-tree";
 
 // TODO: JSDocs..
 
+interface Flags {
+  a: boolean;
+}
+
 interface TreeView {
   content: string;
   directoryCount: number;
   fileCount: number;
 }
 
-function generateOutput(paths: string[]): string {
+function generateOutput(paths: string[], flags: Flags): string {
   const trees: string[] = [];
   let totalDirectoryCount: number = 0;
   let totalFileCount: number = 0;
 
   for (const path of paths) {
-    const tree = getTreeViewForPath(path);
+    const tree = getTreeViewForPath(path, flags);
 
     trees.push(tree.content);
     totalDirectoryCount += tree.directoryCount;
@@ -37,7 +41,7 @@ function generateOutput(paths: string[]): string {
   );
 }
 
-function getTreeViewForPath(path: string): TreeView {
+function getTreeViewForPath(path: string, flags: Flags): TreeView {
   const tree: TreeView = {
     content: "",
     directoryCount: 0,
@@ -67,10 +71,10 @@ function getTreeViewForPath(path: string): TreeView {
     return tree;
   }
 
-  return generateTreeFromNode(node);
+  return generateTreeFromNode(node, flags);
 }
 
-function generateTreeFromNode(node: FileTreeNode): TreeView {
+function generateTreeFromNode(node: FileTreeNode, flags: Flags): TreeView {
   const tree: TreeView = {
     content: "",
     fileCount: 0,
@@ -98,7 +102,7 @@ function generateTreeFromNode(node: FileTreeNode): TreeView {
   const stack: StackEntry[] = [];
 
   // Add immediate children to stack
-  const immediateChildren = sortNodes(node.children);
+  const immediateChildren = filterNodes(sortNodes(node.children), flags);
   for (let index = immediateChildren.length - 1; index >= 0; index--) {
     stack.push({
       node: immediateChildren[index],
@@ -124,7 +128,7 @@ function generateTreeFromNode(node: FileTreeNode): TreeView {
     }
 
     const childPrefix = prefix + (isLast ? "    " : "│   ");
-    const children = sortNodes(node.children);
+    const children = filterNodes(sortNodes(node.children), flags);
 
     for (let index = children.length - 1; index >= 0; index--) {
       stack.push({
@@ -154,14 +158,22 @@ function getPathError(path: string): string {
 }
 
 function sortNodes(nodes: FileTreeNode[]): FileTreeNode[] {
-  return FileSystemUtil.sortNodes(nodes).filter(
-    (node) => !FileSystemUtil.isDotEntry(node.name),
-  );
+  return FileSystemUtil.sortNodes(nodes);
+}
+
+function filterNodes(nodes: FileTreeNode[], flags: Flags): FileTreeNode[] {
+  if (flags.a) {
+    return nodes;
+  }
+
+  return nodes.filter((node) => !FileSystemUtil.isDotEntry(node.name));
 }
 
 const tree: CommandScript = {
   async run(args: string[]): Promise<void> {
-    const parsedOptions = CommandUtil.parseArgs("tree", args, {});
+    const parsedOptions = CommandUtil.parseArgs("tree", args, {
+      boolean: ["a"],
+    });
 
     if (parsedOptions === null) {
       return;
@@ -176,7 +188,7 @@ const tree: CommandScript = {
             ),
           ];
 
-    const output: string = generateOutput(paths);
+    const output: string = generateOutput(paths, { a: parsedOptions.a });
 
     TerminalUtil.appendRawOutput(`\n${output}`);
   },
