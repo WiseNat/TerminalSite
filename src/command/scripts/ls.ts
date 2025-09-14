@@ -75,20 +75,10 @@ interface Flags {
   blockSize: number | null;
 }
 
-// TODO: Make this extend the FileTreeNode. See if we can remove any code doing this, e.g. sortEntryNodes -> FileSystemUtil.sortNodes
-interface EntryNode {
-  name: string;
-  path: string;
-  fullPath: string;
-  isDirectory: boolean;
+interface EntryNode extends FileTreeNode {
   children: EntryNode[];
-  lastModifiedTime: Date;
-  size: number;
-  permissions: number[];
-  owner: string;
-  group: string;
+  fullPath: string;
   hardLinks: number;
-  blocks: number;
 }
 
 interface PathResults {
@@ -247,7 +237,7 @@ function formatUnknownPaths(unknownPaths: string[]): string {
  * @returns the formatted file entries.
  */
 function formatFileEntries(fileEntries: EntryNode[], flags: Flags): string {
-  sortEntryNodes(fileEntries);
+  fileEntries = sortEntryNodes(fileEntries);
 
   const outputs: string[] = [];
   for (const fileEntry of fileEntries) {
@@ -281,7 +271,7 @@ function formatDirectoryEntries(
 ) {
   const outputs: string[] = [];
 
-  sortEntryNodes(directoryEntries);
+  directoryEntries = sortEntryNodes(directoryEntries);
 
   for (const directoryEntry of directoryEntries) {
     const directoryEntryChildren = getSortedDirectoryEntryChildren(
@@ -335,9 +325,7 @@ function getSortedDirectoryEntryChildren(
   directoryEntry: EntryNode,
   flags: Flags,
 ): EntryNode[] {
-  let children = directoryEntry.children;
-
-  sortEntryNodes(children);
+  let children = sortEntryNodes(directoryEntry.children);
 
   // Add after sorting to ensure these appear first
   if (flags.a) {
@@ -371,13 +359,8 @@ function getSortedDirectoryEntryChildren(
  * @param nodes the nodes to sort inline.
  * @see stripLeadingDots
  */
-function sortEntryNodes(nodes: EntryNode[]) {
-  nodes.sort((a, b) => {
-    const aString = FileSystemUtil.stripDots(a.fullPath);
-    const bString = FileSystemUtil.stripDots(b.fullPath);
-
-    return aString.localeCompare(bString);
-  });
+function sortEntryNodes(nodes: EntryNode[]): EntryNode[] {
+  return FileSystemUtil.sortNodes(nodes) as EntryNode[];
 }
 
 /**
