@@ -8,7 +8,7 @@ describe("Cat", () => {
   // Spy
   const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
   const readFile = vi.spyOn(FileImportUtil, "readFile");
-  const resolvePath = vi.spyOn(FileSystemUtil, "resolvePath");
+  const resolvePathParts = vi.spyOn(FileSystemUtil, "resolvePathParts");
 
   // Mock
   vi.mock("../../../../../src/util/terminal_util");
@@ -37,7 +37,7 @@ describe("Cat", () => {
 
       // Assert
       expect(readFile).toHaveBeenCalledOnce();
-      expect(resolvePath).not.toHaveBeenCalled();
+      expect(resolvePathParts).not.toHaveBeenCalled();
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         `\n${fileContents}`,
       );
@@ -53,7 +53,7 @@ describe("Cat", () => {
 
       // Assert
       expect(readFile).toHaveBeenCalledOnce();
-      expect(resolvePath).toHaveBeenCalledOnce();
+      expect(resolvePathParts).toHaveBeenCalledOnce();
 
       const resolvedPath = FileSystemUtil.resolvePath(args[0]);
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
@@ -75,7 +75,7 @@ describe("Cat", () => {
 
       // Assert
       expect(readFile).toHaveBeenCalledTimes(2);
-      expect(resolvePath).not.toHaveBeenCalled();
+      expect(resolvePathParts).not.toHaveBeenCalled();
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         `\n${fileContentsFirst}\n${fileContentsSecond}`,
       );
@@ -91,7 +91,7 @@ describe("Cat", () => {
 
       // Assert
       expect(readFile).toHaveBeenCalledTimes(2);
-      expect(resolvePath).toHaveBeenCalledTimes(2);
+      expect(resolvePathParts).toHaveBeenCalledTimes(2);
 
       const resolvedPathFirst = FileSystemUtil.resolvePath(args[0]);
       const resolvedPathSecond = FileSystemUtil.resolvePath(args[1]);
@@ -113,7 +113,7 @@ describe("Cat", () => {
 
       // Assert
       expect(readFile).toHaveBeenCalledTimes(2);
-      expect(resolvePath).toHaveBeenCalledOnce();
+      expect(resolvePathParts).toHaveBeenCalledOnce();
 
       const resolvedPath = FileSystemUtil.resolvePath(args[0]);
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
@@ -131,10 +131,27 @@ describe("Cat", () => {
 
       // Assert
       expect(readFile).toHaveBeenCalledOnce();
-      expect(resolvePath).toHaveBeenCalledOnce();
+      expect(resolvePathParts).toHaveBeenCalledOnce();
 
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
         `\ncat: ${args[0]}: No such file or directory`,
+      );
+    });
+
+    test("should output an error message when a path is for a directory", async () => {
+      // Arrange
+      const args: string[] = ["/src/main"];
+      vi.mocked(FileImportUtil.readFile).mockResolvedValueOnce(null);
+
+      // Act
+      await CAT.run(args);
+
+      // Assert
+      expect(readFile).toHaveBeenCalledOnce();
+      expect(resolvePathParts).toHaveBeenCalledOnce();
+
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
+        `\ncat: ${args[0]}: Is a directory`,
       );
     });
 
@@ -150,7 +167,7 @@ describe("Cat", () => {
 
       // Assert
       expect(readFile).toHaveBeenCalledOnce();
-      expect(resolvePath).not.toHaveBeenCalled();
+      expect(resolvePathParts).not.toHaveBeenCalled();
 
       const replacedFileContents =
         "AN EXAMPLE CONTAINING <a href='https://duckduckgo.com/?hps=1&q=foobar&atb=v446-1&ia=web' target='_blank'>some text</a> &lt;- A URL";
