@@ -32,15 +32,15 @@ describe("Echo", () => {
       expect(appendOutput).toHaveBeenCalledWith("\n");
     });
 
-    test("should ignore options when outputting", async () => {
+    test("should not options when outputting", async () => {
       // Arrange
-      const args = ["foo", "bar", "-a", "baz", "-gaz"];
+      const args = ["foo", "bar", "-a", "baz", "--gaz"];
 
       // Act
       await ECHO.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledWith("\nfoo bar");
+      expect(appendOutput).toHaveBeenCalledWith("\nfoo bar -a baz --gaz");
     });
   });
 });
