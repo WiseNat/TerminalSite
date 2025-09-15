@@ -3,18 +3,19 @@ import MetaImportUtil from "../../../../src/util/meta_import_util";
 import AutocompleteUtil from "../../../../src/util/autocomplete_util";
 import { unmock } from "../../helper/unmock";
 import TerminalUtil from "../../../../src/util/terminal_util";
-import { userPrompt } from "../../../../src/constant/prompt";
+import { USER_PROMPT } from "../../../../src/constant/prompt";
 import { Suggestion } from "../../../../src/command/command_script";
 
 describe("AutocompleteUtil", () => {
+  // Spy
+  const appendInput = vi.spyOn(TerminalUtil, "appendInput");
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+
+  // Mock
+  vi.mock("../../../../src/util/terminal_util");
+  vi.mock("../../../../src/util/meta_import_util");
+
   describe("autocomplete", () => {
-    // Spy
-    const appendInput = vi.spyOn(TerminalUtil, "appendInput");
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-    // Mock
-    vi.mock("../../../../src/util/terminal_util");
-
     describe("Input Insert", () => {
       [
         {
@@ -94,7 +95,7 @@ describe("AutocompleteUtil", () => {
             expect(appendOutput).not.toHaveBeenCalled();
           } else {
             expect(appendOutput).toHaveBeenCalledWith(
-              `${userPrompt}${userInput}\n${expectedAppendText}`,
+              `${USER_PROMPT}${userInput}\n${expectedAppendText}`,
               true,
             );
           }
@@ -104,9 +105,6 @@ describe("AutocompleteUtil", () => {
   });
 
   describe("getCommandSuggestions", () => {
-    // Mock
-    vi.mock("../../../../src/util/meta_import_util");
-
     // Other
     beforeEach(async () => {
       await unmock("../../../src/util/meta_import_util", [

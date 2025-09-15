@@ -246,7 +246,7 @@ function storeAsOrphan(
  *
  * console.info(fileTree);
  */
-export default function FileTree(
+export default function fileTree(
   rootPath?: string,
   homeDirectory?: string,
 ): Plugin {

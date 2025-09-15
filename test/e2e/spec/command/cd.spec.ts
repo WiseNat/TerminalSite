@@ -1,34 +1,39 @@
 import { expect, test } from "../../fixture";
 import {
-  defaultCurrentWorkingDirectory,
-  defaultHomeDirectory,
-  defaultInitialPrompt,
-  defaultUserPrompt,
-  inputSelector,
-  outputSelector,
-  promptSelector,
+  COMMAND_RAN_OUTPUT,
+  DEFAULT_CURRENT_WORKING_DIRECTORY,
+  DEFAULT_HOME_DIRECTORY,
+  DEFAULT_INITIAL_PROMPT,
+  DEFAULT_USER_PROMPT,
+  INPUT_SELECTOR,
+  OUTPUT_SELECTOR,
+  PROMPT_SELECTOR,
 } from "../../helper/constant/generic";
 import { Page } from "@playwright/test";
-import { getExpectedPrompt } from "../../helper/util/terminal_util";
+import {
+  assertExactTextInTerminal,
+  assertOutputInTerminal,
+  getExpectedPrompt,
+  runCommand,
+} from "../../helper/util/terminal_util";
 
 async function checkCurrentWorkingDirectory(
   page: Page,
   expectedCurrentWorkingDirectory: string,
 ) {
-  const previousOutput = await page.locator(outputSelector).textContent();
-  const previousPrompt = await page.locator(promptSelector).textContent();
+  const previousOutput = await page.locator(OUTPUT_SELECTOR).textContent();
+  const previousPrompt = await page.locator(PROMPT_SELECTOR).textContent();
 
-  const pwd = "pwd";
-  await page.locator(inputSelector).pressSequentially(pwd);
-  await page.locator(inputSelector).press("Enter");
+  const input = "pwd";
+  await runCommand(page, input);
 
-  await expect(page.locator(outputSelector)).elementToStartWith(
-    `${previousOutput}\n${previousPrompt}${pwd}\n${expectedCurrentWorkingDirectory}`,
+  await expect(page.locator(OUTPUT_SELECTOR)).elementToStartWith(
+    `${previousOutput}\n${previousPrompt}${input}\n${expectedCurrentWorkingDirectory}`,
   );
-  await expect(page.locator(promptSelector)).exactTextInElement(
+  await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
     getExpectedPrompt(expectedCurrentWorkingDirectory),
   );
-  await expect(page.locator(inputSelector)).exactTextInElement("");
+  await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
 }
 
 test.describe("Cd", () => {
@@ -40,18 +45,14 @@ test.describe("Cd", () => {
     const input = `cd ${path}`;
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}`,
-    );
-    await expect(page.locator(promptSelector)).exactTextInElement(
+    await assertExactTextInTerminal(
+      page,
+      COMMAND_RAN_OUTPUT + input,
       getExpectedPrompt(path),
     );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
     await checkCurrentWorkingDirectory(page, path);
   });
 
@@ -62,19 +63,15 @@ test.describe("Cd", () => {
     const input = "cd";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}`,
+    await assertExactTextInTerminal(
+      page,
+      COMMAND_RAN_OUTPUT + input,
+      getExpectedPrompt(DEFAULT_HOME_DIRECTORY),
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      getExpectedPrompt(defaultHomeDirectory),
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
-    await checkCurrentWorkingDirectory(page, defaultHomeDirectory);
+    await checkCurrentWorkingDirectory(page, DEFAULT_HOME_DIRECTORY);
   });
 
   test("should change directory to the previous working directory when a previous working directory exists and '-' is provided as a path", async ({
@@ -84,33 +81,25 @@ test.describe("Cd", () => {
     const previousWorkingDirectory = "/var/tmp";
     const currentWorkingDirectory = "/home";
 
-    await page
-      .locator(inputSelector)
-      .pressSequentially(`cd ${previousWorkingDirectory}`);
-    await page.locator(inputSelector).press("Enter");
-
-    await page
-      .locator(inputSelector)
-      .pressSequentially(`cd ${currentWorkingDirectory}`);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, `cd ${previousWorkingDirectory}`);
+    await runCommand(page, `cd ${currentWorkingDirectory}`);
 
     // Act
-    await page.locator(inputSelector).pressSequentially("cd -");
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, "cd -");
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}` +
-        `\n${defaultUserPrompt}cd ${previousWorkingDirectory}` +
-        `\n${getExpectedPrompt(previousWorkingDirectory)}cd ${currentWorkingDirectory}` +
-        `\n${getExpectedPrompt(currentWorkingDirectory)}cd -` +
-        `\n${previousWorkingDirectory}`,
-    );
-    await expect(page.locator(promptSelector)).exactTextInElement(
+    const expectedOutputText =
+      `${DEFAULT_INITIAL_PROMPT}` +
+      `\n${DEFAULT_USER_PROMPT}cd ${previousWorkingDirectory}` +
+      `\n${getExpectedPrompt(previousWorkingDirectory)}cd ${currentWorkingDirectory}` +
+      `\n${getExpectedPrompt(currentWorkingDirectory)}cd -` +
+      `\n${previousWorkingDirectory}`;
+
+    await assertExactTextInTerminal(
+      page,
+      expectedOutputText,
       getExpectedPrompt(previousWorkingDirectory),
     );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
     await checkCurrentWorkingDirectory(page, previousWorkingDirectory);
   });
 
@@ -126,21 +115,19 @@ test.describe("Cd", () => {
       "/etc/opt",
     ];
     const previousWorkingDirectory = directories[directories.length - 2];
-    let previousDirectory = defaultCurrentWorkingDirectory;
+    let previousDirectory = DEFAULT_CURRENT_WORKING_DIRECTORY;
 
     for (const directory of directories) {
-      const previousOutput = await page.locator(outputSelector).textContent();
+      const previousOutput = await page.locator(OUTPUT_SELECTOR).textContent();
 
-      await page.locator(inputSelector).pressSequentially(`cd ${directory}`);
-      await page.locator(inputSelector).press("Enter");
+      await runCommand(page, `cd ${directory}`);
 
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        `${previousOutput}\n${getExpectedPrompt(previousDirectory)}cd ${directory}`,
-      );
-      await expect(page.locator(promptSelector)).exactTextInElement(
+      const expectedOutputText = `${previousOutput}\n${getExpectedPrompt(previousDirectory)}cd ${directory}`;
+      await assertExactTextInTerminal(
+        page,
+        expectedOutputText,
         getExpectedPrompt(directory),
       );
-      await expect(page.locator(inputSelector)).exactTextInElement("");
 
       previousDirectory = directory;
 
@@ -148,21 +135,18 @@ test.describe("Cd", () => {
     }
 
     const input = "cd -";
-    const previousOutput = await page.locator(outputSelector).textContent();
+    const previousOutput = await page.locator(OUTPUT_SELECTOR).textContent();
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${previousOutput}\n${getExpectedPrompt(previousDirectory)}${input}\n${previousWorkingDirectory}`,
-    );
-    await expect(page.locator(promptSelector)).exactTextInElement(
+    const expectedOutputText = `${previousOutput}\n${getExpectedPrompt(previousDirectory)}${input}\n${previousWorkingDirectory}`;
+    await assertExactTextInTerminal(
+      page,
+      expectedOutputText,
       getExpectedPrompt(previousWorkingDirectory),
     );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
     await checkCurrentWorkingDirectory(page, previousWorkingDirectory);
   });
 
@@ -173,19 +157,14 @@ test.describe("Cd", () => {
     const input = "cd /var/tmp /home/nathanwise";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\nbash: cd: too many arguments`,
+    await assertOutputInTerminal(
+      page,
+      `${input}\nbash: cd: too many arguments`,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
-    await checkCurrentWorkingDirectory(page, defaultCurrentWorkingDirectory);
+    await checkCurrentWorkingDirectory(page, DEFAULT_CURRENT_WORKING_DIRECTORY);
   });
 
   test("should output an error message when no previous working directory exists and '-' is provided as a path", async ({
@@ -195,19 +174,11 @@ test.describe("Cd", () => {
     const input = "cd -";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\nbash: cd: OLDPWD not set`,
-    );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
-    await checkCurrentWorkingDirectory(page, defaultCurrentWorkingDirectory);
+    await assertOutputInTerminal(page, `${input}\nbash: cd: OLDPWD not set`);
+    await checkCurrentWorkingDirectory(page, DEFAULT_CURRENT_WORKING_DIRECTORY);
   });
 
   test("should output an error message when a file path is provided", async ({
@@ -218,19 +189,14 @@ test.describe("Cd", () => {
     const input = `cd ${path}`;
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\nbash: cd: ${path}: Not a directory`,
+    await assertOutputInTerminal(
+      page,
+      `${input}\nbash: cd: ${path}: Not a directory`,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
-    await checkCurrentWorkingDirectory(page, defaultCurrentWorkingDirectory);
+    await checkCurrentWorkingDirectory(page, DEFAULT_CURRENT_WORKING_DIRECTORY);
   });
 
   test("should output an error message when a non-existent directory path is provided", async ({
@@ -241,19 +207,14 @@ test.describe("Cd", () => {
     const input = `cd ${path}`;
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\nbash: cd: ${path}: No such file or directory`,
+    await assertOutputInTerminal(
+      page,
+      `${input}\nbash: cd: ${path}: No such file or directory`,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
-    await checkCurrentWorkingDirectory(page, defaultCurrentWorkingDirectory);
+    await checkCurrentWorkingDirectory(page, DEFAULT_CURRENT_WORKING_DIRECTORY);
   });
 
   test("should output an error message when an unresolvable directory path is provided", async ({
@@ -264,18 +225,13 @@ test.describe("Cd", () => {
     const input = `cd ${path}`;
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\nbash: cd: ${path}: No such file or directory`,
+    await assertOutputInTerminal(
+      page,
+      `${input}\nbash: cd: ${path}: No such file or directory`,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
-    await checkCurrentWorkingDirectory(page, defaultCurrentWorkingDirectory);
+    await checkCurrentWorkingDirectory(page, DEFAULT_CURRENT_WORKING_DIRECTORY);
   });
 });

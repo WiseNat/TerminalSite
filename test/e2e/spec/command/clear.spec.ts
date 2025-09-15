@@ -1,11 +1,12 @@
-import { expect, test } from "../../fixture";
+import { test } from "../../fixture";
 import {
-  commandNotFound,
-  defaultUserPrompt,
-  inputSelector,
-  outputSelector,
-  promptSelector,
+  COMMAND_NOT_FOUND,
+  DEFAULT_USER_PROMPT,
 } from "../../helper/constant/generic";
+import {
+  assertExactTextInTerminal,
+  runCommand,
+} from "../../helper/util/terminal_util.ts";
 
 test.describe("Clear", () => {
   test("should remove all existing outputs", async ({ page }) => {
@@ -14,20 +15,11 @@ test.describe("Clear", () => {
     const input = "clear";
 
     // Act
-    // Rubbish input first to simulate terminal usage
-    await page.locator(inputSelector).pressSequentially(defaultInput);
-    await page.locator(inputSelector).press("Enter");
-
-    // Actual clear
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, defaultInput); // Rubbish input first to simulate terminal usage
+    await runCommand(page, input); // actual clear
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement("");
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
+    await assertExactTextInTerminal(page, "", undefined, "");
   });
 
   test("output must not have an extra newline after clearing", async ({
@@ -37,18 +29,11 @@ test.describe("Clear", () => {
     const fakeCommand = "fakecommand";
 
     // Act
-    await page.locator(inputSelector).pressSequentially("clear");
-    await page.locator(inputSelector).press("Enter");
-    await page.locator(inputSelector).pressSequentially(fakeCommand);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, "clear");
+    await runCommand(page, fakeCommand);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultUserPrompt}${fakeCommand}\n${fakeCommand}${commandNotFound}`,
-    );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
+    const fullExpected = `${DEFAULT_USER_PROMPT}${fakeCommand}\n${fakeCommand}${COMMAND_NOT_FOUND}`;
+    await assertExactTextInTerminal(page, fullExpected);
   });
 });

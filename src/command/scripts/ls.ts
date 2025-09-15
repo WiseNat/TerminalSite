@@ -6,34 +6,85 @@ import ColourUtil from "../../util/colour_util.ts";
 import { clone } from "lodash-es";
 import CommandUtil from "../../util/command_util.ts";
 
-interface EntryNode {
-  name: string;
-  path: string;
-  fullPath: string;
-  isDirectory: boolean;
-  children: EntryNode[];
-  lastModifiedTime: Date;
-  size: number;
-  permissions: number[];
-  owner: string;
-  group: string;
-  hardLinks: number;
-  blocks: number;
-}
+// TODO: 'ls -1s' works but 'ls -s1' does not work. This is an issue with the getopts
+//  library. Planning on investigating a more maintained alternative so this is
+//  a low priority issue for now.
+const LS: CommandScript = {
+  async run(args: string[]): Promise<void> {
+    const parsedOptions = CommandUtil.parseArgs("ls", args, {
+      boolean: ["a", "1", "s", "h", "l"],
+      string: ["block-size"],
+      alias: {
+        all: ["a"],
+        size: ["s"],
+        "human-readable": ["h"],
+      },
+    });
 
-interface PathResults {
-  unknownPaths: string[];
-  fileEntries: EntryNode[];
-  directoryEntries: EntryNode[];
-}
+    if (parsedOptions === null) {
+      return;
+    }
 
-interface FormatFlags {
+    let blockSize: number | null = null;
+    const blockSizeRaw: string = parsedOptions["block-size"];
+    if (blockSizeRaw) {
+      blockSize = parseInt(blockSizeRaw);
+
+      if (blockSizeRaw.includes(".") || isNaN(blockSize) || blockSize < 1) {
+        TerminalUtil.appendOutput(
+          `ls: invalid --block-size argument '${parsedOptions["block-size"]}'`,
+        );
+        return;
+      }
+    }
+
+    const paths: string[] =
+      parsedOptions._.length > 0
+        ? parsedOptions._
+        : [
+            FileSystemUtil.formatPath(
+              FileSystemUtil.getCurrentWorkingDirectory(),
+            ),
+          ];
+
+    const pathResults = processPaths(paths);
+    const output = formatPathResults(pathResults, {
+      a: parsedOptions.a,
+      "1": parsedOptions["1"],
+      s: parsedOptions.s,
+      h: parsedOptions.h,
+      l: parsedOptions.l,
+      blockSize: blockSize,
+    });
+
+    if (output !== "") {
+      TerminalUtil.appendRawOutput(`\n${output}`);
+    }
+  },
+};
+
+// noinspection JSUnusedGlobalSymbols
+export default LS;
+
+interface Flags {
   a: boolean;
   1: boolean;
   s: boolean;
   h: boolean;
   l: boolean;
   blockSize: number | null;
+}
+
+interface EntryNode extends FileTreeNode {
+  children: EntryNode[];
+  fullPath: string;
+  hardLinks: number;
+}
+
+interface PathResults {
+  unknownPaths: string[];
+  fileEntries: EntryNode[];
+  directoryEntries: EntryNode[];
 }
 
 /**
@@ -123,10 +174,7 @@ function createEntryNode(fileTreeNode: FileTreeNode): EntryNode {
  * @param flags all format related flags.
  * @returns structured human-readable text.
  */
-function formatPathResults(
-  pathResults: PathResults,
-  flags: FormatFlags,
-): string {
+function formatPathResults(pathResults: PathResults, flags: Flags): string {
   let output = "";
 
   const unknownPathOutput = formatUnknownPaths(pathResults.unknownPaths);
@@ -188,11 +236,8 @@ function formatUnknownPaths(unknownPaths: string[]): string {
  * @param flags flags for formatting.
  * @returns the formatted file entries.
  */
-function formatFileEntries(
-  fileEntries: EntryNode[],
-  flags: FormatFlags,
-): string {
-  sortEntryNodes(fileEntries);
+function formatFileEntries(fileEntries: EntryNode[], flags: Flags): string {
+  fileEntries = sortEntryNodes(fileEntries);
 
   const outputs: string[] = [];
   for (const fileEntry of fileEntries) {
@@ -222,11 +267,11 @@ function formatFileEntries(
 function formatDirectoryEntries(
   directoryEntries: EntryNode[],
   isPreviousOutput: boolean,
-  flags: FormatFlags,
+  flags: Flags,
 ) {
   const outputs: string[] = [];
 
-  sortEntryNodes(directoryEntries);
+  directoryEntries = sortEntryNodes(directoryEntries);
 
   for (const directoryEntry of directoryEntries) {
     const directoryEntryChildren = getSortedDirectoryEntryChildren(
@@ -278,11 +323,9 @@ function formatDirectoryEntries(
  */
 function getSortedDirectoryEntryChildren(
   directoryEntry: EntryNode,
-  flags: FormatFlags,
+  flags: Flags,
 ): EntryNode[] {
-  let children = directoryEntry.children;
-
-  sortEntryNodes(children);
+  let children = sortEntryNodes(directoryEntry.children);
 
   // Add after sorting to ensure these appear first
   if (flags.a) {
@@ -310,6 +353,17 @@ function getSortedDirectoryEntryChildren(
 }
 
 /**
+ * Sorts EntryNodes alphabetically by their `fullPath`, ignoring any starting
+ * '.' characters.
+ *
+ * @param nodes the nodes to sort inline.
+ * @see stripLeadingDots
+ */
+function sortEntryNodes(nodes: EntryNode[]): EntryNode[] {
+  return FileSystemUtil.sortNodes(nodes) as EntryNode[];
+}
+
+/**
  * Sorts and Formats Directory Entry Children.
  * <p>
  * Children will be coloured based on {@link ColourUtil.getFileSystemEntry}.
@@ -320,7 +374,7 @@ function getSortedDirectoryEntryChildren(
  */
 function formatDirectoryEntryChildren(
   children: EntryNode[],
-  flags: FormatFlags,
+  flags: Flags,
 ): string[] {
   const formattedChildren: string[] = [];
 
@@ -340,11 +394,7 @@ function formatDirectoryEntryChildren(
  * @param flags the formatting flags.
  * @param useShortName true to use the entry name, false to use the full path.
  */
-function formatEntry(
-  entry: EntryNode,
-  flags: FormatFlags,
-  useShortName: boolean,
-) {
+function formatEntry(entry: EntryNode, flags: Flags, useShortName: boolean) {
   const fileSystemEntry = ColourUtil.getFileSystemEntry(
     {
       name: entry.name,
@@ -383,19 +433,20 @@ function formatEntry(
 }
 
 /**
- * Sorts EntryNodes alphabetically by their `fullPath`, ignoring any starting
- * '.' characters.
- *
- * @param nodes the nodes to sort inline.
- * @see stripLeadingDots
+ * Formats the provided `dateTime` into a string.
+ * @param datetime the datetime to convert.
+ * @returns a datetime string, e.g. `17 Aug 00:33`.
  */
-function sortEntryNodes(nodes: EntryNode[]) {
-  nodes.sort((a, b) => {
-    const aString = FileSystemUtil.stripDots(a.fullPath);
-    const bString = FileSystemUtil.stripDots(b.fullPath);
-
-    return aString.localeCompare(bString);
-  });
+function formatDateTime(datetime: Date): string {
+  return datetime
+    .toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
+    .replace(",", "");
 }
 
 /**
@@ -406,7 +457,7 @@ function sortEntryNodes(nodes: EntryNode[]) {
  * @param entry the entry to get the size of.
  * @param flags the formatting flags.
  */
-function getSize(entry: EntryNode, flags: FormatFlags): string {
+function getSize(entry: EntryNode, flags: Flags): string {
   if (flags.h && !flags.blockSize) {
     /*
     Functionally this is wrong. FileSystemUtil.getHumanReadableSize does NOT return the same values we'd expect in a
@@ -430,7 +481,7 @@ function getSize(entry: EntryNode, flags: FormatFlags): string {
  * @param entry the entry to get the size of.
  * @param flags the formatting flags.
  */
-function getBlockSize(entry: EntryNode, flags: FormatFlags): string {
+function getBlockSize(entry: EntryNode, flags: Flags): string {
   if (flags.h && !flags.blockSize) {
     return FileSystemUtil.getHumanReadableSize(entry.blocks * 512);
   }
@@ -447,7 +498,7 @@ function getBlockSize(entry: EntryNode, flags: FormatFlags): string {
  * @param entries the entries to get the total size of.
  * @param flags the formatting flags.
  */
-function getTotalBlockSize(entries: EntryNode[], flags: FormatFlags): string {
+function getTotalBlockSize(entries: EntryNode[], flags: Flags): string {
   let output: string;
 
   if (flags.h && !flags.blockSize) {
@@ -468,80 +519,3 @@ function getTotalBlockSize(entries: EntryNode[], flags: FormatFlags): string {
 
   return output;
 }
-
-/**
- * Formats the provided `dateTime` into a string.
- * @param datetime the datetime to convert.
- * @returns a datetime string, e.g. `17 Aug 00:33`.
- */
-function formatDateTime(datetime: Date): string {
-  return datetime
-    .toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    })
-    .replace(",", "");
-}
-
-// TODO: 'ls -1s' works but 'ls -s1' does not work. This is an issue with the getopts
-//  library. Planning on investigating a more maintained alternative so this is
-//  a low priority issue for now.
-const ls: CommandScript = {
-  async run(args: string[]): Promise<void> {
-    const parsedOptions = CommandUtil.parseArgs("ls", args, {
-      boolean: ["a", "1", "s", "h", "l"],
-      string: ["block-size"],
-      alias: {
-        all: ["a"],
-        size: ["s"],
-        "human-readable": ["h"],
-      },
-    });
-
-    if (parsedOptions === null) {
-      return;
-    }
-
-    let blockSize: number | null = null;
-    const blockSizeRaw: string = parsedOptions["block-size"];
-    if (blockSizeRaw) {
-      blockSize = parseInt(blockSizeRaw);
-
-      if (blockSizeRaw.includes(".") || isNaN(blockSize) || blockSize < 1) {
-        TerminalUtil.appendOutput(
-          `ls: invalid --block-size argument '${parsedOptions["block-size"]}'`,
-        );
-        return;
-      }
-    }
-
-    const paths: string[] =
-      parsedOptions._.length > 0
-        ? parsedOptions._
-        : [
-            FileSystemUtil.formatPath(
-              FileSystemUtil.getCurrentWorkingDirectory(),
-            ),
-          ];
-
-    const pathResults = processPaths(paths);
-    const output = formatPathResults(pathResults, {
-      a: parsedOptions.a,
-      "1": parsedOptions["1"],
-      s: parsedOptions.s,
-      h: parsedOptions.h,
-      l: parsedOptions.l,
-      blockSize: blockSize,
-    });
-
-    if (output !== "") {
-      TerminalUtil.appendRawOutput(`\n${output}`);
-    }
-  },
-};
-
-// noinspection JSUnusedGlobalSymbols
-export default ls;

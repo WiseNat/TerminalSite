@@ -1,42 +1,40 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import tree from "../../../../../src/command/scripts/tree.ts";
+import TREE from "../../../../../src/command/scripts/tree.ts";
 import FileSystemUtil from "../../../../../src/util/file_system_util.ts";
 import TerminalUtil from "../../../../../src/util/terminal_util.ts";
 import ColourUtil from "../../../../../src/util/colour_util.ts";
 
 describe("Tree", () => {
+  // Spy
+  const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+
+  // Mock
+  vi.mock("../../../../../src/util/terminal_util");
+  vi.mock("../../../../../src/util/colour_util");
+
+  vi.mocked(ColourUtil.getFileSystemEntry).mockImplementation(
+    (node, useShortName) => {
+      if (useShortName) {
+        return node.name;
+      }
+
+      return node.path === "" ? `/${node.name}` : `/${node.path}/${node.name}`;
+    },
+  );
+
   beforeEach(() => {
     FileSystemUtil.setCurrentWorkingDirectory("/src/main");
   });
 
   describe("run", () => {
-    // Spy
-    const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
-    vi.mock("../../../../../src/util/colour_util");
-
-    vi.mocked(ColourUtil.getFileSystemEntry).mockImplementation(
-      (node, useShortName) => {
-        if (useShortName) {
-          return node.name;
-        }
-
-        return node.path === ""
-          ? `/${node.name}`
-          : `/${node.path}/${node.name}`;
-      },
-    );
-
     describe("No flags", () => {
       test("given no path, should output a tree for the current working directory", async () => {
         // Arrange
         const args: string[] = [];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -56,7 +54,7 @@ describe("Tree", () => {
         const args: string[] = ["foo/daz"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -72,7 +70,7 @@ describe("Tree", () => {
         const args: string[] = ["/some/fake/path"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -88,7 +86,7 @@ describe("Tree", () => {
         const args: string[] = ["./foo"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -107,7 +105,7 @@ describe("Tree", () => {
         const args: string[] = ["../../test"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected = "\n/test\n" + "\n" + "0 directories, 0 files";
@@ -120,7 +118,7 @@ describe("Tree", () => {
         const args: string[] = [".full"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -138,7 +136,7 @@ describe("Tree", () => {
         const args: string[] = ["../.."];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -210,7 +208,7 @@ describe("Tree", () => {
       ].forEach(({ type, args, expected }) => {
         test(type, async () => {
           // Act
-          await tree.run(args);
+          await TREE.run(args);
 
           // Assert
           expect(appendOutput).not.toHaveBeenCalled();
@@ -225,7 +223,7 @@ describe("Tree", () => {
         const args = ["../..", "foo/daz", "/some/fake/path", "-a"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -258,7 +256,7 @@ describe("Tree", () => {
         const args = ["../..", "foo/daz", "/some/fake/path", "-d"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -281,7 +279,7 @@ describe("Tree", () => {
         const args = ["../..", "foo/daz", "/some/fake/path", "-ad"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -310,7 +308,7 @@ describe("Tree", () => {
         const args = ["../..", "foo/daz", "/some/fake/path", "--prune"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -335,7 +333,7 @@ describe("Tree", () => {
         const args = ["../..", "foo/daz", "/some/fake/path", "--prune", "-a"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -365,7 +363,7 @@ describe("Tree", () => {
         const args = ["../..", "foo/daz", "/some/fake/path", "-f"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -392,7 +390,7 @@ describe("Tree", () => {
         const args = ["../..", "foo/daz", "/some/fake/path", "-fa"];
 
         // Act
-        await tree.run(args);
+        await TREE.run(args);
 
         // Assert
         const expected =
@@ -490,7 +488,7 @@ describe("Tree", () => {
           ];
 
           // Act
-          await tree.run(args);
+          await TREE.run(args);
 
           // Assert
           expect(appendOutput).not.toHaveBeenCalled();
@@ -504,7 +502,7 @@ describe("Tree", () => {
           const args = ["../..", "foo/daz", "/some/fake/path", "-L", value];
 
           // Act
-          await tree.run(args);
+          await TREE.run(args);
 
           // Assert
           const expected = "\ntree: Invalid level, must be greater than 0.";

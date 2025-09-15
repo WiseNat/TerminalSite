@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import MetaImportUtil from "../../../../src/util/meta_import_util";
 
-describe("Meta Import Util", () => {
+describe("MetaImportUtil", () => {
   describe("getCommandScripts", () => {
     test("should return non-empty object of all files when script files exist", () => {
       // Arrange & Act

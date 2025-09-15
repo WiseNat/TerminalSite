@@ -10,27 +10,27 @@ import * as aModule from "../../../../src/event/keydown_key/a";
 import * as eModule from "../../../../src/event/keydown_key/e";
 
 describe("Keydown Event", () => {
+  // Spy
+  const processA = vi.spyOn(aModule, "processA");
+  const processArrowDown = vi.spyOn(arrowDownModule, "processArrowDown");
+  const processArrowUp = vi.spyOn(arrowUpModule, "processArrowUp");
+  const processE = vi.spyOn(eModule, "processE");
+  const processEnd = vi.spyOn(endModule, "processEnd");
+  const processEnter = vi.spyOn(enterModule, "processEnter");
+  const processHome = vi.spyOn(homeModule, "processHome");
+  const processTab = vi.spyOn(tabModule, "processTab");
+
+  // Mock
+  vi.mock("../../../../src/event/keydown_key/a");
+  vi.mock("../../../../src/event/keydown_key/arrow_down");
+  vi.mock("../../../../src/event/keydown_key/arrow_up");
+  vi.mock("../../../../src/event/keydown_key/e");
+  vi.mock("../../../../src/event/keydown_key/end");
+  vi.mock("../../../../src/event/keydown_key/enter");
+  vi.mock("../../../../src/event/keydown_key/home");
+  vi.mock("../../../../src/event/keydown_key/tab");
+
   describe("keydown", () => {
-    // Spy
-    const processA = vi.spyOn(aModule, "processA");
-    const processArrowDown = vi.spyOn(arrowDownModule, "processArrowDown");
-    const processArrowUp = vi.spyOn(arrowUpModule, "processArrowUp");
-    const processE = vi.spyOn(eModule, "processE");
-    const processEnd = vi.spyOn(endModule, "processEnd");
-    const processEnter = vi.spyOn(enterModule, "processEnter");
-    const processHome = vi.spyOn(homeModule, "processHome");
-    const processTab = vi.spyOn(tabModule, "processTab");
-
-    // Mock
-    vi.mock("../../../../src/event/keydown_key/a");
-    vi.mock("../../../../src/event/keydown_key/arrow_down");
-    vi.mock("../../../../src/event/keydown_key/arrow_up");
-    vi.mock("../../../../src/event/keydown_key/e");
-    vi.mock("../../../../src/event/keydown_key/end");
-    vi.mock("../../../../src/event/keydown_key/enter");
-    vi.mock("../../../../src/event/keydown_key/home");
-    vi.mock("../../../../src/event/keydown_key/tab");
-
     // Other
     const functions = [
       processA,

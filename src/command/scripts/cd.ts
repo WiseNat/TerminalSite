@@ -5,76 +5,11 @@ import CommandUtil from "../../util/command_util.ts";
 
 let workingDirectories: string[] = [];
 
-/**
- * Resets the working directories variable. Intended to only be used by Unit Tests
- * to reset state.
- *
- * @internal
- */
-export function _resetWorkingDirectories() {
-  workingDirectories = [];
-}
-
-/**
- * @returns the Previous Working Directory or null if it does not exist.
- */
-function getPreviousWorkingDirectory(): string | null {
-  if (workingDirectories.length !== 2) {
-    return null;
-  }
-
-  return workingDirectories[0];
-}
-
-/**
- * Adds a working directory to a cache.
- * <p>
- * This is used to determine the Previous Working Directory, see {@link getPreviousWorkingDirectory}.
- *
- * @param directory the working directory to add.
- */
-function addWorkingDirectory(directory: string) {
-  workingDirectories.push(directory);
-
-  if (workingDirectories.length > 2) {
-    workingDirectories.shift();
-  }
-}
-
-/**
- * Changes the directory & prompt to the provided path if it is valid.
- * <p>
- * A series of error messages are created on the frontend if the path is not valid.
- *
- * @param path the path to change to.
- */
-function changeDirectory(path: string) {
-  const resolvedPathParts = FileSystemUtil.resolvePathParts(path);
-
-  if (resolvedPathParts === null) {
-    TerminalUtil.appendOutput(`\nbash: cd: ${path}: No such file or directory`);
-    return;
-  }
-
-  if (FileSystemUtil.doesFileExist(resolvedPathParts)) {
-    TerminalUtil.appendOutput(`\nbash: cd: ${path}: Not a directory`);
-    return;
-  } else if (!FileSystemUtil.doesDirectoryExist(resolvedPathParts)) {
-    TerminalUtil.appendOutput(`\nbash: cd: ${path}: No such file or directory`);
-    return;
-  }
-
-  const formattedPath = FileSystemUtil.formatPath(resolvedPathParts);
-
-  FileSystemUtil.setCurrentWorkingDirectory(formattedPath);
-  addWorkingDirectory(formattedPath);
-}
-
 // TODO: Add test for:
 //  1. cd into <DIR>
 //  2. cd -
 //  3. Should CD successfully and not output an error!
-const cd: CommandScript = {
+const CD: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("cd", args, {});
 
@@ -116,4 +51,68 @@ const cd: CommandScript = {
 };
 
 // noinspection JSUnusedGlobalSymbols
-export default cd;
+export default CD;
+
+/**
+ * Changes the directory & prompt to the provided path if it is valid.
+ * <p>
+ * A series of error messages are created on the frontend if the path is not valid.
+ *
+ * @param path the path to change to.
+ */
+function changeDirectory(path: string) {
+  const resolvedPathParts = FileSystemUtil.resolvePathParts(path);
+
+  if (resolvedPathParts === null) {
+    TerminalUtil.appendOutput(`\nbash: cd: ${path}: No such file or directory`);
+    return;
+  }
+
+  if (FileSystemUtil.doesFileExist(resolvedPathParts)) {
+    TerminalUtil.appendOutput(`\nbash: cd: ${path}: Not a directory`);
+    return;
+  } else if (!FileSystemUtil.doesDirectoryExist(resolvedPathParts)) {
+    TerminalUtil.appendOutput(`\nbash: cd: ${path}: No such file or directory`);
+    return;
+  }
+
+  const formattedPath = FileSystemUtil.formatPath(resolvedPathParts);
+
+  FileSystemUtil.setCurrentWorkingDirectory(formattedPath);
+  addWorkingDirectory(formattedPath);
+}
+
+/**
+ * Adds a working directory to a cache.
+ * <p>
+ * This is used to determine the Previous Working Directory, see {@link getPreviousWorkingDirectory}.
+ *
+ * @param directory the working directory to add.
+ */
+function addWorkingDirectory(directory: string) {
+  workingDirectories.push(directory);
+
+  if (workingDirectories.length > 2) {
+    workingDirectories.shift();
+  }
+}
+
+/**
+ * @returns the Previous Working Directory or null if it does not exist.
+ */
+function getPreviousWorkingDirectory(): string | null {
+  if (workingDirectories.length !== 2) {
+    return null;
+  }
+
+  return workingDirectories[0];
+}
+
+/**
+ * Resets the working directories variable.
+ *
+ * @internal **intended to be solely used by Tests**
+ */
+export function _resetWorkingDirectories() {
+  workingDirectories = [];
+}

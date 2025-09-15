@@ -1,23 +1,23 @@
 import { describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 import FileSystemUtil from "../../../../../src/util/file_system_util";
-import pwd from "../../../../../src/command/scripts/pwd";
+import PWD from "../../../../../src/command/scripts/pwd";
 
 describe("Pwd", () => {
+  // Spy
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+
+  // Mock
+  vi.mock("../../../../../src/util/terminal_util");
+
   describe("run", () => {
-    // Spy
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
-
     test("should output the current working directory", async () => {
       // Arrange
       const currentWorkingDirectory = "/home/nathanwise/Desktop";
       FileSystemUtil.setCurrentWorkingDirectory(currentWorkingDirectory);
 
       // Act
-      await pwd.run([]);
+      await PWD.run([]);
 
       // Assert
       expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
@@ -31,7 +31,7 @@ describe("Pwd", () => {
       FileSystemUtil.setCurrentWorkingDirectory("~/Desktop");
 
       // Act
-      await pwd.run([]);
+      await PWD.run([]);
 
       // Assert
       expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
@@ -45,12 +45,12 @@ describe("Pwd", () => {
       FileSystemUtil.setCurrentWorkingDirectory(firstCurrentWorkingDirectory);
 
       // Act
-      await pwd.run([]);
+      await PWD.run([]);
 
       const secondCurrentWorkingDirectory = "/usr/local/etc";
       FileSystemUtil.setCurrentWorkingDirectory(secondCurrentWorkingDirectory);
 
-      await pwd.run([]);
+      await PWD.run([]);
 
       // Assert
       expect(appendOutput).toHaveBeenCalledTimes(2);

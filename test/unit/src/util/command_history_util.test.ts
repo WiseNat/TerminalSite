@@ -1,16 +1,16 @@
 import { beforeEach, describe, expect, test } from "vitest";
 import CommandHistoryUtil from "../../../../src/util/command_history_util";
 
-beforeEach(() => {
-  CommandHistoryUtil.resetHistory();
-  CommandHistoryUtil.resetHistoryIndex();
-});
-
 describe("CommandHistoryUtil", () => {
+  beforeEach(() => {
+    CommandHistoryUtil._resetHistory();
+    CommandHistoryUtil.resetHistoryIndex();
+  });
+
   describe("resetHistory", () => {
     test("resets the history when nothing has been changed", () => {
       // Arrange & Act
-      CommandHistoryUtil.resetHistory();
+      CommandHistoryUtil._resetHistory();
 
       // Assert
       const history = CommandHistoryUtil.getHistory();
@@ -24,7 +24,7 @@ describe("CommandHistoryUtil", () => {
       CommandHistoryUtil.addToHistory("userinput");
 
       // Act
-      CommandHistoryUtil.resetHistory();
+      CommandHistoryUtil._resetHistory();
 
       // Assert
       const history = CommandHistoryUtil.getHistory();
@@ -38,10 +38,10 @@ describe("CommandHistoryUtil", () => {
       CommandHistoryUtil.addToHistory("userinput");
 
       // Act
-      CommandHistoryUtil.resetHistory();
+      CommandHistoryUtil._resetHistory();
 
       // Assert
-      const historyIndex = CommandHistoryUtil.getHistoryIndex();
+      const historyIndex = CommandHistoryUtil._getHistoryIndex();
       expect(historyIndex).toStrictEqual(0);
     });
   });
@@ -52,7 +52,7 @@ describe("CommandHistoryUtil", () => {
       CommandHistoryUtil.resetHistoryIndex();
 
       // Assert
-      const historyIndex = CommandHistoryUtil.getHistoryIndex();
+      const historyIndex = CommandHistoryUtil._getHistoryIndex();
       expect(historyIndex).toEqual(0);
     });
 
@@ -68,7 +68,7 @@ describe("CommandHistoryUtil", () => {
       CommandHistoryUtil.resetHistoryIndex();
 
       // Assert
-      const historyIndex = CommandHistoryUtil.getHistoryIndex();
+      const historyIndex = CommandHistoryUtil._getHistoryIndex();
       expect(historyIndex).toEqual(0);
     });
   });
@@ -85,7 +85,7 @@ describe("CommandHistoryUtil", () => {
 
       // Assert
       expect(wasSuccessful).toEqual(true);
-      const historyIndex = CommandHistoryUtil.getHistoryIndex();
+      const historyIndex = CommandHistoryUtil._getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(1);
     });
@@ -105,7 +105,7 @@ describe("CommandHistoryUtil", () => {
 
       // Assert
       expect(wasSuccessful).toEqual(false);
-      const historyIndex = CommandHistoryUtil.getHistoryIndex();
+      const historyIndex = CommandHistoryUtil._getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(2);
     });
@@ -117,7 +117,7 @@ describe("CommandHistoryUtil", () => {
 
       // Assert
       expect(wasSuccessful).toEqual(false);
-      const historyIndex = CommandHistoryUtil.getHistoryIndex();
+      const historyIndex = CommandHistoryUtil._getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(0);
     });
@@ -136,7 +136,7 @@ describe("CommandHistoryUtil", () => {
 
       // Assert
       expect(wasSuccessful).toEqual(true);
-      const historyIndex = CommandHistoryUtil.getHistoryIndex();
+      const historyIndex = CommandHistoryUtil._getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(0);
     });
@@ -152,7 +152,7 @@ describe("CommandHistoryUtil", () => {
 
       // Assert
       expect(wasSuccessful).toEqual(false);
-      const historyIndex = CommandHistoryUtil.getHistoryIndex();
+      const historyIndex = CommandHistoryUtil._getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(0);
     });
@@ -164,7 +164,7 @@ describe("CommandHistoryUtil", () => {
 
       // Assert
       expect(wasSuccessful).toEqual(false);
-      const historyIndex = CommandHistoryUtil.getHistoryIndex();
+      const historyIndex = CommandHistoryUtil._getHistoryIndex();
       expect(historyIndex).toBeDefined();
       expect(historyIndex).toEqual(0);
     });

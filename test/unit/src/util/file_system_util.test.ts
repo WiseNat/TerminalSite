@@ -3,6 +3,9 @@ import FileSystemUtil from "../../../../src/util/file_system_util";
 import { FileTreeNode } from "virtual:file-tree";
 
 describe("FileSystemUtil", () => {
+  // Mocks
+  vi.mock("../../../../src/util/terminal_util");
+
   describe("joinPaths", () => {
     [
       {
@@ -118,9 +121,6 @@ describe("FileSystemUtil", () => {
   });
 
   describe("resolvePathParts", () => {
-    // Mocks
-    vi.mock("../../../../src/util/terminal_util");
-
     interface TestCase {
       type: string;
       path: string;

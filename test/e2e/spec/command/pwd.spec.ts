@@ -1,13 +1,14 @@
-import { expect, test } from "../../fixture";
+import { test } from "../../fixture";
 import {
-  defaultCurrentWorkingDirectory,
-  defaultInitialPrompt,
-  defaultUserPrompt,
-  inputSelector,
-  outputSelector,
-  promptSelector,
+  COMMAND_RAN_OUTPUT,
+  DEFAULT_CURRENT_WORKING_DIRECTORY,
 } from "../../helper/constant/generic";
-import { getExpectedPrompt } from "../../helper/util/terminal_util";
+import {
+  assertExactTextInTerminal,
+  assertOutputInTerminal,
+  getExpectedPrompt,
+  runCommand,
+} from "../../helper/util/terminal_util";
 
 test.describe("Pwd", () => {
   test("should output the current working directory", async ({ page }) => {
@@ -15,17 +16,13 @@ test.describe("Pwd", () => {
     const input = "pwd";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${defaultCurrentWorkingDirectory}`,
+    await assertOutputInTerminal(
+      page,
+      `${input}\n${DEFAULT_CURRENT_WORKING_DIRECTORY}`,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
   });
 
   test("should output the changed current working directory when the current working directory is changed", async ({
@@ -34,18 +31,18 @@ test.describe("Pwd", () => {
     // Arrange
     const changedDirectory = "/usr/local/etc";
     const cdInput = `cd ${changedDirectory}`;
-    await page.locator(inputSelector).pressSequentially(cdInput);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, cdInput);
 
     const input = "pwd";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}\n${changedDirectory}`,
+    await assertExactTextInTerminal(
+      page,
+      `${COMMAND_RAN_OUTPUT}${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}\n${changedDirectory}`,
+      getExpectedPrompt(changedDirectory),
     );
   });
 });

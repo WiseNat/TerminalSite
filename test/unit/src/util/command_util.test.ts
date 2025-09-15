@@ -5,23 +5,22 @@ import TokenisedCommand from "../../../../src/dto/tokenised_command";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { unmock } from "../../helper/unmock";
 import MetaImportUtil from "../../../../src/util/meta_import_util";
-import { userPrompt } from "../../../../src/constant/prompt";
+import { USER_PROMPT } from "../../../../src/constant/prompt";
 import { Options } from "getopts";
 
 describe("CommandUtil", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
+  // Mock
+  vi.mock("../../../../src/util/terminal_util");
+  vi.mock("../../../../src/util/meta_import_util");
+
+  beforeEach(async () => {
+    await unmock("../../../src/util/meta_import_util", ["default", "getKey"]);
+  });
+
   describe("executeCommand", () => {
-    // Mock
-    vi.mock("../../../../src/util/terminal_util");
-    vi.mock("../../../../src/util/meta_import_util");
-
-    // Other
-    beforeEach(async () => {
-      await unmock("../../../src/util/meta_import_util", ["default", "getKey"]);
-    });
-
     test("runs a command when it is found", async () => {
       // Arrange
       const mockCommandFile: CommandScript = { run: vi.fn() };
@@ -55,7 +54,7 @@ describe("CommandUtil", () => {
 
     test("outputs nothing when a command is not found with no name", async () => {
       // Arrange
-      vi.mocked(TerminalUtil.getPrompt).mockReturnValue(userPrompt);
+      vi.mocked(TerminalUtil.getPrompt).mockReturnValue(USER_PROMPT);
       vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({});
 
       const command = "";
@@ -65,7 +64,7 @@ describe("CommandUtil", () => {
 
       // Assert
       expect(appendOutput).toHaveBeenCalledOnce();
-      expect(appendOutput).toHaveBeenCalledWith(`${userPrompt}`, true);
+      expect(appendOutput).toHaveBeenCalledWith(`${USER_PROMPT}`, true);
     });
   });
 
@@ -132,10 +131,6 @@ describe("CommandUtil", () => {
   });
 
   describe("getCommandScripts", () => {
-    // Mock
-    vi.mock("../../../../src/util/meta_import_util");
-
-    // Other
     beforeEach(async () => {
       await unmock("../../../src/util/meta_import_util", ["default", "getKey"]);
     });

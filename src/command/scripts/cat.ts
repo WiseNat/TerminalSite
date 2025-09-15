@@ -5,30 +5,7 @@ import FileSystemUtil from "../../util/file_system_util.ts";
 import { escape } from "lodash-es";
 import CommandUtil from "../../util/command_util.ts";
 
-/**
- * Replaces Markdown URLs with an Anchor Element.
- * <p>
- * Escapes any other text.
- *
- * @param text the text to modify
- *
- * @returns text with Anchor elements and escaped text
- */
-function insertAnchorElements(text: string): string {
-  return text.replace(
-    /\[([^\]]+)]\(([^)]+)\)|([^[]+)/g,
-    (_match, text, url, outside) => {
-      // Text outside of []()
-      if (outside !== undefined) {
-        return escape(outside);
-      } else {
-        return `<a href='${url}' target='_blank'>${text}</a>`;
-      }
-    },
-  );
-}
-
-const cat: CommandScript = {
+const CAT: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("cat", args, {});
 
@@ -62,4 +39,27 @@ const cat: CommandScript = {
 };
 
 // noinspection JSUnusedGlobalSymbols
-export default cat;
+export default CAT;
+
+/**
+ * Replaces Markdown URLs with an Anchor Element.
+ * <p>
+ * Escapes any other text.
+ *
+ * @param text the text to modify
+ *
+ * @returns text with Anchor elements and escaped text
+ */
+function insertAnchorElements(text: string): string {
+  return text.replace(
+    /\[([^\]]+)]\(([^)]+)\)|([^[]+)/g,
+    (_match, text, url, outside) => {
+      // Text outside of []()
+      if (outside !== undefined) {
+        return escape(outside);
+      } else {
+        return `<a href='${url}' target='_blank'>${text}</a>`;
+      }
+    },
+  );
+}

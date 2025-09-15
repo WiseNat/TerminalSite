@@ -9,30 +9,30 @@ import {
   RED,
 } from "../../../../src/constant/colour";
 
-describe("ColourUtil", () => {
-  /**
-   * Creates a minimal node with modifications to the fields that matter for `getFileSystemEntryStyle`
-   */
-  function createNode(
-    name: string,
-    isDirectory: boolean,
-    permissions: number[],
-    path?: string,
-  ): FileTreeNode {
-    return {
-      blocks: 0,
-      name: name,
-      path: path === undefined ? "" : path,
-      isDirectory: isDirectory,
-      children: [],
-      lastModifiedTime: new Date(),
-      size: 0,
-      permissions: permissions,
-      owner: "",
-      group: "",
-    };
-  }
+/**
+ * Creates a minimal node with modifications to the fields that matter for `getFileSystemEntryStyle`
+ */
+function createNode(
+  name: string,
+  isDirectory: boolean,
+  permissions: number[],
+  path?: string,
+): FileTreeNode {
+  return {
+    blocks: 0,
+    name: name,
+    path: path === undefined ? "" : path,
+    isDirectory: isDirectory,
+    children: [],
+    lastModifiedTime: new Date(),
+    size: 0,
+    permissions: permissions,
+    owner: "",
+    group: "",
+  };
+}
 
+describe("ColourUtil", () => {
   describe("getFileSystemEntry", () => {
     [
       {

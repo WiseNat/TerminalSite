@@ -1,10 +1,10 @@
 import { expect, test } from "../fixture";
 import {
-  defaultInitialPrompt,
-  defaultUserPrompt,
-  inputSelector,
-  outputSelector,
-  promptSelector,
+  DEFAULT_INITIAL_PROMPT,
+  DEFAULT_USER_PROMPT,
+  INPUT_SELECTOR,
+  OUTPUT_SELECTOR,
+  PROMPT_SELECTOR,
 } from "../helper/constant/generic";
 
 // Custom command specific E2E tests are under each command spec
@@ -15,17 +15,17 @@ test.describe("Command autocompletion", () => {
     const input = "ech";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Tab");
+    await page.locator(INPUT_SELECTOR).pressSequentially(input);
+    await page.locator(INPUT_SELECTOR).press("Tab");
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      defaultInitialPrompt,
+    await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+      DEFAULT_INITIAL_PROMPT,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
+    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+      DEFAULT_USER_PROMPT,
     );
-    await expect(page.locator(inputSelector)).exactTextInElement(`${input}o `);
+    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(`${input}o `);
   });
 
   test("adds a space when 'echo' has been typed", async ({ page }) => {
@@ -33,31 +33,31 @@ test.describe("Command autocompletion", () => {
     const input = "echo";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Tab");
+    await page.locator(INPUT_SELECTOR).pressSequentially(input);
+    await page.locator(INPUT_SELECTOR).press("Tab");
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      defaultInitialPrompt,
+    await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+      DEFAULT_INITIAL_PROMPT,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
+    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+      DEFAULT_USER_PROMPT,
     );
-    await expect(page.locator(inputSelector)).exactTextInElement(`${input} `);
+    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(`${input} `);
   });
 
   test("does nothing when no text has been inputted", async ({ page }) => {
     // Arrange & Act
-    await page.locator(inputSelector).press("Tab");
+    await page.locator(INPUT_SELECTOR).press("Tab");
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      defaultInitialPrompt,
+    await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+      DEFAULT_INITIAL_PROMPT,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
+    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+      DEFAULT_USER_PROMPT,
     );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
+    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
   });
 });
 
@@ -71,17 +71,17 @@ test.describe("File/Directory autocompletion", () => {
       "bin/\tboot/\tdev/\tetc/\thome/\tlib/\tmedia/\tmnt/\topt/\troot/\trun/\tsbin/\tsrv/\ttmp/\tusr/\tvar/";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Tab");
+    await page.locator(INPUT_SELECTOR).pressSequentially(input);
+    await page.locator(INPUT_SELECTOR).press("Tab");
 
     // Assert
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}\n${expectedOutput}`,
+    await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${expectedOutput}`,
     );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
+    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+      DEFAULT_USER_PROMPT,
     );
-    await expect(page.locator(inputSelector)).exactTextInElement(input);
+    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(input);
   });
 
   [
@@ -173,17 +173,17 @@ test.describe("File/Directory autocompletion", () => {
   ].forEach(async ({ type, input, expected }) => {
     test(type, async ({ page }) => {
       // Arrange & Act
-      await page.locator(inputSelector).pressSequentially(input);
-      await page.locator(inputSelector).press("Tab");
+      await page.locator(INPUT_SELECTOR).pressSequentially(input);
+      await page.locator(INPUT_SELECTOR).press("Tab");
 
       // Assert
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        defaultInitialPrompt,
+      await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+        DEFAULT_INITIAL_PROMPT,
       );
-      await expect(page.locator(promptSelector)).exactTextInElement(
-        defaultUserPrompt,
+      await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+        DEFAULT_USER_PROMPT,
       );
-      await expect(page.locator(inputSelector)).exactTextInElement(
+      await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(
         `${input}${expected}`,
       );
     });

@@ -1,8 +1,8 @@
 import { expect, test } from "../fixture";
-import { inputSelector } from "../helper/constant/generic";
+import { INPUT_SELECTOR } from "../helper/constant/generic";
 import { setCaretAtCharIndex } from "../helper/util/terminal_util";
 
-const defaultInput = "foo, bar ?<baz>gaz</baz> asd> // testing";
+const DEFAULT_INPUT = "foo, bar ?<baz>gaz</baz> asd> // testing";
 
 // Zero-width Space is present so all positions are +1
 [
@@ -28,24 +28,24 @@ const defaultInput = "foo, bar ?<baz>gaz</baz> asd> // testing";
     button: "End",
     withCtrl: false,
     expectedText: "the end of the user input",
-    expectedPosition: 1 + defaultInput.length,
+    expectedPosition: 1 + DEFAULT_INPUT.length,
   },
   {
     button: "e",
     withCtrl: true,
     expectedText: "the end of the user input",
-    expectedPosition: 1 + defaultInput.length,
+    expectedPosition: 1 + DEFAULT_INPUT.length,
   },
   {
     button: "E",
     withCtrl: true,
     expectedText: "the end of the user input",
-    expectedPosition: 1 + defaultInput.length,
+    expectedPosition: 1 + DEFAULT_INPUT.length,
   },
 ].forEach(({ button, withCtrl, expectedText, expectedPosition }) => {
   test.describe(`Pressing '${button}'`, () => {
     test.beforeEach(async ({ page }) => {
-      await page.locator(inputSelector).pressSequentially(defaultInput);
+      await page.locator(INPUT_SELECTOR).pressSequentially(DEFAULT_INPUT);
     });
 
     [
@@ -55,23 +55,23 @@ const defaultInput = "foo, bar ?<baz>gaz</baz> asd> // testing";
       },
       {
         type: "in the middle of the user input",
-        startIndex: Math.floor(defaultInput.length / 2),
+        startIndex: Math.floor(DEFAULT_INPUT.length / 2),
       },
       {
         type: "at the end of the user input",
-        startIndex: defaultInput.length,
+        startIndex: DEFAULT_INPUT.length,
       },
     ].forEach(({ type, startIndex }) => {
       test(`${type} moves the cursor to ${expectedText}`, async ({ page }) => {
         // Arrange
-        await setCaretAtCharIndex(page, inputSelector, startIndex);
+        await setCaretAtCharIndex(page, INPUT_SELECTOR, startIndex);
 
         // Act
         if (withCtrl) {
           await page.keyboard.down("Control");
         }
 
-        await page.locator(inputSelector).press(button);
+        await page.locator(INPUT_SELECTOR).press(button);
 
         if (withCtrl) {
           await page.keyboard.up("Control");

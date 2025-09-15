@@ -13,122 +13,124 @@ function deepSortTree(nodes: FileTreeNode[]): FileTreeNode[] {
   }));
 }
 
-beforeEach(() => {
-  vol.reset();
-});
-
-describe("walk", () => {
-  test("should return the correct file tree", () => {
-    // Arrange
-    const testRootDir = "/walk-test-";
-
-    vol.fromJSON(
-      {
-        "foo/bar": null,
-        "bazzing.gaz": "",
-        "foo/.testing": "",
-        "foo/daz": "",
-      },
-      testRootDir,
-    );
-
-    // Act
-    const tree = walk(testRootDir);
-    fs.rmSync(testRootDir, { recursive: true, force: true });
-
-    // Assert
-    expect(deepSortTree(tree)).toMatchSnapshot();
+describe("VitePluginTree", () => {
+  beforeEach(() => {
+    vol.reset();
   });
 
-  test(".gitkeep files are not included in the file tree", () => {
-    // Arrange
-    const testRootDir = "/walk-test-";
+  describe("walk", () => {
+    test("should return the correct file tree", () => {
+      // Arrange
+      const testRootDir = "/walk-test-";
 
-    vol.fromJSON(
-      {
-        foo: null,
-        ".gitkeep": "",
-        "foo/.gitkeep": "",
-      },
-      testRootDir,
-    );
+      vol.fromJSON(
+        {
+          "foo/bar": null,
+          "bazzing.gaz": "",
+          "foo/.testing": "",
+          "foo/daz": "",
+        },
+        testRootDir,
+      );
 
-    // Act
-    const tree = walk(testRootDir);
-    fs.rmSync(testRootDir, { recursive: true, force: true });
+      // Act
+      const tree = walk(testRootDir);
+      fs.rmSync(testRootDir, { recursive: true, force: true });
 
-    // Assert
-    expect(deepSortTree(tree)).toMatchSnapshot();
-  });
+      // Assert
+      expect(deepSortTree(tree)).toMatchSnapshot();
+    });
 
-  test(".meta files are not included in the file tree", () => {
-    // Arrange
-    const testRootDir = "/walk-test-";
+    test(".gitkeep files are not included in the file tree", () => {
+      // Arrange
+      const testRootDir = "/walk-test-";
 
-    vol.fromJSON(
-      {
-        foo: null,
-        "foo.meta": "{}",
-      },
-      testRootDir,
-    );
+      vol.fromJSON(
+        {
+          foo: null,
+          ".gitkeep": "",
+          "foo/.gitkeep": "",
+        },
+        testRootDir,
+      );
 
-    // Act
-    const tree = walk(testRootDir);
-    fs.rmSync(testRootDir, { recursive: true, force: true });
+      // Act
+      const tree = walk(testRootDir);
+      fs.rmSync(testRootDir, { recursive: true, force: true });
 
-    // Assert
-    expect(deepSortTree(tree)).toMatchSnapshot();
-  });
+      // Assert
+      expect(deepSortTree(tree)).toMatchSnapshot();
+    });
 
-  // TODO: home dir test
-  test("should return a valid file tree with a default owner/root based on the home directory", () => {
-    // Arrange
-    const testRootDir = "/walk-test-";
+    test(".meta files are not included in the file tree", () => {
+      // Arrange
+      const testRootDir = "/walk-test-";
 
-    vol.fromJSON(
-      {
-        "foo/bar": null,
-        "some/home/bazzing.gaz": "",
-        "some/home/gaz/test": "",
-        "some/home/daz/test": "",
-      },
-      testRootDir,
-    );
+      vol.fromJSON(
+        {
+          foo: null,
+          "foo.meta": "{}",
+        },
+        testRootDir,
+      );
 
-    // Act
-    const tree = walk(testRootDir, "some/home");
-    fs.rmSync(testRootDir, { recursive: true, force: true });
+      // Act
+      const tree = walk(testRootDir);
+      fs.rmSync(testRootDir, { recursive: true, force: true });
 
-    // Assert
-    expect(deepSortTree(tree)).toMatchSnapshot();
-  });
+      // Assert
+      expect(deepSortTree(tree)).toMatchSnapshot();
+    });
 
-  test("should return a valid file tree with data from a .meta file", () => {
-    // Arrange
-    const testRootDir = "/walk-test-";
+    // TODO: home dir test
+    test("should return a valid file tree with a default owner/root based on the home directory", () => {
+      // Arrange
+      const testRootDir = "/walk-test-";
 
-    vol.fromJSON(
-      {
-        foo: null,
-        "foo.meta":
-          "{" +
-          "\"permissions\": [1, 2, 3], " +
-          "\"owner\": \"test\"," +
-          "\"group\": \"ing\"" +
-          "}",
-        "bar/baz.txt": "",
-        "bar/baz.txt.meta":
-          "{" + "\"permissions\": [4, 5, 6], " + "\"owner\": \"some value\"" + "}",
-      },
-      testRootDir,
-    );
+      vol.fromJSON(
+        {
+          "foo/bar": null,
+          "some/home/bazzing.gaz": "",
+          "some/home/gaz/test": "",
+          "some/home/daz/test": "",
+        },
+        testRootDir,
+      );
 
-    // Act
-    const tree = walk(testRootDir);
-    fs.rmSync(testRootDir, { recursive: true, force: true });
+      // Act
+      const tree = walk(testRootDir, "some/home");
+      fs.rmSync(testRootDir, { recursive: true, force: true });
 
-    // Assert
-    expect(deepSortTree(tree)).toMatchSnapshot();
+      // Assert
+      expect(deepSortTree(tree)).toMatchSnapshot();
+    });
+
+    test("should return a valid file tree with data from a .meta file", () => {
+      // Arrange
+      const testRootDir = "/walk-test-";
+
+      vol.fromJSON(
+        {
+          foo: null,
+          "foo.meta":
+            "{" +
+            "\"permissions\": [1, 2, 3], " +
+            "\"owner\": \"test\"," +
+            "\"group\": \"ing\"" +
+            "}",
+          "bar/baz.txt": "",
+          "bar/baz.txt.meta":
+            "{" + "\"permissions\": [4, 5, 6], " + "\"owner\": \"some value\"" + "}",
+        },
+        testRootDir,
+      );
+
+      // Act
+      const tree = walk(testRootDir);
+      fs.rmSync(testRootDir, { recursive: true, force: true });
+
+      // Assert
+      expect(deepSortTree(tree)).toMatchSnapshot();
+    });
   });
 });

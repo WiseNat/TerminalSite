@@ -1,13 +1,15 @@
-import { expect, test } from "../../fixture";
+import { test } from "../../fixture";
 import {
-  defaultInitialPrompt,
-  defaultUserPrompt,
-  inputSelector,
-  outputSelector,
-  promptSelector,
+  COMMAND_RAN_OUTPUT,
+  INPUT_SELECTOR,
 } from "../../helper/constant/generic";
 import { checkForColouredSpans } from "../../helper/util/element_util.ts";
-import { getExpectedPrompt } from "../../helper/util/terminal_util.ts";
+import {
+  assertExactTextInTerminal,
+  assertOutputInTerminal,
+  getExpectedPrompt,
+  runCommand,
+} from "../../helper/util/terminal_util.ts";
 
 test.describe("Tree", () => {
   const existingDirectory = "/home/nathanwise/Documents";
@@ -20,14 +22,12 @@ test.describe("Tree", () => {
     // Arrange
     const changedDirectory = "/home/nathanwise/Documents/Education";
     const cdInput = `cd ${changedDirectory}`;
-    await page.locator(inputSelector).pressSequentially(cdInput);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, cdInput);
 
     const input = "tree";
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
     const expected =
@@ -37,14 +37,11 @@ test.describe("Tree", () => {
       "└── gcses.md\n" +
       "\n" +
       "1 directory, 3 files";
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}${expected}`,
-    );
-    await expect(page.locator(promptSelector)).exactTextInElement(
+    await assertExactTextInTerminal(
+      page,
+      `${COMMAND_RAN_OUTPUT}${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}${expected}`,
       getExpectedPrompt(changedDirectory),
     );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
     await checkForColouredSpans(page, {
       directory: 1,
       executables: 0,
@@ -62,8 +59,7 @@ test.describe("Tree", () => {
     const input = `tree ${existingDirectory}`;
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
     const expected =
@@ -77,14 +73,7 @@ test.describe("Tree", () => {
       "└── skills.md\n" +
       "\n" +
       "2 directories, 6 files";
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
-    );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
+    await assertOutputInTerminal(page, `${input}${expected}`);
     await checkForColouredSpans(page, {
       directory: 2,
       executables: 0,
@@ -102,19 +91,11 @@ test.describe("Tree", () => {
     const input = `tree ${existingEmptyDirectory}`;
 
     // Act
-    await page.locator(inputSelector).pressSequentially(input);
-    await page.locator(inputSelector).press("Enter");
+    await runCommand(page, input);
 
     // Assert
     const expected = "\n/boot\n" + "\n" + "0 directories, 0 files";
-    await expect(page.locator(outputSelector)).exactTextInElement(
-      `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
-    );
-    await expect(page.locator(promptSelector)).exactTextInElement(
-      defaultUserPrompt,
-    );
-    await expect(page.locator(inputSelector)).exactTextInElement("");
-
+    await assertOutputInTerminal(page, `${input}${expected}`);
     await checkForColouredSpans(page, {
       directory: 1,
       executables: 0,
@@ -150,18 +131,11 @@ test.describe("Tree", () => {
       const input = `tree ${arg}`;
 
       // Act
-      await page.locator(inputSelector).pressSequentially(input);
-      await page.locator(inputSelector).press("Enter");
+      await page.locator(INPUT_SELECTOR).pressSequentially(input);
+      await page.locator(INPUT_SELECTOR).press("Enter");
 
       // Assert
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
-      );
-      await expect(page.locator(promptSelector)).exactTextInElement(
-        defaultUserPrompt,
-      );
-      await expect(page.locator(inputSelector)).exactTextInElement("");
-
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 0,
         executables: 0,
@@ -181,8 +155,8 @@ test.describe("Tree", () => {
       const input = `tree ${existingDirectory} -a`;
 
       // Act
-      await page.locator(inputSelector).pressSequentially(input);
-      await page.locator(inputSelector).press("Enter");
+      await page.locator(INPUT_SELECTOR).pressSequentially(input);
+      await page.locator(INPUT_SELECTOR).press("Enter");
 
       // Assert
       const expected =
@@ -197,14 +171,7 @@ test.describe("Tree", () => {
         "└── .tmp\n" +
         "\n" +
         "2 directories, 7 files";
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
-      );
-      await expect(page.locator(promptSelector)).exactTextInElement(
-        defaultUserPrompt,
-      );
-      await expect(page.locator(inputSelector)).exactTextInElement("");
-
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 2,
         executables: 0,
@@ -224,8 +191,8 @@ test.describe("Tree", () => {
       const input = `tree ${existingDirectory} -d`;
 
       // Act
-      await page.locator(inputSelector).pressSequentially(input);
-      await page.locator(inputSelector).press("Enter");
+      await page.locator(INPUT_SELECTOR).pressSequentially(input);
+      await page.locator(INPUT_SELECTOR).press("Enter");
 
       // Assert
       const expected =
@@ -233,14 +200,7 @@ test.describe("Tree", () => {
         "└── Education\n" +
         "\n" +
         "2 directories";
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
-      );
-      await expect(page.locator(promptSelector)).exactTextInElement(
-        defaultUserPrompt,
-      );
-      await expect(page.locator(inputSelector)).exactTextInElement("");
-
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 2,
         executables: 0,
@@ -263,8 +223,8 @@ test.describe("Tree", () => {
       const input = "tree / -L 1";
 
       // Act
-      await page.locator(inputSelector).pressSequentially(input);
-      await page.locator(inputSelector).press("Enter");
+      await page.locator(INPUT_SELECTOR).pressSequentially(input);
+      await page.locator(INPUT_SELECTOR).press("Enter");
 
       // Assert
       const expected =
@@ -287,14 +247,7 @@ test.describe("Tree", () => {
         "└── var\n" +
         "\n" +
         "17 directories, 0 files";
-      await expect(page.locator(outputSelector)).exactTextInElement(
-        `${defaultInitialPrompt}\n${defaultUserPrompt}${input}${expected}`,
-      );
-      await expect(page.locator(promptSelector)).exactTextInElement(
-        defaultUserPrompt,
-      );
-      await expect(page.locator(inputSelector)).exactTextInElement("");
-
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 17,
         executables: 0,

@@ -1,11 +1,21 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import cd, {
+import CD, {
   _resetWorkingDirectories,
 } from "../../../../../src/command/scripts/cd";
 import FileSystemUtil from "../../../../../src/util/file_system_util";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 
 describe("Cd", () => {
+  // Spy
+  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+  const setCurrentWorkingDirectory = vi.spyOn(
+    FileSystemUtil,
+    "setCurrentWorkingDirectory",
+  );
+
+  // Mock
+  vi.mock("../../../../../src/util/terminal_util");
+
   beforeEach(() => {
     FileSystemUtil.setHomeDirectory("/home/nathanwise");
     FileSystemUtil.setCurrentWorkingDirectory("~");
@@ -16,23 +26,13 @@ describe("Cd", () => {
   });
 
   describe("run", () => {
-    // Spy
-    const setCurrentWorkingDirectory = vi.spyOn(
-      FileSystemUtil,
-      "setCurrentWorkingDirectory",
-    );
-    const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
-
     describe("Successfully changes directory", () => {
       test("an existing directory path argument changes directory to that path", async () => {
         // Arrange
         const directoryPath = "/src/main";
 
         // Act
-        await cd.run([directoryPath]);
+        await CD.run([directoryPath]);
 
         // Assert
         expect(setCurrentWorkingDirectory).toHaveBeenCalledExactlyOnceWith(
@@ -47,7 +47,7 @@ describe("Cd", () => {
         FileSystemUtil.setHomeDirectory(homeDirectory);
 
         // Act
-        await cd.run([]);
+        await CD.run([]);
 
         // Assert
         expect(setCurrentWorkingDirectory).toHaveBeenCalledExactlyOnceWith(
@@ -59,12 +59,12 @@ describe("Cd", () => {
       test("'-' as the argument when a previous working directory exists, changes directory to the previous working directory", async () => {
         // Arrange
         const previousWorkingDirectory = "/src/main";
-        await cd.run([previousWorkingDirectory]);
+        await CD.run([previousWorkingDirectory]);
         const currentWorkingDirectory = "/test";
-        await cd.run([currentWorkingDirectory]);
+        await CD.run([currentWorkingDirectory]);
 
         // Act
-        await cd.run(["-"]);
+        await CD.run(["-"]);
 
         // Assert
         expect(setCurrentWorkingDirectory).toHaveBeenCalledTimes(3);
@@ -97,11 +97,11 @@ describe("Cd", () => {
         ];
 
         for (const directoryPath of directoryPaths) {
-          await cd.run([directoryPath]);
+          await CD.run([directoryPath]);
         }
 
         // Act
-        await cd.run(["-"]);
+        await CD.run(["-"]);
 
         // Assert
         expect(setCurrentWorkingDirectory).toHaveBeenCalledTimes(
@@ -130,7 +130,7 @@ describe("Cd", () => {
     describe("Error messages", () => {
       test("more than one argument outputs an error message", async () => {
         // Arrange & Act
-        await cd.run(["/src", "/src"]);
+        await CD.run(["/src", "/src"]);
 
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
@@ -141,7 +141,7 @@ describe("Cd", () => {
 
       test("'-' as the argument when a previous working directory does not exist outputs an error message", async () => {
         // Arrange & Act
-        await cd.run(["-"]);
+        await CD.run(["-"]);
 
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
@@ -155,7 +155,7 @@ describe("Cd", () => {
         const directoryPath = "/src/index.ts";
 
         // Act
-        await cd.run([directoryPath]);
+        await CD.run([directoryPath]);
 
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
@@ -169,7 +169,7 @@ describe("Cd", () => {
         const directoryPath = "/fake/path";
 
         // Act
-        await cd.run([directoryPath]);
+        await CD.run([directoryPath]);
 
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
@@ -183,7 +183,7 @@ describe("Cd", () => {
         const directoryPath = "~test";
 
         // Act
-        await cd.run([directoryPath]);
+        await CD.run([directoryPath]);
 
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
