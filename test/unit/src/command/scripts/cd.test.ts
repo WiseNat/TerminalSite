@@ -16,8 +16,10 @@ describe("Cd", () => {
   // Mock
   vi.mock("../../../../../src/util/terminal_util");
 
+  const homeDirectory = "/src/main";
+
   beforeEach(() => {
-    FileSystemUtil.setHomeDirectory("/home/nathanwise");
+    FileSystemUtil.setHomeDirectory(homeDirectory);
     FileSystemUtil.setCurrentWorkingDirectory("~");
 
     _resetWorkingDirectories();
@@ -57,6 +59,30 @@ describe("Cd", () => {
       });
 
       test("'-' as the argument when a previous working directory exists, changes directory to the previous working directory", async () => {
+        // Arrange
+        const previousWorkingDirectory = "/src/main/foo";
+        await CD.run([previousWorkingDirectory]);
+
+        // Act
+        await CD.run(["-"]);
+
+        // Assert
+        expect(setCurrentWorkingDirectory).toHaveBeenCalledTimes(2);
+        expect(setCurrentWorkingDirectory).toHaveBeenNthCalledWith(
+          1,
+          previousWorkingDirectory,
+        );
+        expect(setCurrentWorkingDirectory).toHaveBeenNthCalledWith(
+          2,
+          homeDirectory,
+        );
+
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
+          `\n${homeDirectory}`,
+        );
+      });
+
+      test("'-' as the argument when two previous working directories exist, changes directory to the previous working directory", async () => {
         // Arrange
         const previousWorkingDirectory = "/src/main";
         await CD.run([previousWorkingDirectory]);
@@ -124,6 +150,35 @@ describe("Cd", () => {
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
           `\n${previousWorkingDirectory}`,
         );
+      });
+
+      test("'-' multiple times swaps between two directories", async () => {
+        // Arrange
+        const newDirectory = "/src/main/foo";
+        await CD.run([newDirectory]);
+
+        // Act
+        await CD.run(["-"]);
+        await CD.run(["-"]);
+
+        // Assert
+        expect(setCurrentWorkingDirectory).toHaveBeenCalledTimes(3);
+        expect(setCurrentWorkingDirectory).toHaveBeenNthCalledWith(
+          1,
+          newDirectory,
+        );
+        expect(setCurrentWorkingDirectory).toHaveBeenNthCalledWith(
+          2,
+          homeDirectory,
+        );
+        expect(setCurrentWorkingDirectory).toHaveBeenNthCalledWith(
+          1,
+          newDirectory,
+        );
+
+        expect(appendOutput).toHaveBeenCalledTimes(2);
+        expect(appendOutput).toHaveBeenNthCalledWith(1, `\n${homeDirectory}`);
+        expect(appendOutput).toHaveBeenNthCalledWith(1, `\n${homeDirectory}`);
       });
     });
 
