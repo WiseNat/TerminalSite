@@ -5,10 +5,6 @@ import CommandUtil from "../../util/command_util.ts";
 
 let workingDirectories: string[] = [];
 
-// TODO: Add test for:
-//  1. cd into <DIR>
-//  2. cd -
-//  3. Should CD successfully and not output an error!
 const CD: CommandScript = {
   async run(args: string[]): Promise<void> {
     const parsedOptions = CommandUtil.parseArgs("cd", args, {});
@@ -78,34 +74,26 @@ function changeDirectory(path: string) {
 
   const formattedPath = FileSystemUtil.formatPath(resolvedPathParts);
 
+  updateCurrentWorkingDirectory();
+
   FileSystemUtil.setCurrentWorkingDirectory(formattedPath);
-  addWorkingDirectory(formattedPath);
 }
 
 /**
- * Adds a working directory to a cache.
+ * Updates the cached current working directory with the current working directory.
  * <p>
  * This is used to determine the Previous Working Directory, see {@link getPreviousWorkingDirectory}.
- *
- * @param directory the working directory to add.
  */
-function addWorkingDirectory(directory: string) {
-  workingDirectories.push(directory);
-
-  if (workingDirectories.length > 2) {
-    workingDirectories.shift();
-  }
+function updateCurrentWorkingDirectory() {
+  const currentWorkingDirectory = FileSystemUtil.getCurrentWorkingDirectory();
+  workingDirectories[0] = FileSystemUtil.formatPath(currentWorkingDirectory);
 }
 
 /**
  * @returns the Previous Working Directory or null if it does not exist.
  */
 function getPreviousWorkingDirectory(): string | null {
-  if (workingDirectories.length !== 2) {
-    return null;
-  }
-
-  return workingDirectories[0];
+  return workingDirectories.length === 0 ? null : workingDirectories[0];
 }
 
 /**

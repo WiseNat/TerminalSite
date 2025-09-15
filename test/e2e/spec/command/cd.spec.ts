@@ -79,6 +79,32 @@ test.describe("Cd", () => {
   }) => {
     // Arrange
     const previousWorkingDirectory = "/var/tmp";
+
+    await runCommand(page, `cd ${previousWorkingDirectory}`);
+
+    // Act
+    await runCommand(page, "cd -");
+
+    // Assert
+    const expectedOutputText =
+      `${DEFAULT_INITIAL_PROMPT}` +
+      `\n${DEFAULT_USER_PROMPT}cd ${previousWorkingDirectory}` +
+      `\n${getExpectedPrompt(previousWorkingDirectory)}cd -` +
+      `\n${DEFAULT_CURRENT_WORKING_DIRECTORY}`;
+
+    await assertExactTextInTerminal(
+      page,
+      expectedOutputText,
+      getExpectedPrompt(DEFAULT_CURRENT_WORKING_DIRECTORY),
+    );
+    await checkCurrentWorkingDirectory(page, DEFAULT_CURRENT_WORKING_DIRECTORY);
+  });
+
+  test("should change directory to the previous working directory when two previous working directories exist and '-' is provided as a path", async ({
+    page,
+  }) => {
+    // Arrange
+    const previousWorkingDirectory = "/var/tmp";
     const currentWorkingDirectory = "/home";
 
     await runCommand(page, `cd ${previousWorkingDirectory}`);
