@@ -141,6 +141,20 @@ test.describe("Cat", () => {
     await assertOutputInTerminal(page, input + expected);
   });
 
+  test("should output an error message when a path is for a directory", async ({
+    page,
+  }) => {
+    // Arrange
+    const input = "cat ~/Documents";
+
+    // Act
+    await runCommand(page, input);
+
+    // Assert
+    const expected = "\ncat: /home/nathanwise/Documents: Is a directory";
+    await assertOutputInTerminal(page, input + expected);
+  });
+
   test("should output an 'a' element when reading a file with a Markdown URL", async ({
     page,
   }) => {
