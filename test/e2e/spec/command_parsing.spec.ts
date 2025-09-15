@@ -1,7 +1,7 @@
 import { expect, test } from "../fixture";
 import { COMMAND_NOT_FOUND, INPUT_SELECTOR } from "../helper/constant/generic";
 import {
-  assertExactTextInTerminal,
+  assertOutputInTerminal,
   runCommand,
 } from "../helper/util/terminal_util.ts";
 
@@ -17,7 +17,7 @@ test("Typing a valid command and pressing Enter runs that command", async ({
   await runCommand(page, input);
 
   // Assert
-  await assertExactTextInTerminal(page, `${input}\n${commandArgs.join(" ")}`);
+  await assertOutputInTerminal(page, `${input}\n${commandArgs.join(" ")}`);
 });
 
 test("Typing an unknown command and pressing Enter returns that the command was not found", async ({
@@ -32,7 +32,7 @@ test("Typing an unknown command and pressing Enter returns that the command was 
   await runCommand(page, input);
 
   // Assert
-  await assertExactTextInTerminal(
+  await assertOutputInTerminal(
     page,
     `${input}\n${commandName}${COMMAND_NOT_FOUND}`,
   );
@@ -43,7 +43,7 @@ test("Typing no command and pressing Enter does nothing", async ({ page }) => {
   await runCommand(page, "");
 
   // Assert
-  await assertExactTextInTerminal(page, "");
+  await assertOutputInTerminal(page, "");
 });
 
 test("Pressing Enter should run a command & prevent a newline being inserted in the user input", async ({

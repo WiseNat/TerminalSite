@@ -1,6 +1,6 @@
 import { test } from "../../fixture";
 import {
-  assertExactTextInTerminal,
+  assertOutputInTerminal,
   runCommand,
 } from "../../helper/util/terminal_util.ts";
 
@@ -14,7 +14,7 @@ test.describe("Echo", () => {
 
     // Assert
     const expected = "foo bar gaz";
-    await assertExactTextInTerminal(page, `${input}\n${expected}`);
+    await assertOutputInTerminal(page, `${input}\n${expected}`);
   });
 
   test("should output nothing when nothing is provided", async ({ page }) => {
@@ -25,6 +25,6 @@ test.describe("Echo", () => {
     await runCommand(page, input);
 
     // Assert
-    await assertExactTextInTerminal(page, `${input}\n`);
+    await assertOutputInTerminal(page, `${input}\n`);
   });
 });

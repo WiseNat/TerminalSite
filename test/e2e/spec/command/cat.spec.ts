@@ -1,7 +1,7 @@
 import { expect, test } from "../../fixture";
 import { OUTPUT_SELECTOR } from "../../helper/constant/generic";
 import {
-  assertExactTextInTerminal,
+  assertOutputInTerminal,
   runCommand,
 } from "../../helper/util/terminal_util.ts";
 
@@ -64,7 +64,7 @@ test.describe("Cat", () => {
     await runCommand(page, input);
 
     // Assert
-    await assertExactTextInTerminal(page, input);
+    await assertOutputInTerminal(page, input);
   });
 
   test("should output the contents of a single file, when that file path is given", async ({
@@ -78,7 +78,7 @@ test.describe("Cat", () => {
 
     // Assert
     const expected = `\n${existingFiles[0].content}`;
-    await assertExactTextInTerminal(page, input + expected);
+    await assertOutputInTerminal(page, input + expected);
   });
 
   test("should output the contents of a multiple files, when multiple file paths are given", async ({
@@ -92,7 +92,7 @@ test.describe("Cat", () => {
 
     // Assert
     const expected = `\n${existingFiles[0].content}\n${existingFiles[1].content}`;
-    await assertExactTextInTerminal(page, input + expected);
+    await assertOutputInTerminal(page, input + expected);
   });
 
   test("should output file not found error, when a file path for a non-existent path is given", async ({
@@ -106,7 +106,7 @@ test.describe("Cat", () => {
 
     // Assert
     const expected = `\ncat: ${fakeFiles[0].resolvedPath}: No such file or directory`;
-    await assertExactTextInTerminal(page, input + expected);
+    await assertOutputInTerminal(page, input + expected);
   });
 
   test("should output file not found error multiple times, when multiple file paths for non-existent paths is given", async ({
@@ -122,7 +122,7 @@ test.describe("Cat", () => {
     const expectedFirst = `cat: ${fakeFiles[0].resolvedPath}: No such file or directory`;
     const expectedSecond = `cat: ${fakeFiles[1].resolvedPath}: No such file or directory`;
     const expected = `\n${expectedFirst}\n${expectedSecond}`;
-    await assertExactTextInTerminal(page, input + expected);
+    await assertOutputInTerminal(page, input + expected);
   });
 
   test("should output file not found error and found file contents, when multiple existent and non-existent file paths are given", async ({
@@ -138,7 +138,7 @@ test.describe("Cat", () => {
     const expectedFirst = `cat: ${fakeFiles[0].resolvedPath}: No such file or directory`;
     const expectedSecond = existingFiles[0].content;
     const expected = `\n${expectedFirst}\n${expectedSecond}`;
-    await assertExactTextInTerminal(page, input + expected);
+    await assertOutputInTerminal(page, input + expected);
   });
 
   test("should output an 'a' element when reading a file with a Markdown URL", async ({
@@ -152,7 +152,7 @@ test.describe("Cat", () => {
 
     // Assert
     const expected = `\n${urlFiles[0].text}`;
-    await assertExactTextInTerminal(page, input + expected);
+    await assertOutputInTerminal(page, input + expected);
 
     const link = page
       .locator(OUTPUT_SELECTOR)

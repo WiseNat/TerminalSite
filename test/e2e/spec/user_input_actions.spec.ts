@@ -42,7 +42,6 @@ test.describe("Keyboard", () => {
         // Assert
         await assertExactTextInTerminal(
           page,
-          "",
           DEFAULT_INITIAL_PROMPT,
           undefined,
           values,
@@ -67,7 +66,6 @@ test.describe("Keyboard", () => {
         const prompts = `\n${DEFAULT_USER_PROMPT}`.repeat(newlineCounter);
         await assertExactTextInTerminal(
           page,
-          "",
           `${DEFAULT_INITIAL_PROMPT}${prompts}`,
         );
       });
@@ -123,7 +121,6 @@ test.describe("Keyboard", () => {
       // Assert
       await assertExactTextInTerminal(
         page,
-        "",
         DEFAULT_INITIAL_PROMPT,
         undefined,
         values,

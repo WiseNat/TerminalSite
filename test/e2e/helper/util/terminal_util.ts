@@ -1,6 +1,6 @@
 import { Page } from "@playwright/test";
 import {
-  DEFAULT_INITIAL_PROMPT,
+  COMMAND_RAN_OUTPUT,
   DEFAULT_USER_PROMPT,
   INPUT_SELECTOR,
   OUTPUT_SELECTOR,
@@ -56,6 +56,27 @@ export async function runCommand(page: Page, command: string) {
 }
 
 /**
+ * Asserts that there is `expectedOutput` in the terminal.
+ * <p>
+ * Acts as a shorthand for...
+ * @example
+ * const expectedOutput = "??";
+ * await assertExactTextInTerminal(page, `${COMMAND_RAN_OUTPUT}${expectedOutput}`);
+ *
+ * @param page Playwright page instance
+ * @param expectedOutput the expected command output, ignoring the standard prompt.
+ * @see assertExactTextInTerminal
+ */
+export async function assertOutputInTerminal(
+  page: Page,
+  expectedOutput: string,
+) {
+  const outputText = `${COMMAND_RAN_OUTPUT}${expectedOutput}`;
+
+  await assertExactTextInTerminal(page, outputText);
+}
+
+/**
  * Asserts that there is exact text in the Terminal.
  * <p>
  * Acts as a helper method for common assert logic. Can be used in one of two ways..
@@ -75,19 +96,18 @@ export async function runCommand(page: Page, command: string) {
  * await assertExactTextInTerminal(page, "", "");
  *
  * @param page Playwright page instance.
- * @param expectedOutput the expected output to append to the default `outputText`.
  * @param outputText the expected output, leave undefined for the default value if you're planning on relying on `expectedOutput`.
  * @param promptText the expected prompt, leave undefined to default to {@link DEFAULT_USER_PROMPT}.
  * @param inputText the expected input, leave undefined to default to an empty string.
+ * @see assertOutputInTerminal
  */
 export async function assertExactTextInTerminal(
   page: Page,
-  expectedOutput: string,
   outputText?: string,
   promptText?: string,
   inputText?: string,
 ) {
-  outputText ??= `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${expectedOutput}`;
+  outputText ??= COMMAND_RAN_OUTPUT;
   promptText ??= DEFAULT_USER_PROMPT;
   inputText ??= "";
 

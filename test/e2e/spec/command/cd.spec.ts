@@ -1,5 +1,6 @@
 import { expect, test } from "../../fixture";
 import {
+  COMMAND_RAN_OUTPUT,
   DEFAULT_CURRENT_WORKING_DIRECTORY,
   DEFAULT_HOME_DIRECTORY,
   DEFAULT_INITIAL_PROMPT,
@@ -11,6 +12,7 @@ import {
 import { Page } from "@playwright/test";
 import {
   assertExactTextInTerminal,
+  assertOutputInTerminal,
   getExpectedPrompt,
   runCommand,
 } from "../../helper/util/terminal_util";
@@ -48,8 +50,7 @@ test.describe("Cd", () => {
     // Assert
     await assertExactTextInTerminal(
       page,
-      input,
-      undefined,
+      COMMAND_RAN_OUTPUT + input,
       getExpectedPrompt(path),
     );
     await checkCurrentWorkingDirectory(page, path);
@@ -67,8 +68,7 @@ test.describe("Cd", () => {
     // Assert
     await assertExactTextInTerminal(
       page,
-      input,
-      undefined,
+      COMMAND_RAN_OUTPUT + input,
       getExpectedPrompt(DEFAULT_HOME_DIRECTORY),
     );
     await checkCurrentWorkingDirectory(page, DEFAULT_HOME_DIRECTORY);
@@ -97,7 +97,6 @@ test.describe("Cd", () => {
 
     await assertExactTextInTerminal(
       page,
-      "",
       expectedOutputText,
       getExpectedPrompt(previousWorkingDirectory),
     );
@@ -126,7 +125,6 @@ test.describe("Cd", () => {
       const expectedOutputText = `${previousOutput}\n${getExpectedPrompt(previousDirectory)}cd ${directory}`;
       await assertExactTextInTerminal(
         page,
-        "",
         expectedOutputText,
         getExpectedPrompt(directory),
       );
@@ -146,7 +144,6 @@ test.describe("Cd", () => {
     const expectedOutputText = `${previousOutput}\n${getExpectedPrompt(previousDirectory)}${input}\n${previousWorkingDirectory}`;
     await assertExactTextInTerminal(
       page,
-      "",
       expectedOutputText,
       getExpectedPrompt(previousWorkingDirectory),
     );
@@ -163,7 +160,7 @@ test.describe("Cd", () => {
     await runCommand(page, input);
 
     // Assert
-    await assertExactTextInTerminal(
+    await assertOutputInTerminal(
       page,
       `${input}\nbash: cd: too many arguments`,
     );
@@ -180,7 +177,7 @@ test.describe("Cd", () => {
     await runCommand(page, input);
 
     // Assert
-    await assertExactTextInTerminal(page, `${input}\nbash: cd: OLDPWD not set`);
+    await assertOutputInTerminal(page, `${input}\nbash: cd: OLDPWD not set`);
     await checkCurrentWorkingDirectory(page, DEFAULT_CURRENT_WORKING_DIRECTORY);
   });
 
@@ -195,7 +192,7 @@ test.describe("Cd", () => {
     await runCommand(page, input);
 
     // Assert
-    await assertExactTextInTerminal(
+    await assertOutputInTerminal(
       page,
       `${input}\nbash: cd: ${path}: Not a directory`,
     );
@@ -213,7 +210,7 @@ test.describe("Cd", () => {
     await runCommand(page, input);
 
     // Assert
-    await assertExactTextInTerminal(
+    await assertOutputInTerminal(
       page,
       `${input}\nbash: cd: ${path}: No such file or directory`,
     );
@@ -231,7 +228,7 @@ test.describe("Cd", () => {
     await runCommand(page, input);
 
     // Assert
-    await assertExactTextInTerminal(
+    await assertOutputInTerminal(
       page,
       `${input}\nbash: cd: ${path}: No such file or directory`,
     );

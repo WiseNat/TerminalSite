@@ -10,3 +10,4 @@ export const DEFAULT_USER_PROMPT = "C:\\home\\nathanwise>";
 export const COMMAND_NOT_FOUND = ": command not found";
 export const DEFAULT_CURRENT_WORKING_DIRECTORY = "/home/nathanwise";
 export const DEFAULT_HOME_DIRECTORY = "/home/nathanwise";
+export const COMMAND_RAN_OUTPUT = `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}`;

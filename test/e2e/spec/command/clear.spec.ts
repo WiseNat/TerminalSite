@@ -19,7 +19,7 @@ test.describe("Clear", () => {
     await runCommand(page, input); // actual clear
 
     // Assert
-    await assertExactTextInTerminal(page, "", "", undefined, "");
+    await assertExactTextInTerminal(page, "", undefined, "");
   });
 
   test("output must not have an extra newline after clearing", async ({
@@ -34,6 +34,6 @@ test.describe("Clear", () => {
 
     // Assert
     const fullExpected = `${DEFAULT_USER_PROMPT}${fakeCommand}\n${fakeCommand}${COMMAND_NOT_FOUND}`;
-    await assertExactTextInTerminal(page, "", fullExpected);
+    await assertExactTextInTerminal(page, fullExpected);
   });
 });

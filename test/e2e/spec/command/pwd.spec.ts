@@ -1,7 +1,11 @@
 import { test } from "../../fixture";
-import { DEFAULT_CURRENT_WORKING_DIRECTORY } from "../../helper/constant/generic";
+import {
+  COMMAND_RAN_OUTPUT,
+  DEFAULT_CURRENT_WORKING_DIRECTORY,
+} from "../../helper/constant/generic";
 import {
   assertExactTextInTerminal,
+  assertOutputInTerminal,
   getExpectedPrompt,
   runCommand,
 } from "../../helper/util/terminal_util";
@@ -15,7 +19,7 @@ test.describe("Pwd", () => {
     await runCommand(page, input);
 
     // Assert
-    await assertExactTextInTerminal(
+    await assertOutputInTerminal(
       page,
       `${input}\n${DEFAULT_CURRENT_WORKING_DIRECTORY}`,
     );
@@ -37,8 +41,7 @@ test.describe("Pwd", () => {
     // Assert
     await assertExactTextInTerminal(
       page,
-      `${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}\n${changedDirectory}`,
-      undefined,
+      `${COMMAND_RAN_OUTPUT}${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}\n${changedDirectory}`,
       getExpectedPrompt(changedDirectory),
     );
   });

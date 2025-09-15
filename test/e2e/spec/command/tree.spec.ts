@@ -1,8 +1,12 @@
 import { test } from "../../fixture";
-import { INPUT_SELECTOR } from "../../helper/constant/generic";
+import {
+  COMMAND_RAN_OUTPUT,
+  INPUT_SELECTOR,
+} from "../../helper/constant/generic";
 import { checkForColouredSpans } from "../../helper/util/element_util.ts";
 import {
   assertExactTextInTerminal,
+  assertOutputInTerminal,
   getExpectedPrompt,
   runCommand,
 } from "../../helper/util/terminal_util.ts";
@@ -35,8 +39,7 @@ test.describe("Tree", () => {
       "1 directory, 3 files";
     await assertExactTextInTerminal(
       page,
-      `${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}${expected}`,
-      undefined,
+      `${COMMAND_RAN_OUTPUT}${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}${expected}`,
       getExpectedPrompt(changedDirectory),
     );
     await checkForColouredSpans(page, {
@@ -70,7 +73,7 @@ test.describe("Tree", () => {
       "└── skills.md\n" +
       "\n" +
       "2 directories, 6 files";
-    await assertExactTextInTerminal(page, `${input}${expected}`);
+    await assertOutputInTerminal(page, `${input}${expected}`);
     await checkForColouredSpans(page, {
       directory: 2,
       executables: 0,
@@ -92,7 +95,7 @@ test.describe("Tree", () => {
 
     // Assert
     const expected = "\n/boot\n" + "\n" + "0 directories, 0 files";
-    await assertExactTextInTerminal(page, `${input}${expected}`);
+    await assertOutputInTerminal(page, `${input}${expected}`);
     await checkForColouredSpans(page, {
       directory: 1,
       executables: 0,
@@ -132,7 +135,7 @@ test.describe("Tree", () => {
       await page.locator(INPUT_SELECTOR).press("Enter");
 
       // Assert
-      await assertExactTextInTerminal(page, `${input}${expected}`);
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 0,
         executables: 0,
@@ -168,7 +171,7 @@ test.describe("Tree", () => {
         "└── .tmp\n" +
         "\n" +
         "2 directories, 7 files";
-      await assertExactTextInTerminal(page, `${input}${expected}`);
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 2,
         executables: 0,
@@ -197,7 +200,7 @@ test.describe("Tree", () => {
         "└── Education\n" +
         "\n" +
         "2 directories";
-      await assertExactTextInTerminal(page, `${input}${expected}`);
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 2,
         executables: 0,
@@ -244,7 +247,7 @@ test.describe("Tree", () => {
         "└── var\n" +
         "\n" +
         "17 directories, 0 files";
-      await assertExactTextInTerminal(page, `${input}${expected}`);
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 17,
         executables: 0,

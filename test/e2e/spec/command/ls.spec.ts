@@ -2,7 +2,7 @@ import { test } from "../../fixture";
 import { INPUT_SELECTOR } from "../../helper/constant/generic";
 import { checkForColouredSpans } from "../../helper/util/element_util.ts";
 import {
-  assertExactTextInTerminal,
+  assertOutputInTerminal,
   runCommand,
 } from "../../helper/util/terminal_util.ts";
 
@@ -123,7 +123,7 @@ test.describe("Ls", () => {
       await runCommand(page, input);
 
       // Assert
-      await assertExactTextInTerminal(page, `${input}${expected}`);
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, counts);
     });
   });
@@ -146,7 +146,7 @@ test.describe("Ls", () => {
           "\n/etc/hosts\t/home/nathanwise/Projects/this/.external" +
           "\n\n/home/nathanwise/Documents:" +
           "\n.\t..\tabout.txt\tCV.pdf\tEducation\tskills.md\t.tmp";
-        await assertExactTextInTerminal(page, `${input}${expected}`);
+        await assertOutputInTerminal(page, `${input}${expected}`);
         await checkForColouredSpans(page, {
           directory: 3,
           executables: 0,
@@ -175,7 +175,7 @@ test.describe("Ls", () => {
       "\n/etc/hosts\n/home/nathanwise/Projects/this/.external" +
       "\n\n/home/nathanwise/Documents:" +
       "\nabout.txt\nCV.pdf\nEducation\nskills.md";
-    await assertExactTextInTerminal(page, `${input}${expected}`);
+    await assertOutputInTerminal(page, `${input}${expected}`);
     await checkForColouredSpans(page, {
       directory: 1,
       executables: 0,
@@ -205,7 +205,7 @@ test.describe("Ls", () => {
           "/home/nathanwise/Documents:\n" +
           "total: 320\n" +
           "12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md";
-        await assertExactTextInTerminal(page, `${input}${expected}`);
+        await assertOutputInTerminal(page, `${input}${expected}`);
         await checkForColouredSpans(page, {
           directory: 1,
           executables: 0,
@@ -233,7 +233,7 @@ test.describe("Ls", () => {
           "/home/nathanwise/Documents:\n" +
           "total: 340\n" +
           "4 .\t4 ..\t12 about.txt\t292 CV.pdf\t4 Education\t12 skills.md\t12 .tmp";
-        await assertExactTextInTerminal(page, `${input}${expected}`);
+        await assertOutputInTerminal(page, `${input}${expected}`);
         await checkForColouredSpans(page, {
           directory: 3,
           executables: 0,
@@ -265,7 +265,7 @@ test.describe("Ls", () => {
           "/home/nathanwise/Documents:\n" +
           "total: 320K\n" +
           "12K about.txt\t292K CV.pdf\t4K Education\t12K skills.md";
-        await assertExactTextInTerminal(page, `${input}${expected}`);
+        await assertOutputInTerminal(page, `${input}${expected}`);
         await checkForColouredSpans(page, {
           directory: 1,
           executables: 0,
@@ -297,7 +297,7 @@ test.describe("Ls", () => {
           "\n-rw-rw-r-- 1 nathanwise nathanwise\t282K Jul 21 00:50 CV.pdf" +
           "\ndrwxrwxr-x 2 nathanwise nathanwise\t4K Aug 17 00:33 Education" +
           "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Jul 21 00:50 skills.md";
-        await assertExactTextInTerminal(page, `${input}${expected}`);
+        await assertOutputInTerminal(page, `${input}${expected}`);
         await checkForColouredSpans(page, {
           directory: 1,
           executables: 0,
@@ -326,7 +326,7 @@ test.describe("Ls", () => {
         "\n/etc/hosts\t/home/nathanwise/Projects/this/.external" +
         "\n\n/home/nathanwise/Documents:" +
         "\nabout.txt\tCV.pdf\tEducation\tskills.md";
-      await assertExactTextInTerminal(page, `${input}${expected}`);
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 1,
         executables: 0,
@@ -446,7 +446,7 @@ test.describe("Ls", () => {
       await runCommand(page, input);
 
       // Assert
-      await assertExactTextInTerminal(page, `${input}${expected}`);
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 1,
         executables: 0,
@@ -479,7 +479,7 @@ test.describe("Ls", () => {
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t288626 Jul 21 00:50 CV.pdf" +
         "\ndrwxrwxr-x 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t375 Jul 21 00:50 skills.md";
-      await assertExactTextInTerminal(page, `${input}${expected}`);
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 1,
         executables: 0,
@@ -508,7 +508,7 @@ test.describe("Ls", () => {
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t288626 Jul 21 00:50 CV.pdf" +
         "\ndrwxrwxr-x 2 nathanwise nathanwise\t4096 Aug 17 00:33 Education" +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t375 Jul 21 00:50 skills.md";
-      await assertExactTextInTerminal(page, `${input}${expected}`);
+      await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 1,
         executables: 0,
