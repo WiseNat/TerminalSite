@@ -1,6 +1,7 @@
 import { expect, test } from "../fixture";
 import AxeBuilder from "@axe-core/playwright";
 import { INPUT_SELECTOR } from "../helper/constant/generic";
+import { runCommand } from "../helper/util/terminal_util.ts";
 
 test.describe("homepage", () => {
   test("should not have any automatically detectable accessibility issues", async ({
@@ -69,8 +70,7 @@ test.describe("focus", () => {
     const input = "cat ~/Projects/this/.external";
 
     // Act
-    await page.locator(INPUT_SELECTOR).pressSequentially(input);
-    await page.locator(INPUT_SELECTOR).press("Enter");
+    await runCommand(page, input);
 
     const [newPage] = await Promise.all([
       page.context().waitForEvent("page"),

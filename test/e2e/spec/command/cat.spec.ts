@@ -1,11 +1,9 @@
 import { expect, test } from "../../fixture";
+import { OUTPUT_SELECTOR } from "../../helper/constant/generic";
 import {
-  DEFAULT_INITIAL_PROMPT,
-  DEFAULT_USER_PROMPT,
-  INPUT_SELECTOR,
-  OUTPUT_SELECTOR,
-  PROMPT_SELECTOR,
-} from "../../helper/constant/generic";
+  assertExactTextInTerminal,
+  runCommand,
+} from "../../helper/util/terminal_util.ts";
 
 test.describe("Cat", () => {
   const existingFiles = [
@@ -34,7 +32,8 @@ test.describe("Cat", () => {
         "| Geography                          | 6     | AQA             | 601/8410/3 |\n" +
         "| English Literature                 | 6     | AQA             | 601/4447/6 |\n" +
         "| English Language                   | 5     | AQA             | 601/4292/3 |\n" +
-        "| English Language (Spoken Language) | Merit | AQA             | 601/4292/3 |\n",
+        "| English Language (Spoken Language) | Merit | AQA             | 601/4292/3 |\n" +
+        " ",
     },
   ];
 
@@ -62,17 +61,10 @@ test.describe("Cat", () => {
     const input = "cat";
 
     // Act
-    await page.locator(INPUT_SELECTOR).pressSequentially(input);
-    await page.locator(INPUT_SELECTOR).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(OUTPUT_SELECTOR)).elementToStartWith(
-      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}`,
-    );
-    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-      DEFAULT_USER_PROMPT,
-    );
-    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
+    await assertExactTextInTerminal(page, input);
   });
 
   test("should output the contents of a single file, when that file path is given", async ({
@@ -82,19 +74,11 @@ test.describe("Cat", () => {
     const input = `cat ${existingFiles[0].path}`;
 
     // Act
-    await page.locator(INPUT_SELECTOR).pressSequentially(input);
-    await page.locator(INPUT_SELECTOR).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    const expected = existingFiles[0].content;
-
-    await expect(page.locator(OUTPUT_SELECTOR)).elementToStartWith(
-      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${expected}`,
-    );
-    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-      DEFAULT_USER_PROMPT,
-    );
-    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
+    const expected = `\n${existingFiles[0].content}`;
+    await assertExactTextInTerminal(page, input + expected);
   });
 
   test("should output the contents of a multiple files, when multiple file paths are given", async ({
@@ -104,17 +88,11 @@ test.describe("Cat", () => {
     const input = `cat ${existingFiles[0].path} ${existingFiles[1].path}`;
 
     // Act
-    await page.locator(INPUT_SELECTOR).pressSequentially(input);
-    await page.locator(INPUT_SELECTOR).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    await expect(page.locator(OUTPUT_SELECTOR)).elementToStartWith(
-      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${existingFiles[0].content}\n${existingFiles[1].content}`,
-    );
-    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-      DEFAULT_USER_PROMPT,
-    );
-    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
+    const expected = `\n${existingFiles[0].content}\n${existingFiles[1].content}`;
+    await assertExactTextInTerminal(page, input + expected);
   });
 
   test("should output file not found error, when a file path for a non-existent path is given", async ({
@@ -124,19 +102,11 @@ test.describe("Cat", () => {
     const input = `cat ${fakeFiles[0].path}`;
 
     // Act
-    await page.locator(INPUT_SELECTOR).pressSequentially(input);
-    await page.locator(INPUT_SELECTOR).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    const expected = `cat: ${fakeFiles[0].resolvedPath}: No such file or directory`;
-
-    await expect(page.locator(OUTPUT_SELECTOR)).elementToStartWith(
-      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${expected}`,
-    );
-    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-      DEFAULT_USER_PROMPT,
-    );
-    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
+    const expected = `\ncat: ${fakeFiles[0].resolvedPath}: No such file or directory`;
+    await assertExactTextInTerminal(page, input + expected);
   });
 
   test("should output file not found error multiple times, when multiple file paths for non-existent paths is given", async ({
@@ -146,20 +116,13 @@ test.describe("Cat", () => {
     const input = `cat ${fakeFiles[0].path} ${fakeFiles[1].path}`;
 
     // Act
-    await page.locator(INPUT_SELECTOR).pressSequentially(input);
-    await page.locator(INPUT_SELECTOR).press("Enter");
+    await runCommand(page, input);
 
     // Assert
     const expectedFirst = `cat: ${fakeFiles[0].resolvedPath}: No such file or directory`;
     const expectedSecond = `cat: ${fakeFiles[1].resolvedPath}: No such file or directory`;
-
-    await expect(page.locator(OUTPUT_SELECTOR)).elementToStartWith(
-      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${expectedFirst}\n${expectedSecond}`,
-    );
-    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-      DEFAULT_USER_PROMPT,
-    );
-    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
+    const expected = `\n${expectedFirst}\n${expectedSecond}`;
+    await assertExactTextInTerminal(page, input + expected);
   });
 
   test("should output file not found error and found file contents, when multiple existent and non-existent file paths are given", async ({
@@ -169,20 +132,13 @@ test.describe("Cat", () => {
     const input = `cat ${fakeFiles[0].path} ${existingFiles[0].path}`;
 
     // Act
-    await page.locator(INPUT_SELECTOR).pressSequentially(input);
-    await page.locator(INPUT_SELECTOR).press("Enter");
+    await runCommand(page, input);
 
     // Assert
     const expectedFirst = `cat: ${fakeFiles[0].resolvedPath}: No such file or directory`;
     const expectedSecond = existingFiles[0].content;
-
-    await expect(page.locator(OUTPUT_SELECTOR)).elementToStartWith(
-      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${expectedFirst}\n${expectedSecond}`,
-    );
-    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-      DEFAULT_USER_PROMPT,
-    );
-    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
+    const expected = `\n${expectedFirst}\n${expectedSecond}`;
+    await assertExactTextInTerminal(page, input + expected);
   });
 
   test("should output an 'a' element when reading a file with a Markdown URL", async ({
@@ -192,19 +148,11 @@ test.describe("Cat", () => {
     const input = `cat ${urlFiles[0].path}`;
 
     // Act
-    await page.locator(INPUT_SELECTOR).pressSequentially(input);
-    await page.locator(INPUT_SELECTOR).press("Enter");
+    await runCommand(page, input);
 
     // Assert
-    const expected = urlFiles[0].text;
-
-    await expect(page.locator(OUTPUT_SELECTOR)).elementToStartWith(
-      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${expected}`,
-    );
-    await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-      DEFAULT_USER_PROMPT,
-    );
-    await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
+    const expected = `\n${urlFiles[0].text}`;
+    await assertExactTextInTerminal(page, input + expected);
 
     const link = page
       .locator(OUTPUT_SELECTOR)

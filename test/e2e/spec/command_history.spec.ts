@@ -4,6 +4,7 @@ import {
   PROMPT_SELECTOR,
   DEFAULT_USER_PROMPT,
 } from "../helper/constant/generic";
+import { runCommand } from "../helper/util/terminal_util.ts";
 
 test.describe("with existing command history", () => {
   const commands: string[] = [
@@ -17,8 +18,7 @@ test.describe("with existing command history", () => {
   test.beforeEach(async ({ page }) => {
     // Insert commands...
     for (const command of commands) {
-      await page.locator(INPUT_SELECTOR).pressSequentially(command);
-      await page.locator(INPUT_SELECTOR).press("Enter");
+      await runCommand(page, command);
     }
   });
 
@@ -134,8 +134,7 @@ test.describe("with existing command history", () => {
     // Arrange & Act
     await page.locator(INPUT_SELECTOR).press("ArrowUp");
     const userInput = "some extra data";
-    await page.locator(INPUT_SELECTOR).pressSequentially(userInput);
-    await page.locator(INPUT_SELECTOR).press("Enter");
+    await runCommand(page, userInput);
 
     // Assert
     await page.locator(INPUT_SELECTOR).press("ArrowUp");

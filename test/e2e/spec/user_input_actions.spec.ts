@@ -14,6 +14,7 @@ import {
   WHITESPACE,
 } from "../helper/constant/charset";
 import { simulatePaste } from "../helper/util/clipboard_util";
+import { assertExactTextInTerminal } from "../helper/util/terminal_util.ts";
 
 test.describe("Keyboard", () => {
   /*
@@ -39,13 +40,13 @@ test.describe("Keyboard", () => {
         await page.locator(INPUT_SELECTOR).pressSequentially(values);
 
         // Assert
-        await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+        await assertExactTextInTerminal(
+          page,
+          "",
           DEFAULT_INITIAL_PROMPT,
+          undefined,
+          values,
         );
-        await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-          DEFAULT_USER_PROMPT,
-        );
-        await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(values);
       });
     });
 
@@ -64,14 +65,11 @@ test.describe("Keyboard", () => {
 
         // Assert
         const prompts = `\n${DEFAULT_USER_PROMPT}`.repeat(newlineCounter);
-
-        await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+        await assertExactTextInTerminal(
+          page,
+          "",
           `${DEFAULT_INITIAL_PROMPT}${prompts}`,
         );
-        await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-          DEFAULT_USER_PROMPT,
-        );
-        await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
       });
 
       test("With Shift can be typed in the user input", async ({ page }) => {
@@ -123,13 +121,13 @@ test.describe("Keyboard", () => {
       await simulatePaste(page.locator(INPUT_SELECTOR), browser, values);
 
       // Assert
-      await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+      await assertExactTextInTerminal(
+        page,
+        "",
         DEFAULT_INITIAL_PROMPT,
+        undefined,
+        values,
       );
-      await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-        DEFAULT_USER_PROMPT,
-      );
-      await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(values);
     });
   });
 });

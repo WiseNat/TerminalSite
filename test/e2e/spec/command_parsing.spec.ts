@@ -1,12 +1,9 @@
 import { expect, test } from "../fixture";
+import { COMMAND_NOT_FOUND, INPUT_SELECTOR } from "../helper/constant/generic";
 import {
-  COMMAND_NOT_FOUND,
-  DEFAULT_INITIAL_PROMPT,
-  DEFAULT_USER_PROMPT,
-  INPUT_SELECTOR,
-  OUTPUT_SELECTOR,
-  PROMPT_SELECTOR,
-} from "../helper/constant/generic";
+  assertExactTextInTerminal,
+  runCommand,
+} from "../helper/util/terminal_util.ts";
 
 test("Typing a valid command and pressing Enter runs that command", async ({
   page,
@@ -17,17 +14,10 @@ test("Typing a valid command and pressing Enter runs that command", async ({
   const input = commandName + " " + commandArgs.join(" ");
 
   // Act
-  await page.locator(INPUT_SELECTOR).pressSequentially(input);
-  await page.locator(INPUT_SELECTOR).press("Enter");
+  await runCommand(page, input);
 
   // Assert
-  await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
-    `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${commandArgs.join(" ")}`,
-  );
-  await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-    DEFAULT_USER_PROMPT,
-  );
-  await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
+  await assertExactTextInTerminal(page, `${input}\n${commandArgs.join(" ")}`);
 });
 
 test("Typing an unknown command and pressing Enter returns that the command was not found", async ({
@@ -39,31 +29,21 @@ test("Typing an unknown command and pressing Enter returns that the command was 
   const input = commandName + " " + commandArgs.join(" ");
 
   // Act
-  await page.locator(INPUT_SELECTOR).pressSequentially(input);
-  await page.locator(INPUT_SELECTOR).press("Enter");
+  await runCommand(page, input);
 
   // Assert
-  await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
-    `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${commandName}${COMMAND_NOT_FOUND}`,
+  await assertExactTextInTerminal(
+    page,
+    `${input}\n${commandName}${COMMAND_NOT_FOUND}`,
   );
-  await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-    DEFAULT_USER_PROMPT,
-  );
-  await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
 });
 
 test("Typing no command and pressing Enter does nothing", async ({ page }) => {
   // Arrange & Act
-  await page.locator(INPUT_SELECTOR).press("Enter");
+  await runCommand(page, "");
 
   // Assert
-  await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
-    `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}`,
-  );
-  await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
-    DEFAULT_USER_PROMPT,
-  );
-  await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
+  await assertExactTextInTerminal(page, "");
 });
 
 test("Pressing Enter should run a command & prevent a newline being inserted in the user input", async ({
@@ -75,8 +55,7 @@ test("Pressing Enter should run a command & prevent a newline being inserted in 
   const input = commandName + " " + commandArgs.join(" ");
 
   // Act
-  await page.locator(INPUT_SELECTOR).pressSequentially(input);
-  await page.locator(INPUT_SELECTOR).press("Enter");
+  await runCommand(page, input);
 
   // Assert
   await expect(page.locator(INPUT_SELECTOR)).exactTextInElement("");
