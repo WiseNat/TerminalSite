@@ -4,6 +4,9 @@ import { escape, unescape } from "lodash-es";
 import FileSystemUtil from "./file_system_util.ts";
 
 export default class TerminalUtil {
+  // Values that allows the largest file to be outputted with cat.
+  static readonly MAX_OUTPUT_CHARS: number = 500_000;
+
   /**
    * Retrieves the Input element from the DOM.
    * <p>
@@ -152,18 +155,22 @@ export default class TerminalUtil {
    * @param text text to escape and set
    */
   public static setOutput(text: string) {
-    this.output.innerHTML = escape(text);
-    this.scrollTo("start");
+    this.setRawOutput(escape(text));
   }
 
   /**
-   * Sets the `innerHtml` of the Output as this text.
+   * Sets the `innerHtml` of the Output as this text, ensuring it does not
+   * breach the {@link MAX_OUTPUT_CHARS}.
    * <p>
    * This allows for inserting of HTML elements. For inserting regular text safely, use {@link setOutput}.
    *
    * @param text text to set
    */
   public static setRawOutput(text: string) {
+    if (text.length >= this.MAX_OUTPUT_CHARS) {
+      text = text.slice(-this.MAX_OUTPUT_CHARS);
+    }
+
     this.output.innerHTML = text;
     this.scrollTo("start");
   }
@@ -218,9 +225,7 @@ export default class TerminalUtil {
       text = `\n${text}`;
     }
 
-    this.output.innerHTML += text;
-
-    this.scrollTo("start");
+    this.setRawOutput(this.output.innerHTML + text);
   }
 
   /**
