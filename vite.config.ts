@@ -7,7 +7,9 @@ import { visualizer } from "rollup-plugin-visualizer";
 export default defineConfig(({ mode }) => {
   return {
     plugins: [
-      fileTree("src/content", "home"),
+      mode === "testing"
+        ? fileTree("test/e2e/content", "src/main")
+        : fileTree("src/content", "home"),
       visualizer({ brotliSize: true, gzipSize: true }) as PluginOption,
     ],
     css: {

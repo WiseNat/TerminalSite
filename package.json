@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:testing": "vite --mode testing",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prepare": "husky",
@@ -67,7 +68,10 @@
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
-    ]
+    ],
+    "rules": {
+      "body-max-line-length": [0]
+    }
   },
   "stylelint": {
     "extends": [
