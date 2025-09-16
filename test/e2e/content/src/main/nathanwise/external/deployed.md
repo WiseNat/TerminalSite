@@ -1,0 +1,1 @@
+The URL [nathanwise.tech](https://nathanwise.tech/) is where my site is hosted (http if v1 is the current deployment)
