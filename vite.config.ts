@@ -5,13 +5,14 @@ import FileTree from "./src/plugins/vite_plugin_file_tree";
 import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig(({ mode }) => {
+  // Any contentDirectory changes must be mirrored in 'file_import_util.ts'
+  const contentDirectory =
+    mode === "testing" ? "test/e2e/content" : "src/content";
   const homeDirectoryParent = mode === "testing" ? "src/main" : "home";
 
   return {
     plugins: [
-      mode === "testing"
-        ? FileTree("test/e2e/content", homeDirectoryParent)
-        : FileTree("src/content", homeDirectoryParent),
+      FileTree(contentDirectory, homeDirectoryParent),
       visualizer({ brotliSize: true, gzipSize: true }) as PluginOption,
     ],
     define: {

@@ -1,15 +1,28 @@
-// Does not function correctly as a readonly within FileImportUtil
-// .gitkeep should not be included, see 'walk' in 'vite_plugin_file_tree.ts' for in-depth explanation.
 import FileSystemUtil from "./file_system_util.ts";
 
-const FILES = import.meta.glob<{ default: string }>(
-  ["./**/*", "!./**/*.gitkeep"],
-  {
-    exhaustive: true,
-    base: "/src/content",
-    query: "?raw",
-  },
-);
+/*
+Does not function correctly as a readonly within FileImportUtil.
+.gitkeep & .meta should not be included, see 'walk' in 'vite_plugin_file_tree.ts' for in-depth explanation.
+import.meta.glob does NOT support non-static values so duplicate globs exist for testing and non-testing modes.
+ */
+const FILES =
+  import.meta.env.MODE === "testing"
+    ? import.meta.glob<{ default: string }>(
+        ["./**/*", "!./**/*.gitkeep", "!./**/*.meta"],
+        {
+          exhaustive: true,
+          base: "/test/e2e/content",
+          query: "?raw",
+        },
+      )
+    : import.meta.glob<{ default: string }>(
+        ["./**/*", "!./**/*.gitkeep", "!./**/*.meta"],
+        {
+          exhaustive: true,
+          base: "/src/content",
+          query: "?raw",
+        },
+      );
 
 export default class FileImportUtil {
   /**
