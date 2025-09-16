@@ -106,14 +106,20 @@ function isIgnoredFile(entry: fs.Dirent): boolean {
  */
 function getLastModifiedTime(path: string): Date {
   try {
-    return new Date(
+    const date = new Date(
       execSync(`git log -1 --format=%ci -- "${path}"`, {
         encoding: "utf-8",
       }).trim(),
     );
+
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
   } catch {
-    return new Date(statSync(path).mtime);
+    // do nothing
   }
+
+  return new Date(statSync(path).mtime);
 }
 
 /**
