@@ -246,7 +246,8 @@ function storeAsOrphan(
  *
  * console.info(fileTree);
  */
-export default function fileTree(
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export default function FileTree(
   rootPath?: string,
   homeDirectory?: string,
 ): Plugin {
