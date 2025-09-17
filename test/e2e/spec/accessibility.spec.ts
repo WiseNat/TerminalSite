@@ -67,7 +67,7 @@ test.describe("focus", () => {
 
   test("clicking on anchor elements opens in a new tab", async ({ page }) => {
     // Arrange
-    const input = "cat ~/Projects/this/.external";
+    const input = "cat ~/external/repo.md";
 
     // Act
     await runCommand(page, input);

@@ -41,7 +41,7 @@ test.describe("Cd", () => {
     page,
   }) => {
     // Arrange
-    const path = "/var/tmp";
+    const path = "/colour/dir";
     const input = `cd ${path}`;
 
     // Act
@@ -78,7 +78,7 @@ test.describe("Cd", () => {
     page,
   }) => {
     // Arrange
-    const previousWorkingDirectory = "/var/tmp";
+    const previousWorkingDirectory = "/colour/dir";
 
     await runCommand(page, `cd ${previousWorkingDirectory}`);
 
@@ -104,8 +104,8 @@ test.describe("Cd", () => {
     page,
   }) => {
     // Arrange
-    const previousWorkingDirectory = "/var/tmp";
-    const currentWorkingDirectory = "/home";
+    const previousWorkingDirectory = "/colour/dir";
+    const currentWorkingDirectory = "/src/main/nathanwise";
 
     await runCommand(page, `cd ${previousWorkingDirectory}`);
     await runCommand(page, `cd ${currentWorkingDirectory}`);
@@ -134,11 +134,11 @@ test.describe("Cd", () => {
   }) => {
     // Arrange
     const directories = [
-      "/var/tmp",
-      "/home",
-      "/usr/lib",
-      "/home/nathanwise/Music",
-      "/etc/opt",
+      "/colour/dir",
+      "/.foo",
+      "/src/main/nathanwise/.empty",
+      "/test",
+      "/etc",
     ];
     const previousWorkingDirectory = directories[directories.length - 2];
     let previousDirectory = DEFAULT_CURRENT_WORKING_DIRECTORY;
@@ -180,7 +180,7 @@ test.describe("Cd", () => {
     page,
   }) => {
     // Arrange
-    const input = "cd /var/tmp /home/nathanwise";
+    const input = "cd /colour/dir /home/nathanwise";
 
     // Act
     await runCommand(page, input);
@@ -211,7 +211,7 @@ test.describe("Cd", () => {
     page,
   }) => {
     // Arrange
-    const path = "/home/nathanwise/help.txt";
+    const path = "/src/index.ts";
     const input = `cd ${path}`;
 
     // Act

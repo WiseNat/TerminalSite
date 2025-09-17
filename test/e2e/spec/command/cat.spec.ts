@@ -8,39 +8,25 @@ import {
 test.describe("Cat", () => {
   const existingFiles = [
     {
-      path: "/etc/hosts",
-      content: "127.0.0.1\tlocalhost\n" + "127.0.1.1\tnathan-wise-portfolio",
+      path: "/etc/data.txt",
+      content:
+        "rcu1dwGX0YqNKgRZjHjegXBdcPWuRGpb\n" +
+        "qdx4MIyPa79xhmyh9RiSv1tvcNqeJr5Y\n" +
+        "QPUxauVt418Osnb6c2xFsJxzQqPuCT9x",
     },
     {
-      path: "~/Documents/Education/gcses.md",
+      path: "~/.bashrc",
       content:
-        "# GCSEs\n" +
-        "\n" +
-        "## Summary\n" +
-        "\n" +
-        "I completed my GCSES in June 2019 at Debden Park High School.\n" +
-        "\n" +
-        "## Subjects & Grades\n" +
-        "\n" +
-        "| Subject                            | Grade | Board           | QN         |\n" +
-        "|------------------------------------|-------|-----------------|------------|\n" +
-        "| Mathematics                        | 9     | Pearson Edexcel | 601/4700/3 |\n" +
-        "| Computer Science                   | 8     | OCR             | 601/8355/X |\n" +
-        "| Physics                            | 8     | OCR             | 601/8685/9 |\n" +
-        "| Biology                            | 8     | OCR             | 601/8506/5 |\n" +
-        "| Chemistry                          | 7     | OCR             | 601/8605/7 |\n" +
-        "| Geography                          | 6     | AQA             | 601/8410/3 |\n" +
-        "| English Literature                 | 6     | AQA             | 601/4447/6 |\n" +
-        "| English Language                   | 5     | AQA             | 601/4292/3 |\n" +
-        "| English Language (Spoken Language) | Merit | AQA             | 601/4292/3 |\n" +
-        " ",
+        "# ~/.bashrc: executed by bash(1) for non-login shells.\n" +
+        "# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)\n" +
+        "# for examples",
     },
   ];
 
   const fakeFiles = [
     {
       path: "~/Projects/someFakeProject/.external",
-      resolvedPath: "/home/nathanwise/Projects/someFakeProject/.external",
+      resolvedPath: "/src/main/nathanwise/Projects/someFakeProject/.external",
     },
     {
       path: "/home/fakePath/someFile.txt",
@@ -50,9 +36,25 @@ test.describe("Cat", () => {
 
   const urlFiles = [
     {
-      path: "~/Projects/this/.external",
+      path: "~/external/repo.md",
       text: "https://github.com/WiseNat/TerminalSite/",
       href: "https://github.com/WiseNat/TerminalSite/",
+      content:
+        "Here's the repo to my site: https://github.com/WiseNat/TerminalSite/",
+    },
+    {
+      path: "~/external/deployed.md",
+      text: "nathanwise.tech",
+      href: "https://nathanwise.tech/",
+      content:
+        "The URL nathanwise.tech is where my site is hosted (http if v1 is the current deployment)",
+    },
+    {
+      path: "~/external/deployed2.md",
+      text: "nathanwise.software",
+      href: "https://nathanwise.software/",
+      content:
+        "And nathanwise.software is a domain that just redirects to the same deployed site.\nAlso HTTP if V1 is currently deployed.",
     },
   ];
 
@@ -145,33 +147,35 @@ test.describe("Cat", () => {
     page,
   }) => {
     // Arrange
-    const input = "cat ~/Documents";
+    const input = "cat ~/Desktop";
 
     // Act
     await runCommand(page, input);
 
     // Assert
-    const expected = "\ncat: /home/nathanwise/Documents: Is a directory";
+    const expected = "\ncat: /src/main/nathanwise/Desktop: Is a directory";
     await assertOutputInTerminal(page, input + expected);
   });
 
-  test("should output an 'a' element when reading a file with a Markdown URL", async ({
-    page,
-  }) => {
-    // Arrange
-    const input = `cat ${urlFiles[0].path}`;
+  urlFiles.forEach(({ path, text, href, content }) => {
+    test(`should output an 'a' element when reading '${path}' with a Markdown URL`, async ({
+      page,
+    }) => {
+      // Arrange
+      const input = `cat ${path}`;
 
-    // Act
-    await runCommand(page, input);
+      // Act
+      await runCommand(page, input);
 
-    // Assert
-    const expected = `\n${urlFiles[0].text}`;
-    await assertOutputInTerminal(page, input + expected);
+      // Assert
+      const expected = `\n${content}`;
+      await assertOutputInTerminal(page, input + expected);
 
-    const link = page
-      .locator(OUTPUT_SELECTOR)
-      .locator(`a[href="${urlFiles[0].href}"]`, { hasText: urlFiles[0].text });
-    await expect(link).toHaveCount(1);
-    await expect(link).toBeVisible();
+      const link = page.locator(OUTPUT_SELECTOR).locator(`a[href="${href}"]`, {
+        hasText: text,
+      });
+      await expect(link).toHaveCount(1);
+      await expect(link).toBeVisible();
+    });
   });
 });
