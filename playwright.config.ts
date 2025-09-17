@@ -8,7 +8,7 @@ import { defineConfig, devices } from "@playwright/test";
  * - https://playwright.dev/docs/api/class-testconfig
  */
 
-const SERVER_URL = "http://localhost:5173";
+const SERVER_URL = "http://localhost:5174";
 
 // noinspection JSUnusedGlobalSymbols
 export default defineConfig({

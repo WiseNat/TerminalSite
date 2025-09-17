@@ -179,16 +179,12 @@ function formatPathResults(pathResults: PathResults, flags: Flags): string {
 
   const unknownPathOutput = formatUnknownPaths(pathResults.unknownPaths);
   if (unknownPathOutput !== "") {
-    output += unknownPathOutput;
+    output += `${unknownPathOutput}\n`;
   }
 
   const fileEntriesOutput = formatFileEntries(pathResults.fileEntries, flags);
   if (fileEntriesOutput !== "") {
-    if (output !== "") {
-      output += "\n";
-    }
-
-    output += fileEntriesOutput;
+    output += `${fileEntriesOutput}\n\n`;
   }
 
   const isPreviousOutput = output !== "";
@@ -198,14 +194,10 @@ function formatPathResults(pathResults: PathResults, flags: Flags): string {
     flags,
   );
   if (directoryEntriesOutput !== "") {
-    if (output !== "") {
-      output += "\n\n";
-    }
-
     output += directoryEntriesOutput;
   }
 
-  return output;
+  return output.trimEnd();
 }
 
 /**

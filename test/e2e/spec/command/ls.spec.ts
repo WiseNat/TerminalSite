@@ -94,6 +94,22 @@ test.describe("Ls", () => {
       },
     },
     {
+      type: "Should output information for each argument when an Unknown Path and Directory are provided",
+      args: [existingDirectory, fakePath],
+      expected:
+        `\nls: cannot access '${fakePath}': No such file or directory` +
+        "\n/colour:" +
+        "\narchive.zip\taudio.mp3\tdir\texecutable.sh\timage.png\tnormal.txt\trubbish.tmp",
+      counts: {
+        directory: 1,
+        executables: 1,
+        archives: 1,
+        graphics: 1,
+        audios: 1,
+        rubbish: 1,
+      },
+    },
+    {
       type: "Should output information for each argument when multiple Paths are provided",
       args: [existingDotFile, existingFile, existingDirectory, fakePath],
       expected:
