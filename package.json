@@ -14,7 +14,8 @@
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "vitest run --project Unit",
     "test:integration": "vitest run --project Integration",
-    "test:e2e": "playwright test"
+    "test:e2e:full": "playwright test",
+    "test:e2e:quick": "playwright test --project=Chromium"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
