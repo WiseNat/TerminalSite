@@ -19,7 +19,7 @@ const FILES =
         ["./**/*", "!./**/*.gitkeep", "!./**/*.meta"],
         {
           exhaustive: true,
-          base: "/src/content",
+          base: "/content",
           query: "?raw",
         },
       );

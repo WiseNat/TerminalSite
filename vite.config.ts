@@ -6,8 +6,7 @@ import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig(({ mode }) => {
   // Any contentDirectory changes must be mirrored in 'file_import_util.ts'
-  const contentDirectory =
-    mode === "testing" ? "test/e2e/content" : "src/content";
+  const contentDirectory = mode === "testing" ? "test/e2e/content" : "content";
   const homeDirectoryParent = mode === "testing" ? "src/main" : "home";
 
   return {
