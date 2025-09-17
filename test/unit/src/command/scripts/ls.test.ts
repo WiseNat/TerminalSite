@@ -180,7 +180,7 @@ describe("Ls", () => {
           args: ["/some/fake/path", "/src/main/foo"],
           expected:
             "\nls: cannot access '/some/fake/path': No such file or directory" +
-            "\n\n/src/main/foo:" +
+            "\n/src/main/foo:" +
             "\nbar\tbazzing.gaz\tdaz",
         },
         {
@@ -262,15 +262,15 @@ describe("Ls", () => {
           type: "unknown path",
           arg: "/some/fake/path",
           typeExpected:
-            "ls: cannot access '/some/fake/path': No such file or directory",
+            "ls: cannot access '/some/fake/path': No such file or directory\n",
         },
         {
           type: "file entry",
           arg: "/src/index.ts",
-          typeExpected: "/src/index.ts",
+          typeExpected: "/src/index.ts\n\n",
         },
       ].forEach(({ type, arg, typeExpected }) => {
-        test(`Given a directory & ${type} argument, directory entries are prefixed with '$\{path}:'`, async () => {
+        test(`Given a directory & ${type} argument, directory entries are prefixed with '${arg}:'`, async () => {
           // Arrange
           const args: string[] = ["/src/main/foo"];
           args.push(arg);
@@ -280,9 +280,7 @@ describe("Ls", () => {
 
           // Assert
           const expected =
-            `\n${typeExpected}` +
-            "\n\n/src/main/foo:" +
-            "\nbar\tbazzing.gaz\tdaz";
+            `\n${typeExpected}` + "/src/main/foo:" + "\nbar\tbazzing.gaz\tdaz";
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
           expect(appendOutput).not.toHaveBeenCalled();
         });
