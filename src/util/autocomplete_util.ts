@@ -1,5 +1,4 @@
 import TerminalUtil from "./terminal_util.ts";
-import { USER_PROMPT } from "../constant/prompt.ts";
 import MetaImportUtil from "./meta_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import { Suggestion } from "../command/command_script.ts";
@@ -48,8 +47,9 @@ export default class AutocompleteUtil {
         .join("\t");
 
       // TODO: Make this use TUI (columns) when that's implemented
+      const prompt = TerminalUtil.getPrompt();
       TerminalUtil.appendOutput(
-        `${USER_PROMPT}${userInput}\n${joinedSuggestions}`,
+        `${prompt}${userInput}\n${joinedSuggestions}`,
         true,
       );
     }

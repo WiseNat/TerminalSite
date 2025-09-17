@@ -6,7 +6,7 @@ import FileSystemUtil from "./util/file_system_util.ts";
 import { click } from "./event/click.ts";
 
 // Terminal Set-up
-FileSystemUtil.setHomeDirectory("/home/nathanwise");
+FileSystemUtil.setHomeDirectory(__HOME_DIRECTORY);
 FileSystemUtil.setCurrentWorkingDirectory("~");
 
 TerminalUtil.setOutput(INITIAL_PROMPT);

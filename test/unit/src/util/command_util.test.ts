@@ -5,7 +5,6 @@ import TokenisedCommand from "../../../../src/dto/tokenised_command";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { unmock } from "../../helper/unmock";
 import MetaImportUtil from "../../../../src/util/meta_import_util";
-import { USER_PROMPT } from "../../../../src/constant/prompt";
 import { Options } from "getopts";
 
 describe("CommandUtil", () => {
@@ -54,7 +53,8 @@ describe("CommandUtil", () => {
 
     test("outputs nothing when a command is not found with no name", async () => {
       // Arrange
-      vi.mocked(TerminalUtil.getPrompt).mockReturnValue(USER_PROMPT);
+      const prompt = "C:\\home\\nathanwise>";
+      vi.mocked(TerminalUtil.getPrompt).mockReturnValue(prompt);
       vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({});
 
       const command = "";
@@ -64,7 +64,7 @@ describe("CommandUtil", () => {
 
       // Assert
       expect(appendOutput).toHaveBeenCalledOnce();
-      expect(appendOutput).toHaveBeenCalledWith(`${USER_PROMPT}`, true);
+      expect(appendOutput).toHaveBeenCalledWith(`${prompt}`, true);
     });
   });
 

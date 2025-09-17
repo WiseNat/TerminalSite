@@ -29,7 +29,7 @@ test.describe("Pwd", () => {
     page,
   }) => {
     // Arrange
-    const changedDirectory = "/usr/local/etc";
+    const changedDirectory = "/some/lengthy/dir";
     const cdInput = `cd ${changedDirectory}`;
     await runCommand(page, cdInput);
 

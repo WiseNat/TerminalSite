@@ -3,7 +3,6 @@ import MetaImportUtil from "../../../../src/util/meta_import_util";
 import AutocompleteUtil from "../../../../src/util/autocomplete_util";
 import { unmock } from "../../helper/unmock";
 import TerminalUtil from "../../../../src/util/terminal_util";
-import { USER_PROMPT } from "../../../../src/constant/prompt";
 import { Suggestion } from "../../../../src/command/command_script";
 
 describe("AutocompleteUtil", () => {
@@ -14,6 +13,10 @@ describe("AutocompleteUtil", () => {
   // Mock
   vi.mock("../../../../src/util/terminal_util");
   vi.mock("../../../../src/util/meta_import_util");
+
+  const prompt = "C:\\home\\nathanwise>";
+
+  vi.mocked(TerminalUtil.getPrompt).mockReturnValue(prompt);
 
   describe("autocomplete", () => {
     describe("Input Insert", () => {
@@ -95,7 +98,7 @@ describe("AutocompleteUtil", () => {
             expect(appendOutput).not.toHaveBeenCalled();
           } else {
             expect(appendOutput).toHaveBeenCalledWith(
-              `${USER_PROMPT}${userInput}\n${expectedAppendText}`,
+              `${prompt}${userInput}\n${expectedAppendText}`,
               true,
             );
           }

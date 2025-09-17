@@ -12,15 +12,15 @@ import {
 } from "../../helper/util/terminal_util.ts";
 
 test.describe("Tree", () => {
-  const existingDirectory = "/home/nathanwise/Documents";
-  const existingEmptyDirectory = "/boot";
-  const existingFile = "/etc/hosts";
+  const existingDirectory = "/src";
+  const existingEmptyDirectory = "/src/main/nathanwise/.empty";
+  const existingFile = "/src/index.ts";
 
   test("Should show a tree for the current working directory when no argument is given", async ({
     page,
   }) => {
     // Arrange
-    const changedDirectory = "/home/nathanwise/Documents/Education";
+    const changedDirectory = "/colour";
     const cdInput = `cd ${changedDirectory}`;
     await runCommand(page, cdInput);
 
@@ -31,24 +31,28 @@ test.describe("Tree", () => {
 
     // Assert
     const expected =
-      "\n/home/nathanwise/Documents/Education\n" +
-      "├── a_levels.md\n" +
-      "├── degree.md\n" +
-      "└── gcses.md\n" +
+      "\n/colour\n" +
+      "├── archive.zip\n" +
+      "├── audio.mp3\n" +
+      "├── dir\n" +
+      "├── executable.sh\n" +
+      "├── image.png\n" +
+      "├── normal.txt\n" +
+      "└── rubbish.tmp\n" +
       "\n" +
-      "1 directory, 3 files";
+      "2 directories, 6 files";
     await assertExactTextInTerminal(
       page,
       `${COMMAND_RAN_OUTPUT}${cdInput}\n${getExpectedPrompt(changedDirectory)}${input}${expected}`,
       getExpectedPrompt(changedDirectory),
     );
     await checkForColouredSpans(page, {
-      directory: 1,
-      executables: 0,
-      archives: 0,
-      graphics: 0,
-      audios: 0,
-      rubbish: 0,
+      directory: 2,
+      executables: 1,
+      archives: 1,
+      graphics: 1,
+      audios: 1,
+      rubbish: 1,
     });
   });
 
@@ -63,24 +67,31 @@ test.describe("Tree", () => {
 
     // Assert
     const expected =
-      "\n/home/nathanwise/Documents\n" +
-      "├── about.txt\n" +
-      "├── CV.pdf\n" +
-      "├── Education\n" +
-      "│   ├── a_levels.md\n" +
-      "│   ├── degree.md\n" +
-      "│   └── gcses.md\n" +
-      "└── skills.md\n" +
+      "\n/src\n" +
+      "├── index.ts\n" +
+      "└── main\n" +
+      "    └── nathanwise\n" +
+      "        ├── Desktop\n" +
+      "        ├── external\n" +
+      "        │   ├── deployed2.md\n" +
+      "        │   ├── deployed.md\n" +
+      "        │   └── repo.md\n" +
+      "        ├── foo\n" +
+      "        │   ├── bar\n" +
+      "        │   ├── bazzing.gaz\n" +
+      "        │   └── daz\n" +
+      "        ├── newlines.txt\n" +
+      "        └── some_rubbish.tmp\n" +
       "\n" +
-      "2 directories, 6 files";
+      "7 directories, 8 files";
     await assertOutputInTerminal(page, `${input}${expected}`);
     await checkForColouredSpans(page, {
-      directory: 2,
+      directory: 7,
       executables: 0,
       archives: 0,
       graphics: 0,
       audios: 0,
-      rubbish: 0,
+      rubbish: 1,
     });
   });
 
@@ -94,7 +105,8 @@ test.describe("Tree", () => {
     await runCommand(page, input);
 
     // Assert
-    const expected = "\n/boot\n" + "\n" + "0 directories, 0 files";
+    const expected =
+      "\n/src/main/nathanwise/.empty\n" + "\n" + "0 directories, 0 files";
     await assertOutputInTerminal(page, `${input}${expected}`);
     await checkForColouredSpans(page, {
       directory: 1,
@@ -147,7 +159,7 @@ test.describe("Tree", () => {
     });
   });
 
-  test.describe("-a flag", () => {
+  test.describe("all flag: -a", () => {
     test("Should show a tree including hidden files/dirs when a directory argument is given with a -a flag", async ({
       page,
     }) => {
@@ -160,20 +172,32 @@ test.describe("Tree", () => {
 
       // Assert
       const expected =
-        "\n/home/nathanwise/Documents\n" +
-        "├── about.txt\n" +
-        "├── CV.pdf\n" +
-        "├── Education\n" +
-        "│   ├── a_levels.md\n" +
-        "│   ├── degree.md\n" +
-        "│   └── gcses.md\n" +
-        "├── skills.md\n" +
-        "└── .tmp\n" +
+        "\n/src\n" +
+        "├── index.ts\n" +
+        "└── main\n" +
+        "    └── nathanwise\n" +
+        "        ├── .bashrc\n" +
+        "        ├── Desktop\n" +
+        "        ├── .empty\n" +
+        "        ├── external\n" +
+        "        │   ├── deployed2.md\n" +
+        "        │   ├── deployed.md\n" +
+        "        │   └── repo.md\n" +
+        "        ├── foo\n" +
+        "        │   ├── bar\n" +
+        "        │   ├── bazzing.gaz\n" +
+        "        │   └── daz\n" +
+        "        ├── .full\n" +
+        "        │   ├── aFile\n" +
+        "        │   └── someEmptyDir\n" +
+        "        ├── newlines.txt\n" +
+        "        ├── some_rubbish.tmp\n" +
+        "        └── .testing\n" +
         "\n" +
-        "2 directories, 7 files";
+        "10 directories, 11 files";
       await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
-        directory: 2,
+        directory: 10,
         executables: 0,
         archives: 0,
         graphics: 0,
@@ -183,7 +207,7 @@ test.describe("Tree", () => {
     });
   });
 
-  test.describe("-d flag", () => {
+  test.describe("directory flag: -d", () => {
     test("Should show a directory tree when a directory argument is given with a -d flag", async ({
       page,
     }) => {
@@ -196,13 +220,18 @@ test.describe("Tree", () => {
 
       // Assert
       const expected =
-        "\n/home/nathanwise/Documents\n" +
-        "└── Education\n" +
+        "\n/src\n" +
+        "└── main\n" +
+        "    └── nathanwise\n" +
+        "        ├── Desktop\n" +
+        "        ├── external\n" +
+        "        └── foo\n" +
+        "            └── bar\n" +
         "\n" +
-        "2 directories";
+        "7 directories";
       await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
-        directory: 2,
+        directory: 7,
         executables: 0,
         archives: 0,
         graphics: 0,
@@ -215,7 +244,7 @@ test.describe("Tree", () => {
   // Nowhere good to test this
   // test.describe("--prune flag", () => {});
 
-  test.describe("-L flag", () => {
+  test.describe("depth flag: -L", () => {
     test("Should show a reduced tree when a directory argument is given with a -L 1 flag", async ({
       page,
     }) => {
@@ -229,27 +258,16 @@ test.describe("Tree", () => {
       // Assert
       const expected =
         "\n/\n" +
-        "├── bin\n" +
-        "├── boot\n" +
-        "├── dev\n" +
+        "├── colour\n" +
         "├── etc\n" +
-        "├── home\n" +
-        "├── lib\n" +
-        "├── media\n" +
-        "├── mnt\n" +
-        "├── opt\n" +
-        "├── root\n" +
-        "├── run\n" +
-        "├── sbin\n" +
-        "├── srv\n" +
-        "├── tmp\n" +
-        "├── usr\n" +
-        "└── var\n" +
+        "├── some\n" +
+        "├── src\n" +
+        "└── test\n" +
         "\n" +
-        "17 directories, 0 files";
+        "6 directories, 0 files";
       await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
-        directory: 17,
+        directory: 6,
         executables: 0,
         archives: 0,
         graphics: 0,
