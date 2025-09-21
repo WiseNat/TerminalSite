@@ -28,4 +28,11 @@ export default class HtmlUtil {
 
     return preRange.toString().length;
   }
+
+  /**
+   * Refreshes the current page.
+   */
+  public static refreshPage() {
+    window.location.reload();
+  }
 }
