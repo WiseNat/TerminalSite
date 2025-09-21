@@ -1,5 +1,5 @@
 import TerminalUtil from "./terminal_util.ts";
-import MetaImportUtil from "./meta_import_util.ts";
+import CommandImportUtil from "./command_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import { Suggestion } from "../command/command_script.ts";
 import { ZERO_WIDTH_SPACE } from "../constant/char.ts";
@@ -85,13 +85,11 @@ export default class AutocompleteUtil {
   ): Suggestion[] {
     const commandSuggestions: Suggestion[] = [];
 
-    for (const commandScript in MetaImportUtil.getCommandScripts()) {
-      const pathlessCommandScript =
-        MetaImportUtil.removePathFromKey(commandScript);
-      if (pathlessCommandScript.startsWith(searchValue)) {
+    for (const commandScript in CommandImportUtil.getCommandScripts()) {
+      if (commandScript.startsWith(searchValue)) {
         commandSuggestions.push({
-          visual: pathlessCommandScript,
-          actual: `${pathlessCommandScript} `.replace(userInput, ""),
+          visual: commandScript,
+          actual: `${commandScript} `.replace(userInput, ""),
         });
       }
     }

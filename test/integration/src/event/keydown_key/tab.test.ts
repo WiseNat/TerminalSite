@@ -21,7 +21,7 @@ describe("Tab", () => {
 
   // Mock
   vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/meta_import_util");
+  vi.mock("../../../../../src/util/command_import_util");
   vi.mock("../../../../../src/util/html_util");
 
   const event = new KeyboardEvent("keydown");

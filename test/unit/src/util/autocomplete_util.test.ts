@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import MetaImportUtil from "../../../../src/util/meta_import_util";
+import CommandImportUtil from "../../../../src/util/command_import_util.ts";
 import AutocompleteUtil from "../../../../src/util/autocomplete_util";
 import { unmock } from "../../helper/unmock";
 import TerminalUtil from "../../../../src/util/terminal_util";
@@ -13,7 +13,7 @@ describe("AutocompleteUtil", () => {
 
   // Mock
   vi.mock("../../../../src/util/terminal_util");
-  vi.mock("../../../../src/util/meta_import_util");
+  vi.mock("../../../../src/util/command_import_util");
 
   const prompt = "C:\\home\\nathanwise>";
 
@@ -141,7 +141,7 @@ describe("AutocompleteUtil", () => {
   describe("getCommandSuggestions", () => {
     // Other
     beforeEach(async () => {
-      await unmock("../../../src/util/meta_import_util", [
+      await unmock("../../../src/util/command_import_util", [
         "default",
         "removePathFromKey",
       ]);
@@ -180,12 +180,12 @@ describe("AutocompleteUtil", () => {
     ].forEach(({ type, searchValue, expectedCommandSuggestions }) => {
       test(type, () => {
         // Arrange
-        vi.mocked(MetaImportUtil.getCommandScripts).mockReturnValue({
-          "./echo.ts": { default: { run: vi.fn() } },
-          "./echoing.ts": { default: { run: vi.fn() } },
-          "./echo_ers.ts": { default: { run: vi.fn() } },
-          "./ec.ts": { default: { run: vi.fn() } },
-          "./foo.ts": { default: { run: vi.fn() } },
+        vi.mocked(CommandImportUtil.getCommandScripts).mockReturnValue({
+          echo: { default: { run: vi.fn() } },
+          echoing: { default: { run: vi.fn() } },
+          echo_ers: { default: { run: vi.fn() } },
+          ec: { default: { run: vi.fn() } },
+          foo: { default: { run: vi.fn() } },
         });
 
         // Act

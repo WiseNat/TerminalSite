@@ -3,7 +3,7 @@ import getopts, { Options, ParsedOptions } from "getopts";
 import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
 import TerminalUtil from "./terminal_util.ts";
-import MetaImportUtil from "./meta_import_util.ts";
+import CommandImportUtil from "./command_import_util.ts";
 
 export default class CommandUtil {
   /**
@@ -126,8 +126,8 @@ export default class CommandUtil {
   public static getCommandScript(
     tokenisedCommand: TokenisedCommand,
   ): CommandScript | null {
-    const path = MetaImportUtil.getKey(tokenisedCommand.name);
-    const commandScript = MetaImportUtil.getCommandScripts()[path];
+    const commandScript =
+      CommandImportUtil.getCommandScripts()[tokenisedCommand.name];
 
     if (commandScript === undefined) {
       console.warn(`Command "${tokenisedCommand.name}" not found.`);
