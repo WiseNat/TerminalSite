@@ -242,7 +242,7 @@ test.describe("Tree", () => {
   });
 
   // Nowhere good to test this
-  // test.describe("--prune flag", () => {});
+  // test.describe("prune flag: --prune", () => {});
 
   test.describe("depth flag: -L", () => {
     test("Should show a reduced tree when a directory argument is given with a -L 1 flag", async ({

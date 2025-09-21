@@ -217,7 +217,7 @@ describe("Tree", () => {
       });
     });
 
-    describe("-a flag", () => {
+    describe("all flag: -a", () => {
       test("given a directory path with the -a flag, should output a tree for the directory including dotfiles", async () => {
         // Arrange
         const args = ["../..", "foo/daz", "/some/fake/path", "-a"];
@@ -250,7 +250,7 @@ describe("Tree", () => {
       });
     });
 
-    describe("-d flag", () => {
+    describe("directory flag: -d", () => {
       test("given a directory path with the -d flag, should output a tree for the directory skipping all files", async () => {
         // Arrange
         const args = ["../..", "foo/daz", "/some/fake/path", "-d"];
@@ -302,7 +302,7 @@ describe("Tree", () => {
       });
     });
 
-    describe("--prune flag", () => {
+    describe("prune flag: --prune", () => {
       test("given a directory path with the --prune flag, should output a tree for the directory excluding empty directories", async () => {
         // Arrange
         const args = ["../..", "foo/daz", "/some/fake/path", "--prune"];
@@ -357,7 +357,7 @@ describe("Tree", () => {
       });
     });
 
-    describe("-f flag", () => {
+    describe("full-path flag: -f", () => {
       test("given a directory path with the -f flag, should output a tree for the directory with full path names for each directory & file", async () => {
         // Arrange
         const args = ["../..", "foo/daz", "/some/fake/path", "-f"];
@@ -418,7 +418,7 @@ describe("Tree", () => {
       });
     });
 
-    describe("-L flag", () => {
+    describe("depth flag: -L", () => {
       [
         {
           depth: 1,

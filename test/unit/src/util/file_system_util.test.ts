@@ -389,7 +389,71 @@ describe("FileSystemUtil", () => {
 
       // Assert
       expect(result).not.toBeNull();
-      expect(result).toMatchSnapshot();
+      expect(result).toMatchInlineSnapshot(`
+        {
+          "blocks": 8,
+          "children": [
+            {
+              "blocks": 8,
+              "children": [],
+              "group": "nathanwise",
+              "isDirectory": true,
+              "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+              "name": "bar",
+              "owner": "nathanwise",
+              "path": "src/main/foo",
+              "permissions": [
+                6,
+                6,
+                4,
+              ],
+              "size": 0,
+            },
+            {
+              "blocks": 12,
+              "group": "nathanwise",
+              "isDirectory": false,
+              "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+              "name": "daz",
+              "owner": "nathanwise",
+              "path": "src/main/foo",
+              "permissions": [
+                6,
+                6,
+                4,
+              ],
+              "size": 0,
+            },
+            {
+              "blocks": 23,
+              "group": "nathanwise",
+              "isDirectory": false,
+              "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+              "name": "bazzing.gaz",
+              "owner": "nathanwise",
+              "path": "src/main/foo",
+              "permissions": [
+                6,
+                6,
+                4,
+              ],
+              "size": 0,
+            },
+          ],
+          "group": "nathanwise",
+          "isDirectory": true,
+          "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+          "name": "foo",
+          "owner": "nathanwise",
+          "path": "src/main",
+          "permissions": [
+            6,
+            6,
+            4,
+          ],
+          "size": 0,
+        }
+      `);
     });
 
     test("returns node for a valid single directory with children", () => {
@@ -401,7 +465,199 @@ describe("FileSystemUtil", () => {
 
       // Assert
       expect(result).not.toBeNull();
-      expect(result).toMatchSnapshot();
+      expect(result).toMatchInlineSnapshot(`
+        {
+          "blocks": 8,
+          "children": [
+            {
+              "blocks": 8,
+              "children": [
+                {
+                  "blocks": 8,
+                  "children": [
+                    {
+                      "blocks": 8,
+                      "children": [],
+                      "group": "nathanwise",
+                      "isDirectory": true,
+                      "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                      "name": "bar",
+                      "owner": "nathanwise",
+                      "path": "src/main/foo",
+                      "permissions": [
+                        6,
+                        6,
+                        4,
+                      ],
+                      "size": 0,
+                    },
+                    {
+                      "blocks": 12,
+                      "group": "nathanwise",
+                      "isDirectory": false,
+                      "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                      "name": "daz",
+                      "owner": "nathanwise",
+                      "path": "src/main/foo",
+                      "permissions": [
+                        6,
+                        6,
+                        4,
+                      ],
+                      "size": 0,
+                    },
+                    {
+                      "blocks": 23,
+                      "group": "nathanwise",
+                      "isDirectory": false,
+                      "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                      "name": "bazzing.gaz",
+                      "owner": "nathanwise",
+                      "path": "src/main/foo",
+                      "permissions": [
+                        6,
+                        6,
+                        4,
+                      ],
+                      "size": 0,
+                    },
+                  ],
+                  "group": "nathanwise",
+                  "isDirectory": true,
+                  "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                  "name": "foo",
+                  "owner": "nathanwise",
+                  "path": "src/main",
+                  "permissions": [
+                    6,
+                    6,
+                    4,
+                  ],
+                  "size": 0,
+                },
+                {
+                  "blocks": 19,
+                  "group": "nathanwise",
+                  "isDirectory": false,
+                  "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                  "name": ".testing",
+                  "owner": "nathanwise",
+                  "path": "src/main",
+                  "permissions": [
+                    6,
+                    6,
+                    4,
+                  ],
+                  "size": 0,
+                },
+                {
+                  "blocks": 8,
+                  "children": [],
+                  "group": "nathanwise",
+                  "isDirectory": true,
+                  "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                  "name": ".empty",
+                  "owner": "nathanwise",
+                  "path": "src/main",
+                  "permissions": [
+                    6,
+                    6,
+                    4,
+                  ],
+                  "size": 0,
+                },
+                {
+                  "blocks": 8,
+                  "children": [
+                    {
+                      "blocks": 0,
+                      "children": [],
+                      "group": "nathanwise",
+                      "isDirectory": true,
+                      "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                      "name": "someEmptyDir",
+                      "owner": "nathanwise",
+                      "path": "src/main/.full",
+                      "permissions": [
+                        6,
+                        6,
+                        4,
+                      ],
+                      "size": 0,
+                    },
+                    {
+                      "blocks": 12,
+                      "group": "nathanwise",
+                      "isDirectory": false,
+                      "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                      "name": "aFile",
+                      "owner": "nathanwise",
+                      "path": "src/main/.full",
+                      "permissions": [
+                        6,
+                        6,
+                        4,
+                      ],
+                      "size": 0,
+                    },
+                  ],
+                  "group": "nathanwise",
+                  "isDirectory": true,
+                  "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                  "name": ".full",
+                  "owner": "nathanwise",
+                  "path": "src/main",
+                  "permissions": [
+                    6,
+                    6,
+                    4,
+                  ],
+                  "size": 0,
+                },
+              ],
+              "group": "nathanwise",
+              "isDirectory": true,
+              "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+              "name": "main",
+              "owner": "nathanwise",
+              "path": "src",
+              "permissions": [
+                6,
+                6,
+                4,
+              ],
+              "size": 0,
+            },
+            {
+              "blocks": 52,
+              "group": "nathanwise",
+              "isDirectory": false,
+              "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+              "name": "index.ts",
+              "owner": "nathanwise",
+              "path": "src",
+              "permissions": [
+                6,
+                6,
+                4,
+              ],
+              "size": 0,
+            },
+          ],
+          "group": "nathanwise",
+          "isDirectory": true,
+          "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+          "name": "src",
+          "owner": "nathanwise",
+          "path": "",
+          "permissions": [
+            6,
+            6,
+            4,
+          ],
+          "size": 0,
+        }
+      `);
     });
 
     test("returns node for a valid single directory with no children", () => {
@@ -413,7 +669,24 @@ describe("FileSystemUtil", () => {
 
       // Assert
       expect(result).not.toBeNull();
-      expect(result).toMatchSnapshot();
+      expect(result).toMatchInlineSnapshot(`
+        {
+          "blocks": 8,
+          "children": [],
+          "group": "nathanwise",
+          "isDirectory": true,
+          "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+          "name": "test",
+          "owner": "nathanwise",
+          "path": "",
+          "permissions": [
+            6,
+            6,
+            4,
+          ],
+          "size": 0,
+        }
+      `);
     });
 
     test("returns root node for an empty path", () => {
@@ -427,7 +700,228 @@ describe("FileSystemUtil", () => {
       expect(result).not.toBeNull();
 
       result!.lastModifiedTime = new Date(2000, 0); // this value is unpredictable, even for snapshots
-      expect(result).toMatchSnapshot();
+      expect(result).toMatchInlineSnapshot(`
+        {
+          "blocks": 0,
+          "children": [
+            {
+              "blocks": 8,
+              "children": [
+                {
+                  "blocks": 8,
+                  "children": [
+                    {
+                      "blocks": 8,
+                      "children": [
+                        {
+                          "blocks": 8,
+                          "children": [],
+                          "group": "nathanwise",
+                          "isDirectory": true,
+                          "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                          "name": "bar",
+                          "owner": "nathanwise",
+                          "path": "src/main/foo",
+                          "permissions": [
+                            6,
+                            6,
+                            4,
+                          ],
+                          "size": 0,
+                        },
+                        {
+                          "blocks": 12,
+                          "group": "nathanwise",
+                          "isDirectory": false,
+                          "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                          "name": "daz",
+                          "owner": "nathanwise",
+                          "path": "src/main/foo",
+                          "permissions": [
+                            6,
+                            6,
+                            4,
+                          ],
+                          "size": 0,
+                        },
+                        {
+                          "blocks": 23,
+                          "group": "nathanwise",
+                          "isDirectory": false,
+                          "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                          "name": "bazzing.gaz",
+                          "owner": "nathanwise",
+                          "path": "src/main/foo",
+                          "permissions": [
+                            6,
+                            6,
+                            4,
+                          ],
+                          "size": 0,
+                        },
+                      ],
+                      "group": "nathanwise",
+                      "isDirectory": true,
+                      "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                      "name": "foo",
+                      "owner": "nathanwise",
+                      "path": "src/main",
+                      "permissions": [
+                        6,
+                        6,
+                        4,
+                      ],
+                      "size": 0,
+                    },
+                    {
+                      "blocks": 19,
+                      "group": "nathanwise",
+                      "isDirectory": false,
+                      "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                      "name": ".testing",
+                      "owner": "nathanwise",
+                      "path": "src/main",
+                      "permissions": [
+                        6,
+                        6,
+                        4,
+                      ],
+                      "size": 0,
+                    },
+                    {
+                      "blocks": 8,
+                      "children": [],
+                      "group": "nathanwise",
+                      "isDirectory": true,
+                      "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                      "name": ".empty",
+                      "owner": "nathanwise",
+                      "path": "src/main",
+                      "permissions": [
+                        6,
+                        6,
+                        4,
+                      ],
+                      "size": 0,
+                    },
+                    {
+                      "blocks": 8,
+                      "children": [
+                        {
+                          "blocks": 0,
+                          "children": [],
+                          "group": "nathanwise",
+                          "isDirectory": true,
+                          "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                          "name": "someEmptyDir",
+                          "owner": "nathanwise",
+                          "path": "src/main/.full",
+                          "permissions": [
+                            6,
+                            6,
+                            4,
+                          ],
+                          "size": 0,
+                        },
+                        {
+                          "blocks": 12,
+                          "group": "nathanwise",
+                          "isDirectory": false,
+                          "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                          "name": "aFile",
+                          "owner": "nathanwise",
+                          "path": "src/main/.full",
+                          "permissions": [
+                            6,
+                            6,
+                            4,
+                          ],
+                          "size": 0,
+                        },
+                      ],
+                      "group": "nathanwise",
+                      "isDirectory": true,
+                      "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                      "name": ".full",
+                      "owner": "nathanwise",
+                      "path": "src/main",
+                      "permissions": [
+                        6,
+                        6,
+                        4,
+                      ],
+                      "size": 0,
+                    },
+                  ],
+                  "group": "nathanwise",
+                  "isDirectory": true,
+                  "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                  "name": "main",
+                  "owner": "nathanwise",
+                  "path": "src",
+                  "permissions": [
+                    6,
+                    6,
+                    4,
+                  ],
+                  "size": 0,
+                },
+                {
+                  "blocks": 52,
+                  "group": "nathanwise",
+                  "isDirectory": false,
+                  "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+                  "name": "index.ts",
+                  "owner": "nathanwise",
+                  "path": "src",
+                  "permissions": [
+                    6,
+                    6,
+                    4,
+                  ],
+                  "size": 0,
+                },
+              ],
+              "group": "nathanwise",
+              "isDirectory": true,
+              "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+              "name": "src",
+              "owner": "nathanwise",
+              "path": "",
+              "permissions": [
+                6,
+                6,
+                4,
+              ],
+              "size": 0,
+            },
+            {
+              "blocks": 8,
+              "children": [],
+              "group": "nathanwise",
+              "isDirectory": true,
+              "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+              "name": "test",
+              "owner": "nathanwise",
+              "path": "",
+              "permissions": [
+                6,
+                6,
+                4,
+              ],
+              "size": 0,
+            },
+          ],
+          "group": "",
+          "isDirectory": true,
+          "lastModifiedTime": 2000-01-01T00:00:00.000Z,
+          "name": "",
+          "owner": "",
+          "path": "",
+          "permissions": [],
+          "size": 0,
+        }
+      `);
     });
 
     test("returns null node for non-existent path", () => {
@@ -1173,7 +1667,43 @@ describe("FileSystemUtil", () => {
       const result = FileSystemUtil.sortNodes(nodes);
 
       // Assert
-      expect(result).toMatchSnapshot();
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "blocks": 0,
+            "group": "",
+            "isDirectory": false,
+            "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+            "name": "zFile",
+            "owner": "",
+            "path": "/a/path",
+            "permissions": [],
+            "size": 0,
+          },
+          {
+            "blocks": 0,
+            "group": "",
+            "isDirectory": false,
+            "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+            "name": "someFile",
+            "owner": "",
+            "path": "/",
+            "permissions": [],
+            "size": 0,
+          },
+          {
+            "blocks": 0,
+            "group": "",
+            "isDirectory": false,
+            "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+            "name": "aFile",
+            "owner": "",
+            "path": "/z/path",
+            "permissions": [],
+            "size": 0,
+          },
+        ]
+      `);
     });
 
     test("returns alphabetically sorted nodes when nodes with various '.' in their names/paths are provided", () => {
@@ -1229,7 +1759,54 @@ describe("FileSystemUtil", () => {
       const result = FileSystemUtil.sortNodes(nodes);
 
       // Assert
-      expect(result).toMatchSnapshot();
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "blocks": 0,
+            "group": "",
+            "isDirectory": false,
+            "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+            "name": ".zFile",
+            "owner": "",
+            "path": "/.a//path",
+            "permissions": [],
+            "size": 0,
+          },
+          {
+            "blocks": 0,
+            "group": "",
+            "isDirectory": false,
+            "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+            "name": ".zFile.a",
+            "owner": "",
+            "path": "/a/path",
+            "permissions": [],
+            "size": 0,
+          },
+          {
+            "blocks": 0,
+            "group": "",
+            "isDirectory": false,
+            "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+            "name": "zFile.a",
+            "owner": "",
+            "path": "/a/path",
+            "permissions": [],
+            "size": 0,
+          },
+          {
+            "blocks": 0,
+            "group": "",
+            "isDirectory": false,
+            "lastModifiedTime": 2020-01-01T00:00:00.000Z,
+            "name": ".zFile.txt",
+            "owner": "",
+            "path": "/a/path",
+            "permissions": [],
+            "size": 0,
+          },
+        ]
+      `);
     });
   });
 });
