@@ -288,7 +288,7 @@ describe("Ls", () => {
     });
 
     ["-a", "--all"].forEach((flag) => {
-      describe(`${flag} flag`, () => {
+      describe(`all flag: ${flag}`, () => {
         test(`Given a directory argument with the ${flag} flag, outputs the entire of the directory including dot-files & dot-dirs`, async () => {
           // Arrange
           const args: string[] = [
@@ -320,7 +320,7 @@ describe("Ls", () => {
       });
     });
 
-    describe("-1 flag", () => {
+    describe("one-line flag: -1", () => {
       test("Given a directory argument with the -1 flag, outputs the contents of the directory on individual lines", async () => {
         // Arrange
         const args: string[] = [
@@ -352,7 +352,7 @@ describe("Ls", () => {
     });
 
     ["-s", "--size"].forEach((flag) => {
-      describe(`${flag} flag`, () => {
+      describe(`size flag: ${flag}`, () => {
         test(`Given a directory argument with the ${flag} flag, outputs the contents of the directory with block sizes`, async () => {
           // Arrange
           const args: string[] = [
@@ -418,7 +418,7 @@ describe("Ls", () => {
     });
 
     ["-h", "--human-readable"].forEach((flag) => {
-      describe(`${flag} flag`, () => {
+      describe(`human-readable flag: ${flag}`, () => {
         test(`Given a directory argument with the ${flag} and -s flag, outputs human readable files sizes of files and directories`, async () => {
           // Arrange
           const args: string[] = [
@@ -455,7 +455,7 @@ describe("Ls", () => {
     });
 
     // TODO: -l flag for some of these
-    describe("--block-size flag", () => {
+    describe("block-size flag: --block-size", () => {
       [
         {
           flags: ["-s"],
@@ -629,7 +629,7 @@ describe("Ls", () => {
       );
     });
 
-    describe("-l flag", () => {
+    describe("long flag: -l", () => {
       test("Given varying args, should output information in the long file format", async () => {
         // Arrange
         const args: string[] = [
