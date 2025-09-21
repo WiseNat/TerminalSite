@@ -1,11 +1,16 @@
 import { expect, test } from "../fixture";
 import {
+  COMMAND_RAN_OUTPUT,
   DEFAULT_INITIAL_PROMPT,
   DEFAULT_USER_PROMPT,
   INPUT_SELECTOR,
   OUTPUT_SELECTOR,
   PROMPT_SELECTOR,
 } from "../helper/constant/generic";
+import {
+  assertExactTextInTerminal,
+  setCaretAtCharIndex,
+} from "../helper/util/terminal_util.ts";
 
 // Custom command specific E2E tests are under each command spec
 
@@ -184,6 +189,134 @@ test.describe("File/Directory autocompletion", () => {
       );
       await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(
         `${input}${expected}`,
+      );
+    });
+  });
+});
+
+test.describe("Multiple Arguments", () => {
+  [
+    {
+      type: "caret before the first character of the first argument does nothing",
+      charIndex: 1,
+      expectedInput: "tre /some/len ~/.testi",
+      expectedOutput: DEFAULT_INITIAL_PROMPT,
+    },
+    {
+      type: "caret after the first character of the first argument attempts to autocomplete the first character",
+      charIndex: 2,
+      expectedInput: "treere /some/len ~/.testi",
+      expectedOutput: DEFAULT_INITIAL_PROMPT,
+    },
+    {
+      type: "caret after the last character of the first argument attempts to autocomplete the first argument",
+      charIndex: 4,
+      expectedInput: "tree /some/len ~/.testi",
+      expectedOutput: DEFAULT_INITIAL_PROMPT,
+    },
+    {
+      type: "caret after the space of the first argument does nothing",
+      charIndex: 5,
+      expectedInput: "tre /some/len ~/.testi",
+      expectedOutput: DEFAULT_INITIAL_PROMPT,
+    },
+    {
+      type: "caret before the first character of the second argument does nothing",
+      charIndex: 5,
+      expectedInput: "tre /some/len ~/.testi",
+      expectedOutput: DEFAULT_INITIAL_PROMPT,
+    },
+    {
+      type: "caret after the first character of the second argument attempts to autocomplete the first character",
+      charIndex: 6,
+      expectedInput: "tre /some/len ~/.testi",
+      expectedOutput: `${COMMAND_RAN_OUTPUT}tre /some/len ~/.testi\n.foo/\tcolour/\tetc/\tsome/\tsrc/\ttest/`,
+    },
+    {
+      type: "caret after the last character of the second argument attempts to autocomplete the first argument",
+      charIndex: 14,
+      expectedInput: "tre /some/lengthy/ ~/.testi",
+      expectedOutput: DEFAULT_INITIAL_PROMPT,
+    },
+    {
+      type: "caret after the space of the second argument does nothing",
+      charIndex: 15,
+      expectedInput: "tre /some/len ~/.testi",
+      expectedOutput: DEFAULT_INITIAL_PROMPT,
+    },
+    {
+      type: "caret before the first character of the third argument does nothing",
+      charIndex: 15,
+      expectedInput: "tre /some/len ~/.testi",
+      expectedOutput: DEFAULT_INITIAL_PROMPT,
+    },
+    {
+      type: "caret after the first character of the third argument attempts to autocomplete the first character",
+      charIndex: 16,
+      expectedInput: "tre /some/len ~//.testi",
+      expectedOutput: DEFAULT_INITIAL_PROMPT,
+    },
+    {
+      type: "caret after the last character of the third argument attempts to autocomplete the first argument",
+      charIndex: 23,
+      expectedInput: "tre /some/len ~/.testing ",
+      expectedOutput: DEFAULT_INITIAL_PROMPT,
+    },
+  ].forEach(({ type, charIndex, expectedInput, expectedOutput }) => {
+    test(type, async ({ page }) => {
+      // Arrange
+      const input = "tre /some/len ~/.testi";
+      await page.locator(INPUT_SELECTOR).pressSequentially(input);
+
+      // Act
+      await setCaretAtCharIndex(page, INPUT_SELECTOR, charIndex);
+      await page.locator(INPUT_SELECTOR).press("Tab");
+
+      await assertExactTextInTerminal(
+        page,
+        expectedOutput,
+        DEFAULT_USER_PROMPT,
+        expectedInput,
+      );
+    });
+  });
+
+  [
+    {
+      type: "caret at a fixed point on the first argument repeatedly tries to autocomplete, leading it to appear broken as a broken command",
+      charIndex: 2,
+      expectedInput: "treereereere /some/len ~/.testi",
+    },
+    {
+      type: "caret at a fixed point on the second argument repeatedly tries to autocomplete, leading it to appear broken as a broken command",
+      charIndex: 8,
+      expectedInput: "tre /some/me/me/me/len ~/.testi",
+    },
+    {
+      type: "caret at a fixed point on the third argument repeatedly tries to autocomplete, leading it to appear broken as a broken command",
+      charIndex: 21,
+      expectedInput: "tre /some/len ~/.testingtingtingti",
+    },
+  ].forEach(({ type, charIndex, expectedInput }) => {
+    test(type, async ({ page }) => {
+      // Arrange
+      const input = "tre /some/len ~/.testi";
+      await page.locator(INPUT_SELECTOR).pressSequentially(input);
+
+      // Act
+      for (let i = 0; i < 3; i++) {
+        await setCaretAtCharIndex(page, INPUT_SELECTOR, charIndex);
+        await page.locator(INPUT_SELECTOR).press("Tab");
+        await setCaretAtCharIndex(page, INPUT_SELECTOR, charIndex);
+        await page.locator(INPUT_SELECTOR).pressSequentially("^");
+        await page.locator(INPUT_SELECTOR).press("Backspace");
+      }
+
+      await assertExactTextInTerminal(
+        page,
+        DEFAULT_INITIAL_PROMPT,
+        DEFAULT_USER_PROMPT,
+        expectedInput,
       );
     });
   });

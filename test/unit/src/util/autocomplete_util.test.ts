@@ -4,10 +4,11 @@ import AutocompleteUtil from "../../../../src/util/autocomplete_util";
 import { unmock } from "../../helper/unmock";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { Suggestion } from "../../../../src/command/command_script";
+import { ZERO_WIDTH_SPACE } from "../../helper/constant.ts";
 
 describe("AutocompleteUtil", () => {
   // Spy
-  const appendInput = vi.spyOn(TerminalUtil, "appendInput");
+  const setInput = vi.spyOn(TerminalUtil, "setInput");
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
   // Mock
@@ -24,40 +25,60 @@ describe("AutocompleteUtil", () => {
         {
           type: "does nothing when there are no suggestions",
           suggestions: [],
-          userInput: "ech",
-          expectedAppendText: null,
+          beforeCaret: "ech",
+          afterCaret: "",
+          expectedSetText: null,
         },
         {
           type: "automatically inserts when there's only a single valid suggestion",
           suggestions: [{ visual: "visual_echo", actual: "o " }],
-          userInput: "ech",
-          expectedAppendText: "o ",
+          beforeCaret: "ech",
+          afterCaret: "",
+          expectedSetText: `${ZERO_WIDTH_SPACE}echo `,
         },
         {
           type: "adds a space when the command name is already typed and there's only a single valid suggestion",
           suggestions: [{ visual: "visual_echo", actual: " " }],
-          userInput: "echo",
-          expectedAppendText: " ",
+          beforeCaret: "echo",
+          afterCaret: "",
+          expectedSetText: `${ZERO_WIDTH_SPACE}echo `,
         },
         {
           type: "does nothing when the command name is already typed with a space and there's only a single valid suggestion",
           suggestions: [{ visual: "visual_echo", actual: "" }],
-          userInput: "echo ",
-          expectedAppendText: null,
+          beforeCaret: "echo ",
+          afterCaret: "",
+          expectedSetText: null,
         },
-      ].forEach(({ type, suggestions, userInput, expectedAppendText }) => {
-        test(type, () => {
-          // Arrange & Act
-          AutocompleteUtil.autocomplete(suggestions, userInput);
+        {
+          type: "does not append a second zero width space if one already exists",
+          suggestions: [{ visual: "visual_echo", actual: "o " }],
+          beforeCaret: `${ZERO_WIDTH_SPACE}ech`,
+          afterCaret: "",
+          expectedSetText: `${ZERO_WIDTH_SPACE}echo `,
+        },
+        {
+          type: "does not add a space if after caret has a value",
+          suggestions: [{ visual: "visual_echo", actual: "o " }],
+          beforeCaret: "ech",
+          afterCaret: " foo",
+          expectedSetText: `${ZERO_WIDTH_SPACE}echo foo`,
+        },
+      ].forEach(
+        ({ type, suggestions, beforeCaret, afterCaret, expectedSetText }) => {
+          test(type, () => {
+            // Arrange & Act
+            AutocompleteUtil.autocomplete(suggestions, beforeCaret, afterCaret);
 
-          // Assert
-          if (expectedAppendText == null) {
-            expect(appendInput).not.toHaveBeenCalled();
-          } else {
-            expect(appendInput).toHaveBeenCalledWith(expectedAppendText);
-          }
-        });
-      });
+            // Assert
+            if (expectedSetText == null) {
+              expect(setInput).not.toHaveBeenCalled();
+            } else {
+              expect(setInput).toHaveBeenCalledWith(expectedSetText);
+            }
+          });
+        },
+      );
     });
 
     describe("Provides Suggestions", () => {
@@ -72,7 +93,8 @@ describe("AutocompleteUtil", () => {
             },
             { visual: "visual_echoers", actual: "echoers " },
           ],
-          userInput: "ech",
+          beforeCaret: "ech",
+          afterCaret: " foo",
           expectedAppendText: "visual_echo\tvisual_echo_ing\tvisual_echoers",
         },
         {
@@ -85,25 +107,34 @@ describe("AutocompleteUtil", () => {
             },
             { visual: "visual_echoers", actual: "echoers " },
           ],
-          userInput: "echo",
+          beforeCaret: "ech",
+          afterCaret: " foo",
           expectedAppendText: "visual_echo\tvisual_echo_ing\tvisual_echoers",
         },
-      ].forEach(({ type, suggestions, userInput, expectedAppendText }) => {
-        test(type, () => {
-          // Arrange & Act
-          AutocompleteUtil.autocomplete(suggestions, userInput);
+      ].forEach(
+        ({
+          type,
+          suggestions,
+          beforeCaret,
+          afterCaret,
+          expectedAppendText,
+        }) => {
+          test(type, () => {
+            // Arrange & Act
+            AutocompleteUtil.autocomplete(suggestions, beforeCaret, afterCaret);
 
-          // Assert
-          if (expectedAppendText == null) {
-            expect(appendOutput).not.toHaveBeenCalled();
-          } else {
-            expect(appendOutput).toHaveBeenCalledWith(
-              `${prompt}${userInput}\n${expectedAppendText}`,
-              true,
-            );
-          }
-        });
-      });
+            // Assert
+            if (expectedAppendText == null) {
+              expect(appendOutput).not.toHaveBeenCalled();
+            } else {
+              expect(appendOutput).toHaveBeenCalledWith(
+                `${prompt}${beforeCaret}${afterCaret}\n${expectedAppendText}`,
+                true,
+              );
+            }
+          });
+        },
+      );
     });
   });
 
