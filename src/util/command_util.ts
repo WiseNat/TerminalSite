@@ -187,4 +187,20 @@ export default class CommandUtil {
 
     return parsedOptions;
   }
+
+  /**
+   * @param commandName the name of the command
+   * @returns an error message for a corrupted command
+   */
+  public static getCorruptedCommandMessage(commandName: string): string {
+    return `/bin/${commandName}: cannot execute binary file: Exec format error`;
+  }
+
+  /**
+   * @param commandName the name of the command
+   * @returns an error message for a command that the user has no permissions to execute
+   */
+  public static getNoPermissionsCommandMessage(commandName: string): string {
+    return `/bin/${commandName}: Permission denied`;
+  }
 }
