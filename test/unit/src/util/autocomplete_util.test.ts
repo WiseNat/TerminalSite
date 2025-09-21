@@ -207,7 +207,18 @@ describe("AutocompleteUtil", () => {
         AutocompleteUtil.getFileAndDirectorySuggestions("src/main/foo/ba");
 
       // Assert
-      expect(result).toMatchSnapshot();
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "actual": "r/",
+            "visual": "bar/",
+          },
+          {
+            "actual": "zzing.gaz ",
+            "visual": "bazzing.gaz ",
+          },
+        ]
+      `);
     });
 
     test("provides nothing when given a fake path", () => {
@@ -245,7 +256,14 @@ describe("AutocompleteUtil", () => {
         AutocompleteUtil.getDirectorySuggestions("src/main/foo/ba");
 
       // Assert
-      expect(result).toMatchSnapshot();
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "actual": "r/",
+            "visual": "bar/",
+          },
+        ]
+      `);
       expect(result[0].actual.endsWith(" ")).toBeFalsy();
     });
 
@@ -280,7 +298,14 @@ describe("AutocompleteUtil", () => {
       const result = AutocompleteUtil.getFileSuggestions("src/main/foo/ba");
 
       // Assert
-      expect(result).toMatchSnapshot();
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "actual": "zzing.gaz ",
+            "visual": "bazzing.gaz ",
+          },
+        ]
+      `);
       expect(result[0].actual.endsWith(" ")).toBeTruthy();
     });
 
