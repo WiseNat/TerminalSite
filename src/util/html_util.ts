@@ -7,4 +7,25 @@ export default class HtmlUtil {
   public static normaliseSpaces(str: string): string {
     return str.replace(/\u00A0/g, " ").replace(/&nbsp;/g, " ");
   }
+
+  /**
+   * Gets the position of the caret in the provided HTML node.
+   *
+   * @param node the node that contains the text caret.
+   */
+  public static getCaretPosition(node: Node) {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) {
+      return 0;
+    }
+
+    const range = selection.getRangeAt(0);
+
+    // Cloning range to ensure that no modifications are made to the current select
+    const preRange = range.cloneRange();
+    preRange.selectNodeContents(node);
+    preRange.setEnd(range.endContainer, range.endOffset);
+
+    return preRange.toString().length;
+  }
 }

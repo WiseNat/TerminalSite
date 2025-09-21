@@ -3,6 +3,8 @@ import CommandUtil from "../../util/command_util.ts";
 import AutocompleteUtil from "../../util/autocomplete_util.ts";
 import TokenisedCommand from "../../dto/tokenised_command.ts";
 import { Suggestion } from "../../command/command_script.ts";
+import { ZERO_WIDTH_SPACE } from "../../constant/char.ts";
+import HtmlUtil from "../../util/html_util.ts";
 
 /**
  * Processes the 'Tab' key event. This will perform autocompletion of values in the terminal, either
@@ -14,43 +16,53 @@ import { Suggestion } from "../../command/command_script.ts";
 export async function processTab(event: KeyboardEvent) {
   event.preventDefault();
 
-  const userInput = TerminalUtil.getInput();
+  const input = TerminalUtil.getRawInput();
+  const offset = HtmlUtil.getCaretPosition(TerminalUtil.getInputElement());
+  const beforeCaret = input.substring(0, offset).replace(ZERO_WIDTH_SPACE, "");
+  const afterCaret = input.substring(offset).replace(ZERO_WIDTH_SPACE, "");
+
+  console.warn(
+    `Caret is at '${offset}'. Content before caret is '${beforeCaret}' and after is '${afterCaret}'`,
+  );
 
   // We don't want suggestions provided when nothing exists in the user input
-  if (userInput === "") {
+  if (beforeCaret === "" || beforeCaret.endsWith(" ")) {
     return;
   }
 
-  const tokenisedCommand = CommandUtil.tokenise(userInput);
+  const tokenisedCommand = CommandUtil.tokenise(beforeCaret);
   let suggestions: Suggestion[];
 
-  if (tokenisedCommand.args.length !== 0 || userInput.endsWith(" ")) {
-    suggestions = await customCommandAutocomplete(userInput, tokenisedCommand);
+  if (tokenisedCommand.args.length !== 0) {
+    suggestions = await customCommandAutocomplete(
+      beforeCaret,
+      tokenisedCommand,
+    );
   } else {
-    suggestions = defaultAutocomplete(userInput, tokenisedCommand);
+    suggestions = defaultAutocomplete(beforeCaret, tokenisedCommand);
   }
 
-  AutocompleteUtil.autocomplete(suggestions, userInput);
+  AutocompleteUtil.autocomplete(suggestions, beforeCaret, afterCaret);
 }
 
 /**
  * Handles custom command autocompletion.
  *
- * @param userInput
+ * @param beforeCaret
  * @param tokenisedCommand
  *
  * @returns values from the custom command autocomplete or directory & file suggestions if the method returns null or
  * doesn't exist.
  */
 async function customCommandAutocomplete(
-  userInput: string,
+  beforeCaret: string,
   tokenisedCommand: TokenisedCommand,
 ): Promise<Suggestion[]> {
   const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
 
   if (commandScript?.autocomplete) {
     const suggestions = await commandScript.autocomplete(
-      userInput,
+      beforeCaret,
       tokenisedCommand.args,
     );
 
@@ -58,6 +70,10 @@ async function customCommandAutocomplete(
       return suggestions;
     }
   }
+
+  console.info(
+    `'${tokenisedCommand.name}' command or it's autocomplete were not found, resorting to file & directory autocompletion`,
+  );
 
   if (tokenisedCommand.args.length === 0) {
     return [];
@@ -70,19 +86,19 @@ async function customCommandAutocomplete(
 /**
  * Handles default autocompletion.
  *
- * @param userInput
+ * @param beforeCaret
  * @param tokenisedCommand
  *
  * @returns command name, directory, and file suggestions
  */
 function defaultAutocomplete(
-  userInput: string,
+  beforeCaret: string,
   tokenisedCommand: TokenisedCommand,
 ): Suggestion[] {
   const searchTerm = tokenisedCommand.name;
 
   const suggestions: Suggestion[] = AutocompleteUtil.getCommandSuggestions(
-    userInput,
+    beforeCaret,
     searchTerm,
   );
 

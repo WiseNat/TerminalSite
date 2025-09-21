@@ -2,6 +2,7 @@ import TerminalUtil from "./terminal_util.ts";
 import MetaImportUtil from "./meta_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import { Suggestion } from "../command/command_script.ts";
+import { ZERO_WIDTH_SPACE } from "../constant/char.ts";
 
 type PathRelatedSuggestion = {
   isDirectory: boolean;
@@ -19,9 +20,14 @@ export default class AutocompleteUtil {
    * IF more than 1 value exists -> all suggestions will be printed to the user
    *
    * @param suggestions suggestions to be considered for autocompletion, can be empty
-   * @param userInput current user input, used to dictate what text will be appended when autocompleting.
+   * @param beforeCaret current user input, used to dictate what text will be appended when autocompleting.
+   * @param afterCaret
    */
-  public static autocomplete(suggestions: Suggestion[], userInput: string) {
+  public static autocomplete(
+    suggestions: Suggestion[],
+    beforeCaret: string,
+    afterCaret: string,
+  ) {
     // Do nothing when there are no suggestions
     if (suggestions.length === 0) {
       return;
@@ -33,12 +39,23 @@ export default class AutocompleteUtil {
 
     // Autocomplete value if there's only 1 suggestion, otherwise output all suggestions
     if (suggestions.length === 1) {
-      const suggestedValue = suggestions[0].actual;
+      let suggestedValue = suggestions[0].actual;
 
-      if (suggestedValue !== "") {
-        console.info(`Autocompleting '${userInput}' with '${suggestedValue}'`);
-        TerminalUtil.appendInput(suggestedValue);
+      if (suggestedValue === "") {
+        return;
       }
+
+      if (suggestedValue.endsWith(" ") && afterCaret !== "") {
+        suggestedValue = suggestedValue.slice(0, -1);
+      }
+
+      if (!beforeCaret.startsWith(ZERO_WIDTH_SPACE)) {
+        beforeCaret = ZERO_WIDTH_SPACE + beforeCaret;
+      }
+
+      console.info(`Autocompleting '${beforeCaret}' with '${suggestedValue}'`);
+      TerminalUtil.setInput(beforeCaret + suggestedValue + afterCaret);
+      TerminalUtil.cursorToIndex((beforeCaret + suggestedValue).length);
     } else {
       console.info("Providing a list of suggested autocompletion suggestions");
 
@@ -49,7 +66,7 @@ export default class AutocompleteUtil {
       // TODO: Make this use TUI (columns) when that's implemented
       const prompt = TerminalUtil.getPrompt();
       TerminalUtil.appendOutput(
-        `${prompt}${userInput}\n${joinedSuggestions}`,
+        `${prompt}${beforeCaret}${afterCaret}\n${joinedSuggestions}`,
         true,
       );
     }
