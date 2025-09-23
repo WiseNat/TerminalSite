@@ -199,73 +199,73 @@ test.describe("Multiple Arguments", () => {
     {
       type: "caret before the first character of the first argument does nothing",
       charIndex: 1,
-      expectedInput: "unm /some/len ~/.testi",
+      expectedInput: "ki /some/len ~/.testi",
       expectedOutput: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the first character of the first argument attempts to autocomplete the first character",
       charIndex: 2,
-      expectedInput: "unmountm /some/len ~/.testi",
+      expectedInput: "killi /some/len ~/.testi",
       expectedOutput: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the last character of the first argument attempts to autocomplete the first argument",
-      charIndex: 4,
-      expectedInput: "unmount /some/len ~/.testi",
+      charIndex: 3,
+      expectedInput: "kill /some/len ~/.testi",
       expectedOutput: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the space of the first argument does nothing",
-      charIndex: 5,
-      expectedInput: "unm /some/len ~/.testi",
+      charIndex: 4,
+      expectedInput: "ki /some/len ~/.testi",
       expectedOutput: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret before the first character of the second argument does nothing",
-      charIndex: 5,
-      expectedInput: "unm /some/len ~/.testi",
+      charIndex: 4,
+      expectedInput: "ki /some/len ~/.testi",
       expectedOutput: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the first character of the second argument attempts to autocomplete the first character",
-      charIndex: 6,
-      expectedInput: "unm /some/len ~/.testi",
-      expectedOutput: `${COMMAND_RAN_OUTPUT}unm /some/len ~/.testi\n.foo/\tcolour/\tetc/\tsome/\tsrc/\ttest/`,
+      charIndex: 5,
+      expectedInput: "ki /some/len ~/.testi",
+      expectedOutput: `${COMMAND_RAN_OUTPUT}ki /some/len ~/.testi\n.foo/\tcolour/\tetc/\tsome/\tsrc/\ttest/`,
     },
     {
       type: "caret after the last character of the second argument attempts to autocomplete the first argument",
-      charIndex: 14,
-      expectedInput: "unm /some/lengthy/ ~/.testi",
+      charIndex: 13,
+      expectedInput: "ki /some/lengthy/ ~/.testi",
       expectedOutput: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the space of the second argument does nothing",
-      charIndex: 15,
-      expectedInput: "unm /some/len ~/.testi",
+      charIndex: 14,
+      expectedInput: "ki /some/len ~/.testi",
       expectedOutput: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret before the first character of the third argument does nothing",
-      charIndex: 15,
-      expectedInput: "unm /some/len ~/.testi",
+      charIndex: 14,
+      expectedInput: "ki /some/len ~/.testi",
       expectedOutput: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the first character of the third argument attempts to autocomplete the first character",
-      charIndex: 16,
-      expectedInput: "unm /some/len ~//.testi",
+      charIndex: 15,
+      expectedInput: "ki /some/len ~//.testi",
       expectedOutput: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the last character of the third argument attempts to autocomplete the first argument",
-      charIndex: 23,
-      expectedInput: "unm /some/len ~/.testing ",
+      charIndex: 22,
+      expectedInput: "ki /some/len ~/.testing ",
       expectedOutput: DEFAULT_INITIAL_PROMPT,
     },
   ].forEach(({ type, charIndex, expectedInput, expectedOutput }) => {
     test(type, async ({ page }) => {
       // Arrange
-      const input = "unm /some/len ~/.testi";
+      const input = "ki /some/len ~/.testi";
       await page.locator(INPUT_SELECTOR).pressSequentially(input);
 
       // Act
@@ -285,22 +285,22 @@ test.describe("Multiple Arguments", () => {
     {
       type: "caret at a fixed point on the first argument repeatedly tries to autocomplete, leading it to appear broken as a broken command",
       charIndex: 2,
-      expectedInput: "unmountnmountnmountnm /some/len ~/.testi",
+      expectedInput: "killillilli /some/len ~/.testi",
     },
     {
       type: "caret at a fixed point on the second argument repeatedly tries to autocomplete, leading it to appear broken as a broken command",
-      charIndex: 8,
-      expectedInput: "unm /some/me/me/me/len ~/.testi",
+      charIndex: 7,
+      expectedInput: "ki /some/me/me/me/len ~/.testi",
     },
     {
       type: "caret at a fixed point on the third argument repeatedly tries to autocomplete, leading it to appear broken as a broken command",
-      charIndex: 21,
-      expectedInput: "unm /some/len ~/.testingtingtingti",
+      charIndex: 20,
+      expectedInput: "ki /some/len ~/.testingtingtingti",
     },
   ].forEach(({ type, charIndex, expectedInput }) => {
     test(type, async ({ page }) => {
       // Arrange
-      const input = "unm /some/len ~/.testi";
+      const input = "ki /some/len ~/.testi";
       await page.locator(INPUT_SELECTOR).pressSequentially(input);
 
       // Act
