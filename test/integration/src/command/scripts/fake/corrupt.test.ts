@@ -9,7 +9,7 @@ describe("Commands that are Corrupted", () => {
   // Mock
   vi.mock("../../../../../../src/util/terminal_util");
 
-  ["more", "sed", "sh"].forEach((commandName) => {
+  ["date", "df", "more", "ps", "sed", "sh"].forEach((commandName) => {
     test("should run with CommandUtil", () => {
       // Act & Assert
       expect(
