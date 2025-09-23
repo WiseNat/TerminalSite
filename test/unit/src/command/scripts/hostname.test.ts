@@ -23,7 +23,6 @@ describe("Hostname", () => {
       );
     });
 
-    // TODO: test cases...
     ["-d", "--domain"].forEach((flag) => {
       test(`Given the ${flag}, should output the domain name`, async () => {
         // Arrange
