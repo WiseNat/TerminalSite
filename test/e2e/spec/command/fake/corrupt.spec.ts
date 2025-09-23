@@ -5,7 +5,7 @@ import {
 } from "../../../helper/util/terminal_util.ts";
 
 test.describe("Commands that are Corrupted", () => {
-  ["more", "sed", "sh"].forEach((command) => {
+  ["date", "df", "more", "ps", "sed", "sh"].forEach((command) => {
     test(`${command} should output an error message`, async ({ page }) => {
       // Arrange
       const input = `${command} foo -d --bar baz`;
