@@ -18,7 +18,7 @@ import Bowser from "bowser";
  * @param event event listener {@link ClipboardEvent}
  */
 export function paste(event: ClipboardEvent) {
-  const browser = Bowser.getParser(window.navigator.userAgent);
+  const browser = Bowser.getParser(globalThis.navigator.userAgent);
 
   // Should work based on ENGINE_MAP in https://github.com/bowser-js/bowser/blob/master/src/constants.js
   if (browser.getEngineName() !== "WebKit") {

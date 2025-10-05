@@ -85,8 +85,10 @@ function buildMessage(
     ? `Received: ${utils.printReceived(matcherResult.actual)}`
     : "";
 
+  const locatorString = locator.toString(); // NOSONAR
+
   return () =>
-    `${errorMessage}\n\nLocator: ${locator}\nExpected: ${expectedMessage}\n${receivedMessage}`;
+    `${errorMessage}\n\nLocator: ${locatorString}\nExpected: ${expectedMessage}\n${receivedMessage}`;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

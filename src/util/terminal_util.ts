@@ -237,7 +237,7 @@ export default class TerminalUtil {
     // Insert a br tag to enable cursor to appear in the right position when the last character is a newline
     const children = this.input.childNodes;
     if (children.length > 0) {
-      const last = children[children.length - 1];
+      const last = children[children.length - 1]; // NOSONAR
 
       if (
         last.nodeType === Node.TEXT_NODE &&
@@ -272,7 +272,7 @@ export default class TerminalUtil {
     range.setStart(lastTextNode, index);
     range.setEnd(lastTextNode, index);
 
-    const selection = window.getSelection()!;
+    const selection = globalThis.getSelection()!;
     selection.removeAllRanges();
     selection.addRange(range);
 

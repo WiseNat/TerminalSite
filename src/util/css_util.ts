@@ -4,7 +4,7 @@ export default class CssUtil {
    * @returns the CSS Style for the given `element`
    */
   public static getStyle(element: Element): CSSStyleDeclaration {
-    return window.getComputedStyle(element);
+    return globalThis.getComputedStyle(element);
   }
 
   /**

@@ -28,9 +28,9 @@ const TREE: CommandScript = {
     let lFlagValue: number = -1;
     const lFlagValueRaw: string = parsedOptions.L;
     if (lFlagValueRaw) {
-      lFlagValue = parseInt(lFlagValueRaw);
+      lFlagValue = Number.parseInt(lFlagValueRaw);
 
-      if (isNaN(lFlagValue) || lFlagValue < 1) {
+      if (Number.isNaN(lFlagValue) || lFlagValue < 1) {
         TerminalUtil.appendOutput(
           "tree: Invalid level, must be greater than 0.",
         );

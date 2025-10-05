@@ -28,9 +28,13 @@ const LS: CommandScript = {
     let blockSize: number | null = null;
     const blockSizeRaw: string = parsedOptions["block-size"];
     if (blockSizeRaw) {
-      blockSize = parseInt(blockSizeRaw);
+      blockSize = Number.parseInt(blockSizeRaw);
 
-      if (blockSizeRaw.includes(".") || isNaN(blockSize) || blockSize < 1) {
+      if (
+        blockSizeRaw.includes(".") ||
+        Number.isNaN(blockSize) ||
+        blockSize < 1
+      ) {
         TerminalUtil.appendOutput(
           `ls: invalid --block-size argument '${parsedOptions["block-size"]}'`,
         );
@@ -473,7 +477,7 @@ function getSize(entry: EntryNode, flags: Flags): string {
       : `${entry.size}`;
   }
 
-  const to = !flags.blockSize ? 1 : flags.blockSize;
+  const to = flags.blockSize ? flags.blockSize : 1;
   return `${FileSystemUtil.calculateBlocks(entry.size, 1, to)}`;
 }
 
@@ -490,7 +494,7 @@ function getBlockSize(entry: EntryNode, flags: Flags): string {
     return FileSystemUtil.getHumanReadableSize(entry.blocks * 512);
   }
 
-  const to = !flags.blockSize ? 1024 : flags.blockSize;
+  const to = flags.blockSize ? flags.blockSize : 1024;
   return `${FileSystemUtil.calculateBlocks(entry.blocks, 512, to)}`;
 }
 
@@ -515,7 +519,7 @@ function getTotalBlockSize(entries: EntryNode[], flags: Flags): string {
   } else {
     let totalSize = entries.reduce((sum, child) => sum + child.blocks, 0);
 
-    const to = !flags.blockSize ? 1024 : flags.blockSize;
+    const to = flags.blockSize ? flags.blockSize : 1024;
     totalSize = FileSystemUtil.calculateBlocks(totalSize, 512, to);
 
     output = `${totalSize}`;

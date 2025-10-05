@@ -1,9 +1,8 @@
-import fs from "fs";
-import PathUtil from "path";
+import fs, { existsSync, readFileSync, statSync } from "node:fs";
+import PathUtil from "node:path";
 import { Plugin } from "vite";
 import { AdditionalMetaData, FileTreeNode } from "virtual:file-tree";
 import { execSync } from "node:child_process";
-import { existsSync, readFileSync, statSync } from "node:fs";
 import * as devalue from "devalue";
 
 /**
@@ -112,7 +111,7 @@ function getLastModifiedTime(path: string): Date {
       }).trim(),
     );
 
-    if (!isNaN(date.getTime())) {
+    if (!Number.isNaN(date.getTime())) {
       return date;
     }
   } catch {
@@ -179,8 +178,6 @@ function getAdditionalMetaData(
     return defaultMetaData;
   }
 
-  // TODO: Log this properly. Currently interrupts the build logs
-  // console.info(`Found a metadata file for ${path}`);
   const fileContents = readFileSync(metaDataFilePath, { encoding: "utf8" });
   const additionalMetaData: AdditionalMetaData = JSON.parse(fileContents);
   additionalMetaData.permissions ??= defaultMetaData.permissions;
