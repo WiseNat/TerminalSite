@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import TREE from "../../../../../src/command/scripts/tree.ts";
 import FileSystemUtil from "../../../../../src/util/file_system_util.ts";
 import TerminalUtil from "../../../../../src/util/terminal_util.ts";
-import ColourUtil from "../../../../../src/util/colour_util.ts";
+import FormatterUtil from "../../../../../src/util/formatter_util.ts";
 
 describe("Tree", () => {
   // Spy
@@ -13,7 +13,7 @@ describe("Tree", () => {
   vi.mock("../../../../../src/util/terminal_util");
   vi.mock("../../../../../src/util/colour_util");
 
-  vi.mocked(ColourUtil.getFileSystemEntry).mockImplementation(
+  vi.mocked(FormatterUtil.getFileSystemEntry).mockImplementation(
     (node, useShortName) => {
       if (useShortName) {
         return node.name;

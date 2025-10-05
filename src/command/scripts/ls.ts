@@ -2,7 +2,7 @@ import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
-import ColourUtil from "../../util/colour_util.ts";
+import FormatterUtil from "../../util/formatter_util.ts";
 import { clone } from "lodash-es";
 import CommandUtil from "../../util/command_util.ts";
 
@@ -358,7 +358,7 @@ function sortEntryNodes(nodes: EntryNode[]): EntryNode[] {
 /**
  * Sorts and Formats Directory Entry Children.
  * <p>
- * Children will be coloured based on {@link ColourUtil.getFileSystemEntry}.
+ * Children will be coloured based on {@link FormatterUtil.getFileSystemEntry}.
  *
  * @param children list of directory entry children.
  * @param flags flags for formatting.
@@ -387,7 +387,7 @@ function formatDirectoryEntryChildren(
  * @param useShortName true to use the entry name, false to use the full path.
  */
 function formatEntry(entry: EntryNode, flags: Flags, useShortName: boolean) {
-  const fileSystemEntry = ColourUtil.getFileSystemEntry(
+  const fileSystemEntry = FormatterUtil.getFileSystemEntry(
     {
       name: entry.name,
       path: entry.path,

@@ -2,7 +2,7 @@ import { CommandScript } from "../command_script.ts";
 import CommandUtil from "../../util/command_util.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
-import ColourUtil from "../../util/colour_util.ts";
+import FormatterUtil from "../../util/formatter_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
 
 const TREE: CommandScript = {
@@ -152,7 +152,7 @@ function getUnknownPathError(path: string): string {
  * @returns an error for a path to a file.
  */
 function getFilePathError(node: FileTreeNode): string {
-  const fileSystemEntry: string = ColourUtil.getFileSystemEntry(node, false);
+  const fileSystemEntry: string = FormatterUtil.getFileSystemEntry(node, false);
   return getPathError(fileSystemEntry);
 }
 
@@ -177,7 +177,7 @@ function generateTreeFromNode(node: FileTreeNode, flags: Flags): TreeView {
     directoryCount: 0,
   };
 
-  tree.content += ColourUtil.getFileSystemEntry(node, false);
+  tree.content += FormatterUtil.getFileSystemEntry(node, false);
 
   if (node.children === undefined || node.children.length === 0) {
     return tree;
@@ -212,7 +212,7 @@ function generateTreeFromNode(node: FileTreeNode, flags: Flags): TreeView {
   while (stack.length > 0) {
     const { node, prefix, isLast, depth } = stack.pop()!;
 
-    const filename = ColourUtil.getFileSystemEntry(node, !flags.f);
+    const filename = FormatterUtil.getFileSystemEntry(node, !flags.f);
     tree.content += `${prefix}${isLast ? "└── " : "├── "}${filename}\n`;
 
     if (node.isDirectory) {

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import FileSystemUtil from "../../../../../src/util/file_system_util";
 import LS from "../../../../../src/command/scripts/ls";
 import TerminalUtil from "../../../../../src/util/terminal_util";
-import ColourUtil from "../../../../../src/util/colour_util";
+import FormatterUtil from "../../../../../src/util/formatter_util.ts";
 
 describe("Ls", () => {
   // Spy
@@ -11,16 +11,16 @@ describe("Ls", () => {
 
   // Mock
   vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/colour_util");
+  vi.mock("../../../../../src/util/formatter_util");
 
   // Mocked
-  vi.mocked(ColourUtil.getFileSystemEntryStyle).mockReturnValue({
+  vi.mocked(FormatterUtil.getFileSystemEntryStyle).mockReturnValue({
     foreground: null,
     background: null,
     fontWeight: null,
   });
 
-  vi.mocked(ColourUtil.getFileSystemEntry).mockImplementation(
+  vi.mocked(FormatterUtil.getFileSystemEntry).mockImplementation(
     (node, useShortName) => {
       return useShortName ? node.name : "/" + node.path + "/" + node.name;
     },
