@@ -16,7 +16,7 @@ export default defineConfig({
   fullyParallel: true,
 
   /* https://playwright.dev/docs/test-reporters */
-  reporter: [["html"], ["list"]],
+  reporter: [["html"], ["line"]],
 
   /* CI Specific Configuration */
   forbidOnly: !!process.env.CI, // Instances of test.only in sourcecode fails build on CI
@@ -33,7 +33,7 @@ export default defineConfig({
   /* Test Timeouts. See https://playwright.dev/docs/test-timeouts */
   timeout: 15_000,
   expect: {
-    timeout: 2_500,
+    timeout: 2500,
   },
 
   /*
