@@ -26,7 +26,7 @@ export default class CommandUtil {
 
       if (commandScript === null) {
         TerminalUtil.appendOutput(
-          `\n${tokenisedCommand.name}: command not found`,
+          `${tokenisedCommand.name}: command not found`,
         );
       } else {
         // Fixes visual issues with non-instant commands
@@ -180,7 +180,7 @@ export default class CommandUtil {
 
     if (unknownFlag !== null) {
       TerminalUtil.appendOutput(
-        `\n${commandName}: invalid option -- '${unknownFlag}'`,
+        `${commandName}: invalid option -- '${unknownFlag}'`,
       );
       return null;
     }

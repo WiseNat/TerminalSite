@@ -42,7 +42,7 @@ const UNAME: CommandScript = {
       o: parsedOptions.a ? true : parsedOptions.o,
     });
 
-    TerminalUtil.appendOutput(`\n${output}`);
+    TerminalUtil.appendOutput(output);
   },
 };
 

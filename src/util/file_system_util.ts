@@ -86,9 +86,7 @@ export default class FileSystemUtil {
     }
 
     const hasLeadingSeparator = paths[0].startsWith(this.pathSeparator);
-    const hasTrailingSeparator = paths[paths.length - 1].endsWith(
-      this.pathSeparator,
-    );
+    const hasTrailingSeparator = paths.at(-1)!.endsWith(this.pathSeparator);
 
     const splitPaths: string[] = [];
     for (const path of paths) {
@@ -268,7 +266,10 @@ export default class FileSystemUtil {
    *
    * @returns a normalised path without parent directory symbols.
    */
-  public static normalisePath(path: string, keepTrailingDot?: boolean): string {
+  public static normalisePath(
+    path: string,
+    keepTrailingDot: boolean = false,
+  ): string {
     const splitPath = path.split(this.pathSeparator);
     const normalisedPath: string[] = [];
 
@@ -290,7 +291,7 @@ export default class FileSystemUtil {
 
     if (
       keepTrailingDot &&
-      splitPath[splitPath.length - 1] === this.currentWorkingDirectorySymbol
+      splitPath.at(-1) === this.currentWorkingDirectorySymbol
     ) {
       normalisedPath.push(this.currentWorkingDirectorySymbol);
     }
@@ -395,7 +396,7 @@ export default class FileSystemUtil {
    * @returns a path without any instances of '.'.
    */
   public static stripDots(path: string): string {
-    return path.replace(/\./g, "");
+    return path.replaceAll(".", "");
   }
 
   /**

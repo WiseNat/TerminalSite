@@ -21,7 +21,7 @@ describe("Pwd", () => {
 
       // Assert
       expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-        `\n${currentWorkingDirectory}`,
+        currentWorkingDirectory,
       );
     });
 
@@ -35,7 +35,7 @@ describe("Pwd", () => {
 
       // Assert
       expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-        "\n/home/nathanwise/Desktop",
+        "/home/nathanwise/Desktop",
       );
     });
 
@@ -56,11 +56,11 @@ describe("Pwd", () => {
       expect(appendOutput).toHaveBeenCalledTimes(2);
       expect(appendOutput).toHaveBeenNthCalledWith(
         1,
-        `\n${firstCurrentWorkingDirectory}`,
+        firstCurrentWorkingDirectory,
       );
       expect(appendOutput).toHaveBeenNthCalledWith(
         2,
-        `\n${secondCurrentWorkingDirectory}`,
+        secondCurrentWorkingDirectory,
       );
     });
   });

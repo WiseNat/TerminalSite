@@ -33,13 +33,13 @@ export async function processTab(event: KeyboardEvent) {
   const tokenisedCommand = CommandUtil.tokenise(beforeCaret);
   let suggestions: Suggestion[];
 
-  if (tokenisedCommand.args.length !== 0) {
+  if (tokenisedCommand.args.length === 0) {
+    suggestions = defaultAutocomplete(beforeCaret, tokenisedCommand);
+  } else {
     suggestions = await customCommandAutocomplete(
       beforeCaret,
       tokenisedCommand,
     );
-  } else {
-    suggestions = defaultAutocomplete(beforeCaret, tokenisedCommand);
   }
 
   AutocompleteUtil.autocomplete(suggestions, beforeCaret, afterCaret);
@@ -79,7 +79,7 @@ async function customCommandAutocomplete(
     return [];
   }
 
-  const searchValue = tokenisedCommand.args[tokenisedCommand.args.length - 1];
+  const searchValue = tokenisedCommand.args.at(-1)!;
   return AutocompleteUtil.getFileAndDirectorySuggestions(searchValue);
 }
 

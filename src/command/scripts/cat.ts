@@ -30,7 +30,7 @@ const CAT: CommandScript = {
       }
     }
 
-    TerminalUtil.appendRawOutput(`\n${output.join("\n")}`);
+    TerminalUtil.appendRawOutput(output.join("\n"));
   },
 };
 
@@ -71,14 +71,14 @@ async function getInvalidPathError(path: string): Promise<string> {
  * @returns text with Anchor elements and escaped text
  */
 function insertAnchorElements(text: string): string {
-  return text.replace(
+  return text.replaceAll(
     /\[([^\]]+)]\(([^)]+)\)|([^[]+)/g,
     (_match, text, url, outside) => {
       // Text outside of []()
-      if (outside !== undefined) {
-        return escape(outside);
-      } else {
+      if (outside === undefined) {
         return `<a href='${url}' target='_blank'>${text}</a>`;
+      } else {
+        return escape(outside);
       }
     },
   );

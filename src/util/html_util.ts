@@ -5,7 +5,7 @@ export default class HtmlUtil {
    * @param str
    */
   public static normaliseSpaces(str: string): string {
-    return str.replace(/\u00A0/g, " ").replace(/&nbsp;/g, " ");
+    return str.replaceAll("\u00A0", " ").replaceAll("&nbsp;", " ");
   }
 
   /**
@@ -14,7 +14,7 @@ export default class HtmlUtil {
    * @param node the node that contains the text caret.
    */
   public static getCaretPosition(node: Node) {
-    const selection = window.getSelection();
+    const selection = globalThis.getSelection();
     if (!selection || selection.rangeCount === 0) {
       return 0;
     }
@@ -33,6 +33,6 @@ export default class HtmlUtil {
    * Refreshes the current page.
    */
   public static refreshPage() {
-    window.location.reload();
+    globalThis.location.reload();
   }
 }

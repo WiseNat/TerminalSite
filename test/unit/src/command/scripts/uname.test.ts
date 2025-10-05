@@ -28,7 +28,7 @@ describe("Hostname", () => {
       await UNAME.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(`\n${kernelName}`);
+      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(kernelName);
     });
 
     ["-a", "--all"].forEach((flag) => {
@@ -41,7 +41,7 @@ describe("Hostname", () => {
 
         // Assert
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\n${kernelName} ${nodeName} ${kernelRelease} ${kernelVersion} ${machine} ${processor} ${hardwarePlatform} ${operatingSystem}`,
+          `${kernelName} ${nodeName} ${kernelRelease} ${kernelVersion} ${machine} ${processor} ${hardwarePlatform} ${operatingSystem}`,
         );
       });
     });
@@ -55,7 +55,7 @@ describe("Hostname", () => {
         await UNAME.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(`\n${kernelName}`);
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(kernelName);
       });
     });
 
@@ -68,7 +68,7 @@ describe("Hostname", () => {
         await UNAME.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(`\n${nodeName}`);
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(nodeName);
       });
     });
 
@@ -81,9 +81,7 @@ describe("Hostname", () => {
         await UNAME.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\n${kernelRelease}`,
-        );
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(kernelRelease);
       });
     });
 
@@ -96,9 +94,7 @@ describe("Hostname", () => {
         await UNAME.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\n${kernelVersion}`,
-        );
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(kernelVersion);
       });
     });
 
@@ -111,7 +107,7 @@ describe("Hostname", () => {
         await UNAME.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(`\n${machine}`);
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(machine);
       });
     });
 
@@ -124,7 +120,7 @@ describe("Hostname", () => {
         await UNAME.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(`\n${processor}`);
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(processor);
       });
     });
 
@@ -137,9 +133,7 @@ describe("Hostname", () => {
         await UNAME.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\n${hardwarePlatform}`,
-        );
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(hardwarePlatform);
       });
     });
 
@@ -152,9 +146,7 @@ describe("Hostname", () => {
         await UNAME.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\n${operatingSystem}`,
-        );
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(operatingSystem);
       });
     });
   });

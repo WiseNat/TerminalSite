@@ -4,7 +4,7 @@ export default class CssUtil {
    * @returns the CSS Style for the given `element`
    */
   public static getStyle(element: Element): CSSStyleDeclaration {
-    return window.getComputedStyle(element);
+    return globalThis.getComputedStyle(element);
   }
 
   /**
@@ -14,7 +14,10 @@ export default class CssUtil {
    * @param char an alternative character to use. If the font is monospace, this does not need to be provided.
    * @returns the estimated width as a decimal number or null if it failed to be estimated.
    */
-  public static getCharacterWidth(font: string, char?: string): number | null {
+  public static getCharacterWidth(
+    font: string,
+    char: string = "M",
+  ): number | null {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
 
@@ -23,7 +26,7 @@ export default class CssUtil {
     }
 
     context.font = font;
-    return context.measureText(char ?? "M").width;
+    return context.measureText(char).width;
   }
 
   /**

@@ -24,7 +24,7 @@ const HOSTNAME_COMMAND: CommandScript = {
       i: parsedOptions.i,
     });
 
-    TerminalUtil.appendOutput(`\n${output}`);
+    TerminalUtil.appendOutput(output);
   },
 };
 

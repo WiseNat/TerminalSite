@@ -8,7 +8,7 @@ const PWD: CommandScript = {
     const currentWorkingDirectory = FileSystemUtil.getCurrentWorkingDirectory();
 
     TerminalUtil.appendOutput(
-      `\n${FileSystemUtil.formatPath(currentWorkingDirectory)}`,
+      FileSystemUtil.formatPath(currentWorkingDirectory),
     );
   },
 };

@@ -59,7 +59,7 @@ describe("Commands that the User has no Permissions to Execute", () => {
 
       // Assert
       expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-        `\n/bin/${command}: Permission denied`,
+        `/bin/${command}: Permission denied`,
       );
     });
   });

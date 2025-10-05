@@ -51,7 +51,7 @@ describe("CommandUtil", () => {
 
       // Assert
       expect(appendOutput).toHaveBeenCalledTimes(2);
-      expect(appendOutput).toHaveBeenCalledWith("\ntest: command not found");
+      expect(appendOutput).toHaveBeenCalledWith("test: command not found");
     });
 
     test("outputs nothing when a command is not found with no name", async () => {
@@ -272,7 +272,7 @@ describe("CommandUtil", () => {
 
         // Assert
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\nmyCommand: invalid option -- '${unknownFlag}'`,
+          `myCommand: invalid option -- '${unknownFlag}'`,
         );
 
         expect(result).toBeNull();

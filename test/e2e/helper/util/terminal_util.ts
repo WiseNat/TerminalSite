@@ -31,7 +31,7 @@ export async function setCaretAtCharIndex(
       range.setStart(textNode, charIndex);
       range.collapse(true);
 
-      const selection = window.getSelection();
+      const selection = globalThis.getSelection();
       selection?.removeAllRanges();
       selection?.addRange(range);
     },
@@ -79,7 +79,7 @@ export async function assertOutputInTerminal(
 /**
  * Asserts that there is exact text in the Terminal.
  * <p>
- * Acts as a helper method for common assert logic. Can be used in one of two ways..
+ * Acts as a helper method for common assert logic. Can be used in one of two ways.
  * @example
  * // Generic example for when the output, prompt, and input remain standard
  * const input = "echo foo bar";

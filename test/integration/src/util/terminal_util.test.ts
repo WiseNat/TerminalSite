@@ -472,7 +472,7 @@ describe("TerminalUtil", () => {
         outputElement.textContent = existingText;
 
         // Act
-        TerminalUtil.appendOutput(appendedText);
+        TerminalUtil.appendOutput(appendedText, false);
 
         // Assert
         expect(outputElement.textContent).toBe(existingText + appendedText);
@@ -516,7 +516,7 @@ describe("TerminalUtil", () => {
         outputElement.textContent = existingText;
 
         // Act
-        TerminalUtil.appendOutput(appendedText);
+        TerminalUtil.appendOutput(appendedText, false);
 
         // Assert
         expect(outputElement.textContent).toBe(existingText + appendedText);
@@ -534,7 +534,7 @@ describe("TerminalUtil", () => {
         outputElement.textContent = existingText;
 
         // Act
-        TerminalUtil.appendRawOutput(appendedText);
+        TerminalUtil.appendRawOutput(appendedText, false);
 
         // Assert
         expect(outputElement.textContent).toBe(existingText + appendedText);
@@ -578,7 +578,7 @@ describe("TerminalUtil", () => {
         outputElement.textContent = existingText;
 
         // Act
-        TerminalUtil.appendRawOutput(appendedText);
+        TerminalUtil.appendRawOutput(appendedText, false);
 
         // Assert
         const onlyText = "TESTexampleING";

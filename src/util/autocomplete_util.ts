@@ -131,8 +131,7 @@ export default class AutocompleteUtil {
       incompleteFinalPathSegment = "";
       pathToWalk = incompleteFilePath;
     } else {
-      incompleteFinalPathSegment =
-        incompleteFilePath[incompleteFilePath.length - 1];
+      incompleteFinalPathSegment = incompleteFilePath.at(-1) ?? "";
       pathToWalk = incompleteFilePath.slice(0, -1);
     }
 
@@ -153,12 +152,11 @@ export default class AutocompleteUtil {
         const path = FileSystemUtil.joinPaths(child.path, child.name);
         const splitPath = FileSystemUtil.splitPath(path);
 
+        const lastPathElement = splitPath.at(-1) ?? "";
+
         const suggestion: Suggestion = {
-          visual: splitPath[splitPath.length - 1],
-          actual: splitPath[splitPath.length - 1].replace(
-            incompleteFinalPathSegment,
-            "",
-          ),
+          visual: lastPathElement,
+          actual: lastPathElement.replace(incompleteFinalPathSegment, ""),
         };
 
         if (child.isDirectory) {
