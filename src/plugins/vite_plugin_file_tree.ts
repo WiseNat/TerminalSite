@@ -254,11 +254,9 @@ function storeAsOrphan(
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function FileTree(
-  rootPath?: string,
+  rootPath: string = "./",
   homeDirectory?: string,
 ): Plugin {
-  rootPath ??= "./";
-
   const name = "file-tree";
   const virtualModuleId = `virtual:${name}`;
   const resolvedVirtualModuleId = "\0" + virtualModuleId;

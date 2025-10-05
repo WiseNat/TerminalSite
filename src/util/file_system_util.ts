@@ -268,7 +268,10 @@ export default class FileSystemUtil {
    *
    * @returns a normalised path without parent directory symbols.
    */
-  public static normalisePath(path: string, keepTrailingDot?: boolean): string {
+  public static normalisePath(
+    path: string,
+    keepTrailingDot: boolean = false,
+  ): string {
     const splitPath = path.split(this.pathSeparator);
     const normalisedPath: string[] = [];
 
