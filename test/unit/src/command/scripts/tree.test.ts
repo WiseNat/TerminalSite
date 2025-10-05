@@ -11,7 +11,7 @@ describe("Tree", () => {
 
   // Mock
   vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/colour_util");
+  vi.mock("../../../../../src/util/formatter_util");
 
   vi.mocked(FormatterUtil.getFileSystemEntry).mockImplementation(
     (node, useShortName) => {

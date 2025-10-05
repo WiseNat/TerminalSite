@@ -3,6 +3,7 @@ import CommandImportUtil from "./command_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import { Suggestion } from "../command/command_script.ts";
 import { ZERO_WIDTH_SPACE } from "../constant/char.ts";
+import FormatterUtil from "./formatter_util.ts";
 
 type PathRelatedSuggestion = {
   isDirectory: boolean;
@@ -59,11 +60,15 @@ export default class AutocompleteUtil {
     } else {
       console.info("Providing a list of suggested autocompletion suggestions");
 
-      const joinedSuggestions = suggestions
-        .map((suggestion) => suggestion.visual)
-        .join("\t");
+      const joinedSuggestions = FormatterUtil.toDynamicGrid(
+        suggestions.map((suggestion) => {
+          return {
+            visual: suggestion.visual,
+            actual: suggestion.visual,
+          };
+        }),
+      );
 
-      // TODO: Make this use TUI (columns) when that's implemented
       const prompt = TerminalUtil.getPrompt();
       TerminalUtil.appendOutput(
         `${prompt}${beforeCaret}${afterCaret}\n${joinedSuggestions}`,

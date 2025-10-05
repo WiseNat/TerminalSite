@@ -8,6 +8,7 @@ describe("Ls", () => {
 
   // Mock
   vi.mock("../../../../../src/util/terminal_util");
+  vi.mock("../../../../../src/util/formatter_util");
 
   test("should run with CommandUtil", () => {
     // Arrange

@@ -5,6 +5,7 @@ import { unmock } from "../../helper/unmock";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { Suggestion } from "../../../../src/command/command_script";
 import { ZERO_WIDTH_SPACE } from "../../helper/constant.ts";
+import FormatterUtil from "../../../../src/util/formatter_util.ts";
 
 describe("AutocompleteUtil", () => {
   // Spy
@@ -14,10 +15,14 @@ describe("AutocompleteUtil", () => {
   // Mock
   vi.mock("../../../../src/util/terminal_util");
   vi.mock("../../../../src/util/command_import_util");
+  vi.mock("../../../../src/util/formatter_util");
 
   const prompt = "C:\\home\\nathanwise>";
 
   vi.mocked(TerminalUtil.getPrompt).mockReturnValue(prompt);
+  vi.mocked(FormatterUtil.toDynamicGrid).mockImplementation((items) => {
+    return items.map((e) => e.actual).join("\t");
+  });
 
   describe("autocomplete", () => {
     describe("Input Insert", () => {

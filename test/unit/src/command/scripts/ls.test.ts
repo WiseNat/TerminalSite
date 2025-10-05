@@ -12,6 +12,7 @@ describe("Ls", () => {
   // Mock
   vi.mock("../../../../../src/util/terminal_util");
   vi.mock("../../../../../src/util/formatter_util");
+  vi.mock("../../../../src/util/formatter_util");
 
   // Mocked
   vi.mocked(FormatterUtil.getFileSystemEntryStyle).mockReturnValue({
@@ -25,6 +26,10 @@ describe("Ls", () => {
       return useShortName ? node.name : "/" + node.path + "/" + node.name;
     },
   );
+
+  vi.mocked(FormatterUtil.toDynamicGrid).mockImplementation((items) => {
+    return items.map((e) => e.actual).join("\t");
+  });
 
   beforeEach(() => {
     FileSystemUtil.setHomeDirectory("/src/main");

@@ -72,7 +72,7 @@ test.describe("File/Directory autocompletion", () => {
   }) => {
     // Arrange
     const input = "/";
-    const expectedOutput = ".foo/\tcolour/\tetc/\tsome/\tsrc/\ttest/";
+    const expectedOutput = ".foo/  colour/  etc/  some/  src/  test/";
 
     // Act
     await page.locator(INPUT_SELECTOR).pressSequentially(input);
@@ -230,7 +230,7 @@ test.describe("Multiple Arguments", () => {
       type: "caret after the first character of the second argument attempts to autocomplete the first character",
       charIndex: 5,
       expectedInput: "ki /some/len ~/.testi",
-      expectedOutput: `${COMMAND_RAN_OUTPUT}ki /some/len ~/.testi\n.foo/\tcolour/\tetc/\tsome/\tsrc/\ttest/`,
+      expectedOutput: `${COMMAND_RAN_OUTPUT}ki /some/len ~/.testi\n.foo/  colour/  etc/  some/  src/  test/`,
     },
     {
       type: "caret after the last character of the second argument attempts to autocomplete the first argument",
