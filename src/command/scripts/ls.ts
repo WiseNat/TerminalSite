@@ -58,7 +58,7 @@ const LS: CommandScript = {
     });
 
     if (output !== "") {
-      TerminalUtil.appendRawOutput(`\n${output}`);
+      TerminalUtil.appendRawOutput(output);
     }
   },
 };

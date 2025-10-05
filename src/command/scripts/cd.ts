@@ -14,7 +14,7 @@ const CD: CommandScript = {
     }
 
     if (parsedOptions._.length > 1) {
-      TerminalUtil.appendOutput("\nbash: cd: too many arguments");
+      TerminalUtil.appendOutput("bash: cd: too many arguments");
       return;
     }
 
@@ -33,13 +33,13 @@ const CD: CommandScript = {
       const previousWorkingDirectory = getPreviousWorkingDirectory();
 
       if (previousWorkingDirectory === null) {
-        TerminalUtil.appendOutput("\nbash: cd: OLDPWD not set");
+        TerminalUtil.appendOutput("bash: cd: OLDPWD not set");
         return;
       }
 
       changeDirectory(previousWorkingDirectory);
 
-      TerminalUtil.appendOutput(`\n${previousWorkingDirectory}`);
+      TerminalUtil.appendOutput(previousWorkingDirectory);
     } else {
       changeDirectory(path);
     }
@@ -60,15 +60,15 @@ function changeDirectory(path: string) {
   const resolvedPathParts = FileSystemUtil.resolvePathParts(path);
 
   if (resolvedPathParts === null) {
-    TerminalUtil.appendOutput(`\nbash: cd: ${path}: No such file or directory`);
+    TerminalUtil.appendOutput(`bash: cd: ${path}: No such file or directory`);
     return;
   }
 
   if (FileSystemUtil.doesFileExist(resolvedPathParts)) {
-    TerminalUtil.appendOutput(`\nbash: cd: ${path}: Not a directory`);
+    TerminalUtil.appendOutput(`bash: cd: ${path}: Not a directory`);
     return;
   } else if (!FileSystemUtil.doesDirectoryExist(resolvedPathParts)) {
-    TerminalUtil.appendOutput(`\nbash: cd: ${path}: No such file or directory`);
+    TerminalUtil.appendOutput(`bash: cd: ${path}: No such file or directory`);
     return;
   }
 

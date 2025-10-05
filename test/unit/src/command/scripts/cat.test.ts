@@ -38,9 +38,7 @@ describe("Cat", () => {
       // Assert
       expect(readFile).toHaveBeenCalledOnce();
       expect(resolvePathParts).not.toHaveBeenCalled();
-      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-        `\n${fileContents}`,
-      );
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(fileContents);
     });
 
     test("should output an error message when a path for a file that does not exist is given", async () => {
@@ -57,7 +55,7 @@ describe("Cat", () => {
 
       const resolvedPath = FileSystemUtil.resolvePath(args[0]);
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-        `\ncat: ${resolvedPath}: No such file or directory`,
+        `cat: ${resolvedPath}: No such file or directory`,
       );
     });
 
@@ -77,7 +75,7 @@ describe("Cat", () => {
       expect(readFile).toHaveBeenCalledTimes(2);
       expect(resolvePathParts).not.toHaveBeenCalled();
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-        `\n${fileContentsFirst}\n${fileContentsSecond}`,
+        `${fileContentsFirst}\n${fileContentsSecond}`,
       );
     });
 
@@ -96,7 +94,7 @@ describe("Cat", () => {
       const resolvedPathFirst = FileSystemUtil.resolvePath(args[0]);
       const resolvedPathSecond = FileSystemUtil.resolvePath(args[1]);
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-        `\ncat: ${resolvedPathFirst}: No such file or directory\ncat: ${resolvedPathSecond}: No such file or directory`,
+        `cat: ${resolvedPathFirst}: No such file or directory\ncat: ${resolvedPathSecond}: No such file or directory`,
       );
     });
 
@@ -117,7 +115,7 @@ describe("Cat", () => {
 
       const resolvedPath = FileSystemUtil.resolvePath(args[0]);
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-        `\ncat: ${resolvedPath}: No such file or directory\n${fileContentsFirst}`,
+        `cat: ${resolvedPath}: No such file or directory\n${fileContentsFirst}`,
       );
     });
 
@@ -134,7 +132,7 @@ describe("Cat", () => {
       expect(resolvePathParts).toHaveBeenCalledOnce();
 
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-        `\ncat: ${args[0]}: No such file or directory`,
+        `cat: ${args[0]}: No such file or directory`,
       );
     });
 
@@ -151,7 +149,7 @@ describe("Cat", () => {
       expect(resolvePathParts).toHaveBeenCalledOnce();
 
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-        `\ncat: ${args[0]}: Is a directory`,
+        `cat: ${args[0]}: Is a directory`,
       );
     });
 
@@ -172,7 +170,7 @@ describe("Cat", () => {
       const replacedFileContents =
         "AN EXAMPLE CONTAINING <a href='https://duckduckgo.com/?hps=1&q=foobar&atb=v446-1&ia=web' target='_blank'>some text</a> &lt;- A URL";
       expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-        `\n${replacedFileContents}`,
+        replacedFileContents,
       );
     });
   });

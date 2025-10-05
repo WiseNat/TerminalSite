@@ -6,7 +6,7 @@ const SED: CommandScript = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async run(_args: string[]): Promise<void> {
     const errorMessage = CommandUtil.getCorruptedCommandMessage("sed");
-    TerminalUtil.appendOutput(`\n${errorMessage}`);
+    TerminalUtil.appendOutput(errorMessage);
   },
 };
 

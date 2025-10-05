@@ -38,7 +38,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/src/main\n" +
+          "/src/main\n" +
           "└── foo\n" +
           "    ├── bar\n" +
           "    ├── bazzing.gaz\n" +
@@ -58,7 +58,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/src/main/foo/daz  [error opening dir]\n" +
+          "/src/main/foo/daz  [error opening dir]\n" +
           "\n" +
           "0 directories, 1 file";
         expect(appendOutput).not.toHaveBeenCalled();
@@ -74,7 +74,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/some/fake/path  [error opening dir]\n" +
+          "/some/fake/path  [error opening dir]\n" +
           "\n" +
           "0 directories, 0 files";
         expect(appendOutput).not.toHaveBeenCalled();
@@ -90,7 +90,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/src/main/foo\n" +
+          "/src/main/foo\n" +
           "├── bar\n" +
           "├── bazzing.gaz\n" +
           "└── daz\n" +
@@ -108,7 +108,7 @@ describe("Tree", () => {
         await TREE.run(args);
 
         // Assert
-        const expected = "\n/test\n" + "\n" + "0 directories, 0 files";
+        const expected = "/test\n" + "\n" + "0 directories, 0 files";
         expect(appendOutput).not.toHaveBeenCalled();
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
       });
@@ -122,7 +122,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/src/main/.full\n" +
+          "/src/main/.full\n" +
           "├── aFile\n" +
           "└── someEmptyDir\n" +
           "\n" +
@@ -140,7 +140,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/\n" +
+          "/\n" +
           "├── src\n" +
           "│   ├── index.ts\n" +
           "│   └── main\n" +
@@ -160,7 +160,7 @@ describe("Tree", () => {
           type: "given multiple directory paths, should output trees for both",
           args: ["./foo", "./"],
           expected:
-            "\n/src/main/foo\n" +
+            "/src/main/foo\n" +
             "├── bar\n" +
             "├── bazzing.gaz\n" +
             "└── daz\n" +
@@ -176,7 +176,7 @@ describe("Tree", () => {
           type: "given multiple file paths, should output errors for both",
           args: ["foo/daz", ".full/aFile"],
           expected:
-            "\n/src/main/foo/daz  [error opening dir]\n" +
+            "/src/main/foo/daz  [error opening dir]\n" +
             "/src/main/.full/aFile  [error opening dir]\n" +
             "\n" +
             "0 directories, 2 files",
@@ -185,7 +185,7 @@ describe("Tree", () => {
           type: "given a directory and file path, should output a tree and an error",
           args: ["foo", "foo/daz"],
           expected:
-            "\n/src/main/foo\n" +
+            "/src/main/foo\n" +
             "├── bar\n" +
             "├── bazzing.gaz\n" +
             "└── daz\n" +
@@ -197,7 +197,7 @@ describe("Tree", () => {
           type: "given file and directory path, should output an error and a tree",
           args: ["foo/daz", "foo"],
           expected:
-            "\n/src/main/foo/daz  [error opening dir]\n" +
+            "/src/main/foo/daz  [error opening dir]\n" +
             "/src/main/foo\n" +
             "├── bar\n" +
             "├── bazzing.gaz\n" +
@@ -227,7 +227,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/\n" +
+          "/\n" +
           "├── src\n" +
           "│   ├── index.ts\n" +
           "│   └── main\n" +
@@ -260,7 +260,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/\n" +
+          "/\n" +
           "├── src\n" +
           "│   └── main\n" +
           "│       └── foo\n" +
@@ -283,7 +283,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/\n" +
+          "/\n" +
           "├── src\n" +
           "│   └── main\n" +
           "│       ├── .empty\n" +
@@ -312,7 +312,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/\n" +
+          "/\n" +
           "└── src\n" +
           "    ├── index.ts\n" +
           "    └── main\n" +
@@ -337,7 +337,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/\n" +
+          "/\n" +
           "└── src\n" +
           "    ├── index.ts\n" +
           "    └── main\n" +
@@ -367,7 +367,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/\n" +
+          "/\n" +
           "├── /src\n" +
           "│   ├── /src/index.ts\n" +
           "│   └── /src/main\n" +
@@ -394,7 +394,7 @@ describe("Tree", () => {
 
         // Assert
         const expected =
-          "\n/\n" +
+          "/\n" +
           "├── /src\n" +
           "│   ├── /src/index.ts\n" +
           "│   └── /src/main\n" +
@@ -424,7 +424,7 @@ describe("Tree", () => {
           depth: 1,
           expectedDepth: 1,
           expected:
-            "\n/\n" +
+            "/\n" +
             "├── src\n" +
             "└── test\n" +
             "/src/main/foo/daz  [error opening dir]\n" +
@@ -436,7 +436,7 @@ describe("Tree", () => {
           depth: 2,
           expectedDepth: 2,
           expected:
-            "\n/\n" +
+            "/\n" +
             "├── src\n" +
             "│   ├── index.ts\n" +
             "│   └── main\n" +
@@ -450,7 +450,7 @@ describe("Tree", () => {
           depth: 3,
           expectedDepth: 3,
           expected:
-            "\n/\n" +
+            "/\n" +
             "├── src\n" +
             "│   ├── index.ts\n" +
             "│   └── main\n" +
@@ -465,7 +465,7 @@ describe("Tree", () => {
           depth: 3.9,
           expectedDepth: 3,
           expected:
-            "\n/\n" +
+            "/\n" +
             "├── src\n" +
             "│   ├── index.ts\n" +
             "│   └── main\n" +
@@ -505,7 +505,7 @@ describe("Tree", () => {
           await TREE.run(args);
 
           // Assert
-          const expected = "\ntree: Invalid level, must be greater than 0.";
+          const expected = "tree: Invalid level, must be greater than 0.";
 
           expect(appendOutput).toHaveBeenCalledExactlyOnceWith(expected);
           expect(appendRawOutput).not.toHaveBeenCalled();

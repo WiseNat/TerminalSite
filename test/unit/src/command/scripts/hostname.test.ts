@@ -19,7 +19,7 @@ describe("Hostname", () => {
 
       // Assert
       expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-        "\nnathan-wise-portfolio",
+        "nathan-wise-portfolio",
       );
     });
 
@@ -32,7 +32,7 @@ describe("Hostname", () => {
         await HOSTNAME_COMMAND.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith("\nlocaldomain");
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith("localdomain");
       });
     });
 
@@ -46,7 +46,7 @@ describe("Hostname", () => {
 
         // Assert
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          "\nnathan-wise-portfolio.localdomain",
+          "nathan-wise-portfolio.localdomain",
         );
       });
     });
@@ -60,7 +60,7 @@ describe("Hostname", () => {
         await HOSTNAME_COMMAND.run(args);
 
         // Assert
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith("\n127.0.0.1");
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith("127.0.0.1");
       });
     });
   });

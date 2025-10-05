@@ -220,7 +220,7 @@ export default class TerminalUtil {
    * @param text text to append
    * @param onNewLine whether to append the text so that it is on a new line
    */
-  public static appendRawOutput(text: string, onNewLine: boolean = false) {
+  public static appendRawOutput(text: string, onNewLine: boolean = true) {
     if (onNewLine && TerminalUtil.getOutput() !== "") {
       text = `\n${text}`;
     }

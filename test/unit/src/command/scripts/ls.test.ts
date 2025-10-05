@@ -46,7 +46,7 @@ describe("Ls", () => {
         await LS.run(args);
 
         // Assert
-        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith("\nfoo");
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith("foo");
         expect(appendOutput).not.toHaveBeenCalled();
       });
 
@@ -58,7 +58,7 @@ describe("Ls", () => {
         await LS.run(args);
 
         // Assert
-        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith("\nfoo");
+        expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith("foo");
         expect(appendOutput).not.toHaveBeenCalled();
       });
 
@@ -83,7 +83,7 @@ describe("Ls", () => {
 
         // Assert
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-          "\naFile\tsomeEmptyDir",
+          "aFile\tsomeEmptyDir",
         );
         expect(appendOutput).not.toHaveBeenCalled();
       });
@@ -109,7 +109,7 @@ describe("Ls", () => {
 
         // Assert
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-          "\n/src/index.ts",
+          "/src/index.ts",
         );
         expect(appendOutput).not.toHaveBeenCalled();
       });
@@ -123,7 +123,7 @@ describe("Ls", () => {
 
         // Assert
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-          "\n/src/main/.testing",
+          "/src/main/.testing",
         );
         expect(appendOutput).not.toHaveBeenCalled();
       });
@@ -146,7 +146,7 @@ describe("Ls", () => {
 
           // Assert
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
-            `\nls: cannot access '${expected}': No such file or directory`,
+            `ls: cannot access '${expected}': No such file or directory`,
           );
           expect(appendOutput).not.toHaveBeenCalled();
         });
@@ -157,7 +157,7 @@ describe("Ls", () => {
           type: "single unknown path, single directory, single file path",
           args: ["/some/fake/path", "/src/main/foo", "/src/index.ts"],
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\n/src/index.ts" +
             "\n\n/src/main/foo:" +
             "\nbar\tbazzing.gaz\tdaz",
@@ -173,7 +173,7 @@ describe("Ls", () => {
             "/src/main/.testing",
           ],
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n/src/index.ts\t/src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -184,7 +184,7 @@ describe("Ls", () => {
           type: "single unknown path, single directory",
           args: ["/some/fake/path", "/src/main/foo"],
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\n/src/main/foo:" +
             "\nbar\tbazzing.gaz\tdaz",
         },
@@ -192,16 +192,14 @@ describe("Ls", () => {
           type: "single unknown path, single file path",
           args: ["/some/fake/path", "/src/index.ts"],
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\n/src/index.ts",
         },
         {
           type: "single directory, single file path",
           args: ["/src/main/foo", "/src/index.ts"],
           expected:
-            "\n/src/index.ts" +
-            "\n\n/src/main/foo:" +
-            "\nbar\tbazzing.gaz\tdaz",
+            "/src/index.ts" + "\n\n/src/main/foo:" + "\nbar\tbazzing.gaz\tdaz",
         },
       ].forEach(({ type, args, expected }) => {
         test(`Given multiple arguments (${type}), outputs everything in a structured way`, async () => {
@@ -230,7 +228,7 @@ describe("Ls", () => {
         // Assert
         // foo/bazzing.gaz  foo/daz  .full/aFile  index.ts  .testing
         const expected =
-          "\n/src/index.ts\t/src/main/foo/bazzing.gaz\t/src/main/foo/daz\t/src/main/.full/aFile\t/src/main/.testing";
+          "/src/index.ts\t/src/main/foo/bazzing.gaz\t/src/main/foo/daz\t/src/main/.full/aFile\t/src/main/.testing";
         expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
         expect(appendOutput).not.toHaveBeenCalled();
       });
@@ -250,7 +248,7 @@ describe("Ls", () => {
 
         // Assert
         const expected =
-          "\n/src:" +
+          "/src:" +
           "\nindex.ts\tmain" +
           "\n\n/src/main/.empty:" +
           "\n\n/src/main/foo:" +
@@ -285,7 +283,7 @@ describe("Ls", () => {
 
           // Assert
           const expected =
-            `\n${typeExpected}` + "/src/main/foo:" + "\nbar\tbazzing.gaz\tdaz";
+            `${typeExpected}` + "/src/main/foo:" + "\nbar\tbazzing.gaz\tdaz";
           expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
           expect(appendOutput).not.toHaveBeenCalled();
         });
@@ -311,7 +309,7 @@ describe("Ls", () => {
 
           // Assert
           const expected =
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n/src/index.ts\t/src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -342,7 +340,7 @@ describe("Ls", () => {
 
         // Assert
         const expected =
-          "\nls: cannot access '/some/fake/path': No such file or directory" +
+          "ls: cannot access '/some/fake/path': No such file or directory" +
           "\nls: cannot access '/some/other/fake/path': No such file or directory" +
           "\n/src/index.ts" +
           "\n/src/main/.testing" +
@@ -375,7 +373,7 @@ describe("Ls", () => {
 
           // Assert
           const expected =
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n26 /src/index.ts\t10 /src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -406,7 +404,7 @@ describe("Ls", () => {
 
           // Assert
           const expected =
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n26 /src/index.ts\t10 /src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -442,7 +440,7 @@ describe("Ls", () => {
 
           // Assert
           const expected =
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n26K /src/index.ts\t10K /src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -466,7 +464,7 @@ describe("Ls", () => {
           flags: ["-s"],
           blockSize: 1,
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n26624 /src/index.ts\t9728 /src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -479,7 +477,7 @@ describe("Ls", () => {
           flags: ["-s"],
           blockSize: 512,
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n52 /src/index.ts\t19 /src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -492,7 +490,7 @@ describe("Ls", () => {
           flags: ["-s"],
           blockSize: 2048,
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n13 /src/index.ts\t5 /src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -505,7 +503,7 @@ describe("Ls", () => {
           flags: [],
           blockSize: 2048,
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n/src/index.ts\t/src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -540,7 +538,7 @@ describe("Ls", () => {
         {
           blockSize: 1,
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n26624 /src/index.ts\t9728 /src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -552,7 +550,7 @@ describe("Ls", () => {
         {
           blockSize: 512,
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n52 /src/index.ts\t19 /src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -564,7 +562,7 @@ describe("Ls", () => {
         {
           blockSize: 1024,
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n26 /src/index.ts\t10 /src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -576,7 +574,7 @@ describe("Ls", () => {
         {
           blockSize: 2048,
           expected:
-            "\nls: cannot access '/some/fake/path': No such file or directory" +
+            "ls: cannot access '/some/fake/path': No such file or directory" +
             "\nls: cannot access '/some/other/fake/path': No such file or directory" +
             "\n13 /src/index.ts\t5 /src/main/.testing" +
             "\n\n/src/main/foo:" +
@@ -652,7 +650,7 @@ describe("Ls", () => {
 
         // Assert
         const expected =
-          "\nls: cannot access '/some/fake/path': No such file or directory" +
+          "ls: cannot access '/some/fake/path': No such file or directory" +
           "\nls: cannot access '/some/other/fake/path': No such file or directory" +
           "\n-rw-rw-r-- 1 nathanwise nathanwise\t0 Jan 1 00:00 /src/index.ts" +
           "\n-rw-rw-r-- 1 nathanwise nathanwise\t0 Jan 1 00:00 /src/main/.testing" +

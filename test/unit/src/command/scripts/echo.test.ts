@@ -18,7 +18,7 @@ describe("Echo", () => {
       await ECHO.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledWith("\nfoo bar");
+      expect(appendOutput).toHaveBeenCalledWith("foo bar");
     });
 
     test("should append nothing when no args are provided", async () => {
@@ -29,7 +29,7 @@ describe("Echo", () => {
       await ECHO.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledWith("\n");
+      expect(appendOutput).toHaveBeenCalledWith("");
     });
 
     test("should not options when outputting", async () => {
@@ -40,7 +40,7 @@ describe("Echo", () => {
       await ECHO.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledWith("\nfoo bar -a baz --gaz");
+      expect(appendOutput).toHaveBeenCalledWith("foo bar -a baz --gaz");
     });
   });
 });

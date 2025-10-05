@@ -77,9 +77,7 @@ describe("Cd", () => {
           homeDirectory,
         );
 
-        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\n${homeDirectory}`,
-        );
+        expect(appendOutput).toHaveBeenCalledExactlyOnceWith(homeDirectory);
       });
 
       test("'-' as the argument when two previous working directories exist, changes directory to the previous working directory", async () => {
@@ -108,7 +106,7 @@ describe("Cd", () => {
         );
 
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\n${previousWorkingDirectory}`,
+          previousWorkingDirectory,
         );
       });
 
@@ -148,7 +146,7 @@ describe("Cd", () => {
         );
 
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\n${previousWorkingDirectory}`,
+          previousWorkingDirectory,
         );
       });
 
@@ -177,8 +175,8 @@ describe("Cd", () => {
         );
 
         expect(appendOutput).toHaveBeenCalledTimes(2);
-        expect(appendOutput).toHaveBeenNthCalledWith(1, `\n${homeDirectory}`);
-        expect(appendOutput).toHaveBeenNthCalledWith(1, `\n${homeDirectory}`);
+        expect(appendOutput).toHaveBeenNthCalledWith(1, homeDirectory);
+        expect(appendOutput).toHaveBeenNthCalledWith(1, homeDirectory);
       });
     });
 
@@ -190,7 +188,7 @@ describe("Cd", () => {
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          "\nbash: cd: too many arguments",
+          "bash: cd: too many arguments",
         );
       });
 
@@ -201,7 +199,7 @@ describe("Cd", () => {
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          "\nbash: cd: OLDPWD not set",
+          "bash: cd: OLDPWD not set",
         );
       });
 
@@ -215,7 +213,7 @@ describe("Cd", () => {
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\nbash: cd: ${directoryPath}: Not a directory`,
+          `bash: cd: ${directoryPath}: Not a directory`,
         );
       });
 
@@ -229,7 +227,7 @@ describe("Cd", () => {
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\nbash: cd: ${directoryPath}: No such file or directory`,
+          `bash: cd: ${directoryPath}: No such file or directory`,
         );
       });
 
@@ -243,7 +241,7 @@ describe("Cd", () => {
         // Assert
         expect(setCurrentWorkingDirectory).not.toHaveBeenCalled();
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          `\nbash: cd: ${directoryPath}: No such file or directory`,
+          `bash: cd: ${directoryPath}: No such file or directory`,
         );
       });
     });

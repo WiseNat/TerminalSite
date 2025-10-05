@@ -6,7 +6,7 @@ const LOGIN: CommandScript = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async run(_args: string[]): Promise<void> {
     const errorMessage = CommandUtil.getNoPermissionsCommandMessage("login");
-    TerminalUtil.appendOutput(`\n${errorMessage}`);
+    TerminalUtil.appendOutput(errorMessage);
   },
 };
 

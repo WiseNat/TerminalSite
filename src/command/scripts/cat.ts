@@ -30,7 +30,7 @@ const CAT: CommandScript = {
       }
     }
 
-    TerminalUtil.appendRawOutput(`\n${output.join("\n")}`);
+    TerminalUtil.appendRawOutput(output.join("\n"));
   },
 };
 

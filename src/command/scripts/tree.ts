@@ -32,7 +32,7 @@ const TREE: CommandScript = {
 
       if (isNaN(lFlagValue) || lFlagValue < 1) {
         TerminalUtil.appendOutput(
-          "\ntree: Invalid level, must be greater than 0.",
+          "tree: Invalid level, must be greater than 0.",
         );
         return;
       }
@@ -46,7 +46,7 @@ const TREE: CommandScript = {
       L: lFlagValue,
     });
 
-    TerminalUtil.appendRawOutput(`\n${output}`);
+    TerminalUtil.appendRawOutput(output);
   },
 };
 

@@ -31,7 +31,7 @@ describe("Commands that Output Nothing", () => {
 
       // Assert
       expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-        `\n/bin/${command}: cannot execute binary file: Exec format error`,
+        `/bin/${command}: cannot execute binary file: Exec format error`,
       );
     });
   });
