@@ -3,6 +3,7 @@ import { BLACK, BLUE, CYAN, GREEN, MAGENTA, RED } from "../constant/colour.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import CssUtil from "./css_util.ts";
 import TerminalUtil from "./terminal_util.ts";
+import HtmlUtil from "./html_util.ts";
 
 export interface FileSystemEntryStyle {
   foreground: string | null;
@@ -91,7 +92,7 @@ export default class FormatterUtil {
    * @param style the value to use to create the style string.
    * @returns an HTML CSS Style String.
    */
-  private static createStyleString(style: FileSystemEntryStyle) {
+  public static createStyleString(style: FileSystemEntryStyle) {
     return [
       style.foreground === null ? null : `color: ${style.foreground}`,
       style.background === null ? null : `background: ${style.background}`,
@@ -104,8 +105,8 @@ export default class FormatterUtil {
   }
 
   /**
-   * Converts to provided `items` into a grid that has a shape based on the
-   * current size of the terminal output element and the contents of the items.
+   * Converts the provided `items` into a grid that has a shape based on the
+   * current size of the terminal output element, and the size of the items.
    * <p>
    * This arranges elements into white-space padded columns and rows where
    * elements are ordered column by column.
@@ -115,8 +116,9 @@ export default class FormatterUtil {
    * for distinguishing between visual and non-visual content such as with HTML
    * elements.
    *
-   * @param items
-   * @param paddingSize
+   * @param items the items to insert into the grid.
+   * @param paddingSize the amount of extra padding between items.
+   * @see toStaticGrid
    */
   public static toDynamicGrid(
     items: GridElement[],
@@ -243,5 +245,63 @@ export default class FormatterUtil {
     }
 
     return grid;
+  }
+
+  /**
+   * Converts the provided `columns` into a grid of columns. Each column will be
+   * split by newlines and padded so that each column is next to each other.
+   * <p>
+   * This is not responsive for element sizing and will visually overrun lines
+   * if the total row data is larger than the maximum amount of characters for
+   * a line. Usage of this method should be cautious as mobile devices may be
+   * negatively impacted by its lack of responsiveness.
+   *
+   * @param columns the columns to insert into the grid.
+   * @param paddingSize the amount of extra padding between columns.
+   * @see toDynamicGrid
+   */
+  public static toStaticGrid(columns: string[], paddingSize: number = 3) {
+    if (columns.length === 0) {
+      return "";
+    }
+
+    const grid: string[][] = Array.from({ length: columns.length }, () => []);
+    let maximumRows = 0;
+    const maximumColumnLengths: number[] = Array.from({
+      length: columns.length,
+    });
+
+    for (let i = 0; i < grid.length; i++) {
+      grid[i] = columns[i].split("\n");
+
+      maximumRows = Math.max(maximumRows, grid[i].length);
+
+      maximumColumnLengths[i] = Math.max(
+        ...grid[i].map((i) => HtmlUtil.extractVisibleText(i).length),
+      );
+    }
+
+    let output = "";
+    for (let row = 0; row < maximumRows; row++) {
+      for (let column = 0; column < grid.length; column++) {
+        let columnData = grid[column][row] ?? "";
+
+        if (column !== grid.length - 1) {
+          // Potentially more performant not recalculating visible text, though
+          // this would result in processing a messy data structure
+          const spaces =
+            maximumColumnLengths[column] +
+            paddingSize -
+            HtmlUtil.extractVisibleText(columnData).length;
+          columnData += " ".repeat(spaces);
+        }
+
+        output += columnData;
+      }
+
+      output += "\n";
+    }
+
+    return output.trimEnd();
   }
 }

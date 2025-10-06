@@ -11,6 +11,7 @@ import {
   RED,
 } from "../../../../src/constant/colour";
 import CssUtil from "../../../../src/util/css_util.ts";
+import HtmlUtil from "../../../../src/util/html_util.ts";
 
 /**
  * Creates a minimal node with modifications to the fields that matter for `getFileSystemEntryStyle`
@@ -35,10 +36,11 @@ function createNode(
   };
 }
 
-describe("ColourUtil", () => {
+describe("FormatterUtil", () => {
   // Mock
   vi.mock("../../../../src/util/terminal_util");
   vi.mock("../../../../src/util/css_util");
+  vi.mock("../../../../src/util/html_util");
 
   describe("getFileSystemEntry", () => {
     [
@@ -379,6 +381,93 @@ describe("ColourUtil", () => {
 
       // Assert
       expect(result).toEqual("A  D\nB  E\nC");
+    });
+  });
+
+  describe("toStaticGrid", () => {
+    vi.mocked(HtmlUtil.extractVisibleText).mockImplementation((html) => {
+      // Does not work with all HTML, just a rough solution as JSDom does
+      // not support innerText
+      return html.replaceAll(/<\/?[^>]+(>|$)/g, "");
+    });
+
+    test("one item should return the same value", () => {
+      // Arrange
+      const columns: string[] = [
+        "Example" +
+          "\n<span style='color: red'>Data</span> with" +
+          "\nA <span style='color: green'>METRIC TON</span> of..........." +
+          "\nlines!!!",
+      ];
+
+      // Act
+      const result = FormatterUtil.toStaticGrid(columns);
+
+      // Assert
+      expect(result).toEqual(columns[0]);
+    });
+
+    test("no items should return nothing", () => {
+      // Arrange
+      const columns: string[] = [];
+
+      // Act
+      const result = FormatterUtil.toStaticGrid(columns);
+
+      // Assert
+      expect(result).toEqual("");
+    });
+
+    [
+      {
+        type: "Multiple simplistic columns",
+        columns: [
+          "A\nAA\nAAA\nAAAA\nAAAAA",
+          "B\nBB\nBBB\nBBBB\nBBBBB",
+          "CCCCC\nCCCC\nCCC\nCC\nC",
+        ],
+        expected:
+          "A       B       CCCCC" +
+          "\nAA      BB      CCCC" +
+          "\nAAA     BBB     CCC" +
+          "\nAAAA    BBBB    CC" +
+          "\nAAAAA   BBBBB   C",
+      },
+      {
+        type: "Multiple HTML Columns",
+        columns: [
+          "Example" +
+            "\n<span style='color: red'>Data</span> with" +
+            "\nA <span style='color: green'>METRIC TON</span> of..........." +
+            "\nlines!!!" +
+            "\n\nBAZ",
+          "\n" + "\nFOOOOO" + "\nbar" + "\n!!!" + "\n" + "\na",
+        ],
+        expected:
+          "Example                      \n" +
+          "<span style='color: red'>Data</span> with                    \n" +
+          "A <span style='color: green'>METRIC TON</span> of...........   FOOOOO\n" +
+          "lines!!!                     bar\n" +
+          "                             !!!\n" +
+          "BAZ                          \n" +
+          "                             a",
+        foo:
+          "Example                      \n" +
+          "Data with                    \n" +
+          "A METRIC TON of...........   FOOOOO\n" +
+          "lines!!!                     bar\n" +
+          "                             !!!\n" +
+          "BAZ                          \n" +
+          "                             a",
+      },
+    ].forEach(({ type, columns, expected }) => {
+      test(`${type} are ordered into columns in the correct order with the right positioning & padding`, () => {
+        // Act
+        const result = FormatterUtil.toStaticGrid(columns);
+
+        // Assert
+        expect(result).toEqual(expected);
+      });
     });
   });
 });
