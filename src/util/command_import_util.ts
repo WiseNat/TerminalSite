@@ -12,8 +12,6 @@ const COMMANDS: Record<string, { default: CommandScript }> = import.meta.glob<{
 ObjectUtil.removeKeyAffix(COMMANDS, "./", ".ts");
 ObjectUtil.removeKeyPrefix(COMMANDS, "fake/");
 
-console.warn(COMMANDS);
-
 export default class CommandImportUtil {
   /**
    * @returns a list of all existing {@link CommandScript}s.
