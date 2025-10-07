@@ -35,4 +35,16 @@ export default class HtmlUtil {
   public static refreshPage() {
     globalThis.location.reload();
   }
+
+  // TODO: Call in places with { actual: string, visual: string }?
+  /**
+   * Extracts the visible text in the Browser for a given HTML String
+   * @param html a HTML string
+   * @returns the {@link innerText} of the HTML string.
+   */
+  public static extractVisibleText(html: string): string {
+    const span = document.createElement("span");
+    span.innerHTML = html;
+    return span.innerText;
+  }
 }

@@ -12,7 +12,7 @@ import {
 
 const UNAME: CommandScript = {
   async run(args: string[]): Promise<void> {
-    const parsedOptions = CommandUtil.parseArgs("hostname", args, {
+    const parsedOptions = CommandUtil.parseArgs("uname", args, {
       boolean: ["a", "s", "n", "r", "v", "m", "p", "i", "o"],
       alias: {
         a: ["all"],
