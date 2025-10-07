@@ -255,6 +255,10 @@ export default class FormatterUtil {
    * if the total row data is larger than the maximum amount of characters for
    * a line. Usage of this method should be cautious as mobile devices may be
    * negatively impacted by its lack of responsiveness.
+   * <p>
+   * Usage of HTML elements must be cautious. If an HTML element exists across
+   * multiple newlines, it will be split across multiple columns. To avoid this
+   * make sure all HTML elements are only for a single line.
    *
    * @param columns the columns to insert into the grid.
    * @param paddingSize the amount of extra padding between columns.
