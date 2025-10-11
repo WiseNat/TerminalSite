@@ -189,7 +189,6 @@ export default class CommandUtil {
     return parsedOptions;
   }
 
-  // TODO: Move to ErrorMessageUtil
   /**
    * @param commandName the name of the command
    * @returns an error message for a corrupted command
@@ -198,7 +197,6 @@ export default class CommandUtil {
     return `/bin/${commandName}: cannot execute binary file: Exec format error`;
   }
 
-  // TODO: Move to ErrorMessageUtil
   /**
    * @param commandName the name of the command
    * @returns an error message for a command that the user has no permissions to execute
@@ -207,8 +205,6 @@ export default class CommandUtil {
     return `/bin/${commandName}: Permission denied`;
   }
 
-  // TODO: Unit test!
-  // TODO: Move to ErrorMessageUtil
   /**
    * Gets an error message based on the provided file path.
    *
