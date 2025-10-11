@@ -36,7 +36,6 @@ export default class HtmlUtil {
     globalThis.location.reload();
   }
 
-  // TODO: Call in places with { actual: string, visual: string }?
   /**
    * Extracts the visible text in the Browser for a given HTML String
    * @param html a HTML string

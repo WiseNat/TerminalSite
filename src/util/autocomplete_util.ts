@@ -61,12 +61,7 @@ export default class AutocompleteUtil {
       console.info("Providing a list of suggested autocompletion suggestions");
 
       const joinedSuggestions = FormatterUtil.toDynamicGrid(
-        suggestions.map((suggestion) => {
-          return {
-            visual: suggestion.visual,
-            actual: suggestion.visual,
-          };
-        }),
+        suggestions.map((suggestion) => suggestion.visual),
       );
 
       const prompt = TerminalUtil.getPrompt();

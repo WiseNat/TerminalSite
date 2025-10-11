@@ -1,7 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import FormatterUtil, {
-  GridElement,
-} from "../../../../src/util/formatter_util.ts";
+import FormatterUtil from "../../../../src/util/formatter_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
 import {
   BLUE,
@@ -12,6 +10,7 @@ import {
 } from "../../../../src/constant/colour";
 import CssUtil from "../../../../src/util/css_util.ts";
 import HtmlUtil from "../../../../src/util/html_util.ts";
+import { mockExtractVisibleText } from "../../helper/mocks.ts";
 
 /**
  * Creates a minimal node with modifications to the fields that matter for `getFileSystemEntryStyle`
@@ -41,6 +40,8 @@ describe("FormatterUtil", () => {
   vi.mock("../../../../src/util/terminal_util");
   vi.mock("../../../../src/util/css_util");
   vi.mock("../../../../src/util/html_util");
+
+  mockExtractVisibleText();
 
   describe("getFileSystemEntry", () => {
     [
@@ -238,7 +239,7 @@ describe("FormatterUtil", () => {
       // Arrange
       vi.mocked(CssUtil.getCharacterWidth).mockReturnValue(1);
       vi.mocked(CssUtil.getElementWidth).mockReturnValue(50);
-      const items: GridElement[] = [{ visual: "FOO", actual: "FOO" }];
+      const items: string[] = ["FOO"];
 
       // Act
       const result = FormatterUtil.toDynamicGrid(items);
@@ -251,7 +252,7 @@ describe("FormatterUtil", () => {
       // Arrange
       vi.mocked(CssUtil.getCharacterWidth).mockReturnValue(1);
       vi.mocked(CssUtil.getElementWidth).mockReturnValue(50);
-      const items: GridElement[] = [];
+      const items: string[] = [];
 
       // Act
       const result = FormatterUtil.toDynamicGrid(items);
@@ -264,15 +265,7 @@ describe("FormatterUtil", () => {
       // Arrange
       vi.mocked(CssUtil.getCharacterWidth).mockReturnValue(1);
       vi.mocked(CssUtil.getElementWidth).mockReturnValue(7);
-      const items: GridElement[] = [
-        { visual: "A", actual: "A" },
-        { visual: "B", actual: "B" },
-        { visual: "C", actual: "C" },
-        { visual: "D", actual: "D" },
-        { visual: "E", actual: "E" },
-        { visual: "F", actual: "F" },
-        { visual: "G", actual: "G" },
-      ];
+      const items: string[] = ["A", "B", "C", "D", "E", "F", "G"];
 
       // Act
       const result = FormatterUtil.toDynamicGrid(items);
@@ -285,16 +278,7 @@ describe("FormatterUtil", () => {
       // Arrange
       vi.mocked(CssUtil.getCharacterWidth).mockReturnValue(1);
       vi.mocked(CssUtil.getElementWidth).mockReturnValue(16);
-      // A..CCCCCCCCCC
-      const items: GridElement[] = [
-        { visual: "A", actual: "A" },
-        { visual: "B", actual: "B" },
-        { visual: "CCCCCCCCCC", actual: "CCCCCCCCCC" },
-        { visual: "D", actual: "D" },
-        { visual: "E", actual: "E" },
-        { visual: "F", actual: "F" },
-        { visual: "G", actual: "G" },
-      ];
+      const items: string[] = ["A", "B", "CCCCCCCCCC", "D", "E", "F", "G"];
 
       // Act
       const result = FormatterUtil.toDynamicGrid(items);
@@ -309,13 +293,7 @@ describe("FormatterUtil", () => {
       // Arrange
       vi.mocked(CssUtil.getCharacterWidth).mockReturnValue(1);
       vi.mocked(CssUtil.getElementWidth).mockReturnValue(50);
-      const items: GridElement[] = [
-        { visual: "A", actual: "A" },
-        { visual: "B", actual: "B" },
-        { visual: "C", actual: "C" },
-        { visual: "D", actual: "D" },
-        { visual: "E", actual: "E" },
-      ];
+      const items: string[] = ["A", "B", "C", "D", "E"];
 
       // Act
       const result = FormatterUtil.toDynamicGrid(items);
@@ -328,13 +306,7 @@ describe("FormatterUtil", () => {
       // Arrange
       vi.mocked(CssUtil.getCharacterWidth).mockReturnValue(1);
       vi.mocked(CssUtil.getElementWidth).mockReturnValue(1);
-      const items: GridElement[] = [
-        { visual: "A", actual: "A" },
-        { visual: "B", actual: "B" },
-        { visual: "C", actual: "C" },
-        { visual: "D", actual: "D" },
-        { visual: "E", actual: "E" },
-      ];
+      const items: string[] = ["A", "B", "C", "D", "E"];
 
       // Act
       const result = FormatterUtil.toDynamicGrid(items);
@@ -348,13 +320,7 @@ describe("FormatterUtil", () => {
         // Arrange
         vi.mocked(CssUtil.getCharacterWidth).mockReturnValue(characterWidth);
         vi.mocked(CssUtil.getElementWidth).mockReturnValue(2.5);
-        const items: GridElement[] = [
-          { visual: "A", actual: "A" },
-          { visual: "B", actual: "B" },
-          { visual: "C", actual: "C" },
-          { visual: "D", actual: "D" },
-          { visual: "E", actual: "E" },
-        ];
+        const items: string[] = ["A", "B", "C", "D", "E"];
 
         // Act
         const result = FormatterUtil.toDynamicGrid(items);
@@ -364,23 +330,26 @@ describe("FormatterUtil", () => {
       });
     });
 
-    test("multiple items with a larger actual than visual rely on the visual value for calculating the grid", () => {
+    test("multiple items with HTML rely on the visual value for calculating the grid", () => {
       // Arrange
       vi.mocked(CssUtil.getCharacterWidth).mockReturnValue(1);
       vi.mocked(CssUtil.getElementWidth).mockReturnValue(8);
-      const items: GridElement[] = [
-        { visual: "AA", actual: "A" },
-        { visual: "BB", actual: "B" },
-        { visual: "CC", actual: "C" },
-        { visual: "DD", actual: "D" },
-        { visual: "EE", actual: "E" },
+      const items: string[] = [
+        "<span>A</span>",
+        "<a href='https://example.org'>B</a>",
+        "<ul>C</ul>",
+        "<b>D</b>",
+        "E",
       ];
 
       // Act
       const result = FormatterUtil.toDynamicGrid(items);
 
       // Assert
-      expect(result).toEqual("A  D\nB  E\nC");
+      expect(result).toEqual(
+        "<span>A</span>  <ul>C</ul>  E" +
+          "\n<a href='https://example.org'>B</a>  <b>D</b>",
+      );
     });
   });
 

@@ -28,7 +28,7 @@ describe("Ls", () => {
   );
 
   vi.mocked(FormatterUtil.toDynamicGrid).mockImplementation((items) => {
-    return items.map((e) => e.actual).join("\t");
+    return items.join("\t");
   });
 
   beforeEach(() => {
