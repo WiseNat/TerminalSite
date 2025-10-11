@@ -399,17 +399,17 @@ test.describe("Ls", () => {
         // Assert
         const expected =
           `\nls: cannot access '${fakePath}': No such file or directory` +
-          `\n-rw-rw-r-- 1 root root\t1K Sep 17 22:41 ${existingFile}` +
-          "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+          `\n-rw-rw-r-- 1 root root\t1K Oct 11 20:47 ${existingFile}` +
+          "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Oct 11 20:47 /src/main/nathanwise/.bashrc" +
           `\n\n${existingDirectory}:` +
           "\ntotal: 52K" +
-          "\n-rw-rw-r-- 1 root root\t1K Sep 17 22:41 archive.zip" +
-          "\n-rw-rw-r-- 1 root root\t1K Sep 17 22:41 audio.mp3" +
-          "\ndrwxr-xr-x 2 root root\t4K Sep 17 22:41 dir" +
-          "\n-rwxrwxrwx 1 root root\t1K Sep 17 22:41 executable.sh" +
-          "\n-rw-rw-r-- 1 root root\t1K Sep 17 22:41 image.png" +
-          "\n-rw-rw-r-- 1 root root\t1K Sep 17 22:41 normal.txt" +
-          "\n-rw-rw-r-- 1 root root\t1K Sep 17 22:41 rubbish.tmp";
+          "\n-rw-rw-r-- 1 root root\t1K Oct 11 20:47 archive.zip" +
+          "\n-rw-rw-r-- 1 root root\t1K Oct 11 20:47 audio.mp3" +
+          "\ndrwxr-xr-x 2 root root\t4K Oct 11 20:47 dir" +
+          "\n-rwxrwxrwx 1 root root\t1K Oct 11 20:47 executable.sh" +
+          "\n-rw-rw-r-- 1 root root\t1K Oct 11 20:47 image.png" +
+          "\n-rw-rw-r-- 1 root root\t1K Oct 11 20:47 normal.txt" +
+          "\n-rw-rw-r-- 1 root root\t1K Oct 11 20:47 rubbish.tmp";
         await assertOutputInTerminal(page, `${input}${expected}`);
         await checkForColouredSpans(page, {
           directory: 1,
@@ -548,120 +548,120 @@ test.describe("Ls", () => {
       blockSize: 1,
       desktopExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 ${existingFile}` +
-        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+        `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 53248" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 archive.zip" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 audio.mp3" +
-        "\ndrwxr-xr-x 2 root root\t4096 Sep 17 22:41 dir" +
-        "\n-rwxrwxrwx 1 root root\t0 Sep 17 22:41 executable.sh" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 image.png" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 normal.txt" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 rubbish.tmp",
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
+        "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
+        "\n-rwxrwxrwx 1 root root\t0 Oct 11 20:47 executable.sh" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 image.png" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 normal.txt" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 rubbish.tmp",
       mobileExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 ${existingFile}` +
-        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+        `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 53248" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 archive.zip" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 audio.mp3" +
-        "\ndrwxr-xr-x 2 root root\t4096 Sep 17 22:41 dir" +
-        "\n-rwxrwxrwx 1 root root\t0 Sep 17 22:41 executable.sh" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 image.png" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 normal.txt" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 rubbish.tmp",
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
+        "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
+        "\n-rwxrwxrwx 1 root root\t0 Oct 11 20:47 executable.sh" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 image.png" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 normal.txt" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 rubbish.tmp",
     },
     {
       flags: ["-l", "-h"],
       blockSize: 1,
       desktopExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 ${existingFile}` +
-        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+        `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 53248" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 archive.zip" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 audio.mp3" +
-        "\ndrwxr-xr-x 2 root root\t4096 Sep 17 22:41 dir" +
-        "\n-rwxrwxrwx 1 root root\t0 Sep 17 22:41 executable.sh" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 image.png" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 normal.txt" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 rubbish.tmp",
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
+        "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
+        "\n-rwxrwxrwx 1 root root\t0 Oct 11 20:47 executable.sh" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 image.png" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 normal.txt" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 rubbish.tmp",
       mobileExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 ${existingFile}` +
-        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+        `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 53248" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 archive.zip" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 audio.mp3" +
-        "\ndrwxr-xr-x 2 root root\t4096 Sep 17 22:41 dir" +
-        "\n-rwxrwxrwx 1 root root\t0 Sep 17 22:41 executable.sh" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 image.png" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 normal.txt" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 rubbish.tmp",
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
+        "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
+        "\n-rwxrwxrwx 1 root root\t0 Oct 11 20:47 executable.sh" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 image.png" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 normal.txt" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 rubbish.tmp",
     },
     {
       flags: ["-l"],
       blockSize: 512,
       desktopExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 ${existingFile}` +
-        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+        `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 104" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 archive.zip" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 audio.mp3" +
-        "\ndrwxr-xr-x 2 root root\t8 Sep 17 22:41 dir" +
-        "\n-rwxrwxrwx 1 root root\t0 Sep 17 22:41 executable.sh" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 image.png" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 normal.txt" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 rubbish.tmp",
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
+        "\ndrwxr-xr-x 2 root root\t8 Oct 11 20:47 dir" +
+        "\n-rwxrwxrwx 1 root root\t0 Oct 11 20:47 executable.sh" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 image.png" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 normal.txt" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 rubbish.tmp",
       mobileExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 ${existingFile}` +
-        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+        `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 104" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 archive.zip" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 audio.mp3" +
-        "\ndrwxr-xr-x 2 root root\t8 Sep 17 22:41 dir" +
-        "\n-rwxrwxrwx 1 root root\t0 Sep 17 22:41 executable.sh" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 image.png" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 normal.txt" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 rubbish.tmp",
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
+        "\ndrwxr-xr-x 2 root root\t8 Oct 11 20:47 dir" +
+        "\n-rwxrwxrwx 1 root root\t0 Oct 11 20:47 executable.sh" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 image.png" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 normal.txt" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 rubbish.tmp",
     },
     {
       flags: ["-l", "-h"],
       blockSize: 2048,
       desktopExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 ${existingFile}` +
-        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+        `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 26" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 archive.zip" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 audio.mp3" +
-        "\ndrwxr-xr-x 2 root root\t2 Sep 17 22:41 dir" +
-        "\n-rwxrwxrwx 1 root root\t0 Sep 17 22:41 executable.sh" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 image.png" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 normal.txt" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 rubbish.tmp",
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
+        "\ndrwxr-xr-x 2 root root\t2 Oct 11 20:47 dir" +
+        "\n-rwxrwxrwx 1 root root\t0 Oct 11 20:47 executable.sh" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 image.png" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 normal.txt" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 rubbish.tmp",
       mobileExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 ${existingFile}` +
-        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+        `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 26" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 archive.zip" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 audio.mp3" +
-        "\ndrwxr-xr-x 2 root root\t2 Sep 17 22:41 dir" +
-        "\n-rwxrwxrwx 1 root root\t0 Sep 17 22:41 executable.sh" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 image.png" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 normal.txt" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 rubbish.tmp",
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
+        "\ndrwxr-xr-x 2 root root\t2 Oct 11 20:47 dir" +
+        "\n-rwxrwxrwx 1 root root\t0 Oct 11 20:47 executable.sh" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 image.png" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 normal.txt" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 rubbish.tmp",
     },
   ].forEach(({ flags, blockSize, desktopExpected, mobileExpected }) => {
     test(`Should alter the Block Size of Files when ${flags} is present with block size ${blockSize}`, async ({
@@ -704,17 +704,17 @@ test.describe("Ls", () => {
       // Assert
       const expected =
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 ${existingFile}` +
-        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+        `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 52" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 archive.zip" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 audio.mp3" +
-        "\ndrwxr-xr-x 2 root root\t4096 Sep 17 22:41 dir" +
-        "\n-rwxrwxrwx 1 root root\t0 Sep 17 22:41 executable.sh" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 image.png" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 normal.txt" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 rubbish.tmp";
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
+        "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
+        "\n-rwxrwxrwx 1 root root\t0 Oct 11 20:47 executable.sh" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 image.png" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 normal.txt" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 rubbish.tmp";
       await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 1,
@@ -736,17 +736,17 @@ test.describe("Ls", () => {
       // Assert
       const expected =
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 ${existingFile}` +
-        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Sep 17 22:41 /src/main/nathanwise/.bashrc" +
+        `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
+        "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 52" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 archive.zip" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 audio.mp3" +
-        "\ndrwxr-xr-x 2 root root\t4096 Sep 17 22:41 dir" +
-        "\n-rwxrwxrwx 1 root root\t0 Sep 17 22:41 executable.sh" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 image.png" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 normal.txt" +
-        "\n-rw-rw-r-- 1 root root\t0 Sep 17 22:41 rubbish.tmp";
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
+        "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
+        "\n-rwxrwxrwx 1 root root\t0 Oct 11 20:47 executable.sh" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 image.png" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 normal.txt" +
+        "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 rubbish.tmp";
       await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 1,

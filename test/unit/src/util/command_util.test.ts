@@ -279,4 +279,32 @@ describe("CommandUtil", () => {
       });
     });
   });
+
+  describe("getInvalidFilePathError", () => {
+    test("should return an error if the given path is a directory path", () => {
+      // Arrange
+      const path = "/src/main";
+      const commandName = "COMMAND_NAME";
+
+      // Act
+      const result = CommandUtil.getInvalidFilePathError(path, commandName);
+
+      // Assert
+      expect(result).toEqual("COMMAND_NAME: /src/main: Is a directory");
+    });
+
+    test("should return an error if the given path is unknown", () => {
+      // Arrange
+      const path = "/some/fake/path";
+      const commandName = "COMMAND_NAME";
+
+      // Act
+      const result = CommandUtil.getInvalidFilePathError(path, commandName);
+
+      // Assert
+      expect(result).toEqual(
+        "COMMAND_NAME: /some/fake/path: No such file or directory",
+      );
+    });
+  });
 });
