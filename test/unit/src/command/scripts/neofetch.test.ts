@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import NEOFETCH from "../../../../../src/command/scripts/neofetch.ts";
 import TerminalUtil from "../../../../../src/util/terminal_util.ts";
-import HtmlUtil from "../../../../../src/util/html_util.ts";
 import { escapeRegExp } from "lodash-es";
+import { mockExtractVisibleText } from "../../../helper/mocks.ts";
 
 /**
  * @param text the text to check
@@ -61,6 +61,7 @@ describe("Neofetch", () => {
   vi.spyOn(navigator, "hardwareConcurrency", "get").mockReturnValue(8);
 
   // Mock
+  mockExtractVisibleText();
   vi.mock("../../../../../src/util/terminal_util");
   vi.mock("../../../../../src/util/html_util");
   vi.mock("../../../../../src/util/time_util", () => ({
@@ -68,12 +69,6 @@ describe("Neofetch", () => {
       loadTime: 0,
     },
   }));
-
-  vi.mocked(HtmlUtil.extractVisibleText).mockImplementation((html) => {
-    // Does not work with all HTML, just a rough solution as JSDom does
-    // not support innerText
-    return html.replaceAll(/<\/?[^>]+(>|$)/g, "");
-  });
 
   beforeEach(() => {
     vi.unstubAllGlobals();

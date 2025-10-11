@@ -10,6 +10,7 @@ import {
 } from "../../../../src/constant/colour";
 import CssUtil from "../../../../src/util/css_util.ts";
 import HtmlUtil from "../../../../src/util/html_util.ts";
+import { mockExtractVisibleText } from "../../helper/mocks.ts";
 
 /**
  * Creates a minimal node with modifications to the fields that matter for `getFileSystemEntryStyle`
@@ -39,6 +40,8 @@ describe("FormatterUtil", () => {
   vi.mock("../../../../src/util/terminal_util");
   vi.mock("../../../../src/util/css_util");
   vi.mock("../../../../src/util/html_util");
+
+  mockExtractVisibleText();
 
   describe("getFileSystemEntry", () => {
     [
