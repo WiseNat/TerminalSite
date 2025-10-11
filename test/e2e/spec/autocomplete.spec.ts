@@ -11,6 +11,7 @@ import {
   assertExactTextInTerminal,
   setCaretAtCharIndex,
 } from "../helper/util/terminal_util.ts";
+import { isMobileProject } from "../helper/util/playwright_util.ts";
 
 // Custom command specific E2E tests are under each command spec
 
@@ -69,11 +70,17 @@ test.describe("Command autocompletion", () => {
 test.describe("File/Directory autocompletion", () => {
   test("provides root directories when '/' has been typed", async ({
     page,
-  }) => {
+  }, testInfo) => {
     // Arrange
     const input = "/";
-    const expectedOutput =
-      ".foo/  colour/  downloads/  etc/  some/  src/  test/";
+
+    let expectedOutput: string;
+    if (isMobileProject(testInfo)) {
+      expectedOutput =
+        ".foo/    downloads/  some/  test/\n" + "colour/  etc/        src/";
+    } else {
+      expectedOutput = ".foo/  colour/  downloads/  etc/  some/  src/  test/";
+    }
 
     // Act
     await page.locator(INPUT_SELECTOR).pressSequentially(input);
@@ -201,86 +208,108 @@ test.describe("Multiple Arguments", () => {
       type: "caret before the first character of the first argument does nothing",
       charIndex: 1,
       expectedInput: "ki /some/len ~/.testi",
-      expectedOutput: DEFAULT_INITIAL_PROMPT,
+      desktopExpected: DEFAULT_INITIAL_PROMPT,
+      mobileExpected: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the first character of the first argument attempts to autocomplete the first character",
       charIndex: 2,
       expectedInput: "killi /some/len ~/.testi",
-      expectedOutput: DEFAULT_INITIAL_PROMPT,
+      desktopExpected: DEFAULT_INITIAL_PROMPT,
+      mobileExpected: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the last character of the first argument attempts to autocomplete the first argument",
       charIndex: 3,
       expectedInput: "kill /some/len ~/.testi",
-      expectedOutput: DEFAULT_INITIAL_PROMPT,
+      desktopExpected: DEFAULT_INITIAL_PROMPT,
+      mobileExpected: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the space of the first argument does nothing",
       charIndex: 4,
       expectedInput: "ki /some/len ~/.testi",
-      expectedOutput: DEFAULT_INITIAL_PROMPT,
+      desktopExpected: DEFAULT_INITIAL_PROMPT,
+      mobileExpected: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret before the first character of the second argument does nothing",
       charIndex: 4,
       expectedInput: "ki /some/len ~/.testi",
-      expectedOutput: DEFAULT_INITIAL_PROMPT,
+      desktopExpected: DEFAULT_INITIAL_PROMPT,
+      mobileExpected: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the first character of the second argument attempts to autocomplete the first character",
       charIndex: 5,
       expectedInput: "ki /some/len ~/.testi",
-      expectedOutput: `${COMMAND_RAN_OUTPUT}ki /some/len ~/.testi\n.foo/  colour/  downloads/  etc/  some/  src/  test/`,
+      desktopExpected: `${COMMAND_RAN_OUTPUT}ki /some/len ~/.testi\n.foo/  colour/  downloads/  etc/  some/  src/  test/`,
+      mobileExpected: `${COMMAND_RAN_OUTPUT}ki /some/len ~/.testi\n.foo/    downloads/  some/  test/\ncolour/  etc/        src/`,
     },
     {
       type: "caret after the last character of the second argument attempts to autocomplete the first argument",
       charIndex: 13,
       expectedInput: "ki /some/lengthy/ ~/.testi",
-      expectedOutput: DEFAULT_INITIAL_PROMPT,
+      desktopExpected: DEFAULT_INITIAL_PROMPT,
+      mobileExpected: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the space of the second argument does nothing",
       charIndex: 14,
       expectedInput: "ki /some/len ~/.testi",
-      expectedOutput: DEFAULT_INITIAL_PROMPT,
+      desktopExpected: DEFAULT_INITIAL_PROMPT,
+      mobileExpected: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret before the first character of the third argument does nothing",
       charIndex: 14,
       expectedInput: "ki /some/len ~/.testi",
-      expectedOutput: DEFAULT_INITIAL_PROMPT,
+      desktopExpected: DEFAULT_INITIAL_PROMPT,
+      mobileExpected: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the first character of the third argument attempts to autocomplete the first character",
       charIndex: 15,
       expectedInput: "ki /some/len ~//.testi",
-      expectedOutput: DEFAULT_INITIAL_PROMPT,
+      desktopExpected: DEFAULT_INITIAL_PROMPT,
+      mobileExpected: DEFAULT_INITIAL_PROMPT,
     },
     {
       type: "caret after the last character of the third argument attempts to autocomplete the first argument",
       charIndex: 22,
       expectedInput: "ki /some/len ~/.testing ",
-      expectedOutput: DEFAULT_INITIAL_PROMPT,
+      desktopExpected: DEFAULT_INITIAL_PROMPT,
+      mobileExpected: DEFAULT_INITIAL_PROMPT,
     },
-  ].forEach(({ type, charIndex, expectedInput, expectedOutput }) => {
-    test(type, async ({ page }) => {
-      // Arrange
-      const input = "ki /some/len ~/.testi";
-      await page.locator(INPUT_SELECTOR).pressSequentially(input);
+  ].forEach(
+    ({ type, charIndex, expectedInput, desktopExpected, mobileExpected }) => {
+      test(type, async ({ page }, testInfo) => {
+        // Arrange
+        const input = "ki /some/len ~/.testi";
+        await page.locator(INPUT_SELECTOR).pressSequentially(input);
 
-      // Act
-      await setCaretAtCharIndex(page, INPUT_SELECTOR, charIndex);
-      await page.locator(INPUT_SELECTOR).press("Tab");
+        // Act
+        await setCaretAtCharIndex(page, INPUT_SELECTOR, charIndex);
+        await page.locator(INPUT_SELECTOR).press("Tab");
 
-      await assertExactTextInTerminal(
-        page,
-        expectedOutput,
-        DEFAULT_USER_PROMPT,
-        expectedInput,
-      );
-    });
-  });
+        if (isMobileProject(testInfo)) {
+          await assertExactTextInTerminal(
+            page,
+            mobileExpected,
+            DEFAULT_USER_PROMPT,
+            expectedInput,
+          );
+        } else {
+          await assertExactTextInTerminal(
+            page,
+            desktopExpected,
+            DEFAULT_USER_PROMPT,
+            expectedInput,
+          );
+        }
+      });
+    },
+  );
 
   [
     {
