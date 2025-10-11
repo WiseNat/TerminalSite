@@ -1,29 +1,5 @@
 import FileSystemUtil from "./file_system_util.ts";
 
-/*
-Does not function correctly as a readonly within FileImportUtil.
-.gitkeep & .meta should not be included, see 'walk' in 'vite_plugin_file_tree.ts' for in-depth explanation.
-import.meta.glob does NOT support non-static values so duplicate globs exist for testing and non-testing modes.
- */
-const FILES =
-  import.meta.env.MODE === "testing"
-    ? import.meta.glob<{ default: string }>(
-        ["./**/*", "!./**/*.gitkeep", "!./**/*.meta"],
-        {
-          exhaustive: true,
-          base: "/test/e2e/content",
-          query: "?raw",
-        },
-      )
-    : import.meta.glob<{ default: string }>(
-        ["./**/*", "!./**/*.gitkeep", "!./**/*.meta"],
-        {
-          exhaustive: true,
-          base: "/content",
-          query: "?raw",
-        },
-      );
-
 export default class FileImportUtil {
   /**
    * Reads the contents of a file at the provided path.
@@ -33,15 +9,34 @@ export default class FileImportUtil {
    * @returns file contents if found, `null` otherwise.
    */
   public static async readFile(filePath: string): Promise<string | null> {
-    // '.' is required at the start due to how import meta glob imports work
-    filePath = "." + FileSystemUtil.resolvePath(filePath);
+    const fileUrl = this.getFileUrl(filePath);
 
-    if (!(filePath in FILES)) {
+    if (fileUrl === null) {
       return null;
     }
 
-    const loader = FILES[filePath];
-    const fileContent = await loader();
-    return fileContent.default;
+    const response = await fetch(fileUrl);
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return await response.text();
+  }
+
+  /**
+   * Gets the local File URL for a given file path
+   * @param filePath path to a file (does not need to be a valid path).
+   * @returns null if the file url was unable to be created, the file url otherwise
+   */
+  public static getFileUrl(filePath: string): string | null {
+    const base = __CONTENT_DIRECTORY;
+    const resolvedPath = FileSystemUtil.resolvePath(filePath);
+
+    if (resolvedPath === null) {
+      return null;
+    }
+
+    return FileSystemUtil.joinPaths(base, resolvedPath);
   }
 }

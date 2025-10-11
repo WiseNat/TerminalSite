@@ -1,4 +1,0 @@
-I'm Nathan Wise, someone who loves programming and technology as a whole.
-I developed a passion for programming early in 2014 and have continued growing my skills ever since.
-
-The source code for this website is available [here](https://github.com/WiseNat/TerminalSite/).

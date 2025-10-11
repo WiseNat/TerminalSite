@@ -259,15 +259,16 @@ test.describe("Tree", () => {
       const expected =
         "\n/\n" +
         "├── colour\n" +
+        "├── downloads\n" +
         "├── etc\n" +
         "├── some\n" +
         "├── src\n" +
         "└── test\n" +
         "\n" +
-        "6 directories, 0 files";
+        "7 directories, 0 files";
       await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
-        directory: 6,
+        directory: 7,
         executables: 0,
         archives: 0,
         graphics: 0,

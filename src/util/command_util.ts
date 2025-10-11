@@ -4,6 +4,7 @@ import TokenisedCommand from "../dto/tokenised_command.ts";
 import { CommandScript } from "../command/command_script.ts";
 import TerminalUtil from "./terminal_util.ts";
 import CommandImportUtil from "./command_import_util.ts";
+import FileSystemUtil from "./file_system_util.ts";
 
 export default class CommandUtil {
   /**
@@ -188,6 +189,7 @@ export default class CommandUtil {
     return parsedOptions;
   }
 
+  // TODO: Move to ErrorMessageUtil
   /**
    * @param commandName the name of the command
    * @returns an error message for a corrupted command
@@ -196,11 +198,41 @@ export default class CommandUtil {
     return `/bin/${commandName}: cannot execute binary file: Exec format error`;
   }
 
+  // TODO: Move to ErrorMessageUtil
   /**
    * @param commandName the name of the command
    * @returns an error message for a command that the user has no permissions to execute
    */
   public static getNoPermissionsCommandMessage(commandName: string): string {
     return `/bin/${commandName}: Permission denied`;
+  }
+
+  // TODO: Unit test!
+  // TODO: Move to ErrorMessageUtil
+  /**
+   * Gets an error message based on the provided file path.
+   *
+   * @param path the file (not directory) path to get an error message for, absolute or relative.
+   * @param commandName the name of the calling command to be included in the error message.
+   * @returns the error message for the provided path.
+   */
+  public static getInvalidFilePathError(
+    path: string,
+    commandName: string,
+  ): string {
+    const segmentedPath = FileSystemUtil.resolvePathParts(path);
+
+    if (segmentedPath === null) {
+      return `${commandName}: ${path}: No such file or directory`;
+    }
+
+    const resolvedFilePath = FileSystemUtil.formatPath(segmentedPath);
+    const node = FileSystemUtil.walkFileTree(segmentedPath);
+
+    if (!node?.isDirectory) {
+      return `${commandName}: ${resolvedFilePath}: No such file or directory`;
+    }
+
+    return `${commandName}: ${resolvedFilePath}: Is a directory`;
   }
 }
