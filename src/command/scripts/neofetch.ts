@@ -178,7 +178,8 @@ function getInfo(isLogo: boolean): string {
   const kernel = KERNEL_RELEASE;
   const uptime = getUptime();
   const shell = "terminal-site 2.0";
-  const resolution = `${window.screen.width}x${window.screen.height}`;
+  const resolution = `${document.body.clientWidth}x${document.body.clientHeight}`;
+  console.warn(document.body.clientWidth);
   const desktopEnvironment = `${browserName === "" ? "Unknown" : browserName} ${browserVersion}`;
   const windowManager = `${engineName === "" ? "Unknown" : engineName} ${engineVersion}`;
   const terminal = "terminal-site";
