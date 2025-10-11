@@ -47,6 +47,7 @@ export async function getClipboard(browser: Browser) {
   const text = await target.inputValue();
 
   await page.close();
+  await context.close();
 
   return text;
 }
@@ -69,4 +70,5 @@ export async function setClipboard(browser: Browser, value: string) {
   await target.press("ControlOrMeta+c");
 
   await page.close();
+  await context.close();
 }
