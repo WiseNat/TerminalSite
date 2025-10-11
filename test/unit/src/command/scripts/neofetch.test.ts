@@ -72,7 +72,9 @@ describe("Neofetch", () => {
 
   beforeEach(() => {
     vi.unstubAllGlobals();
-    vi.stubGlobal("window", { screen: { width: 1920, height: 1080 } });
+    vi.stubGlobal("document", {
+      body: { clientWidth: 1920, clientHeight: 1080 },
+    });
   });
 
   describe("run", async () => {
