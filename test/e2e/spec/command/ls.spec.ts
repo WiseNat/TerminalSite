@@ -274,9 +274,10 @@ test.describe("Ls", () => {
           "\n12 /src/main/nathanwise/.bashrc" +
           `\n\n${existingDirectory}:` +
           "\ntotal: 52" +
-          "\n8 archive.zip  8 executable.sh  8 rubbish.tmp" +
-          "\n8 audio.mp3    8 image.png" +
-          "\n4 dir          8 normal.txt";
+          "\n8 archive.zip    8 image.png" +
+          "\n8 audio.mp3      8 normal.txt" +
+          "\n4 dir            8 rubbish.tmp" +
+          "\n8 executable.sh";
 
         if (isMobileProject(testInfo)) {
           await assertOutputInTerminal(page, `${input}${mobileExpected}`);
@@ -318,9 +319,11 @@ test.describe("Ls", () => {
           "\n12 /src/main/nathanwise/.bashrc" +
           `\n\n${existingDirectory}:` +
           "\ntotal: 56" +
-          "\n4 .            8 audio.mp3      8 image.png" +
-          "\n0 ..           4 dir            8 normal.txt" +
-          "\n8 archive.zip  8 executable.sh  8 rubbish.tmp";
+          "\n4 .            8 executable.sh" +
+          "\n0 ..           8 image.png" +
+          "\n8 archive.zip  8 normal.txt" +
+          "\n8 audio.mp3    8 rubbish.tmp" +
+          "\n4 dir";
 
         if (isMobileProject(testInfo)) {
           await assertOutputInTerminal(page, `${input}${mobileExpected}`);
@@ -366,9 +369,10 @@ test.describe("Ls", () => {
           "\n12K /src/main/nathanwise/.bashrc" +
           `\n\n${existingDirectory}:` +
           "\ntotal: 52K" +
-          "\n8K archive.zip  8K executable.sh  8K rubbish.tmp" +
-          "\n8K audio.mp3    8K image.png" +
-          "\n4K dir          8K normal.txt";
+          "\n8K archive.zip    8K image.png" +
+          "\n8K audio.mp3      8K normal.txt" +
+          "\n4K dir            8K rubbish.tmp" +
+          "\n8K executable.sh";
 
         if (isMobileProject(testInfo)) {
           await assertOutputInTerminal(page, `${input}${mobileExpected}`);
@@ -482,9 +486,10 @@ test.describe("Ls", () => {
         "\n12288 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 53248" +
-        "\n8192 archive.zip  8192 executable.sh  8192 rubbish.tmp" +
-        "\n8192 audio.mp3    8192 image.png" +
-        "\n4096 dir          8192 normal.txt",
+        "\n8192 archive.zip    8192 image.png" +
+        "\n8192 audio.mp3      8192 normal.txt" +
+        "\n4096 dir            8192 rubbish.tmp" +
+        "\n8192 executable.sh",
     },
     {
       flags: ["-s", "-h"],
@@ -501,9 +506,10 @@ test.describe("Ls", () => {
         "\n12288 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 53248" +
-        "\n8192 archive.zip  8192 executable.sh  8192 rubbish.tmp" +
-        "\n8192 audio.mp3    8192 image.png" +
-        "\n4096 dir          8192 normal.txt",
+        "\n8192 archive.zip    8192 image.png" +
+        "\n8192 audio.mp3      8192 normal.txt" +
+        "\n4096 dir            8192 rubbish.tmp" +
+        "\n8192 executable.sh",
     },
     {
       flags: ["-s"],
@@ -520,9 +526,10 @@ test.describe("Ls", () => {
         "\n24 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 104" +
-        "\n16 archive.zip  16 executable.sh  16 rubbish.tmp" +
-        "\n16 audio.mp3    16 image.png" +
-        "\n8 dir          16 normal.txt",
+        "\n16 archive.zip    16 image.png" +
+        "\n16 audio.mp3      16 normal.txt" +
+        "\n8 dir             16 rubbish.tmp" +
+        "\n16 executable.sh",
     },
     {
       flags: ["-s", "-h"],
@@ -539,9 +546,10 @@ test.describe("Ls", () => {
         "\n6 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
         "\ntotal: 26" +
-        "\n4 archive.zip  4 executable.sh  4 rubbish.tmp" +
-        "\n4 audio.mp3    4 image.png" +
-        "\n2 dir          4 normal.txt",
+        "\n4 archive.zip    4 image.png" +
+        "\n4 audio.mp3      4 normal.txt" +
+        "\n2 dir            4 rubbish.tmp" +
+        "\n4 executable.sh",
     },
     {
       flags: ["-l"],

@@ -2,7 +2,7 @@ import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
-import FormatterUtil, { GridElement } from "../../util/formatter_util.ts";
+import FormatterUtil from "../../util/formatter_util.ts";
 import { clone } from "lodash-es";
 import CommandUtil from "../../util/command_util.ts";
 
@@ -235,19 +235,16 @@ function formatUnknownPaths(unknownPaths: string[]): string {
 function formatFileEntries(fileEntries: EntryNode[], flags: Flags): string {
   fileEntries = sortEntryNodes(fileEntries);
 
-  const gridElements: GridElement[] = [];
+  const formattedFileEntries: string[] = [];
   for (const fileEntry of fileEntries) {
     const formattedFileEntry = formatEntry(fileEntry, flags, false);
-    gridElements.push({
-      visual: fileEntry.fullPath,
-      actual: formattedFileEntry,
-    });
+    formattedFileEntries.push(formattedFileEntry);
   }
 
   if (flags["1"] || flags.l) {
-    return gridElements.map((e) => e.actual).join("\n");
+    return formattedFileEntries.join("\n");
   } else {
-    return FormatterUtil.toDynamicGrid(gridElements);
+    return FormatterUtil.toDynamicGrid(formattedFileEntries);
   }
 }
 
@@ -280,7 +277,7 @@ function formatDirectoryEntries(
       flags,
     );
 
-    const formattedChildren: GridElement[] = formatDirectoryEntryChildren(
+    const formattedChildren: string[] = formatDirectoryEntryChildren(
       directoryEntryChildren,
       flags,
     );
@@ -305,7 +302,7 @@ function formatDirectoryEntries(
     }
 
     if (flags["1"] || flags.l) {
-      output += `${formattedChildren.map((e) => e.actual).join("\n")}`;
+      output += `${formattedChildren.join("\n")}`;
     } else {
       const grid = FormatterUtil.toDynamicGrid(formattedChildren);
       output += grid;
@@ -380,15 +377,12 @@ function sortEntryNodes(nodes: EntryNode[]): EntryNode[] {
 function formatDirectoryEntryChildren(
   children: EntryNode[],
   flags: Flags,
-): GridElement[] {
-  const formattedChildren: GridElement[] = [];
+): string[] {
+  const formattedChildren: string[] = [];
 
   for (const child of children) {
     const formattedChild = formatEntry(child, flags, true);
-    formattedChildren.push({
-      visual: child.name,
-      actual: formattedChild,
-    });
+    formattedChildren.push(formattedChild);
   }
 
   return formattedChildren;

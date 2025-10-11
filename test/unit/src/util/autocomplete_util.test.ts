@@ -21,7 +21,7 @@ describe("AutocompleteUtil", () => {
 
   vi.mocked(TerminalUtil.getPrompt).mockReturnValue(prompt);
   vi.mocked(FormatterUtil.toDynamicGrid).mockImplementation((items) => {
-    return items.map((e) => e.actual).join("\t");
+    return items.join("\t");
   });
 
   describe("autocomplete", () => {

@@ -11,11 +11,6 @@ export interface FileSystemEntryStyle {
   fontWeight: string | null;
 }
 
-export interface GridElement {
-  visual: string;
-  actual: string;
-}
-
 export default class FormatterUtil {
   /**
    * Gets a file system entry in HTML for the provided `node`.
@@ -121,7 +116,7 @@ export default class FormatterUtil {
    * @see toStaticGrid
    */
   public static toDynamicGrid(
-    items: GridElement[],
+    items: string[],
     paddingSize: number = 2,
   ): string {
     if (!items || items.length === 0) {
@@ -138,7 +133,7 @@ export default class FormatterUtil {
     let chosenCols = 1;
     let chosenRows = items.length;
     let chosenColWidths: number[] = [
-      Math.max(...items.map((i) => i.visual.length)),
+      Math.max(...items.map((i) => HtmlUtil.extractVisibleText(i).length)),
     ];
 
     const maxColumns = Math.min(items.length, charsPerLine);
@@ -162,7 +157,7 @@ export default class FormatterUtil {
       }
     }
 
-    const grid: GridElement[][] = this.toGrid(items, chosenRows, chosenCols);
+    const grid: string[][] = this.toGrid(items, chosenRows, chosenCols);
 
     let out = "";
     for (let row = 0; row < chosenRows; row++) {
@@ -174,10 +169,12 @@ export default class FormatterUtil {
 
         const spaces = Math.max(
           0,
-          chosenColWidths[column] - item.visual.length + paddingSize,
+          chosenColWidths[column] -
+            HtmlUtil.extractVisibleText(item).length +
+            paddingSize,
         );
 
-        out += item.actual + " ".repeat(spaces);
+        out += item + " ".repeat(spaces);
       }
 
       out = out.trimEnd() + "\n";
@@ -196,7 +193,7 @@ export default class FormatterUtil {
    * @private
    */
   private static calculateColumnWidths(
-    items: GridElement[],
+    items: string[],
     rows: number,
     columns: number,
   ) {
@@ -212,7 +209,7 @@ export default class FormatterUtil {
 
         columnWidths[column] = Math.max(
           columnWidths[column],
-          items[index].visual.length,
+          HtmlUtil.extractVisibleText(items[index]).length,
         );
       }
     }
@@ -229,8 +226,8 @@ export default class FormatterUtil {
    * @param columns the amount of columns for the grid.
    * @private
    */
-  private static toGrid(items: GridElement[], rows: number, columns: number) {
-    const grid: GridElement[][] = Array.from({ length: columns }, () => []);
+  private static toGrid(items: string[], rows: number, columns: number) {
+    const grid: string[][] = Array.from({ length: columns }, () => []);
 
     for (let column = 0; column < columns; column++) {
       for (let row = 0; row < rows; row++) {
