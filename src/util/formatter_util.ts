@@ -113,7 +113,7 @@ export default class FormatterUtil {
    *
    * @param items the items to insert into the grid.
    * @param paddingSize the amount of extra padding between items.
-   * @see toStaticGrid
+   * @see toStaticColumns
    */
   public static toDynamicGrid(
     items: string[],
@@ -259,9 +259,10 @@ export default class FormatterUtil {
    *
    * @param columns the columns to insert into the grid.
    * @param paddingSize the amount of extra padding between columns.
-   * @see toDynamicGrid
+   * @see toResponsiveColumns
    */
-  public static toStaticGrid(columns: string[], paddingSize: number = 3) {
+  // TODO: paddingSize default 2?
+  public static toStaticColumns(columns: string[], paddingSize: number = 3) {
     if (columns.length === 0) {
       return "";
     }
@@ -305,4 +306,11 @@ export default class FormatterUtil {
 
     return output.trimEnd();
   }
+
+  // TODO: JSDoc
+  // TODO: Unit test
+  // TODO: Integrate with toStaticColumns? pull out common code from all grid methods?
+  /*  public static toResponsiveColumns(columns: string[], paddingSize: number = 2, truncationChar: string = ">") {
+    // TODO: impl!
+  }*/
 }

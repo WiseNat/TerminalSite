@@ -1,6 +1,7 @@
 import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
+import { HelpInformation } from "./help.ts";
 
 const PWD: CommandScript = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -10,6 +11,10 @@ const PWD: CommandScript = {
     TerminalUtil.appendOutput(
       FileSystemUtil.formatPath(currentWorkingDirectory),
     );
+  },
+
+  help(): HelpInformation | null {
+    return null;
   },
 };
 

@@ -74,6 +74,7 @@ describe("Tab", () => {
         const mockCommandFile: CommandScript = {
           run: vi.fn(),
           autocomplete: vi.fn().mockResolvedValue([]),
+          help: vi.fn(),
         };
         vi.mocked(CommandUtil.getCommandScript).mockReturnValue(
           mockCommandFile,
@@ -115,6 +116,7 @@ describe("Tab", () => {
         const mockCommandFile: CommandScript = {
           run: vi.fn(),
           autocomplete: vi.fn().mockResolvedValue([]),
+          help: vi.fn(),
         };
         vi.mocked(CommandUtil.getCommandScript).mockReturnValue(
           mockCommandFile,
@@ -140,6 +142,7 @@ describe("Tab", () => {
         const mockCommandFile: CommandScript = {
           run: vi.fn(),
           autocomplete: undefined,
+          help: vi.fn(),
         };
         vi.mocked(CommandUtil.getCommandScript).mockReturnValue(
           mockCommandFile,
@@ -164,6 +167,7 @@ describe("Tab", () => {
         const mockCommandFile: CommandScript = {
           run: vi.fn(),
           autocomplete: vi.fn().mockResolvedValue(null),
+          help: vi.fn(),
         };
         vi.mocked(CommandUtil.getCommandScript).mockReturnValue(
           mockCommandFile,

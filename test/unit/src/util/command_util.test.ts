@@ -25,7 +25,7 @@ describe("CommandUtil", () => {
   describe("executeCommand", () => {
     test("runs a command when it is found", async () => {
       // Arrange
-      const mockCommandFile: CommandScript = { run: vi.fn() };
+      const mockCommandFile: CommandScript = { run: vi.fn(), help: vi.fn() };
       vi.mocked(CommandImportUtil.getCommandScripts).mockReturnValue({
         test: { default: mockCommandFile },
       });
@@ -143,7 +143,7 @@ describe("CommandUtil", () => {
 
     test("should not return the command scripts if given the filename of the command", async () => {
       // Arrange
-      const mockCommandFile: CommandScript = { run: vi.fn() };
+      const mockCommandFile: CommandScript = { run: vi.fn(), help: vi.fn() };
       vi.mocked(CommandImportUtil.getCommandScripts).mockReturnValue({
         test: { default: mockCommandFile },
       });
@@ -161,7 +161,7 @@ describe("CommandUtil", () => {
 
     test("should return the command scripts if it exists", async () => {
       // Arrange
-      const mockCommandFile: CommandScript = { run: vi.fn() };
+      const mockCommandFile: CommandScript = { run: vi.fn(), help: vi.fn() };
       vi.mocked(CommandImportUtil.getCommandScripts).mockReturnValue({
         test: { default: mockCommandFile },
       });

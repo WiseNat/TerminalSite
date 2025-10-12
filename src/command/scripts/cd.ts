@@ -2,6 +2,7 @@ import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import CommandUtil from "../../util/command_util.ts";
+import { HelpInformation } from "./help.ts";
 
 let workingDirectories: string[] = [];
 
@@ -43,6 +44,10 @@ const CD: CommandScript = {
     } else {
       changeDirectory(path);
     }
+  },
+
+  help(): HelpInformation | null {
+    return null;
   },
 };
 

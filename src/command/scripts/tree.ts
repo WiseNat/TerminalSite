@@ -4,6 +4,7 @@ import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import FormatterUtil from "../../util/formatter_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
+import { HelpInformation } from "./help.ts";
 
 const TREE: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -47,6 +48,10 @@ const TREE: CommandScript = {
     });
 
     TerminalUtil.appendRawOutput(output);
+  },
+
+  help(): HelpInformation | null {
+    return null;
   },
 };
 

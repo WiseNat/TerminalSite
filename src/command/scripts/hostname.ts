@@ -2,6 +2,7 @@ import { CommandScript } from "../command_script.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import CommandUtil from "../../util/command_util.ts";
 import { DOMAIN, HOSTNAME, IP_ADDRESS } from "../../constant/system.ts";
+import { HelpInformation } from "./help.ts";
 
 const HOSTNAME_COMMAND: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -25,6 +26,10 @@ const HOSTNAME_COMMAND: CommandScript = {
     });
 
     TerminalUtil.appendOutput(output);
+  },
+
+  help(): HelpInformation | null {
+    return null;
   },
 };
 

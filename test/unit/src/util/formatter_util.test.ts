@@ -370,7 +370,7 @@ describe("FormatterUtil", () => {
       ];
 
       // Act
-      const result = FormatterUtil.toStaticGrid(columns);
+      const result = FormatterUtil.toStaticColumns(columns);
 
       // Assert
       expect(result).toEqual(columns[0]);
@@ -381,7 +381,7 @@ describe("FormatterUtil", () => {
       const columns: string[] = [];
 
       // Act
-      const result = FormatterUtil.toStaticGrid(columns);
+      const result = FormatterUtil.toStaticColumns(columns);
 
       // Assert
       expect(result).toEqual("");
@@ -432,7 +432,7 @@ describe("FormatterUtil", () => {
     ].forEach(({ type, columns, expected }) => {
       test(`${type} are ordered into columns in the correct order with the right positioning & padding`, () => {
         // Act
-        const result = FormatterUtil.toStaticGrid(columns);
+        const result = FormatterUtil.toStaticColumns(columns);
 
         // Assert
         expect(result).toEqual(expected);

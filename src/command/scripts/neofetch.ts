@@ -31,6 +31,7 @@ import {
 import Bowser from "bowser";
 import { PerformanceMemory } from "../../types/non_standard";
 import TimeUtil from "../../util/time_util.ts";
+import { HelpInformation } from "./help.ts";
 
 const NEOFETCH: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -51,6 +52,10 @@ const NEOFETCH: CommandScript = {
     });
 
     TerminalUtil.appendRawOutput(output);
+  },
+
+  help(): HelpInformation | null {
+    return null;
   },
 };
 
@@ -83,7 +88,7 @@ function getOutput(flags: Flags): string {
     columns.push(info);
   }
 
-  const grid = FormatterUtil.toStaticGrid(columns);
+  const grid = FormatterUtil.toStaticColumns(columns);
 
   if (grid === "") {
     return "\n ";

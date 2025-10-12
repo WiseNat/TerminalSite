@@ -9,6 +9,7 @@ import {
   KERNEL_VERSION,
   OPERATING_SYSTEM,
 } from "../../constant/system.ts";
+import { HelpInformation } from "./help.ts";
 
 const UNAME: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -43,6 +44,10 @@ const UNAME: CommandScript = {
     });
 
     TerminalUtil.appendOutput(output);
+  },
+
+  help(): HelpInformation | null {
+    return null;
   },
 };
 
