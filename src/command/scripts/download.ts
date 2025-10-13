@@ -30,7 +30,13 @@ const DOWNLOAD: CommandScript = {
   },
 
   help(): HelpInformation | null {
-    return null;
+    return {
+      synopsis: "download: download [FILE]",
+      shortDescription: "Download a file to the client machine.",
+      longDescription:
+        "Attempts to download the FILE for the client by forcefully clicking an anchor element with a href pointing " +
+        "at the expected file url. This may fail if the browser has been configured to block file downloads.",
+    };
   },
 };
 

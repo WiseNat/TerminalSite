@@ -8,7 +8,10 @@ const FALSE: CommandScript = {
   },
 
   help(): HelpInformation | null {
-    return null;
+    return {
+      synopsis: "false: false",
+      shortDescription: "Return an unsuccessful result.",
+    };
   },
 };
 

@@ -14,7 +14,10 @@ const PWD: CommandScript = {
   },
 
   help(): HelpInformation | null {
-    return null;
+    return {
+      synopsis: "pwd: pwd",
+      shortDescription: "Print the name of the current working directory.",
+    };
   },
 };
 

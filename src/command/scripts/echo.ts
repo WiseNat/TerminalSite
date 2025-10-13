@@ -9,7 +9,22 @@ const ECHO: CommandScript = {
   },
 
   help(): HelpInformation | null {
-    return null;
+    return {
+      synopsis: "echo: echo [ARG ...]",
+      shortDescription: "Write arguments to the standard output.",
+      longDescription:
+        "Display the ARGs, separated by a single space character and followed by a\n" +
+        "newline, on the standard output.",
+      additionalInformation:
+        // prettier-ignore
+        "'echo' interprets everything as a fixed string and will not transform backslash-escaped characters such as '\\n'", // NOSONAR,
+      arguments: [
+        {
+          name: "ARG",
+          description: "arguments to output",
+        },
+      ],
+    };
   },
 };
 

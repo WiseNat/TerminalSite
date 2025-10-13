@@ -37,7 +37,17 @@ const CAT: CommandScript = {
   },
 
   help(): HelpInformation | null {
-    return null;
+    return {
+      synopsis: "cat: cat [FILE ...]",
+      shortDescription: "Concatenate files and print on the standard output.",
+      longDescription: "Concatenate FILE(s) to standard output.",
+      arguments: [
+        {
+          name: "FILE",
+          description: "paths to files to concatenate",
+        },
+      ],
+    };
   },
 };
 

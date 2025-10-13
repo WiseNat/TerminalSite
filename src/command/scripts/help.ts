@@ -4,10 +4,11 @@ import TerminalUtil from "../../util/terminal_util.ts";
 import TokenisedCommand from "../../dto/tokenised_command.ts";
 import FormatterUtil from "../../util/formatter_util.ts";
 
+// TODO: limit each sections max length (incl. indent) to 75 chars. Newline if going over
 export interface HelpInformation {
   synopsis: string;
   shortDescription: string;
-  longDescription: string;
+  longDescription?: string;
   options?: {
     short?: string;
     long?: string;
@@ -40,14 +41,36 @@ const HELP: CommandScript = {
           d: parsedOptions.d,
           s: parsedOptions.s,
         }) ??
-        `bash: help: no help topics match \`${parsedOptions._.at(-1)}'.  Try \`help help'.`;
+        `bash: help: no help topics match '${parsedOptions._.at(-1)}'.  Try 'help help'.`;
     }
 
     TerminalUtil.appendOutput(output);
   },
 
   help(): HelpInformation | null {
-    return null;
+    return {
+      synopsis: "help: help [COMMAND]",
+      shortDescription: "Display information about builtin commands.",
+      longDescription:
+        "Displays brief summaries of builtin commands.  If COMMAND is specified, gives detailed help on the COMMAND, " +
+        "e the list of help topics is printed.",
+      options: [
+        {
+          short: "d",
+          description: "output short description",
+        },
+        {
+          short: "s",
+          description: "output only a short usage synopsis",
+        },
+      ],
+      arguments: [
+        {
+          name: "COMMAND",
+          description: "name of the command",
+        },
+      ],
+    };
   },
 };
 
@@ -105,9 +128,11 @@ function getHelpForCommand(
 
   let output: string =
     `${helpInformation.synopsis}` +
-    `\n${indentContent(helpInformation.shortDescription, 4)}` +
-    "\n" +
-    `\n${indentContent(helpInformation.longDescription, 4)}`;
+    `\n${indentContent(helpInformation.shortDescription, 4)}`;
+
+  if (helpInformation.longDescription) {
+    output += `\n\n${indentContent(helpInformation.longDescription, 4)}`;
+  }
 
   if (helpInformation.options) {
     const options = getOptionString(helpInformation.options);
@@ -123,7 +148,7 @@ function getHelpForCommand(
     output += `\n\n${indentContent("Arguments:", 4)}\n${indentContent(argumentsString, 6)}`;
   }
 
-  return output;
+  return output.trimEnd();
 }
 
 // TODO: JSDoc

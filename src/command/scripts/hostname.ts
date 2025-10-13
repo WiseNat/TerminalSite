@@ -29,7 +29,29 @@ const HOSTNAME_COMMAND: CommandScript = {
   },
 
   help(): HelpInformation | null {
-    return null;
+    return {
+      synopsis:
+        "hostname: hostname [-d|--domain] [-f|--fqdn|--long] [-i|--ip-address]",
+      shortDescription: "Show the system's host name.",
+      options: [
+        {
+          short: "d",
+          description: "display the name of the DNS domain",
+        },
+        {
+          short: "f",
+          description:
+            "display the FQDN (Fully Qualified Domain Name). A FQDN consists of a short host name and the DNS domain name",
+        },
+        {
+          short: "i",
+          description:
+            "display the network address(es) of the host name. Note that this works only if the host name can be resolved",
+        },
+      ],
+      additionalInformation:
+        "When called without any flags, 'hostname' will display the short host name.",
+    };
   },
 };
 

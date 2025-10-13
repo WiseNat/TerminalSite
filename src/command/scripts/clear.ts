@@ -9,7 +9,14 @@ const CLEAR: CommandScript = {
   },
 
   help(): HelpInformation | null {
-    return null;
+    return {
+      synopsis: "clear: clear",
+      shortDescription: "Clear the terminal screen.",
+      longDescription:
+        "clear clears your terminal's screen and its scrollback buffer, if any.",
+      additionalInformation:
+        "The clear command has a lengthy history, dating back to 1979. Read the real clear man-page for more information.",
+    };
   },
 };
 

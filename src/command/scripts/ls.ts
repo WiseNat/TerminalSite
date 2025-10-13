@@ -69,11 +69,10 @@ const LS: CommandScript = {
 
   help(): HelpInformation | null {
     return {
-      synopsis: "ls: ls [FILE] [-l | -1] [-ahs] [--block-size block-size]",
+      synopsis: "ls: ls [FILE] [-l|-1] [-ahs] [--block-size block-size]",
       shortDescription: "List directory contents.",
       longDescription:
-        "List information about the FILEs (the current directory by default).  Sort entries alphabetically\n" +
-        "Mandatory arguments to long options are mandatory for short options too.",
+        "List information about the FILEs (the current directory by default). Sort entries alphabetically. Mandatory arguments to long options are mandatory for short options too.",
       options: [
         {
           short: "a",
@@ -83,8 +82,7 @@ const LS: CommandScript = {
         {
           long: "block-size=SIZE",
           description:
-            "with -l, scale sizes by SIZE when printing them;" +
-            "\ne.g., '--block-size=M'; see SIZE format below",
+            "with -l, scale sizes by SIZE when printing them; e.g., '--block-size=M'; see SIZE format below",
         },
         {
           short: "h",
@@ -110,7 +108,7 @@ const LS: CommandScript = {
       arguments: [
         {
           name: "FILE",
-          description: "Path to either a File or Directory",
+          description: "path to either a file or directory",
         },
       ],
     };

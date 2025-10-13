@@ -8,7 +8,10 @@ const TRUE: CommandScript = {
   },
 
   help(): HelpInformation | null {
-    return null;
+    return {
+      synopsis: "true: true",
+      shortDescription: "Return a successful result.",
+    };
   },
 };
 
