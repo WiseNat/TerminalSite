@@ -17,24 +17,24 @@ test.describe("Help", () => {
 
     // Assert
     const desktopExpected =
-      "\ncat [FILE ...]                                                    ls [FILE] [-l|-1] [-ahs] [--block-size block-size]" +
-      "\ncd [DIR]                                                          neofetch [-L|--logo] [--off]" +
-      "\nclear                                                             pwd" +
-      "\ndownload [FILE]                                                   reboot" +
-      "\necho [ARG ...]                                                    tree [-a] [-d] [-f] [-L level] [--prune] [DIRECTORY ...]" +
-      "\nfalse                                                             true" +
-      "\nhelp [COMMAND]                                                    uname [-a|--all] [-i|--hardware-platform] [-m|--machine] [-n|-->" +
-      "\nhostname: hostname [-d|--domain] [-f|--fqdn|--long] [-i|--ip-ad>";
+      "\n cat [FILE ...]                                                    ls [FILE] [-l|-1] [-ahs] [--block-size block-size]" +
+      "\n cd [DIR]                                                          neofetch [-L|--logo] [--off]" +
+      "\n clear                                                             pwd" +
+      "\n download [FILE]                                                   reboot" +
+      "\n echo [ARG ...]                                                    tree [-a] [-d] [-f] [-L level] [--prune] [DIRECTORY ...]" +
+      "\n false                                                             true" +
+      "\n help [COMMAND]                                                    uname [-a|--all] [-i|--hardware-platform] [-m|--machine] [-n|-->" +
+      "\n hostname: hostname [-d|--domain] [-f|--fqdn|--long] [-i|--ip-ad>";
 
     const mobileExpected =
-      "\ncat [FILE ...]      ls [FILE] [-l|-1]>" +
-      "\ncd [DIR]            neofetch [-L|--lo>" +
-      "\nclear               pwd" +
-      "\ndownload [FILE]     reboot" +
-      "\necho [ARG ...]      tree [-a] [-d] [->" +
-      "\nfalse               true" +
-      "\nhelp [COMMAND]      uname [-a|--all] >" +
-      "\nhostname: hostnam>";
+      "\n cat [FILE ...]      ls [FILE] [-l|-1]>" +
+      "\n cd [DIR]            neofetch [-L|--lo>" +
+      "\n clear               pwd" +
+      "\n download [FILE]     reboot" +
+      "\n echo [ARG ...]      tree [-a] [-d] [->" +
+      "\n false               true" +
+      "\n help [COMMAND]      uname [-a|--all] >" +
+      "\n hostname: hostnam>";
 
     if (isMobileProject(testInfo)) {
       await assertOutputInTerminal(page, `${input}${mobileExpected}`);

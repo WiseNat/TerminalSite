@@ -111,7 +111,7 @@ function getAllCommandSynopses(): string {
     synopses.slice(rowAmount, synopses.length).join("\n"),
   ];
 
-  return FormatterUtil.toResponsiveColumns(columns);
+  return indentContent(FormatterUtil.toResponsiveColumns(columns), 1);
 }
 
 /**
@@ -211,6 +211,7 @@ function getSynopsis(
   return `${command}: ${helpInformation.synopsis}`;
 }
 
+// TODO: move to FormatterUtil?
 /**
  * Indents content and splits content across multiple lines.
  * @param content the content to indent.
