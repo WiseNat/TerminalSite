@@ -106,7 +106,7 @@ function getOutput(flags: Flags): string {
     columns.push(info);
   }
 
-  const grid = FormatterUtil.toStaticColumns(columns);
+  const grid = FormatterUtil.toStaticColumns(columns, 3);
 
   if (grid === "") {
     return "\n ";

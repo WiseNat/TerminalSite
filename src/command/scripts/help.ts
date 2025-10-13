@@ -287,7 +287,7 @@ function getOptionSection(options: HelpInformation["options"]) {
   columns[0] = columns[0].trimStart();
   columns[1] = columns[1].trimStart();
 
-  return FormatterUtil.toStaticColumns(columns, 2);
+  return FormatterUtil.toStaticColumns(columns);
 }
 
 /**
@@ -317,7 +317,7 @@ function getArgumentSection(
   columns[0] = columns[0].trimStart();
   columns[1] = columns[1].trimStart();
 
-  return FormatterUtil.toStaticColumns(columns, 2);
+  return FormatterUtil.toStaticColumns(columns);
 }
 
 // noinspection JSUnusedGlobalSymbols

@@ -269,8 +269,7 @@ export default class FormatterUtil {
    * @param paddingSize the amount of extra padding between columns.
    * @see toResponsiveColumns
    */
-  // TODO: paddingSize default 2?
-  public static toStaticColumns(columns: string[], paddingSize: number = 3) {
+  public static toStaticColumns(columns: string[], paddingSize: number = 2) {
     if (columns.length === 0) {
       return "";
     }
