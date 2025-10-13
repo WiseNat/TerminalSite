@@ -10,7 +10,7 @@ const REBOOT: CommandScript = {
 
   help(): HelpInformation | null {
     return {
-      synopsis: "reboot: reboot",
+      synopsis: "reboot",
       shortDescription:
         "Reboots the terminal by reloading the client-side page URL.",
     };

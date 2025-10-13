@@ -10,7 +10,7 @@ const CLEAR: CommandScript = {
 
   help(): HelpInformation | null {
     return {
-      synopsis: "clear: clear",
+      synopsis: "clear",
       shortDescription: "Clear the terminal screen.",
       longDescription:
         "clear clears your terminal's screen and its scrollback buffer, if any.",

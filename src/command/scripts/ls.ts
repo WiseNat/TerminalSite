@@ -69,7 +69,7 @@ const LS: CommandScript = {
 
   help(): HelpInformation | null {
     return {
-      synopsis: "ls: ls [FILE] [-l|-1] [-ahs] [--block-size block-size]",
+      synopsis: "ls [FILE] [-l|-1] [-ahs] [--block-size block-size]",
       shortDescription: "List directory contents.",
       longDescription:
         "List information about the FILEs (the current directory by default). Sort entries alphabetically. Mandatory arguments to long options are mandatory for short options too.",

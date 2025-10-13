@@ -48,7 +48,7 @@ const CD: CommandScript = {
 
   help(): HelpInformation | null {
     return {
-      synopsis: "cd: cd [DIR]",
+      synopsis: "cd [DIR]",
       shortDescription: "Change the shell working directory.",
       longDescription:
         "Change the current directory to DIR. The default DIR is the value of the HOME shell variable. If DIR is \"-\", it is converted to $OLDPWD." +

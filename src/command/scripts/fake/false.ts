@@ -9,7 +9,7 @@ const FALSE: CommandScript = {
 
   help(): HelpInformation | null {
     return {
-      synopsis: "false: false",
+      synopsis: "false",
       shortDescription: "Return an unsuccessful result.",
     };
   },

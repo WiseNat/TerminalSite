@@ -31,7 +31,7 @@ const DOWNLOAD: CommandScript = {
 
   help(): HelpInformation | null {
     return {
-      synopsis: "download: download [FILE]",
+      synopsis: "download [FILE]",
       shortDescription: "Download a file to the client machine.",
       longDescription:
         "Attempts to download the FILE for the client by forcefully clicking an anchor element with a href pointing " +

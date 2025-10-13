@@ -56,7 +56,7 @@ const NEOFETCH: CommandScript = {
 
   help(): HelpInformation | null {
     return {
-      synopsis: "neofetch: neofetch [-L|--logo] [--off]",
+      synopsis: "neofetch [-L|--logo] [--off]",
       shortDescription: "A fast, highly customizable system info script.",
       longDescription:
         "Neofetch is a CLI system information tool written in JS. Neofetch displays information about your system next to your OS logo.",

@@ -49,7 +49,7 @@ const HELP: CommandScript = {
 
   help(): HelpInformation | null {
     return {
-      synopsis: "help: help [COMMAND]",
+      synopsis: "help [COMMAND]",
       shortDescription: "Display information about builtin commands.",
       longDescription:
         "Displays brief summaries of builtin commands.  If COMMAND is specified, gives detailed help on the COMMAND, " +
@@ -119,7 +119,7 @@ function getHelpForCommand(
   flags: Flags,
 ): string {
   if (flags.s) {
-    return helpInformation.synopsis;
+    return getSynopsis(command, helpInformation);
   }
 
   if (flags.d) {
@@ -127,7 +127,7 @@ function getHelpForCommand(
   }
 
   let output: string =
-    `${helpInformation.synopsis}` +
+    `${getSynopsis(command, helpInformation)}` +
     `\n${indentContent(helpInformation.shortDescription, 4)}`;
 
   if (helpInformation.longDescription) {
@@ -149,6 +149,13 @@ function getHelpForCommand(
   }
 
   return output.trimEnd();
+}
+
+function getSynopsis(
+  command: string,
+  helpInformation: HelpInformation,
+): string {
+  return `${command}: ${helpInformation.synopsis}`;
 }
 
 // TODO: JSDoc

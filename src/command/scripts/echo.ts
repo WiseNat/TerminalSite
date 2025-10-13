@@ -10,7 +10,7 @@ const ECHO: CommandScript = {
 
   help(): HelpInformation | null {
     return {
-      synopsis: "echo: echo [ARG ...]",
+      synopsis: "echo [ARG ...]",
       shortDescription: "Write arguments to the standard output.",
       longDescription:
         "Display the ARGs, separated by a single space character and followed by a\n" +
