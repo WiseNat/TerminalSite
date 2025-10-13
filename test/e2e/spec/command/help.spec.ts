@@ -136,12 +136,13 @@ test.describe("Help", () => {
       type: "an unknown command is provided",
       args: ["someFakeCommand"],
       expected:
-        "\nbash: help: no help topics match 'someFakeCommand'.  Try 'help help'.",
+        "\nbash: help: no help topics match 'someFakeCommand'. Try 'help' to view a list of available help topics.",
     },
     {
       type: "multiple unknown commands are provided",
       args: ["foo", "bar", "baz"],
-      expected: "\nbash: help: no help topics match 'baz'.  Try 'help help'.",
+      expected:
+        "\nbash: help: no help topics match 'baz'. Try 'help' to view a list of available help topics.",
     },
   ].forEach(({ type, args, expected }) => {
     test(`Should show an error when ${type}`, async ({ page }) => {

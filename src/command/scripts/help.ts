@@ -41,7 +41,7 @@ const HELP: CommandScript = {
           d: parsedOptions.d,
           s: parsedOptions.s,
         }) ??
-        `bash: help: no help topics match '${parsedOptions._.at(-1)}'.  Try 'help help'.`;
+        `bash: help: no help topics match '${parsedOptions._.at(-1)}'. Try 'help' to view a list of available help topics.`;
     }
 
     TerminalUtil.appendOutput(output);
