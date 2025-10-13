@@ -43,11 +43,6 @@ describe("Tab", () => {
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
-      test.todo(
-        "Autocompletes a directory when typing a directory",
-        async () => {},
-      );
-
       test("when a command has been typed without a space", async () => {
         // Arrange
         const userInput = "echo";
@@ -86,7 +81,7 @@ describe("Tab", () => {
         // Assert
         expect(getCommandSuggestions).not.toHaveBeenCalled();
         expect(getFileAndDirectorySuggestions).not.toHaveBeenCalled();
-        expect(autocomplete).not.toHaveBeenCalledOnce();
+        expect(autocomplete).toHaveBeenCalledOnce();
       });
 
       test("runs the default autocomplete if the command does not exist", async () => {
@@ -183,7 +178,7 @@ describe("Tab", () => {
         expect(autocomplete).toHaveBeenCalledOnce();
       });
 
-      test("runs nothing if there is an empty arg after an unknown command", async () => {
+      test("runs autocomplete with nothing if there is an empty arg after an unknown command", async () => {
         // Arrange
         const userInput = "fakecommand ";
         vi.mocked(TerminalUtil.getRawInput).mockReturnValue(userInput);
@@ -196,35 +191,30 @@ describe("Tab", () => {
         // Assert
         expect(getCommandSuggestions).not.toHaveBeenCalled();
         expect(getFileAndDirectorySuggestions).not.toHaveBeenCalled();
-        expect(autocomplete).not.toHaveBeenCalledOnce();
+        expect(autocomplete).toHaveBeenCalledExactlyOnceWith(
+          [],
+          expect.anything(),
+          expect.anything(),
+        );
       });
     });
 
     describe("Multiple Arguments", () => {
-      [
-        {
-          input: "tree ",
-          caret: 5,
-        },
-        {
-          input: "tree /some/directory /some/file",
-          caret: 21,
-        },
-      ].forEach(({ input, caret }) => {
-        test("does nothing if there is a space immediately before the caret", async () => {
-          // Arrange
-          vi.mocked(TerminalUtil.getRawInput).mockReturnValue(input);
-          vi.mocked(CommandUtil.getCommandScript).mockReturnValue(null);
-          vi.mocked(HtmlUtil.getCaretPosition).mockReturnValue(caret);
+      test("runs autocomplete nothing if there is a space immediately before the caret", async () => {
+        // Arrange
+        vi.mocked(TerminalUtil.getRawInput).mockReturnValue(
+          "tree /some/directory /some/file",
+        );
+        vi.mocked(CommandUtil.getCommandScript).mockReturnValue(null);
+        vi.mocked(HtmlUtil.getCaretPosition).mockReturnValue(21);
 
-          // Act
-          await processTab(event);
+        // Act
+        await processTab(event);
 
-          // Assert
-          expect(getCommandSuggestions).not.toHaveBeenCalled();
-          expect(getFileAndDirectorySuggestions).not.toHaveBeenCalled();
-          expect(autocomplete).not.toHaveBeenCalledOnce();
-        });
+        // Assert
+        expect(getCommandSuggestions).not.toHaveBeenCalled();
+        expect(getFileAndDirectorySuggestions).not.toHaveBeenCalled();
+        expect(autocomplete).not.toHaveBeenCalledOnce();
       });
 
       [

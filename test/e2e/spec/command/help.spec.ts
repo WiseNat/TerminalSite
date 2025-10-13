@@ -1,9 +1,16 @@
-import { test } from "../../fixture";
+import { expect, test } from "../../fixture";
 import {
   assertOutputInTerminal,
   runCommand,
 } from "../../helper/util/terminal_util.ts";
 import { isMobileProject } from "../../helper/util/playwright_util.ts";
+import {
+  DEFAULT_INITIAL_PROMPT,
+  DEFAULT_USER_PROMPT,
+  INPUT_SELECTOR,
+  OUTPUT_SELECTOR,
+  PROMPT_SELECTOR,
+} from "../../helper/constant/generic.ts";
 
 test.describe("Help", () => {
   test("Should show two columns of command synopses for all available commands, when no args or flags are provided", async ({
@@ -194,6 +201,53 @@ test.describe("Help", () => {
           "\nls: ls [FILE] [-l|-1] [-ahs] [--block-size block-size]";
         await assertOutputInTerminal(page, input + expected);
       });
+    });
+  });
+
+  test.describe("Autocomplete", () => {
+    test("Should autocomplete 'ech' arg to 'echo ', when tab is pressed with 'help ech'", async ({
+      page,
+    }) => {
+      // Arrange
+      const input = "help ech";
+
+      // Act
+      await page.locator(INPUT_SELECTOR).pressSequentially(input);
+      await page.locator(INPUT_SELECTOR).press("Tab");
+
+      // Assert
+      await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
+        DEFAULT_INITIAL_PROMPT,
+      );
+      await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+        DEFAULT_USER_PROMPT,
+      );
+      await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(
+        "help echo ",
+      );
+    });
+
+    test("Should provide suggestions for every command, when tab is pressed with 'help '", async ({
+      page,
+    }) => {
+      // Arrange
+      const input = "help ";
+      // Providing a list of various commands so this test does not have to be updated when a new command is added
+      const commands = ["help", "cat", "cd", "kill", "mkdir", "tree", "pwd"];
+
+      // Act
+      await page.locator(INPUT_SELECTOR).pressSequentially(input);
+      await page.locator(INPUT_SELECTOR).press("Tab");
+
+      // Assert
+      for (const command of commands) {
+        await expect(page.locator(OUTPUT_SELECTOR)).toContainText(command);
+      }
+
+      await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+        DEFAULT_USER_PROMPT,
+      );
+      await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(input);
     });
   });
 });

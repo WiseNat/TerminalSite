@@ -26,14 +26,22 @@ export async function processTab(event: KeyboardEvent) {
   );
 
   // We don't want suggestions provided when nothing exists in the user input
-  if (beforeCaret === "" || beforeCaret.endsWith(" ")) {
+  if (beforeCaret === "") {
     return;
   }
 
   const tokenisedCommand = CommandUtil.tokenise(beforeCaret);
   let suggestions: Suggestion[];
 
-  if (tokenisedCommand.args.length === 0) {
+  if (
+    tokenisedCommand.name !== "" &&
+    tokenisedCommand.args.length > 0 &&
+    beforeCaret.endsWith(" ")
+  ) {
+    return;
+  }
+
+  if (tokenisedCommand.args.length === 0 && !beforeCaret.endsWith(" ")) {
     suggestions = defaultAutocomplete(tokenisedCommand);
   } else {
     suggestions = await customCommandAutocomplete(
