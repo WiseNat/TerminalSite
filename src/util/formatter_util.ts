@@ -317,8 +317,69 @@ export default class FormatterUtil {
 
   // TODO: JSDoc
   // TODO: Unit test
-  // TODO: Integrate with toStaticColumns? pull out common code from all grid methods?
-  /*  public static toResponsiveColumns(columns: string[], paddingSize: number = 2, truncationChar: string = ">") {
-    // TODO: impl!
-  }*/
+  public static toResponsiveColumns(
+    columns: string[],
+    paddingSize: number = 2,
+    truncationChar: string = ">",
+  ) {
+    if (columns.length === 0) {
+      return "";
+    }
+
+    const grid: string[][] = Array.from({ length: columns.length }, () => []);
+    let maximumRows = 0;
+    const maximumColumnLengths: number[] = Array.from({
+      length: columns.length,
+    });
+
+    for (let i = 0; i < grid.length; i++) {
+      grid[i] = columns[i].split("\n");
+
+      maximumRows = Math.max(maximumRows, grid[i].length);
+
+      maximumColumnLengths[i] = Math.max(
+        ...grid[i].map((i) => HtmlUtil.extractVisibleText(i).length),
+      );
+    }
+
+    const charactersPerLine = this.getCharactersPerLine(
+      TerminalUtil.getOutputElement(),
+    );
+    const maxColumnLength = Math.floor(charactersPerLine / columns.length);
+    const maxColumnLengthWithPadding =
+      maxColumnLength - paddingSize - truncationChar.length;
+
+    let output = "";
+    for (let row = 0; row < maximumRows; row++) {
+      for (let column = 0; column < grid.length; column++) {
+        let columnData = grid[column][row] ?? "";
+
+        if (columnData.length > maxColumnLengthWithPadding) {
+          columnData =
+            columnData.substring(0, maxColumnLengthWithPadding) +
+            truncationChar;
+        }
+
+        if (column !== grid.length - 1) {
+          // Potentially more performant not recalculating visible text, though
+          // this would result in processing a messy data structure
+          columnData = columnData.padEnd(
+            Math.min(
+              maximumColumnLengths[column] +
+                paddingSize +
+                truncationChar.length,
+              maxColumnLength,
+            ),
+            " ",
+          );
+        }
+
+        output += columnData;
+      }
+
+      output += "\n";
+    }
+
+    return output.trimEnd();
+  }
 }

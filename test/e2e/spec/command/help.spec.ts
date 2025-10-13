@@ -8,7 +8,7 @@ import { isMobileProject } from "../../helper/util/playwright_util.ts";
 test.describe("Help", () => {
   test("Should show two columns of command synopses for all available commands, when no args or flags are provided", async ({
     page,
-  }) => {
+  }, testInfo) => {
     // Arrange
     const input = "help";
 
@@ -16,8 +16,31 @@ test.describe("Help", () => {
     await runCommand(page, input);
 
     // Assert
-    const expected = "\nTODO";
-    await assertOutputInTerminal(page, input + expected);
+    const desktopExpected =
+      "\ncat [FILE ...]                                                    ls [FILE] [-l|-1] [-ahs] [--block-size block-size]" +
+      "\ncd [DIR]                                                          neofetch [-L|--logo] [--off]" +
+      "\nclear                                                             pwd" +
+      "\ndownload [FILE]                                                   reboot" +
+      "\necho [ARG ...]                                                    tree [-a] [-d] [-f] [-L level] [--prune] [DIRECTORY ...]" +
+      "\nfalse                                                             true" +
+      "\nhelp [COMMAND]                                                    uname [-a|--all] [-i|--hardware-platform] [-m|--machine] [-n|-->" +
+      "\nhostname: hostname [-d|--domain] [-f|--fqdn|--long] [-i|--ip-ad>";
+
+    const mobileExpected =
+      "\ncat [FILE ...]      ls [FILE] [-l|-1]>" +
+      "\ncd [DIR]            neofetch [-L|--lo>" +
+      "\nclear               pwd" +
+      "\ndownload [FILE]     reboot" +
+      "\necho [ARG ...]      tree [-a] [-d] [->" +
+      "\nfalse               true" +
+      "\nhelp [COMMAND]      uname [-a|--all] >" +
+      "\nhostname: hostnam>";
+
+    if (isMobileProject(testInfo)) {
+      await assertOutputInTerminal(page, `${input}${mobileExpected}`);
+    } else {
+      await assertOutputInTerminal(page, `${input}${desktopExpected}`);
+    }
   });
 
   [
@@ -113,12 +136,12 @@ test.describe("Help", () => {
       type: "an unknown command is provided",
       args: ["someFakeCommand"],
       expected:
-        "\nbash: help: no help topics match `someFakeCommand'.  Try `help help'.",
+        "\nbash: help: no help topics match 'someFakeCommand'.  Try 'help help'.",
     },
     {
       type: "multiple unknown commands are provided",
       args: ["foo", "bar", "baz"],
-      expected: "\nbash: help: no help topics match `baz'.  Try `help help'.",
+      expected: "\nbash: help: no help topics match 'baz'.  Try 'help help'.",
     },
   ].forEach(({ type, args, expected }) => {
     test(`Should show an error when ${type}`, async ({ page }) => {
@@ -167,7 +190,7 @@ test.describe("Help", () => {
 
         // Assert
         const expected =
-          "\nls: ls [FILE] [-l | -1] [-ahs] [--block-size block-size]";
+          "\nls: ls [FILE] [-l|-1] [-ahs] [--block-size block-size]";
         await assertOutputInTerminal(page, input + expected);
       });
     });

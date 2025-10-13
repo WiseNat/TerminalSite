@@ -3,6 +3,7 @@ import CommandUtil from "../../util/command_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import TokenisedCommand from "../../dto/tokenised_command.ts";
 import FormatterUtil from "../../util/formatter_util.ts";
+import CommandImportUtil from "../../util/command_import_util.ts";
 
 export interface HelpInformation {
   synopsis: string;
@@ -32,8 +33,7 @@ const HELP: CommandScript = {
 
     let output: string;
     if (parsedOptions._.length === 0) {
-      // TODO: list all commands
-      output = "TODO!!";
+      output = getAllCommandSynopses();
     } else {
       output =
         getHelpForCommands(parsedOptions._, {
@@ -78,7 +78,41 @@ interface Flags {
   s: boolean;
 }
 
-// TODO: JSDoc
+/**
+ * Gets two columns containing all commands with their synopses.
+ */
+function getAllCommandSynopses(): string {
+  let synopses: string[] = [];
+  const commandScripts = CommandImportUtil.getCommandScripts();
+
+  for (const commandScript of Object.values(commandScripts)) {
+    const helpInformation = commandScript.default.help();
+
+    if (helpInformation === null) {
+      continue;
+    }
+
+    synopses.push(helpInformation.synopsis);
+  }
+
+  synopses = synopses.sort((a, b) => a.localeCompare(b));
+  const rowAmount = Math.ceil(synopses.length / 2);
+  const columns: string[] = [
+    synopses.slice(0, rowAmount).join("\n"),
+    synopses.slice(rowAmount, synopses.length).join("\n"),
+  ];
+
+  return FormatterUtil.toResponsiveColumns(columns);
+}
+
+/**
+ * Gets the Help information for a given command.
+ * <p>
+ * This will get the first valid command from the list of provided `commands`.
+ *
+ * @param commands a list of potentially invalid command names.
+ * @param flags the flags to pass to {@link getHelpForCommand}.
+ */
 function getHelpForCommands(commands: string[], flags: Flags): string | null {
   const command = getFirstValidCommand(commands);
 
@@ -95,7 +129,10 @@ function getHelpForCommands(commands: string[], flags: Flags): string | null {
   return getHelpForCommand(command.name, helpInformation, flags);
 }
 
-// TODO: JSDoc
+/**
+ * @param commands list of command names
+ * @returns the first valid command found, null if none are valid
+ */
 function getFirstValidCommand(
   commands: string[],
 ): { name: string; script: CommandScript } | null {
@@ -111,7 +148,15 @@ function getFirstValidCommand(
   return null;
 }
 
-// TODO: JSDoc
+/**
+ * Gets the Help output for a single command.
+ * <p>
+ * Uses the `helpInformation` and formats it based on the `flags`.
+ *
+ * @param command the command name.
+ * @param helpInformation object containing relevant help information.
+ * @param flags
+ */
 function getHelpForCommand(
   command: string,
   helpInformation: HelpInformation,
@@ -134,7 +179,7 @@ function getHelpForCommand(
   }
 
   if (helpInformation.options) {
-    const options = getOptionString(helpInformation.options);
+    const options = getOptionSection(helpInformation.options);
     output += `\n\n${indentContent("Options:", 4)}\n${indentContent(options, 6)}`;
   }
 
@@ -143,7 +188,7 @@ function getHelpForCommand(
   }
 
   if (helpInformation.arguments) {
-    const argumentsString = getArgumentString(helpInformation.arguments);
+    const argumentsString = getArgumentSection(helpInformation.arguments);
     output += `\n\n${indentContent("Arguments:", 4)}\n${indentContent(argumentsString, 6)}`;
   }
 
@@ -203,8 +248,13 @@ function toChunks(str: string, size: number): string[] {
   return chunks;
 }
 
-// TODO: JSDoc
-function getOptionString(options: HelpInformation["options"]) {
+/**
+ * Creates an Option section using the provided `options`.
+ *
+ * @param options help information options
+ * @returns a formatted option section
+ */
+function getOptionSection(options: HelpInformation["options"]) {
   if (options === undefined) {
     return "";
   }
@@ -240,8 +290,13 @@ function getOptionString(options: HelpInformation["options"]) {
   return FormatterUtil.toStaticColumns(columns, 2);
 }
 
-// TODO: JSDoc
-function getArgumentString(
+/**
+ * Creates an Argument section using the provided `helpArguments`.
+ *
+ * @param helpArguments help information argument
+ * @returns a formatted argument section
+ */
+function getArgumentSection(
   helpArguments: HelpInformation["arguments"],
 ): string {
   if (helpArguments === undefined) {
