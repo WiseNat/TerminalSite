@@ -4,7 +4,6 @@ import {
   runCommand,
 } from "../../helper/util/terminal_util.ts";
 import fs from "node:fs";
-import { finished } from "node:stream/promises";
 
 test.describe("Download", () => {
   const parentPath = "./test/e2e/content";
@@ -38,13 +37,8 @@ test.describe("Download", () => {
       // Assert
       await assertOutputInTerminal(page, input);
 
-      const readable = await download.createReadStream();
-      readable.setEncoding("binary");
-
-      let actual = "";
-      readable.on("data", (chunk) => (actual += chunk));
-
-      await finished(readable);
+      const downloadedFilePath = await download.path();
+      const actual = fs.readFileSync(downloadedFilePath, "binary");
 
       const expected = fs.readFileSync(`${parentPath}${path}`, "binary");
 
