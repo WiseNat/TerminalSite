@@ -1,7 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import CommandUtil from "../../../../../src/util/command_util";
 import TerminalUtil from "../../../../../src/util/terminal_util";
-import FormatterUtil from "../../../../../src/util/formatter_util.ts";
 
 describe("Help", () => {
   // Spy
@@ -14,7 +13,6 @@ describe("Help", () => {
   test("should run with CommandUtil", () => {
     // Arrange
     const commandName = "help";
-    vi.mocked(FormatterUtil.toResponsiveColumns).mockReturnValue("");
 
     // Act & Assert
     expect(

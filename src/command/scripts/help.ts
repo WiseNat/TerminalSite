@@ -111,7 +111,8 @@ function getAllCommandSynopses(): string {
     synopses.slice(rowAmount, synopses.length).join("\n"),
   ];
 
-  return indentContent(FormatterUtil.toResponsiveColumns(columns), 1);
+  const responsiveColumns = FormatterUtil.toResponsiveColumns(columns);
+  return FormatterUtil.indentContent(responsiveColumns, 1);
 }
 
 /**
@@ -181,24 +182,28 @@ function getHelpForCommand(
 
   let output: string =
     `${getSynopsis(command, helpInformation)}` +
-    `\n${indentContent(helpInformation.shortDescription, 4)}`;
+    `\n${FormatterUtil.indentContent(helpInformation.shortDescription, 4)}`;
 
   if (helpInformation.longDescription) {
-    output += `\n\n${indentContent(helpInformation.longDescription, 4)}`;
+    output += `\n\n${FormatterUtil.indentContent(helpInformation.longDescription, 4)}`;
   }
 
   if (helpInformation.options) {
     const options = getOptionSection(helpInformation.options);
-    output += `\n\n${indentContent("Options:", 4)}\n${indentContent(options, 6)}`;
+    output +=
+      `\n\n${FormatterUtil.indentContent("Options:", 4)}` +
+      `\n${FormatterUtil.indentContent(options, 6)}`;
   }
 
   if (helpInformation.additionalInformation) {
-    output += `\n\n${indentContent(helpInformation.additionalInformation, 4)}`;
+    output += `\n\n${FormatterUtil.indentContent(helpInformation.additionalInformation, 4)}`;
   }
 
   if (helpInformation.arguments) {
     const argumentsString = getArgumentSection(helpInformation.arguments);
-    output += `\n\n${indentContent("Arguments:", 4)}\n${indentContent(argumentsString, 6)}`;
+    output +=
+      `\n\n${FormatterUtil.indentContent("Arguments:", 4)}` +
+      `\n${FormatterUtil.indentContent(argumentsString, 6)}`;
   }
 
   return output.trimEnd();
@@ -209,53 +214,6 @@ function getSynopsis(
   helpInformation: HelpInformation,
 ): string {
   return `${command}: ${helpInformation.synopsis}`;
-}
-
-// TODO: move to FormatterUtil?
-/**
- * Indents content and splits content across multiple lines.
- * @param content the content to indent.
- * @param indentSize the size of the indent.
- */
-function indentContent(content: string, indentSize: number): string {
-  const contentLines = content.split("\n");
-  const resolvedLines: string[] = [];
-
-  const charactersPerLine = FormatterUtil.getCharactersPerLine(
-    TerminalUtil.getOutputElement(),
-  );
-
-  for (const line of contentLines) {
-    if (line.length + indentSize >= charactersPerLine) {
-      const chunks = toChunks(line, charactersPerLine - indentSize);
-      resolvedLines.push(...chunks);
-    } else {
-      resolvedLines.push(line);
-    }
-  }
-
-  const indent = " ".repeat(indentSize);
-  const lines = resolvedLines.map((line) => `${indent}${line}`);
-  return lines.join("\n");
-}
-
-/**
- * Converts the `str` into chunks with a maximum size of `size`.
- *
- * @param str the string to convert.
- * @param size the size of the chunks.
- */
-function toChunks(str: string, size: number): string[] {
-  const numChunks = Math.ceil(str.length / size);
-  const chunks = new Array(numChunks);
-
-  let start = 0;
-  for (let i = 0; i < numChunks; ++i) {
-    chunks[i] = str.substring(start, start + size);
-    start += size;
-  }
-
-  return chunks;
 }
 
 /**
