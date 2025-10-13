@@ -79,17 +79,14 @@ export default class AutocompleteUtil {
    * @param searchValue the value to search against
    * @returns a list of command suggestions
    */
-  public static getCommandSuggestions(
-    userInput: string,
-    searchValue: string,
-  ): Suggestion[] {
+  public static getCommandSuggestions(searchValue: string): Suggestion[] {
     const commandSuggestions: Suggestion[] = [];
 
     for (const commandScript in CommandImportUtil.getCommandScripts()) {
       if (commandScript.startsWith(searchValue)) {
         commandSuggestions.push({
           visual: commandScript,
-          actual: `${commandScript} `.replace(userInput, ""),
+          actual: `${commandScript} `.replace(searchValue, ""),
         });
       }
     }

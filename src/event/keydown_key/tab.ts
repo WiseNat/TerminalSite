@@ -34,7 +34,7 @@ export async function processTab(event: KeyboardEvent) {
   let suggestions: Suggestion[];
 
   if (tokenisedCommand.args.length === 0) {
-    suggestions = defaultAutocomplete(beforeCaret, tokenisedCommand);
+    suggestions = defaultAutocomplete(tokenisedCommand);
   } else {
     suggestions = await customCommandAutocomplete(
       beforeCaret,
@@ -91,16 +91,11 @@ async function customCommandAutocomplete(
  *
  * @returns command name, directory, and file suggestions
  */
-function defaultAutocomplete(
-  beforeCaret: string,
-  tokenisedCommand: TokenisedCommand,
-): Suggestion[] {
+function defaultAutocomplete(tokenisedCommand: TokenisedCommand): Suggestion[] {
   const searchTerm = tokenisedCommand.name;
 
-  const suggestions: Suggestion[] = AutocompleteUtil.getCommandSuggestions(
-    beforeCaret,
-    searchTerm,
-  );
+  const suggestions: Suggestion[] =
+    AutocompleteUtil.getCommandSuggestions(searchTerm);
 
   return suggestions.concat(
     AutocompleteUtil.getFileAndDirectorySuggestions(searchTerm),

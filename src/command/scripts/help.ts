@@ -1,9 +1,10 @@
-import { CommandScript } from "../command_script.ts";
+import { CommandScript, Suggestion } from "../command_script.ts";
 import CommandUtil from "../../util/command_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import TokenisedCommand from "../../dto/tokenised_command.ts";
 import FormatterUtil from "../../util/formatter_util.ts";
 import CommandImportUtil from "../../util/command_import_util.ts";
+import AutocompleteUtil from "../../util/autocomplete_util.ts";
 
 export interface HelpInformation {
   synopsis: string;
@@ -44,6 +45,14 @@ const HELP: CommandScript = {
     }
 
     TerminalUtil.appendOutput(output);
+  },
+
+  async autocomplete(
+    _userInput: string,
+    args: string[],
+  ): Promise<Suggestion[] | null> {
+    const searchValue = args.length === 0 ? "" : args.at(-1)!;
+    return AutocompleteUtil.getCommandSuggestions(searchValue);
   },
 
   help(): HelpInformation | null {
