@@ -4,7 +4,6 @@ import TerminalUtil from "../../util/terminal_util.ts";
 import TokenisedCommand from "../../dto/tokenised_command.ts";
 import FormatterUtil from "../../util/formatter_util.ts";
 
-// TODO: limit each sections max length (incl. indent) to 75 chars. Newline if going over
 export interface HelpInformation {
   synopsis: string;
   shortDescription: string;
@@ -158,11 +157,50 @@ function getSynopsis(
   return `${command}: ${helpInformation.synopsis}`;
 }
 
-// TODO: JSDoc
+/**
+ * Indents content and splits content across multiple lines.
+ * @param content the content to indent.
+ * @param indentSize the size of the indent.
+ */
 function indentContent(content: string, indentSize: number): string {
+  const contentLines = content.split("\n");
+  const resolvedLines: string[] = [];
+
+  const charactersPerLine = FormatterUtil.getCharactersPerLine(
+    TerminalUtil.getOutputElement(),
+  );
+
+  for (const line of contentLines) {
+    if (line.length + indentSize >= charactersPerLine) {
+      const chunks = toChunks(line, charactersPerLine - indentSize);
+      resolvedLines.push(...chunks);
+    } else {
+      resolvedLines.push(line);
+    }
+  }
+
   const indent = " ".repeat(indentSize);
-  const lines = content.split("\n").map((line) => `${indent}${line}`);
+  const lines = resolvedLines.map((line) => `${indent}${line}`);
   return lines.join("\n");
+}
+
+/**
+ * Converts the `str` into chunks with a maximum size of `size`.
+ *
+ * @param str the string to convert.
+ * @param size the size of the chunks.
+ */
+function toChunks(str: string, size: number): string[] {
+  const numChunks = Math.ceil(str.length / size);
+  const chunks = new Array(numChunks);
+
+  let start = 0;
+  for (let i = 0; i < numChunks; ++i) {
+    chunks[i] = str.substring(start, start + size);
+    start += size;
+  }
+
+  return chunks;
 }
 
 // TODO: JSDoc

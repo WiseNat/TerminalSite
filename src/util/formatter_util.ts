@@ -100,6 +100,18 @@ export default class FormatterUtil {
   }
 
   /**
+   * Gets the amount of characters per line for the `element`.
+   * @param element the element to use to determine characters per line
+   */
+  public static getCharactersPerLine(element: HTMLElement): number {
+    const font = CssUtil.getStyle(element).font;
+    const charWidth = CssUtil.getCharacterWidth(font) ?? 1;
+    const elementWidth = CssUtil.getElementWidth(element);
+
+    return Math.max(1, Math.floor(elementWidth / charWidth));
+  }
+
+  /**
    * Converts the provided `items` into a grid that has a shape based on the
    * current size of the terminal output element, and the size of the items.
    * <p>
@@ -124,11 +136,7 @@ export default class FormatterUtil {
     }
 
     const outputElement = TerminalUtil.getOutputElement();
-    const font = CssUtil.getStyle(outputElement).font;
-    const charWidth = CssUtil.getCharacterWidth(font) ?? 1;
-    const elementWidth = CssUtil.getElementWidth(outputElement);
-
-    const charsPerLine = Math.max(1, Math.floor(elementWidth / charWidth));
+    const charsPerLine = this.getCharactersPerLine(outputElement);
 
     let chosenCols = 1;
     let chosenRows = items.length;

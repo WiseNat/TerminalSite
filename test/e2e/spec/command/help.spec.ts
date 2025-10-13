@@ -3,6 +3,7 @@ import {
   assertOutputInTerminal,
   runCommand,
 } from "../../helper/util/terminal_util.ts";
+import { isMobileProject } from "../../helper/util/playwright_util.ts";
 
 test.describe("Help", () => {
   test("Should show two columns of command synopses for all available commands, when no args or flags are provided", async ({
@@ -33,7 +34,7 @@ test.describe("Help", () => {
       args: ["someFakeCommand", "ls", "echo", "cd"],
     },
   ].forEach(({ type, args }) => {
-    test(type, async ({ page }) => {
+    test(type, async ({ page }, testInfo) => {
       // Arrange
       let input = "help";
       if (args.length !== 0) {
@@ -44,17 +45,16 @@ test.describe("Help", () => {
       await runCommand(page, input);
 
       // Assert
-      const expected =
-        "\nls: ls [FILE] [-l | -1] [-ahs] [--block-size block-size]\n" +
+      const desktopExpected =
+        "\nls: ls [FILE] [-l|-1] [-ahs] [--block-size block-size]\n" +
         "    List directory contents.\n" +
         "\n" +
-        "    List information about the FILEs (the current directory by default).  Sort entries alphabetically\n" +
-        "    Mandatory arguments to long options are mandatory for short options too.\n" +
+        "    List information about the FILEs (the current directory by default). Sort entries alphabetically. Mandatory arguments to long op\n" +
+        "    tions are mandatory for short options too.\n" +
         "\n" +
         "    Options:\n" +
         "      -a, --all              do not ignore entries starting with .\n" +
-        "          --block-size=SIZE  with -l, scale sizes by SIZE when printing them;\n" +
-        "                             e.g., '--block-size=M'; see SIZE format below\n" +
+        "          --block-size=SIZE  with -l, scale sizes by SIZE when printing them; e.g. '--block-size=1024'; see SIZE format below\n" +
         "      -h, --human-readable   with -l and -s, print sizes like 1K 234M 2G etc.\n" +
         "      -l                     use a long listing format\n" +
         "      -s, --size             print the allocated size of each file, in blocks\n" +
@@ -63,9 +63,48 @@ test.describe("Help", () => {
         "    The SIZE argument is an integer (example: 1024 for 1 kilobyte).\n" +
         "\n" +
         "    Arguments:\n" +
-        "      FILE  Path to either a File or Directory";
+        "      FILE  path to either a file or directory";
 
-      await assertOutputInTerminal(page, input + expected);
+      const mobileExpected =
+        "\nls: ls [FILE] [-l|-1] [-ahs] [--block-size block-size]\n" +
+        "    List directory contents.\n" +
+        "\n" +
+        "    List information about the FILEs (th\n" +
+        "    e current directory by default). Sor\n" +
+        "    t entries alphabetically. Mandatory \n" +
+        "    arguments to long options are mandat\n" +
+        "    ory for short options too.\n" +
+        "\n" +
+        "    Options:\n" +
+        "      -a, --all              do not igno\n" +
+        "      re entries starting with .\n" +
+        "          --block-size=SIZE  with -l, sc\n" +
+        "      ale sizes by SIZE when printing th\n" +
+        "      em; e.g. '--block-size=1024'; see \n" +
+        "      SIZE format below\n" +
+        "      -h, --human-readable   with -l and\n" +
+        "       -s, print sizes like 1K 234M 2G e\n" +
+        "      tc.\n" +
+        "      -l                     use a long \n" +
+        "      listing format\n" +
+        "      -s, --size             print the a\n" +
+        "      llocated size of each file, in blo\n" +
+        "      cks\n" +
+        "      -1                     list one fi\n" +
+        "      le per line\n" +
+        "\n" +
+        "    The SIZE argument is an integer (exa\n" +
+        "    mple: 1024 for 1 kilobyte).\n" +
+        "\n" +
+        "    Arguments:\n" +
+        "      FILE  path to either a file or dir\n" +
+        "      ectory";
+
+      if (isMobileProject(testInfo)) {
+        await assertOutputInTerminal(page, `${input}${mobileExpected}`);
+      } else {
+        await assertOutputInTerminal(page, `${input}${desktopExpected}`);
+      }
     });
   });
 

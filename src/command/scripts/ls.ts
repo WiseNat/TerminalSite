@@ -82,7 +82,7 @@ const LS: CommandScript = {
         {
           long: "block-size=SIZE",
           description:
-            "with -l, scale sizes by SIZE when printing them; e.g., '--block-size=M'; see SIZE format below",
+            "with -l, scale sizes by SIZE when printing them; e.g. '--block-size=1024'; see SIZE format below",
         },
         {
           short: "h",
