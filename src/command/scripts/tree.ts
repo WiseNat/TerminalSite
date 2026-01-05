@@ -76,7 +76,7 @@ const TREE: CommandScript = {
         },
         {
           short: "L=LEVEL",
-          description: ",ax display depth of the directory tree",
+          description: "max display depth of the directory tree",
         },
         {
           long: "prune",
