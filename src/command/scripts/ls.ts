@@ -5,6 +5,7 @@ import { FileTreeNode } from "virtual:file-tree";
 import FormatterUtil from "../../util/formatter_util.ts";
 import { clone } from "lodash-es";
 import CommandUtil from "../../util/command_util.ts";
+import { HelpInformation } from "./help.ts";
 
 // TODO: 'ls -1s' works but 'ls -s1' does not work. This is an issue with the getopts
 //  library. Planning on investigating a more maintained alternative so this is
@@ -64,6 +65,53 @@ const LS: CommandScript = {
     if (output !== "") {
       TerminalUtil.appendRawOutput(output);
     }
+  },
+
+  help(): HelpInformation | null {
+    return {
+      synopsis: "ls [FILE] [-l|-1] [-ahs] [--block-size block-size]",
+      shortDescription: "List directory contents.",
+      longDescription:
+        "List information about the FILEs (the current directory by default). Sort entries alphabetically. Mandatory arguments to long options are mandatory for short options too.",
+      options: [
+        {
+          short: "a",
+          long: "all",
+          description: "do not ignore entries starting with .",
+        },
+        {
+          long: "block-size=SIZE",
+          description:
+            "with -l, scale sizes by SIZE when printing them; e.g. '--block-size=1024'; see SIZE format below",
+        },
+        {
+          short: "h",
+          long: "human-readable",
+          description: "with -l and -s, print sizes like 1K 234M 2G etc.",
+        },
+        {
+          short: "l",
+          description: "use a long listing format",
+        },
+        {
+          short: "s",
+          long: "size",
+          description: "print the allocated size of each file, in blocks",
+        },
+        {
+          short: "1",
+          description: "list one file per line",
+        },
+      ],
+      additionalInformation:
+        "The SIZE argument is an integer (example: 1024 for 1 kilobyte).",
+      arguments: [
+        {
+          name: "FILE",
+          description: "path to either a file or directory",
+        },
+      ],
+    };
   },
 };
 

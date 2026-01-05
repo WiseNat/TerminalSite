@@ -186,11 +186,11 @@ describe("AutocompleteUtil", () => {
       test(type, () => {
         // Arrange
         vi.mocked(CommandImportUtil.getCommandScripts).mockReturnValue({
-          echo: { default: { run: vi.fn() } },
-          echoing: { default: { run: vi.fn() } },
-          echo_ers: { default: { run: vi.fn() } },
-          ec: { default: { run: vi.fn() } },
-          foo: { default: { run: vi.fn() } },
+          echo: { default: { run: vi.fn(), help: vi.fn() } },
+          echoing: { default: { run: vi.fn(), help: vi.fn() } },
+          echo_ers: { default: { run: vi.fn(), help: vi.fn() } },
+          ec: { default: { run: vi.fn(), help: vi.fn() } },
+          foo: { default: { run: vi.fn(), help: vi.fn() } },
         });
 
         // Act

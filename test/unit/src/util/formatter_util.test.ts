@@ -370,7 +370,7 @@ describe("FormatterUtil", () => {
       ];
 
       // Act
-      const result = FormatterUtil.toStaticGrid(columns);
+      const result = FormatterUtil.toStaticColumns(columns);
 
       // Assert
       expect(result).toEqual(columns[0]);
@@ -381,7 +381,7 @@ describe("FormatterUtil", () => {
       const columns: string[] = [];
 
       // Act
-      const result = FormatterUtil.toStaticGrid(columns);
+      const result = FormatterUtil.toStaticColumns(columns);
 
       // Assert
       expect(result).toEqual("");
@@ -396,11 +396,11 @@ describe("FormatterUtil", () => {
           "CCCCC\nCCCC\nCCC\nCC\nC",
         ],
         expected:
-          "A       B       CCCCC" +
-          "\nAA      BB      CCCC" +
-          "\nAAA     BBB     CCC" +
-          "\nAAAA    BBBB    CC" +
-          "\nAAAAA   BBBBB   C",
+          "A      B      CCCCC\n" +
+          "AA     BB     CCCC\n" +
+          "AAA    BBB    CCC\n" +
+          "AAAA   BBBB   CC\n" +
+          "AAAAA  BBBBB  C",
       },
       {
         type: "Multiple HTML Columns",
@@ -413,26 +413,26 @@ describe("FormatterUtil", () => {
           "\n" + "\nFOOOOO" + "\nbar" + "\n!!!" + "\n" + "\na",
         ],
         expected:
-          "Example                      \n" +
-          "<span style='color: red'>Data</span> with                    \n" +
-          "A <span style='color: green'>METRIC TON</span> of...........   FOOOOO\n" +
-          "lines!!!                     bar\n" +
-          "                             !!!\n" +
-          "BAZ                          \n" +
-          "                             a",
+          "Example                     \n" +
+          "<span style='color: red'>Data</span> with                   \n" +
+          "A <span style='color: green'>METRIC TON</span> of...........  FOOOOO\n" +
+          "lines!!!                    bar\n" +
+          "                            !!!\n" +
+          "BAZ                         \n" +
+          "                            a",
         foo:
-          "Example                      \n" +
-          "Data with                    \n" +
-          "A METRIC TON of...........   FOOOOO\n" +
-          "lines!!!                     bar\n" +
-          "                             !!!\n" +
-          "BAZ                          \n" +
-          "                             a",
+          "Example                     \n" +
+          "Data with                   \n" +
+          "A METRIC TON of...........  FOOOOO\n" +
+          "lines!!!                    bar\n" +
+          "                            !!!\n" +
+          "BAZ                         \n" +
+          "                            a",
       },
     ].forEach(({ type, columns, expected }) => {
       test(`${type} are ordered into columns in the correct order with the right positioning & padding`, () => {
         // Act
-        const result = FormatterUtil.toStaticGrid(columns);
+        const result = FormatterUtil.toStaticColumns(columns);
 
         // Assert
         expect(result).toEqual(expected);

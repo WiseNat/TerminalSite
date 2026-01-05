@@ -9,6 +9,7 @@ import {
   KERNEL_VERSION,
   OPERATING_SYSTEM,
 } from "../../constant/system.ts";
+import { HelpInformation } from "./help.ts";
 
 const UNAME: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -43,6 +44,65 @@ const UNAME: CommandScript = {
     });
 
     TerminalUtil.appendOutput(output);
+  },
+
+  help(): HelpInformation | null {
+    return {
+      synopsis:
+        "uname [-a|--all] [-i|--hardware-platform] [-m|--machine] [-n|--nodename] [-o|--operating-system] [-p|--processor] " +
+        "[-r|--kernel-release] [-s|--kernel-name] [-v|--kernel-version]",
+      shortDescription: "Print system information.",
+      longDescription:
+        "Print certain system information. With no flags, same as -s.",
+      options: [
+        {
+          short: "a",
+          long: "all",
+          description:
+            "print all information, in the following order, except omit -p and -i if unknown:",
+        },
+        {
+          short: "s",
+          long: "kernel-name",
+          description: "print the kernel name",
+        },
+        {
+          short: "n",
+          long: "nodename",
+          description: "print the network node hostname",
+        },
+        {
+          short: "r",
+          long: "kernel-release",
+          description: "print the kernel release",
+        },
+        {
+          short: "v",
+          long: "kernel-version",
+          description: "print the kernel version",
+        },
+        {
+          short: "m",
+          long: "machine",
+          description: "print the machine hardware name",
+        },
+        {
+          short: "p",
+          long: "processor",
+          description: "print the processor type (non-portable)",
+        },
+        {
+          short: "i",
+          long: "hardware-platform",
+          description: "print the hardware platform (non-portable)",
+        },
+        {
+          short: "o",
+          long: "operating-system",
+          description: "print the operating system",
+        },
+      ],
+    };
   },
 };
 

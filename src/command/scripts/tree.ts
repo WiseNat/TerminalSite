@@ -4,6 +4,7 @@ import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import FormatterUtil from "../../util/formatter_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
+import { HelpInformation } from "./help.ts";
 
 const TREE: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -47,6 +48,48 @@ const TREE: CommandScript = {
     });
 
     TerminalUtil.appendRawOutput(output);
+  },
+
+  help(): HelpInformation | null {
+    return {
+      synopsis: "tree [-a] [-d] [-f] [-L level] [--prune] [DIRECTORY ...]",
+      shortDescription: "List contents of directories in a tree-like format.",
+      longDescription:
+        "Tree is a recursive directory listing program that produces a depth indented listing of files, which are colorised. " +
+        "With no arguments, tree lists the files in the current directory. When directory arguments are given, tree lists all " +
+        "the files and/or directories found in the given DIRECTOR(Y)ies each in turn. Upon completion of listing all files/" +
+        "directories found, tree returns the total number of files and/or directories listed.",
+      options: [
+        {
+          short: "a",
+          description:
+            "all files are printed. By default tree does not print hidden files (those beginning with a dot '.'). " +
+            "In no event does tree print the file system constructs '.' (current directory) and '..' (previous directory)",
+        },
+        {
+          short: "d",
+          description: "list directories only",
+        },
+        {
+          short: "f",
+          description: "prints the full path prefix for each file",
+        },
+        {
+          short: "L=LEVEL",
+          description: ",ax display depth of the directory tree",
+        },
+        {
+          long: "prune",
+          description: "makes tree prune empty directories from the output",
+        },
+      ],
+      arguments: [
+        {
+          name: "DIRECTORY",
+          description: "directories to create trees for",
+        },
+      ],
+    };
   },
 };
 

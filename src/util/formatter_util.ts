@@ -100,6 +100,18 @@ export default class FormatterUtil {
   }
 
   /**
+   * Gets the amount of characters per line for the `element`.
+   * @param element the element to use to determine characters per line
+   */
+  public static getCharactersPerLine(element: HTMLElement): number {
+    const font = CssUtil.getStyle(element).font;
+    const charWidth = CssUtil.getCharacterWidth(font) ?? 1;
+    const elementWidth = CssUtil.getElementWidth(element);
+
+    return Math.max(1, Math.floor(elementWidth / charWidth));
+  }
+
+  /**
    * Converts the provided `items` into a grid that has a shape based on the
    * current size of the terminal output element, and the size of the items.
    * <p>
@@ -113,7 +125,7 @@ export default class FormatterUtil {
    *
    * @param items the items to insert into the grid.
    * @param paddingSize the amount of extra padding between items.
-   * @see toStaticGrid
+   * @see toStaticColumns
    */
   public static toDynamicGrid(
     items: string[],
@@ -124,11 +136,7 @@ export default class FormatterUtil {
     }
 
     const outputElement = TerminalUtil.getOutputElement();
-    const font = CssUtil.getStyle(outputElement).font;
-    const charWidth = CssUtil.getCharacterWidth(font) ?? 1;
-    const elementWidth = CssUtil.getElementWidth(outputElement);
-
-    const charsPerLine = Math.max(1, Math.floor(elementWidth / charWidth));
+    const charsPerLine = this.getCharactersPerLine(outputElement);
 
     let chosenCols = 1;
     let chosenRows = items.length;
@@ -259,9 +267,9 @@ export default class FormatterUtil {
    *
    * @param columns the columns to insert into the grid.
    * @param paddingSize the amount of extra padding between columns.
-   * @see toDynamicGrid
+   * @see toResponsiveColumns
    */
-  public static toStaticGrid(columns: string[], paddingSize: number = 3) {
+  public static toStaticColumns(columns: string[], paddingSize: number = 2) {
     if (columns.length === 0) {
       return "";
     }
@@ -304,5 +312,118 @@ export default class FormatterUtil {
     }
 
     return output.trimEnd();
+  }
+
+  // TODO: JSDoc
+  // TODO: Unit test
+  public static toResponsiveColumns(
+    columns: string[],
+    paddingSize: number = 2,
+    truncationChar: string = ">",
+  ) {
+    if (columns.length === 0) {
+      return "";
+    }
+
+    const grid: string[][] = Array.from({ length: columns.length }, () => []);
+    let maximumRows = 0;
+    const maximumColumnLengths: number[] = Array.from({
+      length: columns.length,
+    });
+
+    for (let i = 0; i < grid.length; i++) {
+      grid[i] = columns[i].split("\n");
+
+      maximumRows = Math.max(maximumRows, grid[i].length);
+
+      maximumColumnLengths[i] = Math.max(
+        ...grid[i].map((i) => HtmlUtil.extractVisibleText(i).length),
+      );
+    }
+
+    const charactersPerLine = this.getCharactersPerLine(
+      TerminalUtil.getOutputElement(),
+    );
+    const maxColumnLength = Math.floor(charactersPerLine / columns.length);
+    const maxColumnLengthWithPadding =
+      maxColumnLength - paddingSize - truncationChar.length;
+
+    let output = "";
+    for (let row = 0; row < maximumRows; row++) {
+      for (let column = 0; column < grid.length; column++) {
+        let columnData = grid[column][row] ?? "";
+
+        if (columnData.length > maxColumnLengthWithPadding) {
+          columnData =
+            columnData.substring(0, maxColumnLengthWithPadding) +
+            truncationChar;
+        }
+
+        if (column !== grid.length - 1) {
+          // Potentially more performant not recalculating visible text, though
+          // this would result in processing a messy data structure
+          columnData = columnData.padEnd(
+            Math.min(
+              maximumColumnLengths[column] +
+                paddingSize +
+                truncationChar.length,
+              maxColumnLength,
+            ),
+            " ",
+          );
+        }
+
+        output += columnData;
+      }
+
+      output += "\n";
+    }
+
+    return output.trimEnd();
+  }
+
+  /**
+   * Indents content and splits content across multiple lines.
+   * @param content the content to indent.
+   * @param indentSize the size of the indent.
+   */
+  public static indentContent(content: string, indentSize: number): string {
+    const contentLines = content.split("\n");
+    const resolvedLines: string[] = [];
+
+    const outputElement = TerminalUtil.getOutputElement();
+    const charactersPerLine = this.getCharactersPerLine(outputElement);
+
+    for (const line of contentLines) {
+      if (line.length + indentSize >= charactersPerLine) {
+        const chunks = this.toChunks(line, charactersPerLine - indentSize);
+        resolvedLines.push(...chunks);
+      } else {
+        resolvedLines.push(line);
+      }
+    }
+
+    const indent = " ".repeat(indentSize);
+    const lines = resolvedLines.map((line) => `${indent}${line}`);
+    return lines.join("\n");
+  }
+
+  /**
+   * Converts the `str` into chunks with a maximum size of `size`.
+   *
+   * @param str the string to convert.
+   * @param size the size of the chunks.
+   */
+  private static toChunks(str: string, size: number): string[] {
+    const numChunks = Math.ceil(str.length / size);
+    const chunks = new Array(numChunks);
+
+    let start = 0;
+    for (let i = 0; i < numChunks; ++i) {
+      chunks[i] = str.substring(start, start + size);
+      start += size;
+    }
+
+    return chunks;
   }
 }

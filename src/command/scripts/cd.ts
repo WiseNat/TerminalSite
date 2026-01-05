@@ -2,6 +2,7 @@ import { CommandScript } from "../command_script.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import CommandUtil from "../../util/command_util.ts";
+import { HelpInformation } from "./help.ts";
 
 let workingDirectories: string[] = [];
 
@@ -43,6 +44,22 @@ const CD: CommandScript = {
     } else {
       changeDirectory(path);
     }
+  },
+
+  help(): HelpInformation | null {
+    return {
+      synopsis: "cd [DIR]",
+      shortDescription: "Change the shell working directory.",
+      longDescription:
+        "Change the current directory to DIR. The default DIR is the value of the HOME shell variable. If DIR is \"-\", it is converted to $OLDPWD." +
+        "\nUsage of \"..\" within the DIR path denotes a parent directory, whilst usage of \".\" within the DIR path denotes the current working directory.",
+      arguments: [
+        {
+          name: "DIR",
+          description: "path to a directory to change into",
+        },
+      ],
+    };
   },
 };
 

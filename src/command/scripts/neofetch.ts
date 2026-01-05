@@ -31,6 +31,7 @@ import {
 import Bowser from "bowser";
 import { PerformanceMemory } from "../../types/non_standard";
 import TimeUtil from "../../util/time_util.ts";
+import { HelpInformation } from "./help.ts";
 
 const NEOFETCH: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -51,6 +52,28 @@ const NEOFETCH: CommandScript = {
     });
 
     TerminalUtil.appendRawOutput(output);
+  },
+
+  help(): HelpInformation | null {
+    return {
+      synopsis: "neofetch [-L|--logo] [--off]",
+      shortDescription: "A fast, highly customizable system info script.",
+      longDescription:
+        "Neofetch is a CLI system information tool written in JS. Neofetch displays information about your system next to your OS logo.",
+      options: [
+        {
+          short: "L",
+          long: "logo",
+          description: "hide the info text and only show the ASCII logo",
+        },
+        {
+          long: "off",
+          description: "hide the ASCII logo and only show the info text",
+        },
+      ],
+      additionalInformation:
+        "When called without any flags, 'neofetch' will display both the ASCII logo and the info text.",
+    };
   },
 };
 
@@ -83,7 +106,7 @@ function getOutput(flags: Flags): string {
     columns.push(info);
   }
 
-  const grid = FormatterUtil.toStaticGrid(columns);
+  const grid = FormatterUtil.toStaticColumns(columns, 3);
 
   if (grid === "") {
     return "\n ";

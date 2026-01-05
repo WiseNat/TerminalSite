@@ -3,6 +3,7 @@ import TerminalUtil from "../../util/terminal_util.ts";
 import FileImportUtil from "../../util/file_import_util.ts";
 import { escape } from "lodash-es";
 import CommandUtil from "../../util/command_util.ts";
+import { HelpInformation } from "./help.ts";
 
 const CAT: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -33,6 +34,20 @@ const CAT: CommandScript = {
     }
 
     TerminalUtil.appendRawOutput(output.join("\n"));
+  },
+
+  help(): HelpInformation | null {
+    return {
+      synopsis: "cat [FILE ...]",
+      shortDescription: "Concatenate files and print on the standard output.",
+      longDescription: "Concatenate FILE(s) to standard output.",
+      arguments: [
+        {
+          name: "FILE",
+          description: "paths to files to concatenate",
+        },
+      ],
+    };
   },
 };
 

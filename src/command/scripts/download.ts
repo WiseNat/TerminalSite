@@ -2,6 +2,7 @@ import { CommandScript } from "../command_script.ts";
 import FileImportUtil from "../../util/file_import_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import CommandUtil from "../../util/command_util.ts";
+import { HelpInformation } from "./help.ts";
 
 const DOWNLOAD: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -26,6 +27,16 @@ const DOWNLOAD: CommandScript = {
     const fileName = filePath.split("/").at(-1)!;
 
     await downloadFile(fileUrl, fileName);
+  },
+
+  help(): HelpInformation | null {
+    return {
+      synopsis: "download [FILE]",
+      shortDescription: "Download a file to the client machine.",
+      longDescription:
+        "Attempts to download the FILE for the client by forcefully clicking an anchor element with a href pointing " +
+        "at the expected file url. This may fail if the browser has been configured to block file downloads.",
+    };
   },
 };
 
