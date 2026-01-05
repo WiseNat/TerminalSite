@@ -15,6 +15,7 @@ import {
 } from "../helper/constant/charset";
 import { simulatePaste } from "../helper/util/clipboard_util";
 import { assertExactTextInTerminal } from "../helper/util/terminal_util.ts";
+import { MOBILE_SAFARI, WEBKIT } from "../helper/constant/project.ts";
 
 test.describe("Keyboard", () => {
   /*
@@ -114,7 +115,15 @@ test.describe("Keyboard", () => {
     test(`${type} are able to be pasted in the user input`, async ({
       page,
       browser,
-    }) => {
+    }, testInfo) => {
+      // Whitespace pasting is modified by the Webkit and Mobile Safari, ignore this test for those
+      if (
+        values === WHITESPACE &&
+        [WEBKIT, MOBILE_SAFARI].includes(testInfo.project.name)
+      ) {
+        return;
+      }
+
       // Arrange & Act
       await simulatePaste(page.locator(INPUT_SELECTOR), browser, values);
 
