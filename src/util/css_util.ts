@@ -39,4 +39,16 @@ export default class CssUtil {
   public static getElementWidth(element: HTMLElement): number {
     return element.offsetWidth;
   }
+
+  /**
+   * @param property the property to convert to a var, can start with or without '--'
+   * @return the `property` as a var in CSS, e.g. `CssUtil.asVar("foo") // -> "var(--foo)"`
+   */
+  public static asVar(property: string): string {
+    if (!property.startsWith("--")) {
+      property = `--${property}`;
+    }
+
+    return `var(${property})`;
+  }
 }

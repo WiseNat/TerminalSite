@@ -194,10 +194,8 @@ describe("AutocompleteUtil", () => {
         });
 
         // Act
-        const commandSuggestions = AutocompleteUtil.getCommandSuggestions(
-          searchValue,
-          searchValue,
-        );
+        const commandSuggestions =
+          AutocompleteUtil.getCommandSuggestions(searchValue);
 
         // Assert
         expect(commandSuggestions).toEqual(expectedCommandSuggestions);

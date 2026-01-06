@@ -1,23 +1,5 @@
 import { CommandScript } from "../command_script.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
-import {
-  BLACK,
-  BLUE,
-  BRIGHT_BLACK,
-  BRIGHT_BLUE,
-  BRIGHT_CYAN,
-  BRIGHT_GREEN,
-  BRIGHT_MAGENTA,
-  BRIGHT_RED,
-  BRIGHT_WHITE,
-  BRIGHT_YELLOW,
-  CYAN,
-  GREEN,
-  MAGENTA,
-  RED,
-  WHITE,
-  YELLOW,
-} from "../../constant/colour.ts";
 import FormatterUtil, {
   FileSystemEntryStyle,
 } from "../../util/formatter_util.ts";
@@ -32,6 +14,25 @@ import Bowser from "bowser";
 import { PerformanceMemory } from "../../types/non_standard";
 import TimeUtil from "../../util/time_util.ts";
 import { HelpInformation } from "./help.ts";
+import {
+  ENTRY_FIVE,
+  ENTRY_FIVE_BRIGHT,
+  ENTRY_FOUR,
+  ENTRY_FOUR_BRIGHT,
+  ENTRY_ONE,
+  ENTRY_ONE_BRIGHT,
+  ENTRY_SEVEN,
+  ENTRY_SEVEN_BRIGHT,
+  ENTRY_SIX,
+  ENTRY_SIX_BRIGHT,
+  ENTRY_THREE,
+  ENTRY_THREE_BRIGHT,
+  ENTRY_TWO,
+  ENTRY_TWO_BRIGHT,
+  ENTRY_ZERO,
+  ENTRY_ZERO_BRIGHT,
+} from "../../constant/theme.ts";
+import CssUtil from "../../util/css_util.ts";
 
 const NEOFETCH: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -127,42 +128,45 @@ function getOutput(flags: Flags): string {
  *  @returns the coloured ASCII art logo
  */
 function getLogo() {
+  const varEntrySeven = CssUtil.asVar(ENTRY_SEVEN);
+
+  // prettier-ignore
   return (
-    toColouredText("`+-----------_`+------------+`_-----------+`", WHITE) +
+    toColouredText("`+-----------_`+------------+`_-----------+`", varEntrySeven) +
     "\n" +
-    toColouredText("*$$$$$$$$$$$$B<%$$$$$$$$$$$$8<@$$$$$$$$$$$$*", WHITE) +
+    toColouredText("*$$$$$$$$$$$$B<%$$$$$$$$$$$$8<@$$$$$$$$$$$$*", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$$$$$$$$$@i%$$$$$$$$$$$$%i@$$$$$$$$$$$$$", WHITE) +
+    toColouredText("$$$$$$$$$$$$$@i%$$$$$$$$$$$$%i@$$$$$$$$$$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("YYYYYYYYXYYYYz>cYYYYYYYYYYYYc>zYYYYYYYYYYYYY", WHITE) +
+    toColouredText("YYYYYYYYXYYYYz>cYYYYYYYYYYYYc>zYYYYYYYYYYYYY", varEntrySeven) +
     "\n" +
-    toColouredText("######*W&#*##M8M############M8M#############", WHITE) +
+    toColouredText("######*W&#*##M8M############M8M#############", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$$$&a$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toColouredText("$$$$$$$&a$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$*|^ ~Q$$$@$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toColouredText("$$$$$*|^ ~Q$$$@$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$b!    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toColouredText("$$$$$b!    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$$$O~    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toColouredText("$$$$$$$O~    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$$$$$0-`   +L%$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toColouredText("$$$$$$$$$0-`   +L%$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$$$@$$hl '  ^k$$$$@@@@@@@@@@@@@@@$$$$$$$", WHITE) +
+    toColouredText("$$$$$$$@$$hl '  ^k$$$$@@@@@@@@@@@@@@@$$$$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$$$$k1.   :v8$$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toColouredText("$$$$$$$$k1.   :v8$$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$$h(.   :u&$$$$$$dQ0QQQQQQQQQQQ00#$$$$$$", WHITE) +
+    toColouredText("$$$$$$h(.   :u&$$$$$$dQ0QQQQQQQQQQQ00#$$$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$w    :v8$$@$$$$@^               ($@$$$$", WHITE) +
+    toColouredText("$$$$$w    :v8$$@$$$$@^               ($@$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$@q}iv8$$@$$$$$$$-:::::::::::::;:v$@$$$$", WHITE) +
+    toColouredText("$$$$$@q}iv8$$@$$$$$$$-:::::::::::::;:v$@$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("$$$$$$$$$$$@$$$$$$$$$@%%%%%%%%%%%%%%%$$$$$$$", WHITE) +
+    toColouredText("$$$$$$$$$$$@$$$$$$$$$@%%%%%%%%%%%%%%%$$$$$$$", varEntrySeven) +
     "\n" +
-    toColouredText("*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*", WHITE) +
+    toColouredText("*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*", varEntrySeven) +
     "\n" +
-    toColouredText("`+--------------------_______________-----+", WHITE)
+    toColouredText("`+--------------------_______________-----+", varEntrySeven)
   );
 }
 
@@ -210,21 +214,24 @@ function getInfo(isLogo: boolean): string {
   const gpu = "Unknown";
   const memory = `${currentMemory}B / ${maximumMemory}B`;
 
+  const varEntrySeven = CssUtil.asVar(ENTRY_SEVEN);
+  const varEntrySevenBright = CssUtil.asVar(ENTRY_SEVEN_BRIGHT);
+
   return (
-    `${toColouredText(user, BRIGHT_WHITE)}@${toColouredText(hostname, BRIGHT_WHITE)}` +
+    `${toColouredText(user, varEntrySevenBright)}@${toColouredText(hostname, varEntrySevenBright)}` +
     "\n------------" +
-    `\n${toColouredText("OS", WHITE)}: ${os}` +
-    `\n${toColouredText("Host", WHITE)}: ${motherboard}` +
-    `\n${toColouredText("Kernel", WHITE)}: ${kernel}` +
-    `\n${toColouredText("Uptime", WHITE)}: ${uptime}` +
-    `\n${toColouredText("Shell", WHITE)}: ${shell}` +
-    `\n${toColouredText("Resolution", WHITE)}: ${resolution}` +
-    `\n${toColouredText("DE", WHITE)}: ${desktopEnvironment}` +
-    `\n${toColouredText("WM", WHITE)}: ${windowManager}` +
-    `\n${toColouredText("Terminal", WHITE)}: ${terminal}` +
-    `\n${toColouredText("CPU", WHITE)}: ${cpu}` +
-    `\n${toColouredText("GPU", WHITE)}: ${gpu}` +
-    `\n${toColouredText("Memory", WHITE)}: ${memory}` +
+    `\n${toColouredText("OS", varEntrySeven)}: ${os}` +
+    `\n${toColouredText("Host", varEntrySeven)}: ${motherboard}` +
+    `\n${toColouredText("Kernel", varEntrySeven)}: ${kernel}` +
+    `\n${toColouredText("Uptime", varEntrySeven)}: ${uptime}` +
+    `\n${toColouredText("Shell", varEntrySeven)}: ${shell}` +
+    `\n${toColouredText("Resolution", varEntrySeven)}: ${resolution}` +
+    `\n${toColouredText("DE", varEntrySeven)}: ${desktopEnvironment}` +
+    `\n${toColouredText("WM", varEntrySeven)}: ${windowManager}` +
+    `\n${toColouredText("Terminal", varEntrySeven)}: ${terminal}` +
+    `\n${toColouredText("CPU", varEntrySeven)}: ${cpu}` +
+    `\n${toColouredText("GPU", varEntrySeven)}: ${gpu}` +
+    `\n${toColouredText("Memory", varEntrySeven)}: ${memory}` +
     `\n\n${getColouredBlocks(isLogo)}`
   );
 }
@@ -269,16 +276,25 @@ function getUptime(): string {
  */
 function getColouredBlocks(isLogo: boolean) {
   const colours: string[][] = [
-    [BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE],
     [
-      BRIGHT_BLACK,
-      BRIGHT_RED,
-      BRIGHT_GREEN,
-      BRIGHT_YELLOW,
-      BRIGHT_BLUE,
-      BRIGHT_MAGENTA,
-      BRIGHT_CYAN,
-      BRIGHT_WHITE,
+      ENTRY_ZERO,
+      ENTRY_ONE,
+      ENTRY_TWO,
+      ENTRY_THREE,
+      ENTRY_FOUR,
+      ENTRY_FIVE,
+      ENTRY_SIX,
+      ENTRY_SEVEN,
+    ],
+    [
+      ENTRY_ZERO_BRIGHT,
+      ENTRY_ONE_BRIGHT,
+      ENTRY_TWO_BRIGHT,
+      ENTRY_THREE_BRIGHT,
+      ENTRY_FOUR_BRIGHT,
+      ENTRY_FIVE_BRIGHT,
+      ENTRY_SIX_BRIGHT,
+      ENTRY_SEVEN_BRIGHT,
     ],
   ];
 
@@ -287,7 +303,7 @@ function getColouredBlocks(isLogo: boolean) {
   let colouredBlocks = `${leftPadding}`;
   for (const row of colours) {
     for (const colour of row) {
-      colouredBlocks += toColouredBackground("   ", colour);
+      colouredBlocks += toColouredBackground("   ", CssUtil.asVar(colour));
     }
 
     colouredBlocks += `\n${leftPadding}`;

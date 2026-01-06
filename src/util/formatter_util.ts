@@ -1,9 +1,16 @@
 import { FileTreeNode } from "virtual:file-tree";
-import { BLACK, BLUE, CYAN, GREEN, MAGENTA, RED } from "../constant/colour.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import CssUtil from "./css_util.ts";
 import TerminalUtil from "./terminal_util.ts";
 import HtmlUtil from "./html_util.ts";
+import {
+  ENTRY_FIVE,
+  ENTRY_FOUR,
+  ENTRY_ONE,
+  ENTRY_SIX,
+  ENTRY_TWO,
+  ENTRY_ZERO,
+} from "../constant/theme.ts";
 
 export interface FileSystemEntryStyle {
   foreground: string | null;
@@ -55,22 +62,22 @@ export default class FormatterUtil {
     let fontWeight: string | null = null;
 
     if (node.isDirectory) {
-      foreground = BLUE;
+      foreground = CssUtil.asVar(ENTRY_FOUR);
       fontWeight = "bold";
     } else if (FileSystemUtil.isExecutable(node.permissions)) {
-      foreground = GREEN;
+      foreground = CssUtil.asVar(ENTRY_TWO);
       fontWeight = "bold";
     } else if (FileSystemUtil.isArchiveFile(node.name)) {
-      foreground = RED;
+      foreground = CssUtil.asVar(ENTRY_ONE);
       fontWeight = "bold";
     } else if (FileSystemUtil.isGraphicsFile(node.name)) {
-      foreground = MAGENTA;
+      foreground = CssUtil.asVar(ENTRY_FIVE);
       fontWeight = "bold";
     } else if (FileSystemUtil.isAudioFile(node.name)) {
-      foreground = CYAN;
+      foreground = CssUtil.asVar(ENTRY_SIX);
       fontWeight = "bold";
     } else if (FileSystemUtil.isRubbishFile(node.name)) {
-      foreground = BLACK;
+      foreground = CssUtil.asVar(ENTRY_ZERO);
     }
 
     return {
