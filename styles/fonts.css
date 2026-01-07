@@ -1,5 +1,7 @@
 @font-face {
     font-family: "VT323";
-    src: url("../public/font/VT323/VT323-Regular.ttf");
     font-display: swap;
+
+    /* noinspection CssUnknownTarget */
+    src: url("../font/VT323/VT323-Regular.ttf");
 }
