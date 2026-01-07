@@ -1,4 +1,4 @@
-import { test } from "../../fixture";
+import { expect, test } from "../../fixture";
 import {
   assertExactTextInTerminal,
   assertOutputInTerminal,
@@ -6,10 +6,13 @@ import {
 } from "../../helper/util/terminal_util.ts";
 import {
   COMMAND_RAN_OUTPUT,
+  DEFAULT_INITIAL_PROMPT,
   DEFAULT_USER_PROMPT,
+  INPUT_SELECTOR,
   OUTPUT_SELECTOR,
+  PROMPT_SELECTOR,
 } from "../../helper/constant/generic.ts";
-import { expect, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 import {
   convertHexToRGBACSS,
   convertHexToRGBCSS,
@@ -371,6 +374,130 @@ test.describe("Terminal", () => {
   });
 
   test.describe("Autocomplete", () => {
-    // TODO: tests for theme and flavour autocompletes!
+    THEME_FLAGS.forEach((flag) => {
+      test.describe(`theme flag: ${flag}`, () => {
+        test(`Should autocomplete 'D' arg to 'Dark ', when tab is pressed with 'terminal ${flag} D'`, async ({
+          page,
+        }) => {
+          // Arrange
+          const input = `terminal ${flag} D`;
+
+          // Act
+          await page.locator(INPUT_SELECTOR).pressSequentially(input);
+          await page.locator(INPUT_SELECTOR).press("Tab");
+
+          // Assert
+          await assertExactTextInTerminal(
+            page,
+            DEFAULT_INITIAL_PROMPT,
+            undefined,
+            `terminal ${flag} Dark `,
+          );
+        });
+
+        test(`Should autocomplete 'Foo' arg to nothing, when tab is pressed with 'terminal ${flag} Foo'`, async ({
+          page,
+        }) => {
+          // Arrange
+          const input = `terminal ${flag} Foo`;
+
+          // Act
+          await page.locator(INPUT_SELECTOR).pressSequentially(input);
+          await page.locator(INPUT_SELECTOR).press("Tab");
+
+          // Assert
+          await assertExactTextInTerminal(
+            page,
+            DEFAULT_INITIAL_PROMPT,
+            undefined,
+            input,
+          );
+        });
+
+        test(`Should provide suggestions for every Theme, when tab is pressed with 'terminal ${flag} '`, async ({
+          page,
+        }) => {
+          // Arrange
+          const input = `terminal ${flag} `;
+          const flavours = ["Classic", "Dark", "Light"];
+
+          // Act
+          await page.locator(INPUT_SELECTOR).pressSequentially(input);
+          await page.locator(INPUT_SELECTOR).press("Tab");
+
+          // Assert
+          for (const flavour of flavours) {
+            await expect(page.locator(OUTPUT_SELECTOR)).toContainText(flavour);
+          }
+          await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+            DEFAULT_USER_PROMPT,
+          );
+          await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(input);
+        });
+      });
+    });
+
+    FLAVOUR_FLAGS.forEach((flag) => {
+      test.describe(`flavour flag: ${flag}`, () => {
+        test(`Should autocomplete 'U' arg to 'Unix ', when tab is pressed with 'terminal ${flag} U'`, async ({
+          page,
+        }) => {
+          // Arrange
+          const input = `terminal ${flag} U`;
+
+          // Act
+          await page.locator(INPUT_SELECTOR).pressSequentially(input);
+          await page.locator(INPUT_SELECTOR).press("Tab");
+
+          // Assert
+          await assertExactTextInTerminal(
+            page,
+            DEFAULT_INITIAL_PROMPT,
+            undefined,
+            `terminal ${flag} Unix `,
+          );
+        });
+
+        test(`Should autocomplete 'Foo' arg to nothing, when tab is pressed with 'terminal ${flag} Foo'`, async ({
+          page,
+        }) => {
+          // Arrange
+          const input = `terminal ${flag} Foo`;
+
+          // Act
+          await page.locator(INPUT_SELECTOR).pressSequentially(input);
+          await page.locator(INPUT_SELECTOR).press("Tab");
+
+          // Assert
+          await assertExactTextInTerminal(
+            page,
+            DEFAULT_INITIAL_PROMPT,
+            undefined,
+            input,
+          );
+        });
+
+        test(`Should provide suggestions for every Flavour, when tab is pressed with 'terminal ${flag} '`, async ({
+          page,
+        }) => {
+          // Arrange
+          const input = `terminal ${flag} `;
+          const flavours = ["Unix", "Windows"];
+
+          // Act
+          await page.locator(INPUT_SELECTOR).pressSequentially(input);
+          await page.locator(INPUT_SELECTOR).press("Tab");
+
+          // Assert
+          for (const flavour of flavours) {
+            await expect(page.locator(OUTPUT_SELECTOR)).toContainText(flavour);
+          }
+          await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
+            DEFAULT_USER_PROMPT,
+          );
+          await expect(page.locator(INPUT_SELECTOR)).exactTextInElement(input);
+        });
+      });
+    });
   });
 });

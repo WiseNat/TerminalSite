@@ -1,4 +1,4 @@
-import { CommandScript } from "../command_script.ts";
+import { CommandScript, Suggestion } from "../command_script.ts";
 import { HelpInformation } from "./help.ts";
 import CommandUtil from "../../util/command_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
@@ -48,6 +48,54 @@ const TERMINAL: CommandScript = {
         changeFlavour(parsedOptions.f);
       }
     }
+  },
+
+  async autocomplete(
+    userInput: string,
+    args: string[],
+  ): Promise<Suggestion[] | null> {
+    if (args.length === 0) {
+      return null;
+    }
+
+    let currentInput: string;
+    let currentFlag: string;
+
+    // Ensure that both of the following work:
+    // 1. Empty arg, e.g. 'terminal -t '
+    // 2. Non-empty arg, e.g. 'terminal -t D'
+    if (userInput.endsWith(" ")) {
+      currentInput = "";
+      currentFlag = args.at(-1)!;
+    } else if (args.length >= 2) {
+      currentInput = args.at(-1)!;
+      currentFlag = args.at(-2)!;
+    } else {
+      return null;
+    }
+
+    let searchValues: string[];
+
+    if (["-t", "--theme"].includes(currentFlag)) {
+      searchValues = ThemeUtil.getThemes();
+    } else if (["-f", "--flavour"].includes(currentFlag)) {
+      searchValues = FlavourUtil.getFlavours();
+    } else {
+      return null;
+    }
+
+    const suggestions: Suggestion[] = [];
+
+    for (const searchValue of searchValues) {
+      if (searchValue.startsWith(currentInput)) {
+        suggestions.push({
+          visual: searchValue,
+          actual: `${searchValue} `.replace(currentInput, ""),
+        });
+      }
+    }
+
+    return suggestions;
   },
 
   help(): HelpInformation | null {
