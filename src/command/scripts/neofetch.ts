@@ -33,6 +33,8 @@ import {
   ENTRY_ZERO_BRIGHT,
 } from "../../constant/theme.ts";
 import CssUtil from "../../util/css_util.ts";
+import FlavourUtil from "../../util/flavour_util.ts";
+import ThemeUtil from "../../util/theme_util.ts";
 
 const NEOFETCH: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -197,6 +199,10 @@ function getInfo(isLogo: boolean): string {
   const browserVersion = browser.getBrowserVersion();
   const engineName = browser.getEngineName();
   const engineVersion = browser.getEngine().version ?? "";
+  const currentTheme = ThemeUtil.getCurrentTheme();
+  const currentShellFlavour = FlavourUtil.getShellFlavourName(
+    FlavourUtil.getCurrentShellFlavour(),
+  );
 
   const user = FileSystemUtil.username;
   const hostname = HOSTNAME;
@@ -206,10 +212,11 @@ function getInfo(isLogo: boolean): string {
   const uptime = getUptime();
   const shell = "terminal-site 2.0";
   const resolution = `${document.body.clientWidth}x${document.body.clientHeight}`;
-  console.warn(document.body.clientWidth);
   const desktopEnvironment = `${browserName === "" ? "Unknown" : browserName} ${browserVersion}`;
   const windowManager = `${engineName === "" ? "Unknown" : engineName} ${engineVersion}`;
-  const terminal = "terminal-site";
+  const theme = currentTheme === "" ? "Unknown" : currentTheme;
+  const shellFlavour = currentShellFlavour ?? "Unknown";
+  const terminal = globalThis.location.hostname;
   const cpu = `Unknown (${navigator.hardwareConcurrency ?? "?"}) @ ?GHz`;
   const gpu = "Unknown";
   const memory = `${currentMemory}B / ${maximumMemory}B`;
@@ -228,6 +235,8 @@ function getInfo(isLogo: boolean): string {
     `\n${toColouredText("Resolution", varEntrySeven)}: ${resolution}` +
     `\n${toColouredText("DE", varEntrySeven)}: ${desktopEnvironment}` +
     `\n${toColouredText("WM", varEntrySeven)}: ${windowManager}` +
+    `\n${toColouredText("Theme", varEntrySeven)}: ${theme}` +
+    `\n${toColouredText("Shell Flavour", varEntrySeven)}: ${shellFlavour}` +
     `\n${toColouredText("Terminal", varEntrySeven)}: ${terminal}` +
     `\n${toColouredText("CPU", varEntrySeven)}: ${cpu}` +
     `\n${toColouredText("GPU", varEntrySeven)}: ${gpu}` +

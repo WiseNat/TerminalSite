@@ -40,4 +40,18 @@ export default class ThemeUtil {
       sessionStorage.setItem(this.themeStorageKey, theme);
     }
   }
+
+  /**
+   * @returns the Current Theme.
+   */
+  public static getCurrentTheme(): string {
+    const currentTheme: string | undefined =
+      document.documentElement.dataset.theme;
+
+    if (currentTheme === undefined) {
+      return "Dark"; // assume default theme
+    }
+
+    return currentTheme;
+  }
 }

@@ -38,10 +38,10 @@ test.describe("Help", () => {
       "\n cd [DIR]            neofetch [-L|--lo>" +
       "\n clear               pwd" +
       "\n download [FILE]     reboot" +
-      "\n echo [ARG ...]      tree [-a] [-d] [->" +
-      "\n false               true" +
-      "\n help [COMMAND]      uname [-a|--all] >" +
-      "\n hostname: hostnam>";
+      "\n echo [ARG ...]      terminal [-L|--li>" +
+      "\n false               tree [-a] [-d] [->" +
+      "\n help [COMMAND]      true" +
+      "\n hostname: hostnam>  uname [-a|--all] >";
 
     if (isMobileProject(testInfo)) {
       await assertOutputInTerminal(page, `${input}${mobileExpected}`);

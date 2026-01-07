@@ -80,12 +80,11 @@ export default class FlavourUtil {
 
     // Would be optimal to request the name as an arg but from an API perspective
     // this would seem odd. Using the below unoptimised search instead.
-    for (const [key, value] of Object.entries(
-      FlavourImportUtil.getFlavours(),
-    )) {
-      if (value.default === flavour) {
-        sessionStorage.setItem(this.flavourStorageKey, key);
-      }
+    const flavourName: string | null = this.getShellFlavourName(flavour);
+    if (flavourName === null) {
+      console.warn("Could not retrieve name for flavour");
+    } else {
+      sessionStorage.setItem(this.flavourStorageKey, flavourName);
     }
 
     TerminalUtil.setPromptPath(
@@ -108,6 +107,24 @@ export default class FlavourUtil {
     }
 
     return flavour.default;
+  }
+
+  /**
+   * Attempt to retrieve the name of a {@link Flavour}.
+   *
+   * @param flavour the {@link Flavour} to retrieve the name of
+   * @returns if found the shell flavour, otherwise `null`
+   */
+  public static getShellFlavourName(flavour: Flavour): string | null {
+    for (const [key, value] of Object.entries(
+      FlavourImportUtil.getFlavours(),
+    )) {
+      if (value.default === flavour) {
+        return key;
+      }
+    }
+
+    return null;
   }
 
   /**

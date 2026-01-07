@@ -2,13 +2,13 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import ThemeUtil from "../../../../src/util/theme_util.ts";
 
 describe("ThemeUtil", () => {
-  let document: { documentElement: { dataset: { theme: string | null } } };
+  let document: { documentElement: { dataset: { theme: string | undefined } } };
 
   beforeEach(() => {
     document = {
       documentElement: {
         dataset: {
-          theme: null,
+          theme: undefined,
         },
       },
     };
@@ -27,7 +27,7 @@ describe("ThemeUtil", () => {
       ThemeUtil.setup();
 
       // Assert
-      expect(document.documentElement.dataset.theme).toBeNull();
+      expect(document.documentElement.dataset.theme).toBeUndefined();
     });
 
     test("Given a stored theme that is valid, should set the theme as the stored value", () => {
@@ -60,7 +60,7 @@ describe("ThemeUtil", () => {
       ThemeUtil.setup();
 
       // Assert
-      expect(document.documentElement.dataset.theme).toBeNull();
+      expect(document.documentElement.dataset.theme).toBeUndefined();
     });
   });
 
@@ -99,6 +99,7 @@ describe("ThemeUtil", () => {
 
   describe("setTheme", () => {
     test("Given a valid theme, should set the theme as the provided value and store it", () => {
+      // Arrange
       const theme = "THEME_3";
       vi.stubGlobal("getComputedStyle", () => ({
         getPropertyValue: () => "THEME_1 THEME_2 THEME_3 THEME_4",
@@ -118,6 +119,7 @@ describe("ThemeUtil", () => {
     });
 
     test("Given an invalid theme, should not set the theme as the provided value", () => {
+      // Arrange
       const theme = "FOO";
       vi.stubGlobal("getComputedStyle", () => ({
         getPropertyValue: () => "THEME_1 THEME_2 THEME_3 THEME_4",
@@ -127,7 +129,32 @@ describe("ThemeUtil", () => {
       ThemeUtil.setTheme(theme);
 
       // Assert
-      expect(document.documentElement.dataset.theme).toBeNull();
+      expect(document.documentElement.dataset.theme).toBeUndefined();
+    });
+  });
+
+  describe("getCurrentTheme", () => {
+    test("Given a theme exists, return that as the current theme", () => {
+      // Arrange
+      const theme = "foo";
+      document.documentElement.dataset.theme = theme;
+
+      // Act
+      const currentTheme = ThemeUtil.getCurrentTheme();
+
+      // Assert
+      expect(currentTheme).toEqual(theme);
+    });
+
+    test("Given a theme exists, return that as the current theme", () => {
+      // Arrange
+      document.documentElement.dataset.theme = undefined;
+
+      // Act
+      const currentTheme = ThemeUtil.getCurrentTheme();
+
+      // Assert
+      expect(currentTheme).toEqual("Dark");
     });
   });
 });

@@ -172,4 +172,52 @@ describe("FlavourUtil", () => {
       expect(result).toBeNull();
     });
   });
+
+  describe("getShellFlavourName", () => {
+    test("should return the flavour name if it exists", () => {
+      // Arrange
+      const flavour: Flavour = {
+        getInitialPrompt: vi.fn(),
+        getPrompt: () => {
+          return {
+            value: "",
+            isHTML: false,
+          };
+        },
+      };
+
+      vi.mocked(FlavourImportUtil.getFlavours).mockReturnValue({
+        foo: { default: flavour },
+      });
+
+      // Act
+      const flavourName = FlavourUtil.getShellFlavourName(flavour);
+
+      // Assert
+      expect(flavourName).toEqual("foo");
+    });
+
+    test("should return null if the flavour does not exist", () => {
+      // Arrange
+      const flavour: Flavour = {
+        getInitialPrompt: vi.fn(),
+        getPrompt: () => {
+          return {
+            value: "",
+            isHTML: false,
+          };
+        },
+      };
+
+      vi.mocked(FlavourImportUtil.getFlavours).mockReturnValue({
+        foo: { default: { getPrompt: vi.fn(), getInitialPrompt: vi.fn() } },
+      });
+
+      // Act
+      const flavourName = FlavourUtil.getShellFlavourName(flavour);
+
+      // Assert
+      expect(flavourName).toBeNull();
+    });
+  });
 });
