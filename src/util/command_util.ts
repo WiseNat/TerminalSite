@@ -15,12 +15,12 @@ export default class CommandUtil {
    */
   public static async executeCommand(command: string) {
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);
-    const prompt = TerminalUtil.getPrompt();
+    const prompt = TerminalUtil.getRawPrompt();
 
     if (tokenisedCommand.name === "") {
-      TerminalUtil.appendOutput(prompt, true);
+      TerminalUtil.appendRawOutput(prompt, true);
     } else {
-      TerminalUtil.appendOutput(prompt + command, true);
+      TerminalUtil.appendRawOutput(prompt + command, true);
       TerminalUtil.setInput("");
 
       const commandScript = this.getCommandScript(tokenisedCommand);
@@ -39,7 +39,7 @@ export default class CommandUtil {
         await commandScript.run(tokenisedCommand.args);
 
         if (TerminalUtil.getPrompt() === "") {
-          TerminalUtil.setPrompt(prompt);
+          TerminalUtil.setRawPrompt(prompt);
         }
       }
     }

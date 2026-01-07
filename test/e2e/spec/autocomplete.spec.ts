@@ -88,7 +88,7 @@ test.describe("File/Directory autocompletion", () => {
 
     // Assert
     await expect(page.locator(OUTPUT_SELECTOR)).exactTextInElement(
-      `${DEFAULT_INITIAL_PROMPT}\n${DEFAULT_USER_PROMPT}${input}\n${expectedOutput}`,
+      `${DEFAULT_INITIAL_PROMPT}${DEFAULT_USER_PROMPT}${input}\n${expectedOutput}`,
     );
     await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(
       DEFAULT_USER_PROMPT,

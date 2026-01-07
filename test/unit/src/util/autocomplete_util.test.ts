@@ -10,7 +10,7 @@ import FormatterUtil from "../../../../src/util/formatter_util.ts";
 describe("AutocompleteUtil", () => {
   // Spy
   const setInput = vi.spyOn(TerminalUtil, "setInput");
-  const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+  const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
 
   // Mock
   vi.mock("../../../../src/util/terminal_util");
@@ -19,7 +19,7 @@ describe("AutocompleteUtil", () => {
 
   const prompt = "C:\\home\\nathanwise>";
 
-  vi.mocked(TerminalUtil.getPrompt).mockReturnValue(prompt);
+  vi.mocked(TerminalUtil.getRawPrompt).mockReturnValue(prompt);
   vi.mocked(FormatterUtil.toDynamicGrid).mockImplementation((items) => {
     return items.join("\t");
   });
@@ -130,9 +130,9 @@ describe("AutocompleteUtil", () => {
 
             // Assert
             if (expectedAppendText == null) {
-              expect(appendOutput).not.toHaveBeenCalled();
+              expect(appendRawOutput).not.toHaveBeenCalled();
             } else {
-              expect(appendOutput).toHaveBeenCalledWith(
+              expect(appendRawOutput).toHaveBeenCalledWith(
                 `${prompt}${beforeCaret}${afterCaret}\n${expectedAppendText}`,
                 true,
               );

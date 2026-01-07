@@ -1,7 +1,14 @@
+/* Fonts */
+@font-face {
+    font-family: "VT323";
+    src: url("font/VT323/VT323-Regular.ttf");
+    font-display: swap;
+}
+
 /* Themes TODO: add more themes! */
 
 /* noinspection DuplicatedCode */
-:root[data-theme="dark"], /* Default theme */
+:root[data-theme="Dark"], /* Default theme */
 :root {
     --entry-0: #2E3436;
     --entry-1: #CC0000;
@@ -26,8 +33,8 @@
     --font-family: consola, monospace;
     --foreground-colour: #D0CFCC;
 
-    --selection-colour: #171421;
-    --selection-background: #FFFFFF;
+    --selection-foreground-colour: #171421;
+    --selection-background-colour: #FFFFFF;
     --external-icon-filter: brightness(0) saturate(100%) invert(90%) sepia(6%) saturate(92%) hue-rotate(7deg) brightness(96%) contrast(84%);
 }
 
@@ -56,20 +63,50 @@
     --font-family: consola, monospace;
     --foreground-colour: #171421;
 
-    --selection-colour: #FFFFFF;
-    --selection-background: #171421;
+    --selection-foreground-colour: #FFFFFF;
+    --selection-background-colour: #171421;
     --external-icon-filter: brightness(0) saturate(100%) invert(8%) sepia(28%) saturate(688%) hue-rotate(213deg) brightness(93%) contrast(99%);
+}
+
+:root[data-theme="classic"] {
+    --entry-0: #000000;
+    --entry-1: #AA0000;
+    --entry-2: #00AA00;
+    --entry-3: #AA5500;
+    --entry-4: #0000AA;
+    --entry-5: #AA00AA;
+    --entry-6: #00AAAA;
+    --entry-7: #AAAAAA;
+
+    --entry-0-bright: #555555;
+    --entry-1-bright: #FF5555;
+    --entry-2-bright: #55FF55;
+    --entry-3-bright: #FFFF55;
+    --entry-4-bright: #5555FF;
+    --entry-5-bright: #FF55FF;
+    --entry-6-bright: #55FFFF;
+    --entry-7-bright: #FFFFFF;
+
+    --background-colour: #000000;
+
+    --font-family: "VT323";
+    --foreground-colour: #FFFFFF;
+
+    --selection-foreground-colour: #000000;
+    --selection-background-colour: #FFFFFF;
+    --external-icon-filter: brightness(0) saturate(100%) invert(100%) sepia(96%) saturate(0%) hue-rotate(75deg) brightness(104%) contrast(104%);
 }
 
 /* Non-Themes */
 
 :root {
     --prompt-content: "";
-    --themes: dark light;
+    --themes: Dark Light Classic; /* stylelint-disable-line value-keyword-case */
 
     background-color: var(--background-colour);
     color: var(--foreground-colour);
     font-family: var(--font-family), consola, monospace;
+    font-size: 1rem;
 }
 
 main {
@@ -81,8 +118,8 @@ main {
 
 /* eslint-disable-next-line */
 main ::selection {
-    color: var(--selection-colour);
-    background: var(--selection-background);
+    color: var(--selection-foreground-colour);
+    background: var(--selection-background-colour);
 }
 
 a {

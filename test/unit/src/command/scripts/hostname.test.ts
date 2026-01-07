@@ -18,9 +18,7 @@ describe("Hostname", () => {
       await HOSTNAME_COMMAND.run(args);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-        "nathan-wise-portfolio",
-      );
+      expect(appendOutput).toHaveBeenCalledExactlyOnceWith("portfolio");
     });
 
     ["-d", "--domain"].forEach((flag) => {
@@ -46,7 +44,7 @@ describe("Hostname", () => {
 
         // Assert
         expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
-          "nathan-wise-portfolio.localdomain",
+          "portfolio.localdomain",
         );
       });
     });

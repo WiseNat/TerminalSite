@@ -1,6 +1,7 @@
 import { Page } from "@playwright/test";
 import {
   COMMAND_RAN_OUTPUT,
+  DEFAULT_HOME_DIRECTORY,
   DEFAULT_USER_PROMPT,
   INPUT_SELECTOR,
   OUTPUT_SELECTOR,
@@ -40,8 +41,15 @@ export async function setCaretAtCharIndex(
 }
 
 export function getExpectedPrompt(path: string) {
+  const pathStartsWithHomeDirectory: boolean = path.startsWith(
+    DEFAULT_HOME_DIRECTORY,
+  );
+  if (pathStartsWithHomeDirectory) {
+    path = path.replace(DEFAULT_HOME_DIRECTORY, "~");
+  }
+
   const splitPath = path.split("/").filter(Boolean);
-  return `C:\\${splitPath.join("\\")}>`;
+  return `nathanwise@portfolio:${pathStartsWithHomeDirectory ? "" : "/"}${splitPath.join("/")}$ `;
 }
 
 /**

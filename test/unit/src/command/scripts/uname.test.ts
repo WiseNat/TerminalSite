@@ -11,7 +11,7 @@ describe("Hostname", () => {
 
   // Other
   const kernelName = "Linux";
-  const nodeName = "nathan-wise-portfolio";
+  const nodeName = "portfolio";
   const kernelRelease = "5.17.15-generic";
   const kernelVersion = "#1 PREEMPT Tue May 17 21:11:00 UTC 2022";
   const machine = "x86_64";

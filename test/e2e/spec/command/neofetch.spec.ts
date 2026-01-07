@@ -26,7 +26,7 @@ test.describe("Neofetch", () => {
       new RegExp(
         escapeRegExp("`+-----------_`+------------+`_-----------+`") +
           "   " +
-          "nathanwise@nathan-wise-portfolio",
+          "nathanwise@portfolio",
         "g",
       ),
       new RegExp(
@@ -153,7 +153,7 @@ test.describe("Neofetch", () => {
 
       // Assert
       const expectedRegex: RegExp =
-        /^nathanwise@nathan-wise-portfolio\n------------\nOS: .*\nHost: Unknown\nKernel: .*\nUptime: .*\nShell: terminal-site 2\.0\nResolution: \d+x\d+\nDE: .*\nWM: .*\nTerminal: terminal-site\nCPU: Unknown \(\d+\) @ \?GHz\nGPU: Unknown\nMemory: (?:\?\d*|\d+)B \/ (?:\?\d*|\d+)B/gm;
+        /^nathanwise@portfolio\n------------\nOS: .*\nHost: Unknown\nKernel: .*\nUptime: .*\nShell: terminal-site 2\.0\nResolution: \d+x\d+\nDE: .*\nWM: .*\nTerminal: terminal-site\nCPU: Unknown \(\d+\) @ \?GHz\nGPU: Unknown\nMemory: (?:\?\d*|\d+)B \/ (?:\?\d*|\d+)B/gm;
 
       await expect(page.locator(OUTPUT_SELECTOR)).toHaveText(expectedRegex);
       await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(

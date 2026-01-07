@@ -88,7 +88,7 @@ test.describe("Cd", () => {
     // Assert
     const expectedOutputText =
       `${DEFAULT_INITIAL_PROMPT}` +
-      `\n${DEFAULT_USER_PROMPT}cd ${previousWorkingDirectory}` +
+      `${DEFAULT_USER_PROMPT}cd ${previousWorkingDirectory}` +
       `\n${getExpectedPrompt(previousWorkingDirectory)}cd -` +
       `\n${DEFAULT_CURRENT_WORKING_DIRECTORY}`;
 
@@ -116,7 +116,7 @@ test.describe("Cd", () => {
     // Assert
     const expectedOutputText =
       `${DEFAULT_INITIAL_PROMPT}` +
-      `\n${DEFAULT_USER_PROMPT}cd ${previousWorkingDirectory}` +
+      `${DEFAULT_USER_PROMPT}cd ${previousWorkingDirectory}` +
       `\n${getExpectedPrompt(previousWorkingDirectory)}cd ${currentWorkingDirectory}` +
       `\n${getExpectedPrompt(currentWorkingDirectory)}cd -` +
       `\n${previousWorkingDirectory}`;
@@ -148,7 +148,7 @@ test.describe("Cd", () => {
 
       await runCommand(page, `cd ${directory}`);
 
-      const expectedOutputText = `${previousOutput}\n${getExpectedPrompt(previousDirectory)}cd ${directory}`;
+      const expectedOutputText = `${previousOutput}${previousOutput === "" ? "" : "\n"}${getExpectedPrompt(previousDirectory)}cd ${directory}`;
       await assertExactTextInTerminal(
         page,
         expectedOutputText,

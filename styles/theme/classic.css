@@ -1,0 +1,30 @@
+@import url("../fonts.css");
+
+:root[data-theme="Classic"] {
+    --entry-0: #000000;
+    --entry-1: #AA0000;
+    --entry-2: #00AA00;
+    --entry-3: #AA5500;
+    --entry-4: #0000AA;
+    --entry-5: #AA00AA;
+    --entry-6: #00AAAA;
+    --entry-7: #AAAAAA;
+
+    --entry-0-bright: #555555;
+    --entry-1-bright: #FF5555;
+    --entry-2-bright: #55FF55;
+    --entry-3-bright: #FFFF55;
+    --entry-4-bright: #5555FF;
+    --entry-5-bright: #FF55FF;
+    --entry-6-bright: #55FFFF;
+    --entry-7-bright: #FFFFFF;
+
+    --background-colour: #000000;
+
+    --font-family: "VT323";
+    --foreground-colour: #FFFFFF;
+
+    --selection-foreground-colour: #000000;
+    --selection-background-colour: #FFFFFF;
+    --external-icon-filter: brightness(0) saturate(100%) invert(100%) sepia(96%) saturate(0%) hue-rotate(75deg) brightness(104%) contrast(104%);
+}
