@@ -4,26 +4,18 @@ import { keydown } from "./event/keydown.ts";
 import FileSystemUtil from "./util/file_system_util.ts";
 import { click } from "./event/click.ts";
 import FlavourUtil from "./util/flavour_util.ts";
-import UNIX from "./flavour/implementation/Unix.ts";
-import { Flavour, TextContent } from "./flavour/flavour.ts";
+import ThemeUtil from "./util/theme_util.ts";
 
-// Terminal Set-up
-const FLAVOUR: Flavour = UNIX;
-FlavourUtil.setCurrentShellFlavour(FLAVOUR);
+/* Terminal Set-up */
+FlavourUtil.setup();
+ThemeUtil.setup();
 
 FileSystemUtil.setHomeDirectory(__HOME_DIRECTORY);
 FileSystemUtil.setCurrentWorkingDirectory("~");
 
-const INITIAL_PROMPT: TextContent = FLAVOUR.getInitialPrompt();
-if (INITIAL_PROMPT.isHTML) {
-  TerminalUtil.setRawOutput(INITIAL_PROMPT.value);
-} else {
-  TerminalUtil.setOutput(INITIAL_PROMPT.value);
-}
-
 TerminalUtil.setInput("");
 
-// Event Listeners
+/* Event Listeners */
 document.addEventListener("click", click);
 
 const INPUT_ELEMENT = TerminalUtil.getInputElement();

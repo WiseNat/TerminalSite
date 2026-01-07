@@ -3,10 +3,17 @@ import FlavourImportUtil from "../../../../src/util/flavour_import_util.ts";
 import { Flavour } from "../../../../src/flavour/flavour.ts";
 import FlavourUtil from "../../../../src/util/flavour_util.ts";
 import TerminalUtil from "../../../../src/util/terminal_util.ts";
+import UNIX from "../../../../src/flavour/implementation/Unix.ts";
 
 describe("FlavourUtil", () => {
   // Spy
   const setPromptPath = vi.spyOn(TerminalUtil, "setPromptPath");
+  const setRawOutput = vi.spyOn(TerminalUtil, "setRawOutput");
+  const setOutput = vi.spyOn(TerminalUtil, "setOutput");
+  const setCurrentShellFlavour = vi.spyOn(
+    FlavourUtil,
+    "setCurrentShellFlavour",
+  );
 
   // Mock
   vi.mock("../../../../src/util/flavour_import_util");
@@ -16,9 +23,83 @@ describe("FlavourUtil", () => {
     FlavourUtil._resetCurrentShellFlavour();
   });
 
+  describe("setup", () => {
+    test("Given no stored flavour, should set the flavour as Unix", () => {
+      vi.stubGlobal("sessionStorage", {
+        getItem: () => null,
+      });
+      vi.mocked(FlavourImportUtil.getFlavours).mockReturnValue({});
+
+      // Act
+      FlavourUtil.setup();
+
+      // Assert
+      expect(setCurrentShellFlavour).toHaveBeenCalledExactlyOnceWith(UNIX);
+    });
+
+    test("Given a stored flavour that is valid and isHTML, should set the flavour as the stored value and set the raw output", () => {
+      const mockFlavourFile: Flavour = {
+        getInitialPrompt: () => {
+          return { value: "", isHTML: true };
+        },
+        getPrompt: vi.fn(),
+      };
+
+      vi.stubGlobal("sessionStorage", {
+        getItem: () => "test",
+        setItem: () => {},
+      });
+      vi.mocked(FlavourImportUtil.getFlavours).mockReturnValue({
+        test: { default: mockFlavourFile },
+      });
+
+      // Act
+      FlavourUtil.setup();
+
+      // Assert
+      expect(setCurrentShellFlavour).toHaveBeenCalledExactlyOnceWith(
+        mockFlavourFile,
+      );
+      expect(setRawOutput).toHaveBeenCalledOnce();
+      expect(setOutput).not.toHaveBeenCalled();
+    });
+
+    test("Given a stored flavour that is not valid, should set the flavour as the stored value", () => {
+      const mockFlavourFile: Flavour = {
+        getInitialPrompt: () => {
+          return { value: "", isHTML: false };
+        },
+        getPrompt: vi.fn(),
+      };
+
+      vi.stubGlobal("sessionStorage", {
+        getItem: () => "test",
+        setItem: () => {},
+      });
+      vi.mocked(FlavourImportUtil.getFlavours).mockReturnValue({
+        test: { default: mockFlavourFile },
+      });
+
+      // Act
+      FlavourUtil.setup();
+
+      // Assert
+      expect(setCurrentShellFlavour).toHaveBeenCalledExactlyOnceWith(
+        mockFlavourFile,
+      );
+      expect(setRawOutput).not.toHaveBeenCalled();
+      expect(setOutput).toHaveBeenCalledOnce();
+    });
+  });
+
   describe("setCurrentShellFlavour", () => {
-    test("should set the currentShellFlavour as the provided value", () => {
+    test("should set the currentShellFlavour as the provided value and store it", () => {
       // Arrange
+      const setItemSpy = vi.fn();
+      vi.stubGlobal("sessionStorage", {
+        setItem: setItemSpy,
+      });
+
       const flavour: Flavour = {
         getInitialPrompt: vi.fn(),
         getPrompt: () => {
@@ -29,6 +110,10 @@ describe("FlavourUtil", () => {
         },
       };
 
+      vi.mocked(FlavourImportUtil.getFlavours).mockReturnValue({
+        foo: { default: flavour },
+      });
+
       // Act
       FlavourUtil.setCurrentShellFlavour(flavour);
 
@@ -36,6 +121,7 @@ describe("FlavourUtil", () => {
       const retrievedFlavour = FlavourUtil.getCurrentShellFlavour();
       expect(retrievedFlavour).toStrictEqual(flavour);
       expect(setPromptPath).toHaveBeenCalledOnce();
+      expect(setItemSpy).toHaveBeenCalledExactlyOnceWith("flavour", "foo");
     });
   });
 

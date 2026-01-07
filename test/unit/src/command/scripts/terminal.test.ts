@@ -1,8 +1,9 @@
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import TERMINAL from "../../../../../src/command/scripts/terminal.ts";
 import TerminalUtil from "../../../../../src/util/terminal_util.ts";
 import FlavourUtil from "../../../../../src/util/flavour_util.ts";
 import { Flavour } from "../../../../../src/flavour/flavour.ts";
+import ThemeUtil from "../../../../../src/util/theme_util.ts";
 
 describe("Terminal", () => {
   // Spy
@@ -11,25 +12,12 @@ describe("Terminal", () => {
     FlavourUtil,
     "setCurrentShellFlavour",
   );
+  const setTheme = vi.spyOn(ThemeUtil, "setTheme");
 
   // Mock
   vi.mock("../../../../../src/util/terminal_util");
   vi.mock("../../../../../src/util/flavour_util");
-
-  let document: { documentElement: { dataset: { theme: string } } };
-
-  beforeEach(() => {
-    document = {
-      documentElement: {
-        dataset: {
-          theme: "",
-        },
-      },
-    };
-
-    vi.unstubAllGlobals();
-    vi.stubGlobal("document", document);
-  });
+  vi.mock("../../../../../src/util/theme_util");
 
   describe("run", async () => {
     describe("No flags", () => {
@@ -74,9 +62,12 @@ describe("Terminal", () => {
         ].forEach(({ type, args }) => {
           test(`Given ${type}, all Themes and Flavours should be listed`, async () => {
             // Arrange
-            vi.stubGlobal("getComputedStyle", () => ({
-              getPropertyValue: () => "THEME_1 THEME_2 THEME_3 THEME_4",
-            }));
+            vi.spyOn(ThemeUtil, "getThemes").mockReturnValue([
+              "THEME_1",
+              "THEME_2",
+              "THEME_3",
+              "THEME_4",
+            ]);
 
             vi.spyOn(FlavourUtil, "getFlavours").mockReturnValue([
               "FLAVOUR_1",
@@ -123,7 +114,7 @@ describe("Terminal", () => {
               "\n- FLAVOUR_4" +
               "\n- FLAVOUR_5" +
               "\n- FLAVOUR_6",
-            themes: "",
+            themes: [],
             flavours: [
               "FLAVOUR_1",
               "FLAVOUR_2",
@@ -144,23 +135,20 @@ describe("Terminal", () => {
               "\n" +
               "\nShell Flavours:" +
               "\nNone",
-            themes: "THEME_1 THEME_2 THEME_3 THEME_4",
+            themes: ["THEME_1", "THEME_2", "THEME_3", "THEME_4"],
             flavours: [],
           },
           {
             type: "no Themes or Flavours, nothing should be listed",
             expected:
               "Themes:" + "\nNone" + "\n" + "\nShell Flavours:" + "\nNone",
-            themes: "",
+            themes: [],
             flavours: [],
           },
         ].forEach(({ type, expected, themes, flavours }) => {
           test(`Given ${type}`, async () => {
             // Arrange
-            vi.stubGlobal("getComputedStyle", () => ({
-              getPropertyValue: () => themes,
-            }));
-
+            vi.spyOn(ThemeUtil, "getThemes").mockReturnValue(themes);
             vi.spyOn(FlavourUtil, "getFlavours").mockReturnValue(flavours);
 
             const args = [flag];
@@ -193,9 +181,12 @@ describe("Terminal", () => {
         ].forEach(({ type, args }) => {
           test(`Given additional ${type}, should just output themes and flavours`, async () => {
             // Arrange
-            vi.stubGlobal("getComputedStyle", () => ({
-              getPropertyValue: () => "THEME_1 THEME_2 THEME_3 THEME_4",
-            }));
+            vi.spyOn(ThemeUtil, "getThemes").mockReturnValue([
+              "THEME_1",
+              "THEME_2",
+              "THEME_3",
+              "THEME_4",
+            ]);
 
             vi.spyOn(FlavourUtil, "getFlavours").mockReturnValue([
               "FLAVOUR_1",
@@ -234,9 +225,12 @@ describe("Terminal", () => {
       describe(`theme ${flag}`, () => {
         test("Given a valid theme, should change the theme to that", async () => {
           // Arrange
-          vi.stubGlobal("getComputedStyle", () => ({
-            getPropertyValue: () => "THEME_1 THEME_2 THEME_3 THEME_4",
-          }));
+          vi.spyOn(ThemeUtil, "getThemes").mockReturnValue([
+            "THEME_1",
+            "THEME_2",
+            "THEME_3",
+            "THEME_4",
+          ]);
 
           const theme = "THEME_3";
           const args = [flag, theme];
@@ -248,14 +242,12 @@ describe("Terminal", () => {
           expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
             `Changing Terminal Theme to '${theme}'`,
           );
-          expect(document.documentElement.dataset.theme).toEqual(theme);
+          expect(setTheme).toHaveBeenCalledExactlyOnceWith(theme);
         });
 
         test("Given a theme and only that theme is available, should change the theme to that", async () => {
           // Arrange
-          vi.stubGlobal("getComputedStyle", () => ({
-            getPropertyValue: () => "THEME_1",
-          }));
+          vi.spyOn(ThemeUtil, "getThemes").mockReturnValue(["THEME_1"]);
 
           const theme = "THEME_1";
           const args = [flag, theme];
@@ -267,14 +259,17 @@ describe("Terminal", () => {
           expect(appendOutput).toHaveBeenCalledExactlyOnceWith(
             `Changing Terminal Theme to '${theme}'`,
           );
-          expect(document.documentElement.dataset.theme).toEqual(theme);
+          expect(setTheme).toHaveBeenCalledExactlyOnceWith(theme);
         });
 
         test("Given no theme, should output an error message", async () => {
           // Arrange
-          vi.stubGlobal("getComputedStyle", () => ({
-            getPropertyValue: () => "THEME_1 THEME_2 THEME_3 THEME_4",
-          }));
+          vi.spyOn(ThemeUtil, "getThemes").mockReturnValue([
+            "THEME_1",
+            "THEME_2",
+            "THEME_3",
+            "THEME_4",
+          ]);
 
           const theme = "";
           const args = [flag, theme];
@@ -290,9 +285,12 @@ describe("Terminal", () => {
 
         test("Given an invalid theme, should output an error message", async () => {
           // Arrange
-          vi.stubGlobal("getComputedStyle", () => ({
-            getPropertyValue: () => "THEME_1 THEME_2 THEME_3 THEME_4",
-          }));
+          vi.spyOn(ThemeUtil, "getThemes").mockReturnValue([
+            "THEME_1",
+            "THEME_2",
+            "THEME_3",
+            "THEME_4",
+          ]);
 
           const theme = "FOO";
           const args = [flag, theme];
@@ -308,9 +306,7 @@ describe("Terminal", () => {
 
         test("Given no themes available, should output an error message", async () => {
           // Arrange
-          vi.stubGlobal("getComputedStyle", () => ({
-            getPropertyValue: () => "",
-          }));
+          vi.spyOn(ThemeUtil, "getThemes").mockReturnValue([]);
 
           const theme = "THEME_1";
           const args = [flag, theme];

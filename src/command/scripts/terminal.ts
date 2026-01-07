@@ -4,6 +4,7 @@ import CommandUtil from "../../util/command_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
 import FlavourUtil from "../../util/flavour_util.ts";
 import { Flavour } from "../../flavour/flavour.ts";
+import ThemeUtil from "../../util/theme_util.ts";
 
 const TERMINAL: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -85,7 +86,7 @@ export default TERMINAL;
  * Output all available Themes and Shell Flavours to the terminal.
  */
 function listThemesAndFlavours() {
-  const themes = getThemes();
+  const themes = ThemeUtil.getThemes();
   const flavours = FlavourUtil.getFlavours();
 
   let output = "";
@@ -122,7 +123,7 @@ function changeTheme(theme: string) {
     return;
   }
 
-  const themes: string[] = getThemes();
+  const themes: string[] = ThemeUtil.getThemes();
 
   if (themes.length === 0) {
     TerminalUtil.appendOutput("terminal: No Themes are available");
@@ -136,19 +137,9 @@ function changeTheme(theme: string) {
     return;
   }
 
-  document.documentElement.dataset.theme = theme;
+  ThemeUtil.setTheme(theme);
 
   TerminalUtil.appendOutput(`Changing Terminal Theme to '${theme}'`);
-}
-
-/**
- * @returs list of all available Themes denoted by the `--themes` CSS property.
- */
-function getThemes(): string[] {
-  const styles = getComputedStyle(document.documentElement);
-  const themes = styles.getPropertyValue("--themes").trim();
-
-  return themes ? themes.split(/\s+/) : [];
 }
 
 /**

@@ -352,6 +352,8 @@ test.describe("Terminal", () => {
         const flavour = "Windows";
         const input = `terminal ${flag} ${flavour}`;
 
+        await assertExactTextInTerminal(page, "", DEFAULT_USER_PROMPT);
+
         // Act
         await runCommand(page, input);
         await page.reload();
@@ -359,8 +361,10 @@ test.describe("Terminal", () => {
         // Assert
         await assertExactTextInTerminal(
           page,
-          `${COMMAND_RAN_OUTPUT}`,
-          "nathanwise@portfolio:~$ ",
+          "Microsoft Windows [Version 10.0.18363.1379]\n" +
+            "(c) 2019 Microsoft Corporation. All rights reserved.\n" +
+            "\u200B",
+          "C:\\src\\main\\nathanwise>",
         );
       });
     });
