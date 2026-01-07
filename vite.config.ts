@@ -27,6 +27,9 @@ export default defineConfig(({ mode }) => {
       __HOME_DIRECTORY: JSON.stringify(`${homeDirectoryParent}/nathanwise`),
       __CONTENT_DIRECTORY: JSON.stringify(contentDirectory),
     },
+    build: {
+      cssMinify: "lightningcss",
+    },
     css: {
       postcss: {
         plugins: [autoprefixer({})],

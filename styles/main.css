@@ -1,7 +1,7 @@
 /* Fonts */
 @font-face {
     font-family: "VT323";
-    src: url("font/VT323/VT323-Regular.ttf");
+    src: url("../public/font/VT323/VT323-Regular.ttf");
     font-display: swap;
 }
 
@@ -136,7 +136,7 @@ a[target="_blank"]::after {
     width: 0.8em;
     height: 0.8em;
     margin-left: 0.2em;
-    background: url("external.svg") no-repeat center;
+    background: url("../public/external.svg") no-repeat center;
     background-size: contain;
 
     /* SVG Colour, derived from https://angel-rs.github.io/css-color-filter-generator/ */
