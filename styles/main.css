@@ -1,11 +1,5 @@
-/* Fonts */
-@font-face {
-    font-family: "VT323";
-    src: url("../public/font/VT323/VT323-Regular.ttf");
-    font-display: swap;
-}
-
-/* Themes TODO: add more themes! */
+@import url("theme/light.css");
+@import url("theme/classic.css");
 
 /* noinspection DuplicatedCode */
 :root[data-theme="Dark"], /* Default theme */
@@ -38,67 +32,6 @@
     --external-icon-filter: brightness(0) saturate(100%) invert(90%) sepia(6%) saturate(92%) hue-rotate(7deg) brightness(96%) contrast(84%);
 }
 
-/* noinspection DuplicatedCode */
-:root[data-theme="light"] {
-    --entry-0: #2E3436;
-    --entry-1: #CC0000;
-    --entry-2: #4E9A06;
-    --entry-3: #C4A000;
-    --entry-4: #3465A4;
-    --entry-5: #75507B;
-    --entry-6: #06989A;
-    --entry-7: #D3D7CF;
-
-    --entry-0-bright: #555753;
-    --entry-1-bright: #EF2929;
-    --entry-2-bright: #8AE234;
-    --entry-3-bright: #FCE94F;
-    --entry-4-bright: #729FCF;
-    --entry-5-bright: #AD7FA8;
-    --entry-6-bright: #34E2E2;
-    --entry-7-bright: #EEEEEC;
-
-    --background-colour: #FFFFFF;
-
-    --font-family: consola, monospace;
-    --foreground-colour: #171421;
-
-    --selection-foreground-colour: #FFFFFF;
-    --selection-background-colour: #171421;
-    --external-icon-filter: brightness(0) saturate(100%) invert(8%) sepia(28%) saturate(688%) hue-rotate(213deg) brightness(93%) contrast(99%);
-}
-
-:root[data-theme="classic"] {
-    --entry-0: #000000;
-    --entry-1: #AA0000;
-    --entry-2: #00AA00;
-    --entry-3: #AA5500;
-    --entry-4: #0000AA;
-    --entry-5: #AA00AA;
-    --entry-6: #00AAAA;
-    --entry-7: #AAAAAA;
-
-    --entry-0-bright: #555555;
-    --entry-1-bright: #FF5555;
-    --entry-2-bright: #55FF55;
-    --entry-3-bright: #FFFF55;
-    --entry-4-bright: #5555FF;
-    --entry-5-bright: #FF55FF;
-    --entry-6-bright: #55FFFF;
-    --entry-7-bright: #FFFFFF;
-
-    --background-colour: #000000;
-
-    --font-family: "VT323";
-    --foreground-colour: #FFFFFF;
-
-    --selection-foreground-colour: #000000;
-    --selection-background-colour: #FFFFFF;
-    --external-icon-filter: brightness(0) saturate(100%) invert(100%) sepia(96%) saturate(0%) hue-rotate(75deg) brightness(104%) contrast(104%);
-}
-
-/* Non-Themes */
-
 :root {
     --prompt-content: "";
     --themes: Dark Light Classic; /* stylelint-disable-line value-keyword-case */
@@ -116,8 +49,7 @@ main {
     cursor: text;
 }
 
-/* eslint-disable-next-line */
-main ::selection {
+main ::selection { /* eslint-disable-line css/use-baseline */
     color: var(--selection-foreground-colour);
     background: var(--selection-background-colour);
 }
