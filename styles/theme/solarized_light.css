@@ -1,0 +1,29 @@
+/* noinspection DuplicatedCode */
+:root[data-theme="SolarizedLight"] {
+    --entry-0: #073642;
+    --entry-1: #DC322F;
+    --entry-2: #859900;
+    --entry-3: #B58900;
+    --entry-4: #268BD2;
+    --entry-5: #D33682;
+    --entry-6: #2AA198;
+    --entry-7: #EEE8D5;
+
+    --entry-0-bright: #002B36;
+    --entry-1-bright: #CB4B16;
+    --entry-2-bright: #586E75;
+    --entry-3-bright: #657B83;
+    --entry-4-bright: #839496;
+    --entry-5-bright: #6C71C4;
+    --entry-6-bright: #93A1A1;
+    --entry-7-bright: #FDF6E3;
+
+    --background-colour: #FDF6E3;
+
+    --font-family: consola, monospace;
+    --foreground-colour: #657B83;
+
+    --selection-foreground-colour: #FDF6E3;
+    --selection-background-colour: #657B83;
+    --external-icon-filter: brightness(0) saturate(100%) invert(49%) sepia(16%) saturate(424%) hue-rotate(150deg) brightness(91%) contrast(88%);
+}
