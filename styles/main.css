@@ -22,13 +22,13 @@
     --entry-6-bright: #34E2E2;
     --entry-7-bright: #EEEEEC;
 
-    --background-colour: #171421;
+    --background-colour: #101018;
 
     --font-family: consola, monospace;
-    --foreground-colour: #D0CFCC;
+    --foreground-colour: #DADAD9;
 
-    --selection-foreground-colour: #171421;
-    --selection-background-colour: #FFFFFF;
+    --selection-foreground-colour: #101018;
+    --selection-background-colour: #DADAD9;
     --external-icon-filter: brightness(0) saturate(100%) invert(90%) sepia(6%) saturate(92%) hue-rotate(7deg) brightness(96%) contrast(84%);
 }
 

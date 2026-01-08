@@ -130,45 +130,43 @@ function getOutput(flags: Flags): string {
  *  @returns the coloured ASCII art logo
  */
 function getLogo() {
-  const varEntrySeven = CssUtil.asVar(ENTRY_SEVEN);
-
   // prettier-ignore
   return (
-    toColouredText("`+-----------_`+------------+`_-----------+`", varEntrySeven) +
+    toBoldText("`+-----------_`+------------+`_-----------+`") +
     "\n" +
-    toColouredText("*$$$$$$$$$$$$B<%$$$$$$$$$$$$8<@$$$$$$$$$$$$*", varEntrySeven) +
+    toBoldText("*$$$$$$$$$$$$B<%$$$$$$$$$$$$8<@$$$$$$$$$$$$*") +
     "\n" +
-    toColouredText("$$$$$$$$$$$$$@i%$$$$$$$$$$$$%i@$$$$$$$$$$$$$", varEntrySeven) +
+    toBoldText("$$$$$$$$$$$$$@i%$$$$$$$$$$$$%i@$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("YYYYYYYYXYYYYz>cYYYYYYYYYYYYc>zYYYYYYYYYYYYY", varEntrySeven) +
+    toBoldText("YYYYYYYYXYYYYz>cYYYYYYYYYYYYc>zYYYYYYYYYYYYY") +
     "\n" +
-    toColouredText("######*W&#*##M8M############M8M#############", varEntrySeven) +
+    toBoldText("######*W&#*##M8M############M8M#############") +
     "\n" +
-    toColouredText("$$$$$$$&a$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
+    toBoldText("$$$$$$$&a$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$*|^ ~Q$$$@$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
+    toBoldText("$$$$$*|^ ~Q$$$@$$$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$b!    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
+    toBoldText("$$$$$b!    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$$$O~    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
+    toBoldText("$$$$$$$O~    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$$$$$0-`   +L%$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
+    toBoldText("$$$$$$$$$0-`   +L%$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$$$@$$hl '  ^k$$$$@@@@@@@@@@@@@@@$$$$$$$", varEntrySeven) +
+    toBoldText("$$$$$$$@$$hl '  ^k$$$$@@@@@@@@@@@@@@@$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$$$$k1.   :v8$$$$$$$$$$$$$$$$$$$$$$$$$$$", varEntrySeven) +
+    toBoldText("$$$$$$$$k1.   :v8$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$$h(.   :u&$$$$$$dQ0QQQQQQQQQQQ00#$$$$$$", varEntrySeven) +
+    toBoldText("$$$$$$h(.   :u&$$$$$$dQ0QQQQQQQQQQQ00#$$$$$$") +
     "\n" +
-    toColouredText("$$$$$w    :v8$$@$$$$@^               ($@$$$$", varEntrySeven) +
+    toBoldText("$$$$$w    :v8$$@$$$$@^               ($@$$$$") +
     "\n" +
-    toColouredText("$$$$$@q}iv8$$@$$$$$$$-:::::::::::::;:v$@$$$$", varEntrySeven) +
+    toBoldText("$$$$$@q}iv8$$@$$$$$$$-:::::::::::::;:v$@$$$$") +
     "\n" +
-    toColouredText("$$$$$$$$$$$@$$$$$$$$$@%%%%%%%%%%%%%%%$$$$$$$", varEntrySeven) +
+    toBoldText("$$$$$$$$$$$@$$$$$$$$$@%%%%%%%%%%%%%%%$$$$$$$") +
     "\n" +
-    toColouredText("*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*", varEntrySeven) +
+    toBoldText("*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*") +
     "\n" +
-    toColouredText("`+--------------------_______________-----+", varEntrySeven)
+    toBoldText("`+--------------------_______________-----+")
   );
 }
 
@@ -221,26 +219,23 @@ function getInfo(isLogo: boolean): string {
   const gpu = "Unknown";
   const memory = `${currentMemory}B / ${maximumMemory}B`;
 
-  const varEntrySeven = CssUtil.asVar(ENTRY_SEVEN);
-  const varEntrySevenBright = CssUtil.asVar(ENTRY_SEVEN_BRIGHT);
-
   return (
-    `${toColouredText(user, varEntrySevenBright)}@${toColouredText(hostname, varEntrySevenBright)}` +
+    `${toBoldText(user)}@${toBoldText(hostname)}` +
     "\n------------" +
-    `\n${toColouredText("OS", varEntrySeven)}: ${os}` +
-    `\n${toColouredText("Host", varEntrySeven)}: ${motherboard}` +
-    `\n${toColouredText("Kernel", varEntrySeven)}: ${kernel}` +
-    `\n${toColouredText("Uptime", varEntrySeven)}: ${uptime}` +
-    `\n${toColouredText("Shell", varEntrySeven)}: ${shell}` +
-    `\n${toColouredText("Resolution", varEntrySeven)}: ${resolution}` +
-    `\n${toColouredText("DE", varEntrySeven)}: ${desktopEnvironment}` +
-    `\n${toColouredText("WM", varEntrySeven)}: ${windowManager}` +
-    `\n${toColouredText("Theme", varEntrySeven)}: ${theme}` +
-    `\n${toColouredText("Shell Flavour", varEntrySeven)}: ${shellFlavour}` +
-    `\n${toColouredText("Terminal", varEntrySeven)}: ${terminal}` +
-    `\n${toColouredText("CPU", varEntrySeven)}: ${cpu}` +
-    `\n${toColouredText("GPU", varEntrySeven)}: ${gpu}` +
-    `\n${toColouredText("Memory", varEntrySeven)}: ${memory}` +
+    `\n${toBoldText("OS")}: ${os}` +
+    `\n${toBoldText("Host")}: ${motherboard}` +
+    `\n${toBoldText("Kernel")}: ${kernel}` +
+    `\n${toBoldText("Uptime")}: ${uptime}` +
+    `\n${toBoldText("Shell")}: ${shell}` +
+    `\n${toBoldText("Resolution")}: ${resolution}` +
+    `\n${toBoldText("DE")}: ${desktopEnvironment}` +
+    `\n${toBoldText("WM")}: ${windowManager}` +
+    `\n${toBoldText("Theme")}: ${theme}` +
+    `\n${toBoldText("Shell Flavour")}: ${shellFlavour}` +
+    `\n${toBoldText("Terminal")}: ${terminal}` +
+    `\n${toBoldText("CPU")}: ${cpu}` +
+    `\n${toBoldText("GPU")}: ${gpu}` +
+    `\n${toBoldText("Memory")}: ${memory}` +
     `\n\n${getColouredBlocks(isLogo)}`
   );
 }
@@ -322,21 +317,15 @@ function getColouredBlocks(isLogo: boolean) {
 }
 
 /**
- * Creates a coloured foreground HTML span.
+ * Creates a bold HTML span.
  *
  * @param text the inner span text.
- * @param colour the font colour.
- * @param isBold whether the font should be bold.
  */
-function toColouredText(
-  text: string,
-  colour: string,
-  isBold: boolean = true,
-): string {
+function toBoldText(text: string): string {
   return toSpan(text, {
-    foreground: colour,
+    foreground: null,
     background: null,
-    fontWeight: isBold ? "bold" : null,
+    fontWeight: "bold",
   });
 }
 
