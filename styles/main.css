@@ -2,6 +2,8 @@
 @import url("theme/light.css");
 @import url("theme/solarized_dark.css");
 @import url("theme/solarized_light.css");
+@import url("theme/tango_dark.css");
+@import url("theme/tango_light.css");
 
 /* noinspection DuplicatedCode */
 :root[data-theme="Dark"], /* Default theme */
@@ -36,7 +38,7 @@
 
 :root {
     --prompt-content: "";
-    --themes: Dark Light Classic SolarizedLight SolarizedDark; /* stylelint-disable-line value-keyword-case */
+    --themes: Dark Light Classic SolarizedLight SolarizedDark TangoDark TangoLight; /* stylelint-disable-line value-keyword-case */
 
     background-color: var(--background-colour);
     color: var(--foreground-colour);
