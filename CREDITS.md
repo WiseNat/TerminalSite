@@ -6,8 +6,9 @@
 
 "[Tango Desktop Project Colour Palette](https://www.freedesktop.org/wiki/Software/)" by freedesktop, used under Public Domain.
 
-"[Solarized](https://github.com/altercation/solarized)" by BAR, used under [MIT](licenses/Solarized.md).
+"[Solarized](https://github.com/altercation/solarized)" by Ethan Schoonover, used under [MIT](licenses/Solarized.md).
 
+"GNOMELike Dark/Light Themes" manually recreated & based on similar themes in the [GNOME Terminal](https://gitlab.gnome.org/GNOME/gnome-terminal/) by the GNOME Foundation.
 
 [//]: # (Common Licenses)
 

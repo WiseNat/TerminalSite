@@ -1,4 +1,6 @@
 @import url("theme/classic.css");
+@import url("theme/gnomelike_dark.css");
+@import url("theme/gnomelike_light.css");
 @import url("theme/light.css");
 @import url("theme/solarized_dark.css");
 @import url("theme/solarized_light.css");
@@ -33,12 +35,12 @@
 
     --selection-foreground-colour: #101018;
     --selection-background-colour: #DADAD9;
-    --external-icon-filter: brightness(0) saturate(100%) invert(90%) sepia(6%) saturate(92%) hue-rotate(7deg) brightness(96%) contrast(84%);
+    --external-icon-filter: brightness(0) saturate(100%) invert(75%) sepia(62%) saturate(2%) hue-rotate(22deg) brightness(99%) contrast(107%);
 }
 
 :root {
     --prompt-content: "";
-    --themes: Dark Light Classic SolarizedLight SolarizedDark TangoDark TangoLight; /* stylelint-disable-line value-keyword-case */
+    --themes: Dark Light Classic SolarizedLight SolarizedDark TangoDark TangoLight GNOMELikeDark GNOMELikeLight; /* stylelint-disable-line value-keyword-case */
 
     background-color: var(--background-colour);
     color: var(--foreground-colour);
