@@ -1,7 +1,6 @@
 import { Flavour, TextContent } from "../flavour.ts";
 import { ZERO_WIDTH_SPACE } from "../../constant/char.ts";
 
-// TODO: unit test me!
 const WINDOWS: Flavour = {
   getInitialPrompt(): TextContent {
     return {

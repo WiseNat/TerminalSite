@@ -4,7 +4,6 @@ import CssUtil from "../../util/css_util.ts";
 import { ENTRY_FOUR_BRIGHT, ENTRY_TWO_BRIGHT } from "../../constant/theme.ts";
 import { HOSTNAME } from "../../constant/system.ts";
 
-// TODO: unit test me!
 const UNIX: Flavour = {
   getInitialPrompt(): TextContent {
     return { value: "", isHTML: false };
