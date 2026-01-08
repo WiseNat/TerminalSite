@@ -1,0 +1,111 @@
+@import url("theme/classic.css");
+@import url("theme/gnomelike_dark.css");
+@import url("theme/gnomelike_light.css");
+@import url("theme/light.css");
+@import url("theme/solarized_dark.css");
+@import url("theme/solarized_light.css");
+@import url("theme/tango_dark.css");
+@import url("theme/tango_light.css");
+
+/* noinspection DuplicatedCode */
+:root[data-theme="Dark"], /* Default theme */
+:root {
+    --entry-0: #2E3436;
+    --entry-1: #CC0000;
+    --entry-2: #4E9A06;
+    --entry-3: #C4A000;
+    --entry-4: #3465A4;
+    --entry-5: #75507B;
+    --entry-6: #06989A;
+    --entry-7: #D3D7CF;
+
+    --entry-0-bright: #555753;
+    --entry-1-bright: #EF2929;
+    --entry-2-bright: #8AE234;
+    --entry-3-bright: #FCE94F;
+    --entry-4-bright: #729FCF;
+    --entry-5-bright: #AD7FA8;
+    --entry-6-bright: #34E2E2;
+    --entry-7-bright: #EEEEEC;
+
+    --background-colour: #101018;
+
+    --font-family: consola, monospace;
+    --foreground-colour: #DADAD9;
+
+    --selection-foreground-colour: #101018;
+    --selection-background-colour: #DADAD9;
+    --external-icon-filter: brightness(0) saturate(100%) invert(75%) sepia(62%) saturate(2%) hue-rotate(22deg) brightness(99%) contrast(107%);
+}
+
+:root {
+    --prompt-content: "";
+    --themes: Dark Light Classic SolarizedLight SolarizedDark TangoDark TangoLight GNOMELikeDark GNOMELikeLight; /* stylelint-disable-line value-keyword-case */
+
+    background-color: var(--background-colour);
+    color: var(--foreground-colour);
+    font-family: var(--font-family), consola, monospace;
+    font-size: 1rem;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    cursor: text;
+}
+
+main ::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--selection-foreground-colour);
+    background: var(--selection-background-colour);
+}
+
+a {
+    text-decoration: underline dotted;
+}
+
+a:hover {
+    text-decoration: underline from-font;
+}
+
+a[target="_blank"]::after {
+    content: "";
+    display: inline-block;
+    width: 0.8em;
+    height: 0.8em;
+    margin-left: 0.2em;
+    background: url("../public/external.svg") no-repeat center;
+    background-size: contain;
+
+    /* SVG Colour, derived from https://angel-rs.github.io/css-color-filter-generator/ */
+    filter: var(--external-icon-filter);
+}
+
+#output {
+    white-space: pre-wrap;
+}
+
+#command-line-container {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#prompt {
+    background: var(--background-colour);
+    white-space: pre-wrap;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+#input {
+    white-space: pre-wrap;
+    z-index: 0;
+}
+
+#input::before {
+    content: var(--prompt-content);
+}

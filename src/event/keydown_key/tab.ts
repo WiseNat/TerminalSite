@@ -33,14 +33,6 @@ export async function processTab(event: KeyboardEvent) {
   const tokenisedCommand = CommandUtil.tokenise(beforeCaret);
   let suggestions: Suggestion[];
 
-  if (
-    tokenisedCommand.name !== "" &&
-    tokenisedCommand.args.length > 0 &&
-    beforeCaret.endsWith(" ")
-  ) {
-    return;
-  }
-
   if (tokenisedCommand.args.length === 0 && !beforeCaret.endsWith(" ")) {
     suggestions = defaultAutocomplete(tokenisedCommand);
   } else {
@@ -83,7 +75,7 @@ async function customCommandAutocomplete(
     `'${tokenisedCommand.name}' command or it's autocomplete were not found, resorting to file & directory autocompletion`,
   );
 
-  if (tokenisedCommand.args.length === 0) {
+  if (tokenisedCommand.args.length === 0 || beforeCaret.endsWith(" ")) {
     return [];
   }
 

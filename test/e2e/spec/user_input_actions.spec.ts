@@ -67,7 +67,7 @@ test.describe("Keyboard", () => {
         const prompts = `\n${DEFAULT_USER_PROMPT}`.repeat(newlineCounter);
         await assertExactTextInTerminal(
           page,
-          `${DEFAULT_INITIAL_PROMPT}${prompts}`,
+          `${DEFAULT_INITIAL_PROMPT}${prompts.trimStart()}`,
         );
       });
 

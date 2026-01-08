@@ -1,12 +1,17 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { ZERO_WIDTH_SPACE } from "../../../e2e/helper/constant/generic";
+import FlavourUtil from "../../../../src/util/flavour_util.ts";
+import WINDOWS from "../../../../src/flavour/implementation/Windows.ts";
 
 let inputElement: HTMLElement;
 let promptElement: HTMLElement;
 let outputElement: HTMLElement;
 
 describe("TerminalUtil", () => {
+  // Mocks
+  vi.mock("../../../../src/util/flavour_util");
+
   beforeEach(() => {
     // Mock terminal elements
     document.body.innerHTML =
@@ -220,6 +225,12 @@ describe("TerminalUtil", () => {
       });
 
       describe("setPromptPath", () => {
+        beforeEach(() => {
+          vi.mocked(FlavourUtil.getCurrentShellFlavour).mockReturnValue(
+            WINDOWS,
+          );
+        });
+
         test("should set the prompt when provided a path", async () => {
           // Arrange
           const text = "/some/fake/path";

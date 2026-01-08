@@ -64,8 +64,8 @@ export default class AutocompleteUtil {
         suggestions.map((suggestion) => suggestion.visual),
       );
 
-      const prompt = TerminalUtil.getPrompt();
-      TerminalUtil.appendOutput(
+      const prompt = TerminalUtil.getRawPrompt();
+      TerminalUtil.appendRawOutput(
         `${prompt}${beforeCaret}${afterCaret}\n${joinedSuggestions}`,
         true,
       );

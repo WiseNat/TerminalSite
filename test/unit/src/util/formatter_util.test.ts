@@ -1,16 +1,17 @@
-import { describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import FormatterUtil from "../../../../src/util/formatter_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
-import {
-  BLUE,
-  CYAN,
-  GREEN,
-  MAGENTA,
-  RED,
-} from "../../../../src/constant/colour";
 import CssUtil from "../../../../src/util/css_util.ts";
 import HtmlUtil from "../../../../src/util/html_util.ts";
 import { mockExtractVisibleText } from "../../helper/mocks.ts";
+import {
+  ENTRY_FIVE,
+  ENTRY_FOUR,
+  ENTRY_ONE,
+  ENTRY_SIX,
+  ENTRY_TWO,
+} from "../../../../src/constant/theme.ts";
+import { unmock } from "../../helper/unmock.ts";
 
 /**
  * Creates a minimal node with modifications to the fields that matter for `getFileSystemEntryStyle`
@@ -43,6 +44,10 @@ describe("FormatterUtil", () => {
 
   mockExtractVisibleText();
 
+  beforeEach(async () => {
+    await unmock("../../../src/util/css_util", ["default", "asVar"]);
+  });
+
   describe("getFileSystemEntry", () => {
     [
       {
@@ -61,13 +66,13 @@ describe("FormatterUtil", () => {
         type: "returns a span with colour and a short name when given an executable file node and useShortName=true",
         node: createNode("file.txt", false, [7, 7, 7], "some/path"),
         useShortName: true,
-        expected: `<span style='color: ${GREEN}; font-weight: bold'>file.txt</span>`,
+        expected: `<span style='color: var(${ENTRY_TWO}); font-weight: bold'>file.txt</span>`,
       },
       {
         type: "returns a span with colour and a long name when given an executable file node and useShortName=false",
         node: createNode("file.txt", false, [7, 7, 7], "some/path"),
         useShortName: false,
-        expected: `<span style='color: ${GREEN}; font-weight: bold'>/some/path/file.txt</span>`,
+        expected: `<span style='color: var(${ENTRY_TWO}); font-weight: bold'>/some/path/file.txt</span>`,
       },
     ].forEach(({ type, node, useShortName, expected }) => {
       test(type, () => {
@@ -118,7 +123,7 @@ describe("FormatterUtil", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result.foreground).toEqual(BLUE);
+        expect(result.foreground).toEqual(`var(${ENTRY_FOUR})`);
         expect(result.background).toBeNull();
         expect(result.fontWeight).toEqual("bold");
       });
@@ -151,7 +156,7 @@ describe("FormatterUtil", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result.foreground).toEqual(GREEN);
+        expect(result.foreground).toEqual(`var(${ENTRY_TWO})`);
         expect(result.background).toBeNull();
         expect(result.fontWeight).toEqual("bold");
       });
@@ -174,7 +179,7 @@ describe("FormatterUtil", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result.foreground).toEqual(RED);
+        expect(result.foreground).toEqual(`var(${ENTRY_ONE})`);
         expect(result.background).toBeNull();
         expect(result.fontWeight).toEqual("bold");
       });
@@ -200,7 +205,7 @@ describe("FormatterUtil", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result.foreground).toEqual(MAGENTA);
+        expect(result.foreground).toEqual(`var(${ENTRY_FIVE})`);
         expect(result.background).toBeNull();
         expect(result.fontWeight).toEqual("bold");
       });
@@ -223,7 +228,7 @@ describe("FormatterUtil", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result.foreground).toEqual(CYAN);
+        expect(result.foreground).toEqual(`var(${ENTRY_SIX})`);
         expect(result.background).toBeNull();
         expect(result.fontWeight).toEqual("bold");
       });

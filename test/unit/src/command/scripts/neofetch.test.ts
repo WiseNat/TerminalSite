@@ -40,6 +40,8 @@ function containsInfoText(text: string) {
     /DE/gm,
     /DE/gm,
     /WM/gm,
+    /Theme/gm,
+    /Shell Flavour/gm,
     /Terminal/gm,
     /CPU/gm,
     /GPU/gm,
@@ -69,11 +71,16 @@ describe("Neofetch", () => {
       loadTime: 0,
     },
   }));
+  vi.mock("../../../../../src/util/theme_util");
+  vi.mock("../../../../../src/util/flavour_util");
 
   beforeEach(() => {
     vi.unstubAllGlobals();
     vi.stubGlobal("document", {
       body: { clientWidth: 1920, clientHeight: 1080 },
+    });
+    vi.stubGlobal("location", {
+      hostname: "terminal-site",
     });
   });
 

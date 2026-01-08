@@ -2,6 +2,8 @@ import HtmlUtil from "./html_util.ts";
 import { ZERO_WIDTH_SPACE } from "../constant/char.ts";
 import { escape, unescape } from "lodash-es";
 import FileSystemUtil from "./file_system_util.ts";
+import FlavourUtil from "./flavour_util.ts";
+import { Flavour } from "../flavour/flavour.ts";
 
 export default class TerminalUtil {
   // Values that allows the largest file to be outputted with cat.
@@ -69,6 +71,15 @@ export default class TerminalUtil {
   }
 
   /**
+   * @returns the prompt content of the terminal, including unescaped nested HTML elements
+   */
+  public static getRawPrompt(): string {
+    return this.prompt.innerHTML === null
+      ? ""
+      : HtmlUtil.normaliseSpaces(this.prompt.innerHTML);
+  }
+
+  /**
    * @returns the output content of the terminal, including unescaped nested HTML elements
    */
   public static getRawOutput(): string {
@@ -89,9 +100,7 @@ export default class TerminalUtil {
    * @returns the current prompt, e.g. `C:\Users\user>`
    */
   public static getPrompt(): string {
-    return this.prompt.textContent === null
-      ? ""
-      : HtmlUtil.normaliseSpaces(this.prompt.textContent);
+    return unescape(this.getRawPrompt());
   }
 
   /**
@@ -117,16 +126,30 @@ export default class TerminalUtil {
   }
 
   /**
-   * Sets the Prompt as the provided text.
+   * Sets the `innerHtml` of the Prompt as the escaped version of the given text.
+   * <p>
+   * This allows for safely setting text that may contain HTML characters. For inserting HTML elements, use {@link setRawPrompt}.
+   *
+   * @param text text to escape and set
+   */
+
+  public static setPrompt(text: string) {
+    this.setRawPrompt(escape(text));
+  }
+
+  /**
+   * Sets the `innerHtml` of the Prompt as this text.
+   * <p>
+   * This allows for inserting of HTML elements. For inserting regular text safely, use {@link setPrompt}.
    *
    * @param text text to set
    */
-  public static setPrompt(text: string) {
-    this.prompt.textContent = text;
+  public static setRawPrompt(text: string) {
+    this.prompt.innerHTML = text;
 
     // Hidden prompt to ensure the Input element visibly starts after the prompt
     // CSS is marked with ? to fix failing tests
-    const escapedPrompt = CSS?.escape(text);
+    const escapedPrompt = CSS?.escape(HtmlUtil.extractVisibleText(text));
     document.documentElement.style.setProperty(
       "--prompt-content",
       `"${escapedPrompt}"`,
@@ -141,10 +164,14 @@ export default class TerminalUtil {
   public static setPromptPath(path: string) {
     const splitPath = FileSystemUtil.splitPath(path);
 
-    const pathSeparator = "\\";
-    const prompt = `C:${pathSeparator}${splitPath.join(pathSeparator)}>`;
+    const flavour: Flavour = FlavourUtil.getCurrentShellFlavour();
+    const prompt = flavour.getPrompt(splitPath);
 
-    this.setPrompt(prompt);
+    if (prompt.isHTML) {
+      this.setRawPrompt(prompt.value);
+    } else {
+      this.setPrompt(prompt.value);
+    }
   }
 
   /**

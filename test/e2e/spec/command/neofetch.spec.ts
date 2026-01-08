@@ -26,7 +26,7 @@ test.describe("Neofetch", () => {
       new RegExp(
         escapeRegExp("`+-----------_`+------------+`_-----------+`") +
           "   " +
-          "nathanwise@nathan-wise-portfolio",
+          "nathanwise@portfolio",
         "g",
       ),
       new RegExp(
@@ -86,49 +86,58 @@ test.describe("Neofetch", () => {
       new RegExp(
         escapeRegExp("$$$$$$$@$$hl '  ^k$$$$@@@@@@@@@@@@@@@$$$$$$$") +
           "   " +
-          "Terminal: terminal-site",
+          "Theme: Dark",
         "g",
       ),
       new RegExp(
         escapeRegExp("$$$$$$$$k1.   :v8$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
           "   " +
-          "CPU: Unknown \\(\\d+\\) @ \\?GHz",
+          "Shell Flavour: Unix",
         "g",
       ),
       new RegExp(
         escapeRegExp("$$$$$$h(.   :u&$$$$$$dQ0QQQQQQQQQQQ00#$$$$$$") +
           "   " +
-          "GPU: Unknown",
+          "Terminal: localhost",
         "g",
       ),
       new RegExp(
         escapeRegExp("$$$$$w    :v8$$@$$$$@^               ($@$$$$") +
           "   " +
-          "Memory: (?:\\?\\d*|\\d+)B \\/ (?:\\?\\d*|\\d+)B",
+          "CPU: Unknown \\(\\d+\\) @ \\?GHz",
         "g",
       ),
       new RegExp(
         escapeRegExp("$$$$$@q}iv8$$@$$$$$$$-:::::::::::::;:v$@$$$$") +
           "   " +
-          "",
+          "GPU: Unknown",
         "g",
       ),
       new RegExp(
         escapeRegExp("$$$$$$$$$$$@$$$$$$$$$@%%%%%%%%%%%%%%%$$$$$$$") +
           "   " +
-          "                        ",
+          "Memory: (?:\\?\\d*|\\d+)B \\/ (?:\\?\\d*|\\d+)B",
         "g",
       ),
       new RegExp(
         escapeRegExp("*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*") +
           "   " +
+          "",
+        "g",
+      ),
+      new RegExp(
+        escapeRegExp("`+--------------------_______________-----+") +
+          "   " +
           "                        ",
         "g",
       ),
       new RegExp(
-        escapeRegExp("`+--------------------_______________-----+"),
+        escapeRegExp("                                            ") +
+          "   " +
+          "                        ",
         "g",
       ),
+
       /\n\n $/gm,
     ];
 
@@ -153,7 +162,7 @@ test.describe("Neofetch", () => {
 
       // Assert
       const expectedRegex: RegExp =
-        /^nathanwise@nathan-wise-portfolio\n------------\nOS: .*\nHost: Unknown\nKernel: .*\nUptime: .*\nShell: terminal-site 2\.0\nResolution: \d+x\d+\nDE: .*\nWM: .*\nTerminal: terminal-site\nCPU: Unknown \(\d+\) @ \?GHz\nGPU: Unknown\nMemory: (?:\?\d*|\d+)B \/ (?:\?\d*|\d+)B/gm;
+        /^nathanwise@portfolio\n------------\nOS: .*\nHost: Unknown\nKernel: .*\nUptime: .*\nShell: terminal-site 2\.0\nResolution: \d+x\d+\nDE: .*\nWM: .*\nTheme: Dark\nShell Flavour: Unix\nTerminal: localhost\nCPU: Unknown \(\d+\) @ \?GHz\nGPU: Unknown\nMemory: (?:\?\d*|\d+)B \/ (?:\?\d*|\d+)B/gm;
 
       await expect(page.locator(OUTPUT_SELECTOR)).toHaveText(expectedRegex);
       await expect(page.locator(PROMPT_SELECTOR)).exactTextInElement(

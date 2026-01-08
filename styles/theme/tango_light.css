@@ -1,0 +1,29 @@
+/* noinspection DuplicatedCode */
+:root[data-theme="TangoLight"] {
+    --entry-0: #2E3436;
+    --entry-1: #CC0000;
+    --entry-2: #4E9A06;
+    --entry-3: #C4A000;
+    --entry-4: #3465A4;
+    --entry-5: #75507B;
+    --entry-6: #06989A;
+    --entry-7: #D3D7CF;
+
+    --entry-0-bright: #555753;
+    --entry-1-bright: #EF2929;
+    --entry-2-bright: #8AE234;
+    --entry-3-bright: #FCE94F;
+    --entry-4-bright: #729FCF;
+    --entry-5-bright: #AD7FA8;
+    --entry-6-bright: #34E2E2;
+    --entry-7-bright: #EEEEEC;
+
+    --background-colour: #EEEEEC;
+
+    --font-family: consola, monospace;
+    --foreground-colour: #2E3436;
+
+    --selection-foreground-colour: #EEEEEC;
+    --selection-background-colour: #2E3436;
+    --external-icon-filter: brightness(0) saturate(100%) invert(16%) sepia(6%) saturate(920%) hue-rotate(149deg) brightness(92%) contrast(86%);
+}

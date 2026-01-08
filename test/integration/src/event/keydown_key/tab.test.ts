@@ -200,7 +200,7 @@ describe("Tab", () => {
     });
 
     describe("Multiple Arguments", () => {
-      test("runs autocomplete nothing if there is a space immediately before the caret", async () => {
+      test("runs autocomplete if there is a space immediately before the caret", async () => {
         // Arrange
         vi.mocked(TerminalUtil.getRawInput).mockReturnValue(
           "tree /some/directory /some/file",
@@ -214,7 +214,7 @@ describe("Tab", () => {
         // Assert
         expect(getCommandSuggestions).not.toHaveBeenCalled();
         expect(getFileAndDirectorySuggestions).not.toHaveBeenCalled();
-        expect(autocomplete).not.toHaveBeenCalledOnce();
+        expect(autocomplete).toHaveBeenCalledOnce();
       });
 
       [

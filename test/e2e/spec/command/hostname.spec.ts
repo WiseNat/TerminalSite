@@ -6,7 +6,7 @@ import {
 
 test.describe("Hostname", () => {
   const domainName = "localdomain";
-  const longName = "nathan-wise-portfolio.localdomain";
+  const longName = "portfolio.localdomain";
 
   test("should output the hostname without flags", async ({ page }) => {
     // Arrange
@@ -16,7 +16,7 @@ test.describe("Hostname", () => {
     await runCommand(page, input);
 
     // Assert
-    await assertOutputInTerminal(page, `${input}\nnathan-wise-portfolio`);
+    await assertOutputInTerminal(page, `${input}\nportfolio`);
   });
 
   ["-d", "--domain"].forEach((flag) => {

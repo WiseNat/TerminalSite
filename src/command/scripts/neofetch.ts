@@ -1,23 +1,5 @@
 import { CommandScript } from "../command_script.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
-import {
-  BLACK,
-  BLUE,
-  BRIGHT_BLACK,
-  BRIGHT_BLUE,
-  BRIGHT_CYAN,
-  BRIGHT_GREEN,
-  BRIGHT_MAGENTA,
-  BRIGHT_RED,
-  BRIGHT_WHITE,
-  BRIGHT_YELLOW,
-  CYAN,
-  GREEN,
-  MAGENTA,
-  RED,
-  WHITE,
-  YELLOW,
-} from "../../constant/colour.ts";
 import FormatterUtil, {
   FileSystemEntryStyle,
 } from "../../util/formatter_util.ts";
@@ -32,6 +14,27 @@ import Bowser from "bowser";
 import { PerformanceMemory } from "../../types/non_standard";
 import TimeUtil from "../../util/time_util.ts";
 import { HelpInformation } from "./help.ts";
+import {
+  ENTRY_FIVE,
+  ENTRY_FIVE_BRIGHT,
+  ENTRY_FOUR,
+  ENTRY_FOUR_BRIGHT,
+  ENTRY_ONE,
+  ENTRY_ONE_BRIGHT,
+  ENTRY_SEVEN,
+  ENTRY_SEVEN_BRIGHT,
+  ENTRY_SIX,
+  ENTRY_SIX_BRIGHT,
+  ENTRY_THREE,
+  ENTRY_THREE_BRIGHT,
+  ENTRY_TWO,
+  ENTRY_TWO_BRIGHT,
+  ENTRY_ZERO,
+  ENTRY_ZERO_BRIGHT,
+} from "../../constant/theme.ts";
+import CssUtil from "../../util/css_util.ts";
+import FlavourUtil from "../../util/flavour_util.ts";
+import ThemeUtil from "../../util/theme_util.ts";
 
 const NEOFETCH: CommandScript = {
   async run(args: string[]): Promise<void> {
@@ -127,42 +130,43 @@ function getOutput(flags: Flags): string {
  *  @returns the coloured ASCII art logo
  */
 function getLogo() {
+  // prettier-ignore
   return (
-    toColouredText("`+-----------_`+------------+`_-----------+`", WHITE) +
+    toBoldText("`+-----------_`+------------+`_-----------+`") +
     "\n" +
-    toColouredText("*$$$$$$$$$$$$B<%$$$$$$$$$$$$8<@$$$$$$$$$$$$*", WHITE) +
+    toBoldText("*$$$$$$$$$$$$B<%$$$$$$$$$$$$8<@$$$$$$$$$$$$*") +
     "\n" +
-    toColouredText("$$$$$$$$$$$$$@i%$$$$$$$$$$$$%i@$$$$$$$$$$$$$", WHITE) +
+    toBoldText("$$$$$$$$$$$$$@i%$$$$$$$$$$$$%i@$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("YYYYYYYYXYYYYz>cYYYYYYYYYYYYc>zYYYYYYYYYYYYY", WHITE) +
+    toBoldText("YYYYYYYYXYYYYz>cYYYYYYYYYYYYc>zYYYYYYYYYYYYY") +
     "\n" +
-    toColouredText("######*W&#*##M8M############M8M#############", WHITE) +
+    toBoldText("######*W&#*##M8M############M8M#############") +
     "\n" +
-    toColouredText("$$$$$$$&a$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toBoldText("$$$$$$$&a$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$*|^ ~Q$$$@$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toBoldText("$$$$$*|^ ~Q$$$@$$$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$b!    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toBoldText("$$$$$b!    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$$$O~    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toBoldText("$$$$$$$O~    ~0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$$$$$0-`   +L%$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toBoldText("$$$$$$$$$0-`   +L%$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$$$@$$hl '  ^k$$$$@@@@@@@@@@@@@@@$$$$$$$", WHITE) +
+    toBoldText("$$$$$$$@$$hl '  ^k$$$$@@@@@@@@@@@@@@@$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$$$$k1.   :v8$$$$$$$$$$$$$$$$$$$$$$$$$$$", WHITE) +
+    toBoldText("$$$$$$$$k1.   :v8$$$$$$$$$$$$$$$$$$$$$$$$$$$") +
     "\n" +
-    toColouredText("$$$$$$h(.   :u&$$$$$$dQ0QQQQQQQQQQQ00#$$$$$$", WHITE) +
+    toBoldText("$$$$$$h(.   :u&$$$$$$dQ0QQQQQQQQQQQ00#$$$$$$") +
     "\n" +
-    toColouredText("$$$$$w    :v8$$@$$$$@^               ($@$$$$", WHITE) +
+    toBoldText("$$$$$w    :v8$$@$$$$@^               ($@$$$$") +
     "\n" +
-    toColouredText("$$$$$@q}iv8$$@$$$$$$$-:::::::::::::;:v$@$$$$", WHITE) +
+    toBoldText("$$$$$@q}iv8$$@$$$$$$$-:::::::::::::;:v$@$$$$") +
     "\n" +
-    toColouredText("$$$$$$$$$$$@$$$$$$$$$@%%%%%%%%%%%%%%%$$$$$$$", WHITE) +
+    toBoldText("$$$$$$$$$$$@$$$$$$$$$@%%%%%%%%%%%%%%%$$$$$$$") +
     "\n" +
-    toColouredText("*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*", WHITE) +
+    toBoldText("*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*") +
     "\n" +
-    toColouredText("`+--------------------_______________-----+", WHITE)
+    toBoldText("`+--------------------_______________-----+")
   );
 }
 
@@ -193,6 +197,10 @@ function getInfo(isLogo: boolean): string {
   const browserVersion = browser.getBrowserVersion();
   const engineName = browser.getEngineName();
   const engineVersion = browser.getEngine().version ?? "";
+  const currentTheme = ThemeUtil.getCurrentTheme();
+  const currentShellFlavour = FlavourUtil.getShellFlavourName(
+    FlavourUtil.getCurrentShellFlavour(),
+  );
 
   const user = FileSystemUtil.username;
   const hostname = HOSTNAME;
@@ -202,29 +210,32 @@ function getInfo(isLogo: boolean): string {
   const uptime = getUptime();
   const shell = "terminal-site 2.0";
   const resolution = `${document.body.clientWidth}x${document.body.clientHeight}`;
-  console.warn(document.body.clientWidth);
   const desktopEnvironment = `${browserName === "" ? "Unknown" : browserName} ${browserVersion}`;
   const windowManager = `${engineName === "" ? "Unknown" : engineName} ${engineVersion}`;
-  const terminal = "terminal-site";
+  const theme = currentTheme === "" ? "Unknown" : currentTheme;
+  const shellFlavour = currentShellFlavour ?? "Unknown";
+  const terminal = globalThis.location.hostname;
   const cpu = `Unknown (${navigator.hardwareConcurrency ?? "?"}) @ ?GHz`;
   const gpu = "Unknown";
   const memory = `${currentMemory}B / ${maximumMemory}B`;
 
   return (
-    `${toColouredText(user, BRIGHT_WHITE)}@${toColouredText(hostname, BRIGHT_WHITE)}` +
+    `${toBoldText(user)}@${toBoldText(hostname)}` +
     "\n------------" +
-    `\n${toColouredText("OS", WHITE)}: ${os}` +
-    `\n${toColouredText("Host", WHITE)}: ${motherboard}` +
-    `\n${toColouredText("Kernel", WHITE)}: ${kernel}` +
-    `\n${toColouredText("Uptime", WHITE)}: ${uptime}` +
-    `\n${toColouredText("Shell", WHITE)}: ${shell}` +
-    `\n${toColouredText("Resolution", WHITE)}: ${resolution}` +
-    `\n${toColouredText("DE", WHITE)}: ${desktopEnvironment}` +
-    `\n${toColouredText("WM", WHITE)}: ${windowManager}` +
-    `\n${toColouredText("Terminal", WHITE)}: ${terminal}` +
-    `\n${toColouredText("CPU", WHITE)}: ${cpu}` +
-    `\n${toColouredText("GPU", WHITE)}: ${gpu}` +
-    `\n${toColouredText("Memory", WHITE)}: ${memory}` +
+    `\n${toBoldText("OS")}: ${os}` +
+    `\n${toBoldText("Host")}: ${motherboard}` +
+    `\n${toBoldText("Kernel")}: ${kernel}` +
+    `\n${toBoldText("Uptime")}: ${uptime}` +
+    `\n${toBoldText("Shell")}: ${shell}` +
+    `\n${toBoldText("Resolution")}: ${resolution}` +
+    `\n${toBoldText("DE")}: ${desktopEnvironment}` +
+    `\n${toBoldText("WM")}: ${windowManager}` +
+    `\n${toBoldText("Theme")}: ${theme}` +
+    `\n${toBoldText("Shell Flavour")}: ${shellFlavour}` +
+    `\n${toBoldText("Terminal")}: ${terminal}` +
+    `\n${toBoldText("CPU")}: ${cpu}` +
+    `\n${toBoldText("GPU")}: ${gpu}` +
+    `\n${toBoldText("Memory")}: ${memory}` +
     `\n\n${getColouredBlocks(isLogo)}`
   );
 }
@@ -269,16 +280,25 @@ function getUptime(): string {
  */
 function getColouredBlocks(isLogo: boolean) {
   const colours: string[][] = [
-    [BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE],
     [
-      BRIGHT_BLACK,
-      BRIGHT_RED,
-      BRIGHT_GREEN,
-      BRIGHT_YELLOW,
-      BRIGHT_BLUE,
-      BRIGHT_MAGENTA,
-      BRIGHT_CYAN,
-      BRIGHT_WHITE,
+      ENTRY_ZERO,
+      ENTRY_ONE,
+      ENTRY_TWO,
+      ENTRY_THREE,
+      ENTRY_FOUR,
+      ENTRY_FIVE,
+      ENTRY_SIX,
+      ENTRY_SEVEN,
+    ],
+    [
+      ENTRY_ZERO_BRIGHT,
+      ENTRY_ONE_BRIGHT,
+      ENTRY_TWO_BRIGHT,
+      ENTRY_THREE_BRIGHT,
+      ENTRY_FOUR_BRIGHT,
+      ENTRY_FIVE_BRIGHT,
+      ENTRY_SIX_BRIGHT,
+      ENTRY_SEVEN_BRIGHT,
     ],
   ];
 
@@ -287,7 +307,7 @@ function getColouredBlocks(isLogo: boolean) {
   let colouredBlocks = `${leftPadding}`;
   for (const row of colours) {
     for (const colour of row) {
-      colouredBlocks += toColouredBackground("   ", colour);
+      colouredBlocks += toColouredBackground("   ", CssUtil.asVar(colour));
     }
 
     colouredBlocks += `\n${leftPadding}`;
@@ -297,21 +317,15 @@ function getColouredBlocks(isLogo: boolean) {
 }
 
 /**
- * Creates a coloured foreground HTML span.
+ * Creates a bold HTML span.
  *
  * @param text the inner span text.
- * @param colour the font colour.
- * @param isBold whether the font should be bold.
  */
-function toColouredText(
-  text: string,
-  colour: string,
-  isBold: boolean = true,
-): string {
+function toBoldText(text: string): string {
   return toSpan(text, {
-    foreground: colour,
+    foreground: null,
     background: null,
-    fontWeight: isBold ? "bold" : null,
+    fontWeight: "bold",
   });
 }
 

@@ -1,0 +1,29 @@
+/* noinspection DuplicatedCode */
+:root[data-theme="GNOMELikeDark"] {
+    --entry-0: #171421;
+    --entry-1: #C01C28;
+    --entry-2: #26A269;
+    --entry-3: #A2734C;
+    --entry-4: #12488B;
+    --entry-5: #A347BA;
+    --entry-6: #2AA1B3;
+    --entry-7: #D0CFCC;
+
+    --entry-0-bright: #5E5C64;
+    --entry-1-bright: #F66151;
+    --entry-2-bright: #33D17A;
+    --entry-3-bright: #E9AD0C;
+    --entry-4-bright: #2A7BDE;
+    --entry-5-bright: #C061CB;
+    --entry-6-bright: #33C7DE;
+    --entry-7-bright: #FFFFFF;
+
+    --background-colour: #171421;
+
+    --font-family: consola, monospace;
+    --foreground-colour: #D0CFCC;
+
+    --selection-foreground-colour: #171421;
+    --selection-background-colour: #D0CFCC;
+    --external-icon-filter: brightness(0) saturate(100%) invert(82%) sepia(4%) saturate(131%) hue-rotate(8deg) brightness(108%) contrast(81%);
+}

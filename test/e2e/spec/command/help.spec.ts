@@ -28,20 +28,20 @@ test.describe("Help", () => {
       "\n cd [DIR]                                                          neofetch [-L|--logo] [--off]" +
       "\n clear                                                             pwd" +
       "\n download [FILE]                                                   reboot" +
-      "\n echo [ARG ...]                                                    tree [-a] [-d] [-f] [-L level] [--prune] [DIRECTORY ...]" +
-      "\n false                                                             true" +
-      "\n help [COMMAND]                                                    uname [-a|--all] [-i|--hardware-platform] [-m|--machine] [-n|-->" +
-      "\n hostname: hostname [-d|--domain] [-f|--fqdn|--long] [-i|--ip-ad>";
+      "\n echo [ARG ...]                                                    terminal [-L|--list] [-t|--theme theme] [-f|--flavour flavour]" +
+      "\n false                                                             tree [-a] [-d] [-f] [-L level] [--prune] [DIRECTORY ...]" +
+      "\n help [COMMAND]                                                    true" +
+      "\n hostname: hostname [-d|--domain] [-f|--fqdn|--long] [-i|--ip-ad>  uname [-a|--all] [-i|--hardware-platform] [-m|--machine] [-n|-->";
 
     const mobileExpected =
       "\n cat [FILE ...]      ls [FILE] [-l|-1]>" +
       "\n cd [DIR]            neofetch [-L|--lo>" +
       "\n clear               pwd" +
       "\n download [FILE]     reboot" +
-      "\n echo [ARG ...]      tree [-a] [-d] [->" +
-      "\n false               true" +
-      "\n help [COMMAND]      uname [-a|--all] >" +
-      "\n hostname: hostnam>";
+      "\n echo [ARG ...]      terminal [-L|--li>" +
+      "\n false               tree [-a] [-d] [->" +
+      "\n help [COMMAND]      true" +
+      "\n hostname: hostnam>  uname [-a|--all] >";
 
     if (isMobileProject(testInfo)) {
       await assertOutputInTerminal(page, `${input}${mobileExpected}`);

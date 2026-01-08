@@ -10,6 +10,7 @@ import { Options } from "getopts";
 describe("CommandUtil", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
+  const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
 
   // Mock
   vi.mock("../../../../src/util/terminal_util");
@@ -37,7 +38,7 @@ describe("CommandUtil", () => {
 
       // Assert
       expect(mockCommandFile.run).toHaveBeenCalled();
-      expect(appendOutput).toHaveBeenCalledOnce();
+      expect(appendRawOutput).toHaveBeenCalledOnce();
     });
 
     test("outputs that a command is not found when it does not exist", async () => {
@@ -50,14 +51,15 @@ describe("CommandUtil", () => {
       await CommandUtil.executeCommand(command);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledTimes(2);
+      expect(appendRawOutput).toHaveBeenCalledOnce();
+      expect(appendOutput).toHaveBeenCalledOnce();
       expect(appendOutput).toHaveBeenCalledWith("test: command not found");
     });
 
     test("outputs nothing when a command is not found with no name", async () => {
       // Arrange
       const prompt = "C:\\home\\nathanwise>";
-      vi.mocked(TerminalUtil.getPrompt).mockReturnValue(prompt);
+      vi.mocked(TerminalUtil.getRawPrompt).mockReturnValue(prompt);
       vi.mocked(CommandImportUtil.getCommandScripts).mockReturnValue({});
 
       const command = "";
@@ -66,8 +68,8 @@ describe("CommandUtil", () => {
       await CommandUtil.executeCommand(command);
 
       // Assert
-      expect(appendOutput).toHaveBeenCalledOnce();
-      expect(appendOutput).toHaveBeenCalledWith(`${prompt}`, true);
+      expect(appendRawOutput).toHaveBeenCalledOnce();
+      expect(appendRawOutput).toHaveBeenCalledWith(`${prompt}`, true);
     });
   });
 
