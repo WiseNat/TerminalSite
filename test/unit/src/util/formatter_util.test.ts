@@ -1,17 +1,16 @@
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import FormatterUtil from "../../../../src/util/formatter_util.ts";
 import { FileTreeNode } from "virtual:file-tree";
 import CssUtil from "../../../../src/util/css_util.ts";
 import HtmlUtil from "../../../../src/util/html_util.ts";
 import { mockExtractVisibleText } from "../../helper/mocks.ts";
 import {
-  ENTRY_FIVE,
-  ENTRY_FOUR,
-  ENTRY_ONE,
-  ENTRY_SIX,
-  ENTRY_TWO,
+  ENTRY_FIVE_FOREGROUND_CLASS,
+  ENTRY_FOUR_FOREGROUND_CLASS,
+  ENTRY_ONE_FOREGROUND_CLASS,
+  ENTRY_SIX_FOREGROUND_CLASS,
+  ENTRY_TWO_FOREGROUND_CLASS,
 } from "../../../../src/constant/theme.ts";
-import { unmock } from "../../helper/unmock.ts";
 
 /**
  * Creates a minimal node with modifications to the fields that matter for `getFileSystemEntryStyle`
@@ -44,10 +43,6 @@ describe("FormatterUtil", () => {
 
   mockExtractVisibleText();
 
-  beforeEach(async () => {
-    await unmock("../../../src/util/css_util", ["default", "asVar"]);
-  });
-
   describe("getFileSystemEntry", () => {
     [
       {
@@ -66,13 +61,13 @@ describe("FormatterUtil", () => {
         type: "returns a span with colour and a short name when given an executable file node and useShortName=true",
         node: createNode("file.txt", false, [7, 7, 7], "some/path"),
         useShortName: true,
-        expected: `<span style='color: var(${ENTRY_TWO}); font-weight: bold'>file.txt</span>`,
+        expected: `<span style='font-weight: bold' class='${ENTRY_TWO_FOREGROUND_CLASS}'>file.txt</span>`,
       },
       {
         type: "returns a span with colour and a long name when given an executable file node and useShortName=false",
         node: createNode("file.txt", false, [7, 7, 7], "some/path"),
         useShortName: false,
-        expected: `<span style='color: var(${ENTRY_TWO}); font-weight: bold'>/some/path/file.txt</span>`,
+        expected: `<span style='font-weight: bold' class='${ENTRY_TWO_FOREGROUND_CLASS}'>/some/path/file.txt</span>`,
       },
     ].forEach(({ type, node, useShortName, expected }) => {
       test(type, () => {
@@ -95,8 +90,7 @@ describe("FormatterUtil", () => {
 
       // Assert
       expect(result).not.toBeNull();
-      expect(result.foreground).toBeNull();
-      expect(result.background).toBeNull();
+      expect(result.class).toBeNull();
       expect(result.fontWeight).toBeNull();
     });
 
@@ -123,8 +117,7 @@ describe("FormatterUtil", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result.foreground).toEqual(`var(${ENTRY_FOUR})`);
-        expect(result.background).toBeNull();
+        expect(result.class).toEqual(ENTRY_FOUR_FOREGROUND_CLASS);
         expect(result.fontWeight).toEqual("bold");
       });
     });
@@ -156,8 +149,7 @@ describe("FormatterUtil", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result.foreground).toEqual(`var(${ENTRY_TWO})`);
-        expect(result.background).toBeNull();
+        expect(result.class).toEqual(ENTRY_TWO_FOREGROUND_CLASS);
         expect(result.fontWeight).toEqual("bold");
       });
     });
@@ -179,8 +171,7 @@ describe("FormatterUtil", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result.foreground).toEqual(`var(${ENTRY_ONE})`);
-        expect(result.background).toBeNull();
+        expect(result.class).toEqual(ENTRY_ONE_FOREGROUND_CLASS);
         expect(result.fontWeight).toEqual("bold");
       });
     });
@@ -205,8 +196,7 @@ describe("FormatterUtil", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result.foreground).toEqual(`var(${ENTRY_FIVE})`);
-        expect(result.background).toBeNull();
+        expect(result.class).toEqual(ENTRY_FIVE_FOREGROUND_CLASS);
         expect(result.fontWeight).toEqual("bold");
       });
     });
@@ -228,8 +218,7 @@ describe("FormatterUtil", () => {
 
         // Assert
         expect(result).not.toBeNull();
-        expect(result.foreground).toEqual(`var(${ENTRY_SIX})`);
-        expect(result.background).toBeNull();
+        expect(result.class).toEqual(ENTRY_SIX_FOREGROUND_CLASS);
         expect(result.fontWeight).toEqual("bold");
       });
     });

@@ -16,8 +16,7 @@ describe("Ls", () => {
 
   // Mocked
   vi.mocked(FormatterUtil.getFileSystemEntryStyle).mockReturnValue({
-    foreground: null,
-    background: null,
+    class: null,
     fontWeight: null,
   });
 

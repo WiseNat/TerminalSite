@@ -42,11 +42,18 @@ test.describe("Terminal", () => {
   ["-L", "--list"].forEach((flag) => {
     const themesAndFlavours =
       "Themes:\n" +
-      "- Dark\n" +
-      "- Light\n" +
       "- Classic\n" +
+      "- Dark\n" +
+      "- GNOMELikeDark\n" +
+      "- GNOMELikeLight\n" +
+      "- Light\n" +
+      "- SolarizedDark\n" +
+      "- SolarizedLight\n" +
+      "- TangoDark\n" +
+      "- TangoLight\n" +
       "\n" +
       "Shell Flavours:\n" +
+      "- MacOS\n" +
       "- Unix\n" +
       "- Windows";
 

@@ -4,17 +4,16 @@ import CssUtil from "./css_util.ts";
 import TerminalUtil from "./terminal_util.ts";
 import HtmlUtil from "./html_util.ts";
 import {
-  ENTRY_FIVE,
-  ENTRY_FOUR,
-  ENTRY_ONE,
-  ENTRY_SIX,
-  ENTRY_TWO,
-  ENTRY_ZERO,
+  ENTRY_FIVE_FOREGROUND_CLASS,
+  ENTRY_FOUR_FOREGROUND_CLASS,
+  ENTRY_ONE_FOREGROUND_CLASS,
+  ENTRY_SIX_FOREGROUND_CLASS,
+  ENTRY_TWO_FOREGROUND_CLASS,
+  ENTRY_ZERO_FOREGROUND_CLASS,
 } from "../constant/theme.ts";
 
 export interface FileSystemEntryStyle {
-  foreground: string | null;
-  background: string | null;
+  class: string | null;
   fontWeight: string | null;
 }
 
@@ -31,19 +30,35 @@ export default class FormatterUtil {
     node: FileTreeNode,
     useShortName: boolean,
   ): string {
-    const style = FormatterUtil.getFileSystemEntryStyle(node);
+    const fileSystemEntryStyle = FormatterUtil.getFileSystemEntryStyle(node);
 
-    const styleString = this.createStyleString(style);
+    const styleString = this.createStyleString(fileSystemEntryStyle);
+
     const path = useShortName
       ? node.name
       : FileSystemUtil.pathSeparator +
         FileSystemUtil.joinPaths(node.path, node.name);
 
-    if (styleString === "") {
+    if (styleString === "" && fileSystemEntryStyle.class === null) {
       return path;
     }
 
-    return `<span style='${styleString}'>${path}</span>`;
+    let openingTag = "<span";
+
+    if (styleString !== "") {
+      openingTag += ` style='${styleString}'`;
+    }
+
+    if (
+      fileSystemEntryStyle.class !== null &&
+      fileSystemEntryStyle.class !== ""
+    ) {
+      openingTag += ` class='${fileSystemEntryStyle.class}'`;
+    }
+
+    openingTag = `${openingTag}>`;
+
+    return `${openingTag}${path}</span>`;
   }
 
   /**
@@ -57,32 +72,30 @@ export default class FormatterUtil {
   public static getFileSystemEntryStyle(
     node: FileTreeNode,
   ): FileSystemEntryStyle {
-    let foreground: string | null = null;
-    const background: string | null = null;
+    let className: string | null = null;
     let fontWeight: string | null = null;
 
     if (node.isDirectory) {
-      foreground = CssUtil.asVar(ENTRY_FOUR);
+      className = ENTRY_FOUR_FOREGROUND_CLASS;
       fontWeight = "bold";
     } else if (FileSystemUtil.isExecutable(node.permissions)) {
-      foreground = CssUtil.asVar(ENTRY_TWO);
+      className = ENTRY_TWO_FOREGROUND_CLASS;
       fontWeight = "bold";
     } else if (FileSystemUtil.isArchiveFile(node.name)) {
-      foreground = CssUtil.asVar(ENTRY_ONE);
+      className = ENTRY_ONE_FOREGROUND_CLASS;
       fontWeight = "bold";
     } else if (FileSystemUtil.isGraphicsFile(node.name)) {
-      foreground = CssUtil.asVar(ENTRY_FIVE);
+      className = ENTRY_FIVE_FOREGROUND_CLASS;
       fontWeight = "bold";
     } else if (FileSystemUtil.isAudioFile(node.name)) {
-      foreground = CssUtil.asVar(ENTRY_SIX);
+      className = ENTRY_SIX_FOREGROUND_CLASS;
       fontWeight = "bold";
     } else if (FileSystemUtil.isRubbishFile(node.name)) {
-      foreground = CssUtil.asVar(ENTRY_ZERO);
+      className = ENTRY_ZERO_FOREGROUND_CLASS;
     }
 
     return {
-      foreground: foreground,
-      background: background,
+      class: className,
       fontWeight: fontWeight,
     };
   }
@@ -96,8 +109,6 @@ export default class FormatterUtil {
    */
   public static createStyleString(style: FileSystemEntryStyle) {
     return [
-      style.foreground === null ? null : `color: ${style.foreground}`,
-      style.background === null ? null : `background: ${style.background}`,
       style.fontWeight === null ? null : `font-weight: ${style.fontWeight}`,
     ]
       .filter(function (val) {

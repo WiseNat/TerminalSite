@@ -1,7 +1,9 @@
 import { Flavour, TextContent } from "../flavour.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
-import CssUtil from "../../util/css_util.ts";
-import { ENTRY_FOUR_BRIGHT, ENTRY_TWO_BRIGHT } from "../../constant/theme.ts";
+import {
+  ENTRY_FOUR_BRIGHT_FOREGROUND_CLASS,
+  ENTRY_TWO_BRIGHT_FOREGROUND_CLASS,
+} from "../../constant/theme.ts";
 import { HOSTNAME } from "../../constant/system.ts";
 
 const UNIX: Flavour = {
@@ -27,9 +29,9 @@ const UNIX: Flavour = {
 
     return {
       value:
-        `<span style="color: ${CssUtil.asVar(ENTRY_TWO_BRIGHT)}; font-weight: bold">${FileSystemUtil.username}@${HOSTNAME}</span>` +
+        `<span class="${ENTRY_TWO_BRIGHT_FOREGROUND_CLASS}" style="font-weight: bold">${FileSystemUtil.username}@${HOSTNAME}</span>` +
         ":" +
-        `<span style="color: ${CssUtil.asVar(ENTRY_FOUR_BRIGHT)}; font-weight: bold">${formattedPath}</span>` +
+        `<span class="${ENTRY_FOUR_BRIGHT_FOREGROUND_CLASS}" style="font-weight: bold">${formattedPath}</span>` +
         "$ ",
       isHTML: true,
     };

@@ -109,3 +109,149 @@ a[target="_blank"]::after {
 #input::before {
     content: var(--prompt-content);
 }
+
+/* Entry Classes (created for custom text selection colours) */
+
+.entry-zero-foreground {
+    color: var(--entry-0);
+}
+
+.entry-zero-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-0);
+}
+
+.entry-one-foreground {
+    color: var(--entry-1);
+}
+
+.entry-one-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-1);
+}
+
+.entry-two-foreground {
+    color: var(--entry-2);
+}
+
+.entry-two-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-2);
+}
+
+.entry-three-foreground {
+    color: var(--entry-3);
+}
+
+.entry-three-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-3);
+}
+
+.entry-four-foreground {
+    color: var(--entry-4);
+}
+
+.entry-four-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-4);
+}
+
+.entry-five-foreground {
+    color: var(--entry-5);
+}
+
+.entry-five-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-5);
+}
+
+.entry-six-foreground {
+    color: var(--entry-6);
+}
+
+.entry-six-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-6);
+}
+
+.entry-seven-foreground {
+    color: var(--entry-7);
+}
+
+.entry-seven-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-7);
+}
+
+.entry-zero-bright-foreground {
+    color: var(--entry-0-bright);
+}
+
+.entry-zero-bright-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-0-bright);
+}
+
+.entry-one-bright-foreground {
+    color: var(--entry-1-bright);
+}
+
+.entry-one-bright-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-1-bright);
+}
+
+.entry-two-bright-foreground {
+    color: var(--entry-2-bright);
+}
+
+.entry-two-bright-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-2-bright);
+}
+
+.entry-three-bright-foreground {
+    color: var(--entry-3-bright);
+}
+
+.entry-three-bright-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-3-bright);
+}
+
+.entry-four-bright-foreground {
+    color: var(--entry-4-bright);
+}
+
+.entry-four-bright-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-4-bright);
+}
+
+.entry-five-bright-foreground {
+    color: var(--entry-5-bright);
+}
+
+.entry-five-bright-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-5-bright);
+}
+
+.entry-six-bright-foreground {
+    color: var(--entry-6-bright);
+}
+
+.entry-six-bright-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-6-bright);
+}
+
+.entry-seven-bright-foreground {
+    color: var(--entry-7-bright);
+}
+
+.entry-seven-bright-foreground::selection { /* eslint-disable-line css/use-baseline */
+    color: var(--background-colour);
+    background: var(--entry-7-bright);
+}

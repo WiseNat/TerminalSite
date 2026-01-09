@@ -2,12 +2,12 @@ import { Page } from "@playwright/test";
 import { expect } from "../../fixture";
 import { OUTPUT_SELECTOR } from "../constant/generic.ts";
 import {
-  ENTRY_FIVE,
-  ENTRY_FOUR,
-  ENTRY_ONE,
-  ENTRY_SIX,
-  ENTRY_TWO,
-  ENTRY_ZERO,
+  ENTRY_FIVE_FOREGROUND_CLASS,
+  ENTRY_FOUR_FOREGROUND_CLASS,
+  ENTRY_ONE_FOREGROUND_CLASS,
+  ENTRY_SIX_FOREGROUND_CLASS,
+  ENTRY_TWO_FOREGROUND_CLASS,
+  ENTRY_ZERO_FOREGROUND_CLASS,
 } from "../../../../src/constant/theme.ts";
 
 export interface ColouredCounts {
@@ -19,20 +19,12 @@ export interface ColouredCounts {
   rubbish: number;
 }
 
-export function getColouredSpanLocator(colour: string): string {
-  return `//span[contains(@style, "color: ${colour}")]`;
+export function getColouredSpanLocator(className: string): string {
+  return `//span[@class="${className}"]`;
 }
 
-export function getBoldColouredSpanLocator(colour: string): string {
-  return `//span[contains(@style, "color: ${colour}") and contains(@style, "font-weight: bold")]`;
-}
-
-function toVar(property: string) {
-  if (!property.startsWith("--")) {
-    property = `--${property}`;
-  }
-
-  return `var(${property})`;
+export function getBoldColouredSpanLocator(className: string): string {
+  return `//span[@class="${className}" and contains(@style, "font-weight: bold")]`;
 }
 
 export async function checkForColouredSpans(
@@ -42,36 +34,36 @@ export async function checkForColouredSpans(
   await expect(
     page
       .locator(OUTPUT_SELECTOR)
-      .locator(getBoldColouredSpanLocator(toVar(ENTRY_FOUR))),
+      .locator(getBoldColouredSpanLocator(ENTRY_FOUR_FOREGROUND_CLASS)),
   ).toHaveCount(colouredCounts.directory);
 
   await expect(
     page
       .locator(OUTPUT_SELECTOR)
-      .locator(getBoldColouredSpanLocator(toVar(ENTRY_TWO))),
+      .locator(getBoldColouredSpanLocator(ENTRY_TWO_FOREGROUND_CLASS)),
   ).toHaveCount(colouredCounts.executables);
 
   await expect(
     page
       .locator(OUTPUT_SELECTOR)
-      .locator(getBoldColouredSpanLocator(toVar(ENTRY_ONE))),
+      .locator(getBoldColouredSpanLocator(ENTRY_ONE_FOREGROUND_CLASS)),
   ).toHaveCount(colouredCounts.archives);
 
   await expect(
     page
       .locator(OUTPUT_SELECTOR)
-      .locator(getBoldColouredSpanLocator(toVar(ENTRY_FIVE))),
+      .locator(getBoldColouredSpanLocator(ENTRY_FIVE_FOREGROUND_CLASS)),
   ).toHaveCount(colouredCounts.graphics);
 
   await expect(
     page
       .locator(OUTPUT_SELECTOR)
-      .locator(getBoldColouredSpanLocator(toVar(ENTRY_SIX))),
+      .locator(getBoldColouredSpanLocator(ENTRY_SIX_FOREGROUND_CLASS)),
   ).toHaveCount(colouredCounts.audios);
 
   await expect(
     page
       .locator(OUTPUT_SELECTOR)
-      .locator(getColouredSpanLocator(toVar(ENTRY_ZERO))),
+      .locator(getColouredSpanLocator(ENTRY_ZERO_FOREGROUND_CLASS)),
   ).toHaveCount(colouredCounts.rubbish);
 }
