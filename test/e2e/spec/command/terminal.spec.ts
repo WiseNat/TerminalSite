@@ -45,8 +45,15 @@ test.describe("Terminal", () => {
       "- Dark\n" +
       "- Light\n" +
       "- Classic\n" +
+      "- SolarizedLight\n" +
+      "- SolarizedDark\n" +
+      "- TangoDark\n" +
+      "- TangoLight\n" +
+      "- GNOMELikeDark\n" +
+      "- GNOMELikeLight\n" +
       "\n" +
       "Shell Flavours:\n" +
+      "- MacOS\n" +
       "- Unix\n" +
       "- Windows";
 
