@@ -21,9 +21,9 @@ describe("Unix", () => {
       // Assert
       expect(prompt).toEqual({
         value:
-          "<span style=\"color: var(--entry-2-bright); font-weight: bold\">nathanwise@portfolio</span>" +
+          "<span class=\"entry-two-bright-foreground\" style=\"font-weight: bold\">nathanwise@portfolio</span>" +
           ":" +
-          "<span style=\"color: var(--entry-4-bright); font-weight: bold\">/a/b/c</span>" +
+          "<span class=\"entry-four-bright-foreground\" style=\"font-weight: bold\">/a/b/c</span>" +
           "$ ",
         isHTML: true,
       });
@@ -39,9 +39,9 @@ describe("Unix", () => {
       // Assert
       expect(prompt).toEqual({
         value:
-          "<span style=\"color: var(--entry-2-bright); font-weight: bold\">nathanwise@portfolio</span>" +
+          "<span class=\"entry-two-bright-foreground\" style=\"font-weight: bold\">nathanwise@portfolio</span>" +
           ":" +
-          "<span style=\"color: var(--entry-4-bright); font-weight: bold\">/</span>" +
+          "<span class=\"entry-four-bright-foreground\" style=\"font-weight: bold\">/</span>" +
           "$ ",
         isHTML: true,
       });
@@ -57,9 +57,9 @@ describe("Unix", () => {
       // Assert
       expect(prompt).toEqual({
         value:
-          "<span style=\"color: var(--entry-2-bright); font-weight: bold\">nathanwise@portfolio</span>" +
+          "<span class=\"entry-two-bright-foreground\" style=\"font-weight: bold\">nathanwise@portfolio</span>" +
           ":" +
-          "<span style=\"color: var(--entry-4-bright); font-weight: bold\">~/c</span>" +
+          "<span class=\"entry-four-bright-foreground\" style=\"font-weight: bold\">~/c</span>" +
           "$ ",
         isHTML: true,
       });

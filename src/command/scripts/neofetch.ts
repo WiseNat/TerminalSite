@@ -1,8 +1,6 @@
 import { CommandScript } from "../command_script.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
-import FormatterUtil, {
-  FileSystemEntryStyle,
-} from "../../util/formatter_util.ts";
+import FormatterUtil from "../../util/formatter_util.ts";
 import CommandUtil from "../../util/command_util.ts";
 import FileSystemUtil from "../../util/file_system_util.ts";
 import {
@@ -15,22 +13,22 @@ import { PerformanceMemory } from "../../types/non_standard";
 import TimeUtil from "../../util/time_util.ts";
 import { HelpInformation } from "./help.ts";
 import {
-  ENTRY_FIVE,
-  ENTRY_FIVE_BRIGHT,
-  ENTRY_FOUR,
-  ENTRY_FOUR_BRIGHT,
-  ENTRY_ONE,
-  ENTRY_ONE_BRIGHT,
-  ENTRY_SEVEN,
-  ENTRY_SEVEN_BRIGHT,
-  ENTRY_SIX,
-  ENTRY_SIX_BRIGHT,
-  ENTRY_THREE,
-  ENTRY_THREE_BRIGHT,
-  ENTRY_TWO,
-  ENTRY_TWO_BRIGHT,
-  ENTRY_ZERO,
-  ENTRY_ZERO_BRIGHT,
+  ENTRY_FIVE_PROPERTY,
+  ENTRY_FIVE_BRIGHT_PROPERTY,
+  ENTRY_FOUR_PROPERTY,
+  ENTRY_FOUR_BRIGHT_PROPERTY,
+  ENTRY_ONE_PROPERTY,
+  ENTRY_ONE_BRIGHT_PROPERTY,
+  ENTRY_SEVEN_PROPERTY,
+  ENTRY_SEVEN_BRIGHT_PROPERTY,
+  ENTRY_SIX_PROPERTY,
+  ENTRY_SIX_BRIGHT_PROPERTY,
+  ENTRY_THREE_PROPERTY,
+  ENTRY_THREE_BRIGHT_PROPERTY,
+  ENTRY_TWO_PROPERTY,
+  ENTRY_TWO_BRIGHT_PROPERTY,
+  ENTRY_ZERO_PROPERTY,
+  ENTRY_ZERO_BRIGHT_PROPERTY,
 } from "../../constant/theme.ts";
 import CssUtil from "../../util/css_util.ts";
 import FlavourUtil from "../../util/flavour_util.ts";
@@ -83,6 +81,12 @@ const NEOFETCH: CommandScript = {
 interface Flags {
   logo: boolean;
   info: boolean;
+}
+
+interface StyledSpan {
+  foreground: string | null;
+  background: string | null;
+  fontWeight: string | null;
 }
 
 /**
@@ -281,24 +285,24 @@ function getUptime(): string {
 function getColouredBlocks(isLogo: boolean) {
   const colours: string[][] = [
     [
-      ENTRY_ZERO,
-      ENTRY_ONE,
-      ENTRY_TWO,
-      ENTRY_THREE,
-      ENTRY_FOUR,
-      ENTRY_FIVE,
-      ENTRY_SIX,
-      ENTRY_SEVEN,
+      ENTRY_ZERO_PROPERTY,
+      ENTRY_ONE_PROPERTY,
+      ENTRY_TWO_PROPERTY,
+      ENTRY_THREE_PROPERTY,
+      ENTRY_FOUR_PROPERTY,
+      ENTRY_FIVE_PROPERTY,
+      ENTRY_SIX_PROPERTY,
+      ENTRY_SEVEN_PROPERTY,
     ],
     [
-      ENTRY_ZERO_BRIGHT,
-      ENTRY_ONE_BRIGHT,
-      ENTRY_TWO_BRIGHT,
-      ENTRY_THREE_BRIGHT,
-      ENTRY_FOUR_BRIGHT,
-      ENTRY_FIVE_BRIGHT,
-      ENTRY_SIX_BRIGHT,
-      ENTRY_SEVEN_BRIGHT,
+      ENTRY_ZERO_BRIGHT_PROPERTY,
+      ENTRY_ONE_BRIGHT_PROPERTY,
+      ENTRY_TWO_BRIGHT_PROPERTY,
+      ENTRY_THREE_BRIGHT_PROPERTY,
+      ENTRY_FOUR_BRIGHT_PROPERTY,
+      ENTRY_FIVE_BRIGHT_PROPERTY,
+      ENTRY_SIX_BRIGHT_PROPERTY,
+      ENTRY_SEVEN_BRIGHT_PROPERTY,
     ],
   ];
 
@@ -349,10 +353,29 @@ function toColouredBackground(text: string, colour: string): string {
  * @param text the inner span text.
  * @param style the CSS style.
  */
-function toSpan(text: string, style: FileSystemEntryStyle): string {
-  const styleString = FormatterUtil.createStyleString(style);
+function toSpan(text: string, style: StyledSpan): string {
+  const styleString = createStyleString(style);
 
   return `<span style='${styleString}'>${text}</span>`;
+}
+
+/**
+ * Creates an HTML CSS Style String for use in elements based on the provided
+ * `style`.
+ *
+ * @param style the value to use to create the style string.
+ * @returns an HTML CSS Style String.
+ */
+function createStyleString(style: StyledSpan) {
+  return [
+    style.foreground === null ? null : `color: ${style.foreground}`,
+    style.background === null ? null : `background: ${style.background}`,
+    style.fontWeight === null ? null : `font-weight: ${style.fontWeight}`,
+  ]
+    .filter(function (val) {
+      return val !== null;
+    })
+    .join("; ");
 }
 
 // noinspection JSUnusedGlobalSymbols
