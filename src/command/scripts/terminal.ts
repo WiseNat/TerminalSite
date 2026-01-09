@@ -134,8 +134,8 @@ export default TERMINAL;
  * Output all available Themes and Shell Flavours to the terminal.
  */
 function listThemesAndFlavours() {
-  const themes = ThemeUtil.getThemes();
-  const flavours = FlavourUtil.getFlavours();
+  const themes = ThemeUtil.getThemes().sort((a, b) => a.localeCompare(b));
+  const flavours = FlavourUtil.getFlavours().sort((a, b) => a.localeCompare(b));
 
   let output = "";
   const joinString = "\n- ";
