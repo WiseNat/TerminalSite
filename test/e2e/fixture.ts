@@ -14,6 +14,22 @@ export const test = baseTest.extend({
     await page.goto("/");
     await use(page);
   },
+  context: async ({ context }, use, testInfo) => {
+    const showIntro = testInfo.tags.includes("@ShowIntro");
+    const introductionShownKey = "introductionShown";
+
+    if (showIntro) {
+      await context.addInitScript(() => {
+        sessionStorage.setItem(introductionShownKey, "");
+      });
+    } else {
+      await context.addInitScript(() => {
+        sessionStorage.setItem(introductionShownKey, "true");
+      });
+    }
+
+    await use(context);
+  },
 });
 
 // Expect
@@ -109,7 +125,7 @@ export const expect = baseExpect.extend({
       matcherName: "exactTextInElement",
       locator,
       expected,
-      regex: new RegExp(`^\\u200B*${escapeRegExp(expected)}$`),
+      regex: new RegExp(String.raw`^\u200B*${escapeRegExp(expected)}$`),
       isNot: this.isNot,
       utils: this.utils,
       options,
@@ -132,7 +148,7 @@ export const expect = baseExpect.extend({
       matcherName: "expectElementToStartWith",
       locator,
       expected,
-      regex: new RegExp(`^\\u200B*${escapeRegExp(expected)}`),
+      regex: new RegExp(String.raw`^\u200B*${escapeRegExp(expected)}`),
       isNot: this.isNot,
       utils: this.utils,
       options,
@@ -155,7 +171,7 @@ export const expect = baseExpect.extend({
       matcherName: "expectElementToEndWith",
       locator,
       expected,
-      regex: new RegExp(`\\u200B*${escapeRegExp(expected)}`),
+      regex: new RegExp(String.raw`\u200B*${escapeRegExp(expected)}`),
       isNot: this.isNot,
       utils: this.utils,
       options,
