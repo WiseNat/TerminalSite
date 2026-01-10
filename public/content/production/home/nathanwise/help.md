@@ -10,6 +10,7 @@ I'd also recommend viewing this site on Desktop, a few of the QoL features are d
 - 'download <filePath>' (e.g. 'download ~/Documents/CV.pdf') to download a file
 - 'cd' to change your current working directory
 - 'pwd' to view your current working directory
+- 'tree <filePath>' (e.g. 'tree / --prune -a') to view recursively child directories & files
 
 # Features
 - Command History (using Arrow Keys)
