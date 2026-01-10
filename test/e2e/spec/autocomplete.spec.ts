@@ -351,3 +351,52 @@ test.describe("Multiple Arguments", () => {
     });
   });
 });
+
+test.describe("Partial autocompletion", () => {
+  test("autocomplete when multiple suggestions exist all with common starting characters", async ({
+    page,
+  }) => {
+    // Arrange
+    const input = "/test/autocomplete/Examp";
+    await page.locator(INPUT_SELECTOR).pressSequentially(input);
+
+    // Act
+    await page.locator(INPUT_SELECTOR).press("Tab");
+
+    // Assert
+    const expectedInput = `${input}le`;
+
+    await assertExactTextInTerminal(
+      page,
+      DEFAULT_INITIAL_PROMPT,
+      DEFAULT_USER_PROMPT,
+      expectedInput,
+    );
+  });
+
+  test("autocomplete when multiple suggestions exist without common starting characters", async ({
+    page,
+  }, testInfo) => {
+    // Arrange
+    const input = "/test/autocomplete/Example";
+    await page.locator(INPUT_SELECTOR).pressSequentially(input);
+
+    // Act
+    await page.locator(INPUT_SELECTOR).press("Tab");
+
+    // Assert
+    let expectedOutput: string;
+    if (isMobileProject(testInfo)) {
+      expectedOutput = `${COMMAND_RAN_OUTPUT}${input}\nExampleBar.txt   ExampleFoo.txt\nExampleBaz.txt`;
+    } else {
+      expectedOutput = `${COMMAND_RAN_OUTPUT}${input}\nExampleBar.txt   ExampleBaz.txt   ExampleFoo.txt`;
+    }
+
+    await assertExactTextInTerminal(
+      page,
+      expectedOutput,
+      DEFAULT_USER_PROMPT,
+      input,
+    );
+  });
+});
