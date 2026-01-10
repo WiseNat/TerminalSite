@@ -87,59 +87,72 @@ describe("AutocompleteUtil", () => {
     });
 
     describe("Provides Suggestions", () => {
-      [
-        {
-          type: "provides all visual suggestions when multiple suggestions exist",
-          suggestions: [
-            { visual: "visual_echo", actual: "echo " },
-            {
-              visual: "visual_echo_ing",
-              actual: "echo_ing ",
-            },
-            { visual: "visual_echoers", actual: "echoers " },
-          ],
-          beforeCaret: "ech",
-          afterCaret: " foo",
-          expectedAppendText: "visual_echo\tvisual_echo_ing\tvisual_echoers",
-        },
-        {
-          type: "provides valid suggestions when a command name is already typed and there's other suggestions",
-          suggestions: [
-            { visual: "visual_echo", actual: "echo " },
-            {
-              visual: "visual_echo_ing",
-              actual: "echo_ing ",
-            },
-            { visual: "visual_echoers", actual: "echoers " },
-          ],
-          beforeCaret: "ech",
-          afterCaret: " foo",
-          expectedAppendText: "visual_echo\tvisual_echo_ing\tvisual_echoers",
-        },
-      ].forEach(
-        ({
-          type,
-          suggestions,
-          beforeCaret,
-          afterCaret,
-          expectedAppendText,
-        }) => {
-          test(type, () => {
-            // Arrange & Act
-            AutocompleteUtil.autocomplete(suggestions, beforeCaret, afterCaret);
+      test("provides all visual suggestions when multiple suggestions without a common prefix exist", () => {
+        // Arrange
+        const suggestions = [
+          { visual: "VISUAL_echoFOO", actual: "FOO " },
+          { visual: "VISUAL_echoBAR", actual: "BAR " },
+          { visual: "VISUAL_echoBAZ", actual: "DAZ " },
+        ];
 
-            // Assert
-            if (expectedAppendText == null) {
-              expect(appendRawOutput).not.toHaveBeenCalled();
-            } else {
-              expect(appendRawOutput).toHaveBeenCalledWith(
-                `${prompt}${beforeCaret}${afterCaret}\n${expectedAppendText}`,
-                true,
-              );
-            }
-          });
-        },
-      );
+        const beforeCaret = "ech";
+        const afterCaret = " foo";
+
+        // Act
+        AutocompleteUtil.autocomplete(suggestions, beforeCaret, afterCaret);
+
+        // Assert
+        const expectedAppendText =
+          "VISUAL_echoFOO\tVISUAL_echoBAR\tVISUAL_echoBAZ";
+        expect(appendRawOutput).toHaveBeenCalledWith(
+          `${prompt}${beforeCaret}${afterCaret}\n${expectedAppendText}`,
+          true,
+        );
+      });
+
+      test("provides all visual suggestions when multiple suggestions exist of which some have common prefixes", () => {
+        // Arrange
+        const suggestions = [
+          { visual: "VISUAL_echoFOO", actual: "PRE_FOO " },
+          { visual: "VISUAL_echoBAR", actual: "PRE_BAR " },
+          { visual: "VISUAL_echoBAZ", actual: "DAZ " },
+        ];
+
+        const beforeCaret = "ech";
+        const afterCaret = " foo";
+
+        // Act
+        AutocompleteUtil.autocomplete(suggestions, beforeCaret, afterCaret);
+
+        // Assert
+        const expectedAppendText =
+          "VISUAL_echoFOO\tVISUAL_echoBAR\tVISUAL_echoBAZ";
+        expect(appendRawOutput).toHaveBeenCalledWith(
+          `${prompt}${beforeCaret}${afterCaret}\n${expectedAppendText}`,
+          true,
+        );
+      });
+    });
+
+    describe("Partial autocomplete", () => {
+      test("partially autocompletes when multiple suggestions exist of which all have a common prefix", () => {
+        // Arrange
+        const suggestions = [
+          { visual: "A", actual: "ExampleA " },
+          { visual: "B", actual: "ExampleB " },
+          { visual: "C", actual: "ExampleC " },
+        ];
+
+        const beforeCaret = "a";
+        const afterCaret = " b";
+
+        // Act
+        AutocompleteUtil.autocomplete(suggestions, beforeCaret, afterCaret);
+
+        // Assert
+        const expected = `${ZERO_WIDTH_SPACE}aExample b`;
+        expect(setInput).toHaveBeenCalledWith(expected);
+      });
     });
   });
 

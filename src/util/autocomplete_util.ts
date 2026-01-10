@@ -13,16 +13,14 @@ type PathRelatedSuggestion = {
 export default class AutocompleteUtil {
   /**
    * Autocompletes dependent on the provided suggestions.
-   *
-   * IF there are no suggestions -> nothing happens
-   *
-   * IF there is 1 value -> that value will be autocompleted
-   *
-   * IF more than 1 value exists -> all suggestions will be printed to the user
+   * - IF there are no suggestions -> nothing happens
+   * - IF there is 1 value -> that value will be autocompleted
+   * - IF more than 1 suggestion AND a common prefix for those suggestions -> the common prefix will be used for autocompletion
+   * - IF more than 1 suggestion AND no common prefix for those suggestions -> all suggestions will be printed to the user
    *
    * @param suggestions suggestions to be considered for autocompletion, can be empty
-   * @param beforeCaret current user input, used to dictate what text will be appended when autocompleting.
-   * @param afterCaret
+   * @param beforeCaret current user input before the caret, used to dictate what text will be appended when autocompleting.
+   * @param afterCaret current user input after the caret, used when setting the input when autocompleting.
    */
   public static autocomplete(
     suggestions: Suggestion[],
@@ -38,44 +36,89 @@ export default class AutocompleteUtil {
       `Suggested values are '${suggestions.map((suggestion) => suggestion.actual)}'`,
     );
 
-    // Autocomplete value if there's only 1 suggestion, otherwise output all suggestions
-    if (suggestions.length === 1) {
-      let suggestedValue = suggestions[0].actual;
+    let suggestedValue: string;
 
-      if (suggestedValue === "") {
+    // Output suggestions if there's more than 1 suggestion AND no common prefix
+    if (suggestions.length > 1) {
+      const commonPrefix = this.getCommonPrefix(
+        suggestions.map((suggestion) => suggestion.actual),
+      );
+
+      if (commonPrefix === "") {
+        console.info(
+          "Providing a list of suggested autocompletion suggestions",
+        );
+
+        const joinedSuggestions = FormatterUtil.toDynamicGrid(
+          suggestions.map((suggestion) => suggestion.visual),
+        );
+
+        const prompt = TerminalUtil.getRawPrompt();
+        TerminalUtil.appendRawOutput(
+          `${prompt}${beforeCaret}${afterCaret}\n${joinedSuggestions}`,
+          true,
+        );
+
         return;
       }
 
-      if (suggestedValue.endsWith(" ") && afterCaret !== "") {
-        suggestedValue = suggestedValue.slice(0, -1);
-      }
-
-      if (!beforeCaret.startsWith(ZERO_WIDTH_SPACE)) {
-        beforeCaret = ZERO_WIDTH_SPACE + beforeCaret;
-      }
-
-      console.info(`Autocompleting '${beforeCaret}' with '${suggestedValue}'`);
-      TerminalUtil.setInput(beforeCaret + suggestedValue + afterCaret);
-      TerminalUtil.cursorToIndex((beforeCaret + suggestedValue).length);
+      suggestedValue = commonPrefix;
     } else {
-      console.info("Providing a list of suggested autocompletion suggestions");
-
-      const joinedSuggestions = FormatterUtil.toDynamicGrid(
-        suggestions.map((suggestion) => suggestion.visual),
-      );
-
-      const prompt = TerminalUtil.getRawPrompt();
-      TerminalUtil.appendRawOutput(
-        `${prompt}${beforeCaret}${afterCaret}\n${joinedSuggestions}`,
-        true,
-      );
+      suggestedValue = suggestions[0].actual;
     }
+
+    if (suggestedValue === "") {
+      return;
+    }
+
+    if (suggestedValue.endsWith(" ") && afterCaret !== "") {
+      suggestedValue = suggestedValue.slice(0, -1);
+    }
+
+    if (!beforeCaret.startsWith(ZERO_WIDTH_SPACE)) {
+      beforeCaret = ZERO_WIDTH_SPACE + beforeCaret;
+    }
+
+    console.info(`Autocompleting '${beforeCaret}' with '${suggestedValue}'`);
+    TerminalUtil.setInput(beforeCaret + suggestedValue + afterCaret);
+    TerminalUtil.cursorToIndex((beforeCaret + suggestedValue).length);
+  }
+
+  /**
+   * Retrieves the common prefix amongst all provided `strings`.
+   *
+   * @example
+   * const strings = [
+   *   "ExampleFOO",
+   *   "ExampleBAR",
+   *   "ExampleBAZ"
+   * ];
+   *
+   * const commonPrefix = AutocompleteUtil.getCommonPrefix(strings);
+   * console.info(commonPrefix);
+   * // "Example"
+   *
+   * @param strings
+   * @private
+   */
+  private static getCommonPrefix(strings: string[]): string {
+    if (strings.length === 0) {
+      return "";
+    }
+
+    for (let i = 0; i < strings[0].length; i++) {
+      const char = strings[0][i];
+      if (!strings.every((s) => s[i] === char)) {
+        return strings[0].slice(0, i);
+      }
+    }
+
+    return strings[0];
   }
 
   /**
    * Gets a list of suggested commands for autocompletion which start with the same value as the `searchValue`.
    *
-   * @param userInput the current user input
    * @param searchValue the value to search against
    * @returns a list of command suggestions
    */
