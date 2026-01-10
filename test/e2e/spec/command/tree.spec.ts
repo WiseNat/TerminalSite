@@ -80,10 +80,11 @@ test.describe("Tree", () => {
       "        │   ├── bar\n" +
       "        │   ├── bazzing.gaz\n" +
       "        │   └── daz\n" +
+      "        ├── help.md\n" +
       "        ├── newlines.txt\n" +
       "        └── some_rubbish.tmp\n" +
       "\n" +
-      "7 directories, 8 files";
+      "7 directories, 9 files";
     await assertOutputInTerminal(page, `${input}${expected}`);
     await checkForColouredSpans(page, {
       directory: 7,
@@ -190,11 +191,12 @@ test.describe("Tree", () => {
         "        ├── .full\n" +
         "        │   ├── aFile\n" +
         "        │   └── someEmptyDir\n" +
+        "        ├── help.md\n" +
         "        ├── newlines.txt\n" +
         "        ├── some_rubbish.tmp\n" +
         "        └── .testing\n" +
         "\n" +
-        "10 directories, 11 files";
+        "10 directories, 12 files";
       await assertOutputInTerminal(page, `${input}${expected}`);
       await checkForColouredSpans(page, {
         directory: 10,

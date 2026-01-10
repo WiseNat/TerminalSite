@@ -16,15 +16,14 @@ export const test = baseTest.extend({
   },
   context: async ({ context }, use, testInfo) => {
     const showIntro = testInfo.tags.includes("@ShowIntro");
-    const introductionShownKey = "introductionShown";
 
     if (showIntro) {
       await context.addInitScript(() => {
-        sessionStorage.setItem(introductionShownKey, "");
+        sessionStorage.setItem("introductionShown", "");
       });
     } else {
       await context.addInitScript(() => {
-        sessionStorage.setItem(introductionShownKey, "true");
+        sessionStorage.setItem("introductionShown", "true");
       });
     }
 

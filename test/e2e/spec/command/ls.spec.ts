@@ -19,10 +19,10 @@ test.describe("Ls", () => {
       type: "Should show non-dotfiles in the current working directory when no path argument is given",
       args: [],
       desktopExpected:
-        "\nDesktop  external  foo  newlines.txt  some_rubbish.tmp",
+        "\nDesktop  external  foo  help.md  newlines.txt  some_rubbish.tmp",
       mobileExpected:
-        "\nDesktop   foo           some_rubbish.tmp" +
-        "\nexternal  newlines.txt",
+        "\nDesktop   foo      newlines.txt" +
+        "\nexternal  help.md  some_rubbish.tmp",
       counts: {
         directory: 3,
         executables: 0,
