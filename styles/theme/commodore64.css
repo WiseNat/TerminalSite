@@ -27,7 +27,5 @@
 
     --selection-foreground-colour: #2e2c9b;
     --selection-background-colour: #706deb;
-
-    /* TODO: fix! */
     --external-icon-filter: brightness(0) saturate(100%) invert(42%) sepia(19%) saturate(4707%) hue-rotate(220deg) brightness(98%) contrast(87%);
 }
