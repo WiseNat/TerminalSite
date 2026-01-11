@@ -43,6 +43,7 @@ test.describe("Terminal", () => {
     const themesAndFlavours =
       "Themes:\n" +
       "- Classic\n" +
+      "- Commodore64\n" +
       "- Dark\n" +
       "- GNOMELikeDark\n" +
       "- GNOMELikeLight\n" +
