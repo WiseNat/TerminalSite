@@ -1,0 +1,2 @@
+- [Battle Command Pull Request](https://github.com/greystorm101/spritebot/pull/27)
+- [Project Repository](https://github.com/greystorm101/spritebot)
