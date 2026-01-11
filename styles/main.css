@@ -1,4 +1,5 @@
 @import url("theme/classic.css");
+@import url("theme/commodore64.css");
 @import url("theme/gnomelike_dark.css");
 @import url("theme/gnomelike_light.css");
 @import url("theme/light.css");
@@ -40,7 +41,7 @@
 
 :root {
     --prompt-content: "";
-    --themes: Dark Light Classic SolarizedLight SolarizedDark TangoDark TangoLight GNOMELikeDark GNOMELikeLight; /* stylelint-disable-line value-keyword-case */
+    --themes: Dark Light Classic SolarizedLight SolarizedDark TangoDark TangoLight GNOMELikeDark GNOMELikeLight Commodore64; /* stylelint-disable-line value-keyword-case */
 
     background-color: var(--background-colour);
     color: var(--foreground-colour);
