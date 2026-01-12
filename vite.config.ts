@@ -9,9 +9,12 @@ function isModeTesting(mode: string): boolean {
 }
 
 export default defineConfig(({ mode }) => {
+  const testingContentDirectory = "content/test";
+  const productionContentDirectory = "content/production";
+
   const contentDirectory: string = isModeTesting(mode)
-    ? "content/test"
-    : "content/production";
+    ? testingContentDirectory
+    : productionContentDirectory;
   const homeDirectoryParent = isModeTesting(mode) ? "src/main" : "home";
 
   return {
@@ -21,7 +24,14 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       FileTree(`public/${contentDirectory}`, homeDirectoryParent),
-      BuildChildRemover([contentDirectory], [".meta", ".gitkeep"]),
+      BuildChildRemover(
+        [
+          contentDirectory === testingContentDirectory
+            ? productionContentDirectory
+            : testingContentDirectory,
+        ],
+        [".meta", ".gitkeep"],
+      ),
     ],
     define: {
       __HOME_DIRECTORY: JSON.stringify(`${homeDirectoryParent}/nathanwise`),
