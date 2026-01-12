@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:testing": "vite --mode testing",
+    "dev:testing": "NODE_ENV=testing  vite",
     "build": "tsc && vite build",
-    "build:testing": "tsc && vite build --mode testing",
+    "build:testing": "tsc && NODE_ENV=testing vite build",
     "preview": "vite preview",
     "prepare": "husky",
     "eslint:check": "eslint",

@@ -4,23 +4,23 @@ import autoprefixer from "autoprefixer";
 import FileTree from "./src/plugins/vite_plugin_file_tree";
 import BuildChildRemover from "./src/plugins/vite_plugin_build_child_remover";
 
-function isModeTesting(mode: string): boolean {
-  return mode === "testing";
+function isModeTesting(): boolean {
+  return process.env.NODE_ENV === "testing";
 }
 
 export default defineConfig(({ mode }) => {
   const testingContentDirectory = "content/test";
   const productionContentDirectory = "content/production";
 
-  const contentDirectory: string = isModeTesting(mode)
+  const contentDirectory: string = isModeTesting()
     ? testingContentDirectory
     : productionContentDirectory;
-  const homeDirectoryParent = isModeTesting(mode) ? "src/main" : "home";
+  const homeDirectoryParent = isModeTesting() ? "src/main" : "home";
 
   return {
     appType: "mpa",
     server: {
-      port: isModeTesting(mode) ? 5174 : 5173,
+      port: isModeTesting() ? 5174 : 5173,
     },
     plugins: [
       FileTree(`public/${contentDirectory}`, homeDirectoryParent),
