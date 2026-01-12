@@ -1,0 +1,24 @@
+async function getFile(path) {
+  return fetch(path).then((response) => {
+    if (response.ok) {
+      return response.text();
+    }
+    return null;
+  }).catch((error) => {
+    console.error(error);
+    return null;
+  });
+}
+function removeCarriage(str) {
+  return str.replace(/[\r]+/gm, "");
+}
+function findDiff(str1, str2) {
+  let diff = "";
+  str2.split("").forEach(function(val, i) {
+    if (val !== str1.charAt(i)) diff += val;
+  });
+  return diff;
+}
+function noOddHTML(s) {
+  return s.replaceAll(/<div>|<\/div>|<br>/gm, "");
+}

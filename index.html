@@ -1,48 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>%VITE_SITE_TITLE%</title>
 
-<head>
-    <meta charset="UTF-8">
+    <link rel="icon" href="/terminal.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles/main.css" />
 
-    <!-- Primary Meta Tags -->
-    <title>Terminal Site | Nathan Wise</title>
-    <meta name="title" content="Terminal Site | Nathan Wise">
-    <meta name="description"
-        content="The online portfolio for Nathan Wise - me. It's functionality is based on existing terminals with themes to match.">
-    <meta name="author" content="Nathan Wise">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="theme-color" content="#000000">
+    <!-- Primary Meta -->
+    <meta name="title" content="%VITE_SITE_TITLE%" />
+    <meta name="description" content="%VITE_SITE_DESCRIPTION%" />
+    <meta name="author" content="Nathan Wise" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="robots" content="index, follow" />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="http://nathanwise.software/">
-    <meta property="og:title" content="Terminal Site | Nathan Wise">
-    <meta property="og:description"
-        content="The online portfolio for Nathan Wise - me. Its functionality is based on existing terminals with themes to match.">
-    <meta property="og:image" content="http://nathanwise.software/img/embed.png">
-    <meta property="og:image:alt" content="Terminal echo-ing &quot;Hello world&quot;">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="%VITE_SITE_URL%" />
+    <meta property="og:title" content="%VITE_SITE_TITLE%" />
+    <meta property="og:description" content="%VITE_SITE_DESCRIPTION%" />
+    <meta property="og:image" content="%VITE_SITE_IMAGE%" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="628" />
+    <meta property="og:image:alt" content="%VITE_SITE_IMAGE_ALT%" />
 
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@WiseNatDev">
-
-    <!-- Links -->
-    <link rel="icon" href="/img/terminal.svg">
-    <link rel="preload" href="/css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-        <link rel="stylesheet" href="styles.css"></noscript>
-</head>
-
-<body>
-    <div id="terminal" class="command-input" contenteditable="true" autocomplete="off" spellcheck="false"
-        autofocus="autofocus"></div>
-    <script src="/js/mistake-check.js"></script>
-    <script type="module" src="/js/terminal-queue.js"></script>
-    <script type="module" src="/js/functions.js"></script>
-    <script type="module" src="/js/commandline.js"></script>
-</body>
-
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="%VITE_SITE_TITLE%" />
+    <meta name="twitter:description" content="%VITE_SITE_DESCRIPTION%" />
+    <meta name="twitter:image" content="%VITE_SITE_IMAGE%" />
+    <meta name="twitter:image:alt" content="%VITE_SITE_IMAGE_ALT%" />
+  </head>
+  <body>
+    <header role="banner"></header>
+    <nav role="navigation"></nav>
+    <main role="main">
+      <div id="output"></div>
+      <div id="command-line-container">
+        <div id="prompt"></div>
+        <div
+          id="input"
+          contenteditable="plaintext-only"
+          spellcheck="false"
+          autofocus
+        ></div>
+      </div>
+    </main>
+    <footer role="contentinfo"></footer>
+    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/css_reset.ts"></script>
+  </body>
 </html>

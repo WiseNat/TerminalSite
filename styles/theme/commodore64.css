@@ -1,0 +1,31 @@
+@import url("../fonts.css");
+
+/* noinspection DuplicatedCode */
+:root[data-theme="Commodore64"] {
+    --entry-0: #000000;
+    --entry-1: #813338;
+    --entry-2: #56ac4d;
+    --entry-3: #8e5029;
+    --entry-4: #2e2c9b;
+    --entry-5: #8e3c97;
+    --entry-6: #75cec8;
+    --entry-7: #7b7b7b;
+
+    --entry-0-bright: #4a4a4a;
+    --entry-1-bright: #c46c71;
+    --entry-2-bright: #a9ff9f;
+    --entry-3-bright: #edf171;
+    --entry-4-bright: #706deb;
+    --entry-5-bright: #553800;
+    --entry-6-bright: #b2b2b2;
+    --entry-7-bright: #FFFFFF;
+
+    --background-colour: #2e2c9b;
+
+    --font-family: "C64";
+    --foreground-colour: #706deb;
+
+    --selection-foreground-colour: #2e2c9b;
+    --selection-background-colour: #706deb;
+    --external-icon-filter: brightness(0) saturate(100%) invert(42%) sepia(19%) saturate(4707%) hue-rotate(220deg) brightness(98%) contrast(87%);
+}

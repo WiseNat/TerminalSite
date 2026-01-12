@@ -1,0 +1,10 @@
+@font-face {
+    font-family: "C64";
+    font-display: swap;
+    font-weight: 1 1000;
+
+    /* noinspection CssUnknownTarget */
+    src:
+            url("../font/C64/C64_Pro_Mono-STYLE.woff2") format("woff2"),
+            url("../font/C64/C64_Pro_Mono-STYLE.woff") format("woff");
+}

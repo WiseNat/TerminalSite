@@ -1,0 +1,29 @@
+/* noinspection DuplicatedCode */
+:root[data-theme="Light"] {
+    --entry-0: #2E3436;
+    --entry-1: #CC0000;
+    --entry-2: #4E9A06;
+    --entry-3: #C4A000;
+    --entry-4: #3465A4;
+    --entry-5: #75507B;
+    --entry-6: #06989A;
+    --entry-7: #D3D7CF;
+
+    --entry-0-bright: #555753;
+    --entry-1-bright: #EF2929;
+    --entry-2-bright: #8AE234;
+    --entry-3-bright: #FCE94F;
+    --entry-4-bright: #729FCF;
+    --entry-5-bright: #AD7FA8;
+    --entry-6-bright: #34E2E2;
+    --entry-7-bright: #EEEEEC;
+
+    --background-colour: #FFFFFF;
+
+    --font-family: consola, monospace;
+    --foreground-colour: #101018;
+
+    --selection-foreground-colour: #FFFFFF;
+    --selection-background-colour: #101018;
+    --external-icon-filter: brightness(0) saturate(100%) invert(8%) sepia(28%) saturate(688%) hue-rotate(213deg) brightness(93%) contrast(99%);
+}

@@ -1,0 +1,8 @@
+{
+  "name": "John Doe",
+  "date-of-birth": "2025-10-10T23:25:00.000Z",
+  "addresses": [
+    "1 Who Knows Where",
+    "2 Why Does John Have Multiple Addresses",
+  ]
+}

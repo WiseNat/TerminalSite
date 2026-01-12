@@ -1,0 +1,7 @@
+NAME="Linux TerminalSite"
+VERSION="2.0 Rewrite"
+ID="terminalsite"
+VERSION_ID="2.0"
+PRETTY_NAME="Linux TerminalSite 2.0"
+HOME_URL="https://github.com/WiseNat/TerminalSite"
+BUG_REPORT_URL="https://github.com/WiseNat/TerminalSite/issues"

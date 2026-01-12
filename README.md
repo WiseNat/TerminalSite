@@ -1,14 +1,19 @@
 # TerminalSite
+A website that feels like a Linux Terminal, and acts as my portfolio. Accessible live from [here](https://www.nathanwise.tech/).
 
-This is my first attempt at a proper website. It's basically just an interactive, modular version of my CV.
+Recently entirely rewritten in TypeScript with Vite to work as a static site, complete with new functionality!
 
-The major systems it boasts are:
-1. Custom terminal-like environment
-2. Safe file navigation
-3. Terminal themes
+Functionality includes:
+  - Large array of Linux Commands
+  - Realistic Command & Argument Parsing
+  - File & Directory Navigation
+  - Command History
+  - Terminal Flavours & Themes
+  - Autocomplete
 
-
-It should be fairly easy to modify the site to add new terminal themes and new files. Adding new commands is more complicated but not too difficult.
-
-
-If the terminal locks up and you're unable to delete anything, please chuck me an issue detailing the exact commands you used and even better steps to reproduce if you can. Usually this happens because of a difference between the HTML strings in memory compared with the site's actual HTML.
+## Set up
+1. Clone the project, typically using `git clone git@github.com:WiseNat/TerminalSite.git`
+2. To set up project dependencies, run `npm install`
+3. To run the development web server, run `npm run dev`
+4. To check whether the site is working, run `npm run test:e2e` (this may take a while)
+   - If you have issues installing certain browsers, refer to the instructions in `playwright.config.ts`
