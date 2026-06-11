@@ -6,6 +6,7 @@ import { processEnd } from "./keydown_key/end.ts";
 import { processHome } from "./keydown_key/home.ts";
 import { processA } from "./keydown_key/a.ts";
 import { processE } from "./keydown_key/e.ts";
+import { processL } from "./keydown_key/l.ts";
 
 /**
  * Event listener function for handling key down events in the terminal.
@@ -26,6 +27,8 @@ export async function keydown(event: KeyboardEvent) {
     ["End", processEnd],
     ["Enter", processEnter],
     ["Home", processHome],
+    ["l", processL],
+    ["L", processL],
     ["Tab", processTab],
   ]);
 

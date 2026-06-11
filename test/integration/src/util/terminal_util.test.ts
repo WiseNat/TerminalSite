@@ -602,6 +602,19 @@ describe("TerminalUtil", () => {
     });
   });
 
+  describe("clearTerminal", async () => {
+    test("should clear the terminal output", async () => {
+      // Arrange
+      outputElement.textContent = "foo bar baz     as d as d\n\n\ngaz";
+
+      // Act
+      TerminalUtil.clearTerminal();
+
+      // Assert
+      expect(outputElement.textContent).toBe("");
+    });
+  });
+
   // Can't test "cursorToEnd" effectively with JSDom - rely on E2E to test this
   // Can't test "cursorToIndex" effectively with JSDom - rely on E2E to test this
 });

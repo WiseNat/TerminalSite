@@ -4,7 +4,7 @@ import CLEAR from "../../../../../src/command/scripts/clear";
 
 describe("Clear", () => {
   // Spy
-  const setOutput = vi.spyOn(TerminalUtil, "setOutput");
+  const clearTerminal = vi.spyOn(TerminalUtil, "clearTerminal");
 
   // Mock
   vi.mock("../../../../../src/util/terminal_util");
@@ -18,7 +18,7 @@ describe("Clear", () => {
       await CLEAR.run(args);
 
       // Assert
-      expect(setOutput).toHaveBeenCalledWith("");
+      expect(clearTerminal).toHaveBeenCalledOnce();
     });
   });
 });
