@@ -263,21 +263,21 @@ test.describe("Ls", () => {
         // Assert
         const desktopExpected =
           `\nls: cannot access '${fakePath}': No such file or directory` +
-          `\n8 ${existingFile}  12 /src/main/nathanwise/.bashrc` +
+          `\n0 ${existingFile}  4 /src/main/nathanwise/.bashrc` +
           `\n\n${existingDirectory}:` +
-          "\ntotal: 52" +
-          "\n8 archive.zip  8 audio.mp3  4 dir  8 executable.sh  8 image.png  8 normal.txt  8 rubbish.tmp";
+          "\ntotal: 4" +
+          "\n0 archive.zip  0 audio.mp3  4 dir  0 executable.sh  0 image.png  0 normal.txt  0 rubbish.tmp";
 
         const mobileExpected =
           `\nls: cannot access '${fakePath}': No such file or directory` +
-          `\n8 ${existingFile}` +
+          `\n0 ${existingFile}` +
           "\n12 /src/main/nathanwise/.bashrc" +
           `\n\n${existingDirectory}:` +
-          "\ntotal: 52" +
-          "\n8 archive.zip    8 image.png" +
-          "\n8 audio.mp3      8 normal.txt" +
-          "\n4 dir            8 rubbish.tmp" +
-          "\n8 executable.sh";
+          "\ntotal: 4" +
+          "\n0 archive.zip    0 image.png" +
+          "\n0 audio.mp3      0 normal.txt" +
+          "\n4 dir            0 rubbish.tmp" +
+          "\n0 executable.sh";
 
         if (isMobileProject(testInfo)) {
           await assertOutputInTerminal(page, `${input}${mobileExpected}`);
@@ -308,21 +308,21 @@ test.describe("Ls", () => {
         // Assert
         const desktopExpected =
           `\nls: cannot access '${fakePath}': No such file or directory` +
-          `\n8 ${existingFile}  12 /src/main/nathanwise/.bashrc` +
+          `\n0 ${existingFile}  4 /src/main/nathanwise/.bashrc` +
           `\n\n${existingDirectory}:` +
-          "\ntotal: 56" +
-          "\n4 .  0 ..  8 archive.zip  8 audio.mp3  4 dir  8 executable.sh  8 image.png  8 normal.txt  8 rubbish.tmp";
+          "\ntotal: 8" +
+          "\n4 .  0 ..  0 archive.zip  0 audio.mp3  4 dir  0 executable.sh  0 image.png  0 normal.txt  0 rubbish.tmp";
 
         const mobileExpected =
           `\nls: cannot access '${fakePath}': No such file or directory` +
-          `\n8 ${existingFile}` +
+          `\n0 ${existingFile}` +
           "\n12 /src/main/nathanwise/.bashrc" +
           `\n\n${existingDirectory}:` +
-          "\ntotal: 56" +
-          "\n4 .            8 executable.sh" +
-          "\n0 ..           8 image.png" +
-          "\n8 archive.zip  8 normal.txt" +
-          "\n8 audio.mp3    8 rubbish.tmp" +
+          "\ntotal: 8" +
+          "\n4 .            0 executable.sh" +
+          "\n0 ..           0 image.png" +
+          "\n0 archive.zip  0 normal.txt" +
+          "\n0 audio.mp3    0 rubbish.tmp" +
           "\n4 dir";
 
         if (isMobileProject(testInfo)) {
@@ -358,21 +358,21 @@ test.describe("Ls", () => {
         // Assert
         const desktopExpected =
           `\nls: cannot access '${fakePath}': No such file or directory` +
-          `\n8K ${existingFile}  12K /src/main/nathanwise/.bashrc` +
+          `\n1K ${existingFile}  4K /src/main/nathanwise/.bashrc` +
           `\n\n${existingDirectory}:` +
-          "\ntotal: 52K" +
-          "\n8K archive.zip  8K audio.mp3  4K dir  8K executable.sh  8K image.png  8K normal.txt  8K rubbish.tmp";
+          "\ntotal: 4K" +
+          "\n1K archive.zip  1K audio.mp3  4K dir  1K executable.sh  1K image.png  1K normal.txt  1K rubbish.tmp";
 
         const mobileExpected =
           `\nls: cannot access '${fakePath}': No such file or directory` +
-          `\n8K ${existingFile}` +
-          "\n12K /src/main/nathanwise/.bashrc" +
+          `\n1K ${existingFile}` +
+          "\n4K /src/main/nathanwise/.bashrc" +
           `\n\n${existingDirectory}:` +
-          "\ntotal: 52K" +
-          "\n8K archive.zip    8K image.png" +
-          "\n8K audio.mp3      8K normal.txt" +
-          "\n4K dir            8K rubbish.tmp" +
-          "\n8K executable.sh";
+          "\ntotal: 4K" +
+          "\n1K archive.zip    1K image.png" +
+          "\n1K audio.mp3      1K normal.txt" +
+          "\n4K dir            1K rubbish.tmp" +
+          "\n1K executable.sh";
 
         if (isMobileProject(testInfo)) {
           await assertOutputInTerminal(page, `${input}${mobileExpected}`);
@@ -406,7 +406,7 @@ test.describe("Ls", () => {
           `\n-rw-rw-r-- 1 root root\t1K Oct 11 20:47 ${existingFile}` +
           "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Oct 11 20:47 /src/main/nathanwise/.bashrc" +
           `\n\n${existingDirectory}:` +
-          "\ntotal: 52K" +
+          "\ntotal: 4K" +
           "\n-rw-rw-r-- 1 root root\t1K Oct 11 20:47 archive.zip" +
           "\n-rw-rw-r-- 1 root root\t1K Oct 11 20:47 audio.mp3" +
           "\ndrwxr-xr-x 2 root root\t4K Oct 11 20:47 dir" +
@@ -476,80 +476,80 @@ test.describe("Ls", () => {
       blockSize: 1,
       desktopExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n8192 ${existingFile}  12288 /src/main/nathanwise/.bashrc` +
+        `\n0 ${existingFile}  4096 /src/main/nathanwise/.bashrc` +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 53248" +
-        "\n8192 archive.zip  8192 audio.mp3  4096 dir  8192 executable.sh  8192 image.png  8192 normal.txt  8192 rubbish.tmp",
+        "\ntotal: 4096" +
+        "\n0 archive.zip  0 audio.mp3  4096 dir  0 executable.sh  0 image.png  0 normal.txt  0 rubbish.tmp",
       mobileExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n8192 ${existingFile}` +
-        "\n12288 /src/main/nathanwise/.bashrc" +
+        `\n0 ${existingFile}` +
+        "\n4096 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 53248" +
-        "\n8192 archive.zip    8192 image.png" +
-        "\n8192 audio.mp3      8192 normal.txt" +
-        "\n4096 dir            8192 rubbish.tmp" +
-        "\n8192 executable.sh",
+        "\ntotal: 4096" +
+        "\n0 archive.zip    0 image.png" +
+        "\n0 audio.mp3      0 normal.txt" +
+        "\n4096 dir            0 rubbish.tmp" +
+        "\n0 executable.sh",
     },
     {
       flags: ["-s", "-h"],
       blockSize: 1,
       desktopExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n8192 ${existingFile}  12288 /src/main/nathanwise/.bashrc` +
+        `\n0 ${existingFile}  4096 /src/main/nathanwise/.bashrc` +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 53248" +
-        "\n8192 archive.zip  8192 audio.mp3  4096 dir  8192 executable.sh  8192 image.png  8192 normal.txt  8192 rubbish.tmp",
+        "\ntotal: 4096" +
+        "\n0 archive.zip  0 audio.mp3  4096 dir  0 executable.sh  0 image.png  0 normal.txt  0 rubbish.tmp",
       mobileExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n8192 ${existingFile}` +
-        "\n12288 /src/main/nathanwise/.bashrc" +
+        `\n0 ${existingFile}` +
+        "\n4096 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 53248" +
-        "\n8192 archive.zip    8192 image.png" +
-        "\n8192 audio.mp3      8192 normal.txt" +
-        "\n4096 dir            8192 rubbish.tmp" +
-        "\n8192 executable.sh",
+        "\ntotal: 4096" +
+        "\n0 archive.zip    0 image.png" +
+        "\n0 audio.mp3      0 normal.txt" +
+        "\n4096 dir            0 rubbish.tmp" +
+        "\n0 executable.sh",
     },
     {
       flags: ["-s"],
       blockSize: 512,
       desktopExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n16 ${existingFile}  24 /src/main/nathanwise/.bashrc` +
+        `\n0 ${existingFile}  8 /src/main/nathanwise/.bashrc` +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 104" +
-        "\n16 archive.zip  16 audio.mp3  8 dir  16 executable.sh  16 image.png  16 normal.txt  16 rubbish.tmp",
+        "\ntotal: 8" +
+        "\n0 archive.zip  0 audio.mp3  8 dir  0 executable.sh  0 image.png  0 normal.txt  0 rubbish.tmp",
       mobileExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n16 ${existingFile}` +
-        "\n24 /src/main/nathanwise/.bashrc" +
+        `\n0 ${existingFile}` +
+        "\n8 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 104" +
-        "\n16 archive.zip    16 image.png" +
-        "\n16 audio.mp3      16 normal.txt" +
-        "\n8 dir             16 rubbish.tmp" +
-        "\n16 executable.sh",
+        "\ntotal: 8" +
+        "\n0 archive.zip    0 image.png" +
+        "\n0 audio.mp3      0 normal.txt" +
+        "\n8 dir             0 rubbish.tmp" +
+        "\n0 executable.sh",
     },
     {
       flags: ["-s", "-h"],
       blockSize: 2048,
       desktopExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n4 ${existingFile}  6 /src/main/nathanwise/.bashrc` +
+        `\n0 ${existingFile}  2 /src/main/nathanwise/.bashrc` +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 26" +
-        "\n4 archive.zip  4 audio.mp3  2 dir  4 executable.sh  4 image.png  4 normal.txt  4 rubbish.tmp",
+        "\ntotal: 2" +
+        "\n0 archive.zip  0 audio.mp3  2 dir  0 executable.sh  0 image.png  0 normal.txt  0 rubbish.tmp",
       mobileExpected:
         `\nls: cannot access '${fakePath}': No such file or directory` +
-        `\n4 ${existingFile}` +
-        "\n6 /src/main/nathanwise/.bashrc" +
+        `\n0 ${existingFile}` +
+        "\n2 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 26" +
-        "\n4 archive.zip    4 image.png" +
-        "\n4 audio.mp3      4 normal.txt" +
-        "\n2 dir            4 rubbish.tmp" +
-        "\n4 executable.sh",
+        "\ntotal: 2" +
+        "\n0 archive.zip    0 image.png" +
+        "\n0 audio.mp3      0 normal.txt" +
+        "\n2 dir            0 rubbish.tmp" +
+        "\n0 executable.sh",
     },
     {
       flags: ["-l"],
@@ -559,7 +559,7 @@ test.describe("Ls", () => {
         `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 53248" +
+        "\ntotal: 4096" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
         "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
@@ -572,7 +572,7 @@ test.describe("Ls", () => {
         `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 53248" +
+        "\ntotal: 4096" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
         "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
@@ -589,7 +589,7 @@ test.describe("Ls", () => {
         `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 53248" +
+        "\ntotal: 4096" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
         "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
@@ -602,7 +602,7 @@ test.describe("Ls", () => {
         `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 53248" +
+        "\ntotal: 4096" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
         "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
@@ -619,7 +619,7 @@ test.describe("Ls", () => {
         `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 104" +
+        "\ntotal: 8" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
         "\ndrwxr-xr-x 2 root root\t8 Oct 11 20:47 dir" +
@@ -632,7 +632,7 @@ test.describe("Ls", () => {
         `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 104" +
+        "\ntotal: 8" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
         "\ndrwxr-xr-x 2 root root\t8 Oct 11 20:47 dir" +
@@ -649,7 +649,7 @@ test.describe("Ls", () => {
         `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 26" +
+        "\ntotal: 2" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
         "\ndrwxr-xr-x 2 root root\t2 Oct 11 20:47 dir" +
@@ -662,7 +662,7 @@ test.describe("Ls", () => {
         `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t1 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 26" +
+        "\ntotal: 2" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
         "\ndrwxr-xr-x 2 root root\t2 Oct 11 20:47 dir" +
@@ -715,7 +715,7 @@ test.describe("Ls", () => {
         `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 52" +
+        "\ntotal: 4" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
         "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
@@ -747,7 +747,7 @@ test.describe("Ls", () => {
         `\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 ${existingFile}` +
         "\n-rw-rw-r-- 1 nathanwise nathanwise\t144 Oct 11 20:47 /src/main/nathanwise/.bashrc" +
         `\n\n${existingDirectory}:` +
-        "\ntotal: 52" +
+        "\ntotal: 4" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 archive.zip" +
         "\n-rw-rw-r-- 1 root root\t0 Oct 11 20:47 audio.mp3" +
         "\ndrwxr-xr-x 2 root root\t4096 Oct 11 20:47 dir" +
