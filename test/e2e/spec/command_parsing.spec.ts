@@ -38,6 +38,19 @@ test("Typing an unknown command and pressing Enter returns that the command was 
   );
 });
 
+test("Typing HTML and pressing Enter returns that the commnad was not found", async ({
+  page,
+}) => {
+  // Arrange
+  const input = "<a href=\"https://www.nathanwise.software\">My site!</a>";
+
+  // Act
+  await runCommand(page, input);
+
+  // Assert
+  await assertOutputInTerminal(page, `${input}\n<a${COMMAND_NOT_FOUND}`);
+});
+
 test("Typing no command and pressing Enter does nothing", async ({ page }) => {
   // Arrange & Act
   await runCommand(page, "");
