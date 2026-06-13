@@ -5,6 +5,7 @@ import { CommandScript } from "../command/command_script.ts";
 import TerminalUtil from "./terminal_util.ts";
 import CommandImportUtil from "./command_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
+import { escape } from "lodash-es";
 
 export default class CommandUtil {
   /**
@@ -20,7 +21,7 @@ export default class CommandUtil {
     if (tokenisedCommand.name === "") {
       TerminalUtil.appendRawOutput(prompt, true);
     } else {
-      TerminalUtil.appendRawOutput(prompt + command, true);
+      TerminalUtil.appendRawOutput(prompt + escape(command), true);
       TerminalUtil.setInput("");
 
       const commandScript = this.getCommandScript(tokenisedCommand);
