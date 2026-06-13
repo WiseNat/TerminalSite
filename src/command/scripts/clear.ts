@@ -5,7 +5,7 @@ import { HelpInformation } from "./help.ts";
 const CLEAR: CommandScript = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async run(_args: string[]): Promise<void> {
-    TerminalUtil.setOutput("");
+    TerminalUtil.clearTerminal();
   },
 
   help(): HelpInformation | null {

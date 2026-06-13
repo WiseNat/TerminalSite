@@ -256,6 +256,13 @@ export default class TerminalUtil {
   }
 
   /**
+   * Clears the current terminal output content.
+   */
+  public static clearTerminal() {
+    TerminalUtil.setOutput("");
+  }
+
+  /**
    * Moves the cursor to the end of the Input element's text.
    *
    * @see cursorToIndex
