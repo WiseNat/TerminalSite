@@ -271,7 +271,7 @@ test.describe("Ls", () => {
         const mobileExpected =
           `\nls: cannot access '${fakePath}': No such file or directory` +
           `\n0 ${existingFile}` +
-          "\n12 /src/main/nathanwise/.bashrc" +
+          "\n4 /src/main/nathanwise/.bashrc" +
           `\n\n${existingDirectory}:` +
           "\ntotal: 4" +
           "\n0 archive.zip    0 image.png" +
@@ -316,7 +316,7 @@ test.describe("Ls", () => {
         const mobileExpected =
           `\nls: cannot access '${fakePath}': No such file or directory` +
           `\n0 ${existingFile}` +
-          "\n12 /src/main/nathanwise/.bashrc" +
+          "\n4 /src/main/nathanwise/.bashrc" +
           `\n\n${existingDirectory}:` +
           "\ntotal: 8" +
           "\n4 .            0 executable.sh" +
@@ -488,7 +488,7 @@ test.describe("Ls", () => {
         "\ntotal: 4096" +
         "\n0 archive.zip    0 image.png" +
         "\n0 audio.mp3      0 normal.txt" +
-        "\n4096 dir            0 rubbish.tmp" +
+        "\n4096 dir         0 rubbish.tmp" +
         "\n0 executable.sh",
     },
     {
@@ -508,7 +508,7 @@ test.describe("Ls", () => {
         "\ntotal: 4096" +
         "\n0 archive.zip    0 image.png" +
         "\n0 audio.mp3      0 normal.txt" +
-        "\n4096 dir            0 rubbish.tmp" +
+        "\n4096 dir         0 rubbish.tmp" +
         "\n0 executable.sh",
     },
     {
@@ -528,7 +528,7 @@ test.describe("Ls", () => {
         "\ntotal: 8" +
         "\n0 archive.zip    0 image.png" +
         "\n0 audio.mp3      0 normal.txt" +
-        "\n8 dir             0 rubbish.tmp" +
+        "\n8 dir            0 rubbish.tmp" +
         "\n0 executable.sh",
     },
     {
