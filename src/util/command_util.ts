@@ -6,8 +6,23 @@ import TerminalUtil from "./terminal_util.ts";
 import CommandImportUtil from "./command_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import { escape } from "lodash-es";
+import { HOSTNAME } from "../constant/system.ts";
 
 export default class CommandUtil {
+  private static substitutionVariables = new Map<string, () => string>([
+    [
+      "HOME",
+      () => FileSystemUtil.formatPath(FileSystemUtil.getHomeDirectory()),
+    ],
+    ["HOSTNAME", () => HOSTNAME],
+    [
+      "PWD",
+      () =>
+        FileSystemUtil.formatPath(FileSystemUtil.getCurrentWorkingDirectory()),
+    ],
+    ["USER", () => FileSystemUtil.username],
+  ]);
+
   /**
    * Executes a command using the given command string.
    * Will output to the terminal if no command is found.
@@ -15,7 +30,9 @@ export default class CommandUtil {
    * @param command a command string, e.g. 'echo foo bar'
    */
   public static async executeCommand(command: string) {
-    const tokenisedCommand: TokenisedCommand = this.tokenise(command);
+    // TODO: combine logic of 'substituteVariables' and 'tokenise'?
+    const resolvedCommand = this.substituteVariables(command);
+    const tokenisedCommand: TokenisedCommand = this.tokenise(resolvedCommand);
     const prompt = TerminalUtil.getRawPrompt();
 
     if (tokenisedCommand.name === "") {
@@ -44,6 +61,99 @@ export default class CommandUtil {
         }
       }
     }
+  }
+
+  /**
+   * Substitutes parameterised variables with their resolved values.
+   * For example, ...
+   * - `FOO${HOME}BAR` -> `FOO/home/nathanwiseBAR`
+   * - `FOO$HOME BAR` -> `FOO/home/nathanwise BAR`
+   *
+   * @param command a command string to inject variables into
+   */
+  public static substituteVariables(command: string): string {
+    let isShellExpansion: boolean = false;
+    let isInsideSingleQuotes: boolean = false;
+    let isInsideDoubleQuotes: boolean = false;
+    let escapingNextChar: boolean = false;
+    let dollarIndex: number = -1;
+
+    let output = "";
+    let outputBuffer: string = "";
+
+    for (let i = 0; i < command.length; i++) {
+      const char = command[i];
+
+      if (char === "\\" && !isInsideSingleQuotes) {
+        escapingNextChar = true;
+        continue;
+      }
+
+      if (!escapingNextChar) {
+        if (char === "$" && !isInsideSingleQuotes) {
+          dollarIndex = i;
+          output += outputBuffer;
+          outputBuffer = char;
+          continue;
+        } else if (char === "\"" && !isInsideSingleQuotes) {
+          isInsideDoubleQuotes = !isInsideDoubleQuotes;
+          continue;
+        } else if (char === "'" && !isInsideDoubleQuotes) {
+          isInsideSingleQuotes = !isInsideSingleQuotes;
+          continue;
+        }
+      }
+
+      outputBuffer += char;
+      escapingNextChar = false;
+
+      if (dollarIndex !== -1 && !isInsideSingleQuotes) {
+        let startIndex: number | undefined = undefined;
+        let endIndex: number | undefined = undefined;
+
+        // Character after $ is { denotes shell expansion notation
+        if (dollarIndex === i - 1) {
+          isShellExpansion = char === "{";
+        }
+
+        if (isShellExpansion) {
+          if (char === "}") {
+            startIndex = dollarIndex + 2;
+            endIndex = i;
+          }
+        } else {
+          if (char === " ") {
+            startIndex = dollarIndex + 1;
+            endIndex = i;
+          } else if (i === command.length - 1) {
+            startIndex = dollarIndex + 1;
+            endIndex = i + 1;
+          }
+        }
+
+        if (startIndex === undefined && endIndex === undefined) {
+          continue;
+        }
+
+        const substitutionTarget = command.slice(startIndex, endIndex);
+
+        let resolvedValue: string = (
+          this.substitutionVariables.get(substitutionTarget) || (() => "")
+        )();
+
+        if (char === " ") {
+          resolvedValue += char;
+        }
+
+        output += resolvedValue;
+        outputBuffer = "";
+        dollarIndex = -1;
+      }
+    }
+
+    output += outputBuffer;
+
+    return output;
   }
 
   /**

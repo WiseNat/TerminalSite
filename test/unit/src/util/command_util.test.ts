@@ -6,6 +6,7 @@ import TerminalUtil from "../../../../src/util/terminal_util";
 import { unmock } from "../../helper/unmock";
 import CommandImportUtil from "../../../../src/util/command_import_util.ts";
 import { Options } from "getopts";
+import FileSystemUtil from "../../../../src/util/file_system_util.ts";
 
 describe("CommandUtil", () => {
   // Spy
@@ -90,6 +91,111 @@ describe("CommandUtil", () => {
         prompt + escapedCommand,
         true,
       );
+    });
+  });
+
+  describe("substituteVariables", () => {
+    [
+      {
+        variable: "$HOME",
+        expected: "/home/nathanwise",
+      },
+      {
+        variable: "a$HOME",
+        expected: "a/home/nathanwise",
+      },
+      {
+        variable: "a$HOMEb",
+        expected: "a",
+      },
+      {
+        variable: "a$HOME b",
+        expected: "a/home/nathanwise b",
+      },
+      {
+        variable: "${HOME}",
+        expected: "/home/nathanwise",
+      },
+      {
+        variable: "a${HOME}",
+        expected: "a/home/nathanwise",
+      },
+      {
+        variable: "a${HOME}b",
+        expected: "a/home/nathanwiseb",
+      },
+      {
+        variable: "a${HOMEb",
+        expected: "a${HOMEb",
+      },
+      {
+        variable: "\"a${HOME}b\"",
+        expected: "a/home/nathanwiseb",
+      },
+      {
+        variable: "'a${HOME}b'",
+        expected: "a${HOME}b",
+      },
+      {
+        variable: "a\"${HOME}\"b",
+        expected: "a/home/nathanwiseb",
+      },
+      {
+        variable: "a'${HOME}'b",
+        expected: "a${HOME}b",
+      },
+      {
+        variable: "a'\"${HOME}\"'b",
+        expected: "a\"${HOME}\"b",
+      },
+      {
+        variable: "a\"'${HOME}'\"b",
+        expected: "a'/home/nathanwise'b",
+      },
+      {
+        variable: "a\"'\"${HOME}\"'\"b",
+        expected: "a'/home/nathanwise'b",
+      },
+      {
+        variable: "a'\"'${HOME}'\"'b",
+        expected: "a\"/home/nathanwise\"b",
+      },
+      {
+        variable: "a\\${HOME}b",
+        expected: "a${HOME}b",
+      },
+      {
+        variable: "\\\"a${HOME}b\"",
+        expected: "\"a/home/nathanwiseb",
+      },
+      {
+        variable: "\\'a${HOME}b'",
+        expected: "'a/home/nathanwiseb",
+      },
+      {
+        variable: "a'\"\\${HOME}\"'b",
+        expected: "a\"\\${HOME}\"b",
+      },
+      {
+        variable: "'\\${HOME}'",
+        expected: "\\${HOME}",
+      },
+      {
+        variable: "a${HOME\\}}b",
+        expected: "a}b",
+      },
+    ].forEach(({ variable, expected }) => {
+      test(`${variable} -> ${expected}`, async () => {
+        // Arrange
+        FileSystemUtil.setHomeDirectory("/home/nathanwise");
+        const input = `${variable}`;
+
+        // Act
+        const output = CommandUtil.substituteVariables(input);
+
+        // Assert
+        expect(output).toBe(expected);
+      });
     });
   });
 
