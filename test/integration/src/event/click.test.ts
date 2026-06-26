@@ -20,6 +20,8 @@ describe("Click Event", () => {
     inputElement = document.getElementById("input")!;
 
     focus = vi.spyOn(inputElement, "focus");
+
+    vi.useFakeTimers();
   });
 
   describe("click", () => {
@@ -30,8 +32,15 @@ describe("Click Event", () => {
         value: document.createElement("div"),
       });
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      vi.spyOn(globalThis, "getSelection").mockReturnValue({
+        isCollapsed: true,
+      });
+
       // Act
       click(event);
+      vi.runAllTimers();
 
       // Assert
       expect(cursorToEnd).toHaveBeenCalledOnce();
@@ -47,8 +56,31 @@ describe("Click Event", () => {
 
       // Act
       click(event);
+      vi.runAllTimers();
 
       // Assert
+      expect(cursorToEnd).not.toHaveBeenCalled();
+      expect(focus).not.toHaveBeenCalled();
+    });
+
+    test("should do nothing if text is highlighted", () => {
+      // Arrange
+      const event = new MouseEvent("click");
+      Object.defineProperty(event, "target", {
+        value: document.createElement("div"),
+      });
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      vi.spyOn(globalThis, "getSelection").mockReturnValue({
+        isCollapsed: false,
+      });
+
+      // Assert
+      click(event);
+      vi.runAllTimers();
+
+      // Act
       expect(cursorToEnd).not.toHaveBeenCalled();
       expect(focus).not.toHaveBeenCalled();
     });

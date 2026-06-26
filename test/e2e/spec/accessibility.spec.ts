@@ -1,6 +1,10 @@
 import { expect, test } from "../fixture";
 import AxeBuilder from "@axe-core/playwright";
-import { INPUT_SELECTOR } from "../helper/constant/generic";
+import {
+  INPUT_SELECTOR,
+  OUTPUT_SELECTOR,
+  PROMPT_SELECTOR,
+} from "../helper/constant/generic";
 import { runCommand } from "../helper/util/terminal_util.ts";
 
 test.describe("homepage", () => {
@@ -79,5 +83,73 @@ test.describe("focus", () => {
 
     // Assert
     expect(newPage.url()).toBe("https://github.com/WiseNat/TerminalSite/");
+  });
+
+  test("selecting text does not focus the terminal", async ({ page }) => {
+    // Arrange
+    const input = "cat ~/help.md";
+    await runCommand(page, input);
+
+    // Act
+    const outputElement = page.locator(OUTPUT_SELECTOR);
+    await outputElement.click({ clickCount: 3 });
+
+    // Assert
+    const selected = await page.evaluate(() =>
+      window.getSelection()?.toString(),
+    );
+
+    expect(selected).not.toBeNull();
+    expect(selected).not.toStrictEqual("");
+
+    await expect(page.locator(INPUT_SELECTOR)).not.toBeFocused();
+  });
+
+  test("selecting text and clicking the selected text focuses the terminal", async ({
+    page,
+  }) => {
+    // Arrange
+    const input = "cat ~/help.md";
+    await runCommand(page, input);
+
+    // Act
+    const outputElement = page.locator(OUTPUT_SELECTOR);
+    await outputElement.click({ clickCount: 3 });
+
+    const selected = await page.evaluate(() =>
+      window.getSelection()?.toString(),
+    );
+
+    expect(selected).not.toBeNull();
+    expect(selected).not.toStrictEqual("");
+
+    await outputElement.click();
+
+    // Assert
+    await expect(page.locator(INPUT_SELECTOR)).toBeFocused();
+  });
+
+  test("selecting text and clicking the terminal focuses the terminal", async ({
+    page,
+  }) => {
+    // Arrange
+    const input = "cat ~/help.md";
+    await runCommand(page, input);
+
+    // Act
+    const outputElement = page.locator(OUTPUT_SELECTOR);
+    await outputElement.click({ clickCount: 3 });
+
+    const selected = await page.evaluate(() =>
+      window.getSelection()?.toString(),
+    );
+
+    expect(selected).not.toBeNull();
+    expect(selected).not.toStrictEqual("");
+
+    await page.locator(PROMPT_SELECTOR).click();
+
+    // Assert
+    await expect(page.locator(INPUT_SELECTOR)).toBeFocused();
   });
 });
