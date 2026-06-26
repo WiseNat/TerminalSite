@@ -71,6 +71,26 @@ describe("CommandUtil", () => {
       expect(appendRawOutput).toHaveBeenCalledOnce();
       expect(appendRawOutput).toHaveBeenCalledWith(`${prompt}`, true);
     });
+
+    test("outputs escaped content when HTML content is provided", async () => {
+      // Arrange
+      const prompt = "C:\\home\\nathanwise>";
+      vi.mocked(TerminalUtil.getRawPrompt).mockReturnValue(prompt);
+      vi.mocked(CommandImportUtil.getCommandScripts).mockReturnValue({});
+
+      const command = "echo foo<a href='https://nathanwise.software'>bar</a>";
+
+      // Act
+      await CommandUtil.executeCommand(command);
+
+      // Assert
+      const escapedCommand =
+        "echo foo&lt;a href=&#39;https://nathanwise.software&#39;&gt;bar&lt;/a&gt;";
+      expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(
+        prompt + escapedCommand,
+        true,
+      );
+    });
   });
 
   describe("tokenise", () => {
