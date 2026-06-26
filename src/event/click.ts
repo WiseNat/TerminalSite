@@ -6,17 +6,29 @@ import TerminalUtil from "../util/terminal_util.ts";
  * @param event event listener {@link MouseEvent}
  */
 export function click(event: MouseEvent) {
-  const input = TerminalUtil.getInputElement();
+  // Deferring so that selected text can update properly
+  setTimeout(() => {
+    const input = TerminalUtil.getInputElement();
 
-  if (
-    input.contains(event.target as Node) ||
-    (event.target as HTMLElement).tagName === "A"
-  ) {
-    return;
-  }
+    // Allow selecting the input element using default browser behaviour
+    // Allow clicking 'A' tags
+    if (
+      input.contains(event.target as Node) ||
+      (event.target as HTMLElement).tagName === "A"
+    ) {
+      return;
+    }
 
-  event.preventDefault();
+    const selection: Selection | null = globalThis.getSelection();
 
-  input.focus();
-  TerminalUtil.cursorToEnd();
+    // Allow text highlighting
+    if (selection !== null && !selection.isCollapsed) {
+      return;
+    }
+
+    event.preventDefault();
+
+    input.focus();
+    TerminalUtil.cursorToEnd();
+  }, 0);
 }
