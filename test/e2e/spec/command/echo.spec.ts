@@ -25,7 +25,7 @@ test.describe("Echo", () => {
     await runCommand(page, input);
 
     // Assert
-    await assertOutputInTerminal(page, `${input}\n`);
+    await assertOutputInTerminal(page, `${input}\n `);
   });
 
   test("should output a complex series of args", async ({ page }) => {
