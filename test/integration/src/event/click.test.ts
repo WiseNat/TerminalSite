@@ -1,11 +1,15 @@
 import { beforeEach, describe, expect, MockInstance, test, vi } from "vitest";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { click } from "../../../../src/event/click";
+import Bowser, { Parser } from "bowser";
 
 describe("Click Event", () => {
   // Spy
   const cursorToEnd = vi.spyOn(TerminalUtil, "cursorToEnd");
   let focus: MockInstance<(options?: FocusOptions) => void>;
+
+  // Mock
+  vi.mock("bowser");
 
   // Other
   let inputElement: HTMLElement;
@@ -20,6 +24,11 @@ describe("Click Event", () => {
     inputElement = document.getElementById("input")!;
 
     focus = vi.spyOn(inputElement, "focus");
+
+    vi.mocked(Bowser.getParser).mockReturnValue({
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      isOS: (_name: string) => false,
+    } as Partial<Parser.Parser> as Parser.Parser);
 
     vi.useFakeTimers();
   });
@@ -63,7 +72,7 @@ describe("Click Event", () => {
       expect(focus).not.toHaveBeenCalled();
     });
 
-    test("should do nothing if text is highlighted", () => {
+    test("should do nothing if text is highlighted on non iOS", () => {
       // Arrange
       const event = new MouseEvent("click");
       Object.defineProperty(event, "target", {
@@ -83,6 +92,33 @@ describe("Click Event", () => {
       // Act
       expect(cursorToEnd).not.toHaveBeenCalled();
       expect(focus).not.toHaveBeenCalled();
+    });
+
+    test("should focus the 'input' element if text is highlighted on an iOS device", () => {
+      // Arrange
+      vi.mocked(Bowser.getParser).mockReturnValue({
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        isOS: (_name: string) => true,
+      } as Partial<Parser.Parser> as Parser.Parser);
+
+      const event = new MouseEvent("click");
+      Object.defineProperty(event, "target", {
+        value: document.createElement("div"),
+      });
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      vi.spyOn(globalThis, "getSelection").mockReturnValue({
+        isCollapsed: false,
+      });
+
+      // Assert
+      click(event);
+      vi.runAllTimers();
+
+      // Assert
+      expect(cursorToEnd).toHaveBeenCalledOnce();
+      expect(focus).toHaveBeenCalledOnce();
     });
   });
 });
