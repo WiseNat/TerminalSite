@@ -7,6 +7,58 @@ describe("Lexer", () => {
   // TODO: tests...
   //  - multiple spaces?
 
+  // TODO: these tests?
+  /*
+        {
+        type: "a command with multiple arguments",
+        commandString: "mycommand foo -m bar",
+        expectedCommand: "mycommand",
+        expectedArgs: ["foo", "-m", "bar"],
+      },
+      {
+        type: "a command with no arguments",
+        commandString: "mycommand",
+        expectedCommand: "mycommand",
+        expectedArgs: [],
+      },
+      {
+        type: "an empty command",
+        commandString: "",
+        expectedCommand: "",
+        expectedArgs: [],
+      },
+      {
+        type: "a complex command",
+        commandString: "git commit -m \"foo 'bar'\" and 'baz \"gaz'",
+        expectedCommand: "git",
+        expectedArgs: ["commit", "-m", "foo 'bar'", "and", "baz \"gaz"],
+      },
+      {
+        type: "a command with arguments with double quoted spaces",
+        commandString: "mycommand \"foo bar\"",
+        expectedCommand: "mycommand",
+        expectedArgs: ["foo bar"],
+      },
+      {
+        type: "a command with arguments with single quoted spaces",
+        commandString: "mycommand 'foo bar'",
+        expectedCommand: "mycommand",
+        expectedArgs: ["foo bar"],
+      },
+      {
+        type: "a command with excessive whitespace",
+        commandString: "mycommand  ab \r  'foo \tbar' \n ",
+        expectedCommand: "mycommand",
+        expectedArgs: ["ab", "foo \tbar"],
+      },
+      {
+        type: "a command with newlines and ignores them",
+        commandString: "mycommand foo\nbar baz \ngaz",
+        expectedCommand: "mycommand",
+        expectedArgs: ["foobar", "baz", "gaz"],
+      },
+   */
+
   // TODO: delete me!
   test("WORKSHOP", () => {
     // Arrange
@@ -87,6 +139,24 @@ describe("Lexer", () => {
         { type: TokenType.EOF, value: null },
       ]);
     });
+
+    // TODO: impl!
+    /*    test("single quotes", () => {
+      // Arrange
+      const lexer: Lexer = new Lexer("foo 'ba'r 'baz gaz' 'daz''");
+
+      // Act
+      const tokens = [...lexer];
+
+      // Assert
+      expect(tokens).toStrictEqual([
+        { type: TokenType.WORD, value: "foo" },
+        { type: TokenType.WORD, value: "bar" },
+        { type: TokenType.WORD, value: "baz gaz" },
+        { type: TokenType.WORD, value: "daz'" },
+        { type: TokenType.EOF, value: null },
+      ]);
+    });*/
   });
 
   describe("peek", () => {

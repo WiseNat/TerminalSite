@@ -6,6 +6,8 @@ import TerminalUtil from "./terminal_util.ts";
 import CommandImportUtil from "./command_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import { escape } from "lodash-es";
+import Parser from "../shell/parser.ts";
+import Lexer from "../shell/lexer.ts";
 
 export default class CommandUtil {
   /**
@@ -29,7 +31,9 @@ export default class CommandUtil {
 
     // TODO: make "tokenise" resolve ~ to ${HOME}
     // TODO: make "tokenise" resolve variable substitutions
-    const tokenisedCommand: TokenisedCommand = this.tokenise(command);
+
+    const lexer: Lexer = new Lexer(command);
+    const tokenisedCommand: TokenisedCommand = Parser.parse(lexer);
     const prompt = TerminalUtil.getRawPrompt();
 
     if (tokenisedCommand.name === "") {
@@ -38,7 +42,7 @@ export default class CommandUtil {
       TerminalUtil.appendRawOutput(prompt + escape(command), true);
       TerminalUtil.setInput("");
 
-      const commandScript = this.getCommandScript(tokenisedCommand);
+      const commandScript = this.getCommandScript(tokenisedCommand.name);
 
       if (commandScript === null) {
         TerminalUtil.appendOutput(
@@ -61,92 +65,16 @@ export default class CommandUtil {
   }
 
   /**
-   * Tokenises a command string and transforms it into a {@link TokenisedCommand}.
+   * Gets the command script with a name that resolves to the `commandName`.
    *
-   * @param command string containing space separated tokens, e.g. "git commit -m 'foo'"
-   * @returns a new {@link TokenisedCommand} containing the command tokens.
-   */
-  public static tokenise(command: string): TokenisedCommand {
-    const tokens: string[] = this.split(command);
-    const name = tokens.length === 0 ? "" : tokens[0];
-    const args: string[] =
-      tokens.length > 1 ? tokens.slice(1, tokens.length) : [];
-
-    return new TokenisedCommand(name, args);
-  }
-
-  /**
-   * Splits the given command String into a list of strings using whitespace as a delimiter. This takes into account
-   * quotations and will ensure values encased in quotations retain whitespace.
-   * <p>
-   * E.g. passing "git commit -m 'foo bar'" will return ["git", "commit", "-m", "foo bar"]
-   *
-   * @param command string to split
-   * @returns split command strings
-   * @private
-   */
-  // prettier-ignore
-  private static split(command: string): string[] {  // NOSONAR: reducing cognitive complexity for this is difficult
-    const quotes = "\"'";
-    const whitespace = " \t\r";
-
-    const values: string[] = [];
-    let buffer = "";
-
-    let insideQuotes = false;
-    let currentQuoteChar = "";
-
-    for (const char of command) {
-      // Ignore newlines, treat them as line continuations
-      if (char === "\n") {
-        continue;
-      }
-
-      // Check if inside of quotes to allow an argument with spaces, e.g. echo 'foo bar' baz
-      if (quotes.includes(char)) {
-        if (!insideQuotes) {
-          insideQuotes = true;
-          currentQuoteChar = char;
-          continue;
-        } else if (char === currentQuoteChar) {
-          insideQuotes = false;
-          continue;
-        }
-      }
-
-      if (!insideQuotes && whitespace.includes(char)) {
-        if (buffer.length > 0) {
-          values.push(buffer);
-          buffer = "";
-        }
-
-        continue;
-      }
-
-      buffer += char;
-    }
-
-    if (buffer.length > 0) {
-      values.push(buffer);
-    }
-
-    return values;
-  }
-
-  /**
-   * Gets the command script with a name that resolves to the {@link TokenisedCommand} name.
-   *
-   * @param tokenisedCommand details of the command.
+   * @param commandName name of the command, e.g. `terminal`
    * @returns the {@link CommandScript} if it is found, null otherwise.
    */
-  public static getCommandScript(
-    tokenisedCommand: TokenisedCommand,
-  ): CommandScript | null {
-    const commandScript =
-      CommandImportUtil.getCommandScripts()[tokenisedCommand.name];
+  public static getCommandScript(commandName: string): CommandScript | null {
+    const commandScript = CommandImportUtil.getCommandScripts()[commandName];
 
     if (commandScript === undefined) {
-      console.warn(`Command "${tokenisedCommand.name}" not found.`);
+      console.warn(`Command "${commandName}" not found.`);
       return null;
     }
 

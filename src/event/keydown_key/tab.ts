@@ -5,6 +5,8 @@ import TokenisedCommand from "../../dto/tokenised_command.ts";
 import { Suggestion } from "../../command/command_script.ts";
 import { ZERO_WIDTH_SPACE } from "../../constant/char.ts";
 import HtmlUtil from "../../util/html_util.ts";
+import Lexer from "../../shell/lexer.ts";
+import Parser from "../../shell/parser.ts";
 
 /**
  * Processes the 'Tab' key event. This will perform autocompletion of values in the terminal, either
@@ -30,7 +32,9 @@ export async function processTab(event: KeyboardEvent) {
     return;
   }
 
-  const tokenisedCommand = CommandUtil.tokenise(beforeCaret);
+  const lexer = new Lexer(beforeCaret);
+  const tokenisedCommand: TokenisedCommand = Parser.parse(lexer);
+
   let suggestions: Suggestion[];
 
   if (tokenisedCommand.args.length === 0 && !beforeCaret.endsWith(" ")) {
@@ -58,7 +62,7 @@ async function customCommandAutocomplete(
   beforeCaret: string,
   tokenisedCommand: TokenisedCommand,
 ): Promise<Suggestion[]> {
-  const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
+  const commandScript = CommandUtil.getCommandScript(tokenisedCommand.name);
 
   if (commandScript?.autocomplete) {
     const suggestions = await commandScript.autocomplete(

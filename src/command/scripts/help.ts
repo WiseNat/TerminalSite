@@ -1,10 +1,10 @@
 import { CommandScript, Suggestion } from "../command_script.ts";
 import CommandUtil from "../../util/command_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
-import TokenisedCommand from "../../dto/tokenised_command.ts";
 import FormatterUtil from "../../util/formatter_util.ts";
 import CommandImportUtil from "../../util/command_import_util.ts";
 import AutocompleteUtil from "../../util/autocomplete_util.ts";
+import Lexer, { Token } from "../../shell/lexer.ts";
 
 export interface HelpInformation {
   synopsis: string;
@@ -147,8 +147,17 @@ function getFirstValidCommand(
   commands: string[],
 ): { name: string; script: CommandScript } | null {
   for (const command of commands) {
-    const tokenisedCommand: TokenisedCommand = CommandUtil.tokenise(command);
-    const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
+    const lexer: Lexer = new Lexer(command);
+
+    // We only require the token name to retrieve a command script, so - as an optimisation - we don't invoke the
+    // 'Parser'
+    const token: Token = lexer.next().value;
+
+    if (token.value === null || token.value === undefined) {
+      continue;
+    }
+
+    const commandScript = CommandUtil.getCommandScript(token.value);
 
     if (commandScript !== null) {
       return { name: command, script: commandScript };
