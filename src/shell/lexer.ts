@@ -11,10 +11,12 @@ export type Token = {
   value: string | null | undefined;
 };
 
-// TODO: class JSDoc?
-// TODO: unit tests!
-// https://gcc.gnu.org/onlinedocs/cppinternals/Lexer.html
-// https://www.cs.uaf.edu/~chappell/class/2023_spr/cs331/lect/cs331-20230208-lex.pdf
+/**
+ * Lexer for iterating over a command stream and providing individual {@link Token Tokens} at a time.
+ * The following documentation may be useful:
+ * - https://gcc.gnu.org/onlinedocs/cppinternals/Lexer.html
+ * - https://www.cs.uaf.edu/~chappell/class/2023_spr/cs331/lect/cs331-20230208-lex.pdf
+ */
 export default class Lexer implements IterableIterator<Token> {
   private readonly charStream: string[];
   private bufferedToken: Token | null = null;
@@ -27,16 +29,15 @@ export default class Lexer implements IterableIterator<Token> {
     this.charStream = stream.split("").reverse();
   }
 
-  // TODO: JSDoc
   public [Symbol.iterator](): IterableIterator<Token> {
     return this;
   }
 
-  // TODO: improve JSDoc
-  // TODO: test me!
   /**
-   * @returns consumes the next valid {@link Token} in the provided `stream`, or a {@link TokenType#EOF} once the
-   * `stream` has been fully consumed.
+   * Consumes the next valid {@link Token} in the `stream` provided to the constructor.
+   *
+   * @returns the next {@link Token} or a {@link TokenType.EOF} if the `stream` has been fully consumed.
+   * @see {@link Lexer.peek} for peeking at the next {@link Token}
    */
   public next(): IteratorResult<Token> {
     if (this.eofEmitted) {
@@ -60,17 +61,13 @@ export default class Lexer implements IterableIterator<Token> {
   }
 
   /**
-   * @returns consumes and returns the next char. For {@link Token} next-ing, see {@link next}.
-   */
-  public nextChar(): string | undefined {
-    return this.charStream.pop();
-  }
-
-  // TODO: improve JSDoc
-  // TODO: test me!
-  /**
-   * @returns the next valid {@link Token} in the provided `stream`, or a {@link TokenType#EOF} once the
-   * `stream` has been fully consumed.
+   * Peeks at the next valid {@link Token} in the `stream` provided to the constructor.
+   * <p>
+   * This is not a pure method call as handlers downstream will consume from the Lexer's `stream`. This means that calls
+   * to {@link Lexer.peekChar} before and after a {@link Lexer.peek} call will differ.
+   *
+   * @returns the next {@link Token} or a {@link TokenType.EOF} if the `stream` has been fully consumed.
+   * @see {@link Lexer.next} for consuming the next {@link Token}
    */
   public peek(): Token {
     if (this.bufferedToken === null) {
@@ -81,19 +78,33 @@ export default class Lexer implements IterableIterator<Token> {
   }
 
   /**
-   * @returns the next character in the provided `stream`. For {@link Token} peeking, see {@link peek}.
-   * @private
+   * Consumes and returns the next character in the `stream`
+   *
+   * @see {@link Lexer.peekChar} for peeking at the next character
+   * @returns the next char if available or undefined if the `stream` has been fully consumed
+   */
+  public nextChar(): string | undefined {
+    return this.charStream.pop();
+  }
+
+  /**
+   * Gets the next character in the provided `stream`.
+   *
+   * @see {@link Lexer.nextChar} for consuming the next character
+   * @returns the next char if available or undefined if the `stream` has been fully consumed
    */
   public peekChar(): string | undefined {
     return this.charStream.at(-1);
   }
 
-  // TODO: improve JSDoc with info on how tokenising works at a low level
   /**
-   * Gets and consumes the next valid {@link Token} in the provided `stream`, or a {@link TokenType#EOF} once the
-   * `stream` has been fully consumed.
+   * Gets the next valid {@link Token} in the provided `stream`.
+   * If the `stream` has been fully consumed, this will continue to return a
+   * {@link TokenType.EOF} {@link Token} with a `null` value.
    * <p>
-   * Tokens are determined by ????
+   * This generates tokens in blocks by delegating to {@link Handler} classes
+   * based on the initial encountered token. These {@link Handler Handlers} may
+   * in term call other {@link Handler Handlers} to generate a {@link Token}.
    *
    * @private
    */
@@ -112,9 +123,6 @@ export default class Lexer implements IterableIterator<Token> {
     //  - Escaping Chars
     //  - Ignore newlines?
     // TODO: ensure 'maximal munch'!
-
-    // TODO: change logic to "peek" at next char, then determine what handler to pass to?
-    //  Below is the basis of for the word handler?
 
     // TODO: logic for undefined?
     const nextChar: string = this.peekChar()!;
@@ -135,13 +143,20 @@ export default class Lexer implements IterableIterator<Token> {
     return token;
   }
 
-  // TODO: JSDoc
   // TODO: unit tests for me?
+  /**
+   * Consumes the `stream` until it reaches a character that is not whitespace.
+   * <p>
+   * Intended to be used to consume excess initial whitespace before handing off to {@link Handler Handlers}.
+   *
+   * @param nextChar the next peeked character, see {@link Lexer.peekChar}
+   * @private
+   */
   private consumeExcessWhitespace(nextChar: string) {
     let char: string | undefined = nextChar;
 
     // TODO: ??? return EOF somehow for undefined?
-    while (char !== undefined && this.isWhitespace(char)) {
+    while (char !== undefined && Lexer.isWhitespace(char)) {
       // TODO: check for end of charStream?
       this.nextChar();
       char = this.peekChar();
@@ -149,9 +164,12 @@ export default class Lexer implements IterableIterator<Token> {
   }
 
   // TODO: migrate to util?
-  // TODO: JSDoc
   // TODO: tests for this!
-  public isWhitespace(char: string) {
+  /**
+   * @param char the character to check
+   * @returns `true` if the `char` is whitespace, false otherwise
+   */
+  public static isWhitespace(char: string) {
     return [" ", "\t", "\r"].includes(char);
   }
 }

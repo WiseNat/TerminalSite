@@ -1,5 +1,3 @@
-// TODO: tests!!!
-
 import { describe, expect, test } from "vitest";
 import Lexer, { Token, TokenType } from "../../../../src/shell/lexer.ts";
 
