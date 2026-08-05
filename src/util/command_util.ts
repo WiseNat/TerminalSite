@@ -11,10 +11,24 @@ export default class CommandUtil {
   /**
    * Executes a command using the given command string.
    * Will output to the terminal if no command is found.
+   * <p>
+   * Follows the shell command language guidelines where relevant -
+   * https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html#tag_19
    *
    * @param command a command string, e.g. 'echo foo bar'
    */
   public static async executeCommand(command: string) {
+    // TODO: Follow shell ordering (https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html#tag_19)
+    //  1. Read in input... already done at this point
+    //  2. Break input into tokens (words & operators)
+    //  3. Parse tokenised input into simple/compound commands (just simple for this)
+    //  4. For each word, process backslash escaped sequences & word expansion
+    //  5. Perform redirection (piping and redirect in/out, redundant for now)
+    //  6. Execute a command, providing the relevant arguments
+    //  7. Optionally (always) wait for the command to complete and collect the exit status (redundant)
+
+    // TODO: make "tokenise" resolve ~ to ${HOME}
+    // TODO: make "tokenise" resolve variable substitutions
     const tokenisedCommand: TokenisedCommand = this.tokenise(command);
     const prompt = TerminalUtil.getRawPrompt();
 
