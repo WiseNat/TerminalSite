@@ -7,7 +7,7 @@ import CommandImportUtil from "./command_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import { escape } from "lodash-es";
 import Parser from "../shell/parser.ts";
-import Lexer from "../shell/lexer.ts";
+import Lexer, { LexerError } from "../shell/lexer.ts";
 
 export default class CommandUtil {
   /**
@@ -32,16 +32,26 @@ export default class CommandUtil {
     // TODO: make "tokenise" resolve ~ to ${HOME}
     // TODO: make "tokenise" resolve variable substitutions
 
-    const lexer: Lexer = new Lexer(command);
-    const tokenisedCommand: TokenisedCommand = Parser.parse(lexer);
     const prompt = TerminalUtil.getRawPrompt();
+    TerminalUtil.appendRawOutput(prompt + escape(command), true);
+    TerminalUtil.setInput("");
 
-    if (tokenisedCommand.name === "") {
-      TerminalUtil.appendRawOutput(prompt, true);
-    } else {
-      TerminalUtil.appendRawOutput(prompt + escape(command), true);
-      TerminalUtil.setInput("");
+    let tokenisedCommand: TokenisedCommand;
 
+    try {
+      const lexer: Lexer = new Lexer(command);
+      tokenisedCommand = Parser.parse(lexer);
+    } catch (error) {
+      if (error instanceof LexerError) {
+        TerminalUtil.appendOutput("syntax error: " + error.message);
+      } else {
+        console.warn("Unexpected error occurred: " + error);
+      }
+
+      return;
+    }
+
+    if (tokenisedCommand.name !== "") {
       const commandScript = this.getCommandScript(tokenisedCommand.name);
 
       if (commandScript === null) {

@@ -1,7 +1,18 @@
 import { Handler } from "./handler.ts";
 import Lexer, { Token, TokenType } from "../lexer.ts";
+import QuoteHandler from "./quote_handler.ts";
 
 export default class WordHandler implements Handler {
+  private readonly SINGLE_QUOTE: string = "'";
+  private readonly DOUBLE_QUOTE: string = "\"";
+
+  private singleQuoteHandler: QuoteHandler = new QuoteHandler(
+    this.SINGLE_QUOTE,
+  );
+  private doubleQuoteHandler: QuoteHandler = new QuoteHandler(
+    this.DOUBLE_QUOTE,
+  );
+
   /**
    * Gets the next {@link TokenType.WORD} {@link Token}.
    *
@@ -9,32 +20,38 @@ export default class WordHandler implements Handler {
    * @param token the {@link Token} to write the result to
    */
   public nextToken(lexer: Lexer, token: Token) {
-    let lexeme: string = "";
+    let nextChar: string | undefined;
 
-    // TODO: migrate peeked char into var?
-    while (this.isValidChar(lexer.peekChar())) {
-      //        foo 'ba'r 'baz gaz' 'daz'\'
-      // WORD   XXXX    XX         X     XX
-      // QUOTE      XXXX  XXXXXXXXX XXXXX
+    while (this.isValidChar((nextChar = lexer.peekChar()))) {
+      // TODO: handle escaped chars? - will come in as \ and <char> separately
 
-      // TODO: pass to other handlers based on peeked char?
-
-      const char: string = lexer.nextChar()!;
-      lexeme += char;
+      switch (nextChar) {
+        case this.SINGLE_QUOTE:
+          this.singleQuoteHandler.nextToken(lexer, token);
+          break;
+        // prettier-ignore
+        case this.DOUBLE_QUOTE:
+          this.doubleQuoteHandler.nextToken(lexer, token);
+          break;
+        default: {
+          const char: string = lexer.nextChar()!;
+          Lexer.appendTokenValue(token, char);
+        }
+      }
     }
 
     token.type = TokenType.WORD;
-    token.value = lexeme;
   }
 
   /**
-   * Checks if the provided `char` is valid for the {@link WordHandler}.
+   * Checks if the provided `char` is valid for continued processing of the current token.
    *
    * @param char the character to check
    * @private
-   * @return `true` if the character provided is valid for the {@link WordHandler} to process, false otherwise
+   * @return `true` if the character provided is valid, false otherwise
    */
   private isValidChar(char: string | undefined): boolean {
+    // TODO: escaped whitespace?..
     return char !== undefined && !Lexer.isWhitespace(char);
   }
 }

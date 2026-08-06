@@ -1,8 +1,8 @@
 import WordHandler from "./handler/word_handler.ts";
 
-// TODO: add more types!
 export enum TokenType {
   WORD,
+  TRAILING_WHITESPACE,
   EOF,
 }
 
@@ -11,9 +11,19 @@ export type Token = {
   value: string | null | undefined;
 };
 
+export class LexerError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "LexerError";
+    Object.setPrototypeOf(this, LexerError.prototype);
+  }
+}
+
 /**
  * Lexer for iterating over a command stream and providing individual {@link Token Tokens} at a time.
- * The following documentation may be useful:
+ * Loosely based on the following Lexer - https://github.com/Maybe1or0/42sh/blob/main/42sh/src/lexer/lexer.c
+ *
+ * The following links may be useful:
  * - https://gcc.gnu.org/onlinedocs/cppinternals/Lexer.html
  * - https://www.cs.uaf.edu/~chappell/class/2023_spr/cs331/lect/cs331-20230208-lex.pdf
  */
@@ -38,6 +48,7 @@ export default class Lexer implements IterableIterator<Token> {
    *
    * @returns the next {@link Token} or a {@link TokenType.EOF} if the `stream` has been fully consumed.
    * @see {@link Lexer.peek} for peeking at the next {@link Token}
+   * @throws Error if the provided `stream` has invalid contents
    */
   public next(): IteratorResult<Token> {
     if (this.eofEmitted) {
@@ -68,6 +79,7 @@ export default class Lexer implements IterableIterator<Token> {
    *
    * @returns the next {@link Token} or a {@link TokenType.EOF} if the `stream` has been fully consumed.
    * @see {@link Lexer.next} for consuming the next {@link Token}
+   * @throws Error if the provided `stream` has invalid contents
    */
   public peek(): Token {
     if (this.bufferedToken === null) {
@@ -107,6 +119,7 @@ export default class Lexer implements IterableIterator<Token> {
    * in term call other {@link Handler Handlers} to generate a {@link Token}.
    *
    * @private
+   * @throws Error if the provided `stream` has invalid contents
    */
   private nextToken(): Token {
     if (this.charStream.length === 0) {
@@ -116,60 +129,72 @@ export default class Lexer implements IterableIterator<Token> {
       };
     }
 
+    this.consumeExcessWhitespace();
+
+    // Exists solely to support autocompletion
+    if (this.charStream.length === 0) {
+      return {
+        type: TokenType.TRAILING_WHITESPACE,
+        value: null,
+      };
+    }
+
     // TODO: add additional lexer rules! e.g.
-    //  - Double Quoting
-    //  - Single Quoting
     //  - Parameterisation '$', '${', "$(", "$((" ?
     //  - Escaping Chars
     //  - Ignore newlines?
-    // TODO: ensure 'maximal munch'!
 
-    // TODO: logic for undefined?
     const nextChar: string = this.peekChar()!;
-
-    this.consumeExcessWhitespace(nextChar);
-
-    // TODO: check for undefined after passing to handlers?...
     const token: Token = { type: undefined, value: undefined };
 
+    // No other handlers required as of now. The 'switch' is here for when functionality such as pipelines or IO
+    // redirections are implemented, in which case handlers should be added below.
     switch (nextChar) {
       default:
         this.wordHandler.nextToken(this, token);
     }
 
-    // TODO: IF next char is a " THEN delegate to doubleQuoteHandler (handler continues processing until an unescaped " or EOF is hit)
-    // TODO: IF next char is a ' THEN delegate to singleQuoteHandler (handler continues processing until an unescaped ' or EOF is hit)
+    if (token.type === undefined) {
+      throw new LexerError(
+        "cannot return a token with an undefined type; did a handler forget to set this? " +
+          `Starting character before processing was ${nextChar} and the remaining stream after processing is [${this.charStream.join(", ")}]`,
+      );
+    }
 
     return token;
   }
 
-  // TODO: unit tests for me?
   /**
    * Consumes the `stream` until it reaches a character that is not whitespace.
    * <p>
    * Intended to be used to consume excess initial whitespace before handing off to {@link Handler Handlers}.
    *
-   * @param nextChar the next peeked character, see {@link Lexer.peekChar}
    * @private
    */
-  private consumeExcessWhitespace(nextChar: string) {
-    let char: string | undefined = nextChar;
+  public consumeExcessWhitespace() {
+    let char: string | undefined = this.peekChar();
 
-    // TODO: ??? return EOF somehow for undefined?
     while (char !== undefined && Lexer.isWhitespace(char)) {
-      // TODO: check for end of charStream?
       this.nextChar();
       char = this.peekChar();
     }
   }
 
-  // TODO: migrate to util?
-  // TODO: tests for this!
   /**
    * @param char the character to check
    * @returns `true` if the `char` is whitespace, false otherwise
    */
   public static isWhitespace(char: string) {
     return [" ", "\t", "\r"].includes(char);
+  }
+
+  /**
+   * Safely appends a `value` to the provided {@link Token} value. Useful for when the token value could be undefined.
+   *
+   * @param token the {@link Token} to modify
+   * @param value the value to append
+   */
+  public static appendTokenValue(token: Token, value: string) {
+    token.value = (token.value ?? "") + value;
   }
 }

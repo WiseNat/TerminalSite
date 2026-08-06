@@ -38,7 +38,7 @@ test("Typing an unknown command and pressing Enter returns that the command was 
   );
 });
 
-test("Typing HTML and pressing Enter returns that the commnad was not found", async ({
+test("Typing HTML and pressing Enter returns that the command was not found", async ({
   page,
 }) => {
   // Arrange
@@ -57,6 +57,22 @@ test("Typing no command and pressing Enter does nothing", async ({ page }) => {
 
   // Assert
   await assertOutputInTerminal(page, "");
+});
+
+test("Typing a command with lexer issues and pressing Enter should output an error", async ({
+  page,
+}) => {
+  // Arrange
+  const input = "echo 'foo";
+
+  // Act
+  await runCommand(page, input);
+
+  // Assert
+  await assertOutputInTerminal(
+    page,
+    `${input}\nsyntax error: unexpected EOF while looking for a matching '`,
+  );
 });
 
 test("Pressing Enter should run a command & prevent a newline being inserted in the user input", async ({

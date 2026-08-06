@@ -1,237 +1,411 @@
-import { describe, expect, test } from "vitest";
-import Lexer, { Token, TokenType } from "../../../../src/shell/lexer.ts";
+import { describe, expect, test, vi } from "vitest";
+import Lexer, {
+  LexerError,
+  Token,
+  TokenType,
+} from "../../../../src/shell/lexer.ts";
+import { escape } from "lodash-es";
+import WordHandler from "../../../../src/shell/handler/word_handler.ts";
 
 describe("Lexer", () => {
-  // TODO: tests...
-  //  - multiple spaces?
+  describe("token", () => {
+    describe("next", () => {
+      test("returns the expected tokens in order", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("foo  \"hello bar\" baz");
 
-  // TODO: these tests?
-  /*
+        // Act
+        const first: Token = lexer.next().value;
+        const second: Token = lexer.next().value;
+        const third: Token = lexer.next().value;
+
+        // Assert
+        expect(first).toStrictEqual({ type: TokenType.WORD, value: "foo" });
+        expect(second).toStrictEqual({
+          type: TokenType.WORD,
+          value: "\"hello bar\"",
+        });
+        expect(third).toStrictEqual({ type: TokenType.WORD, value: "baz" });
+      });
+
+      test("produces EOF for an empty input", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("");
+
+        // Act
+        const token: Token = lexer.next().value;
+
+        // Assert
+        expect(token).toStrictEqual({ type: TokenType.EOF, value: null });
+      });
+
+      test("produces EOF once all other tokens have been provided", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("foo bar baz");
+        for (let i = 0; i < 3; i++) {
+          lexer.next();
+        }
+
+        // Act
+        const token: Token = lexer.next().value;
+
+        // Assert
+        expect(token).toStrictEqual({ type: TokenType.EOF, value: null });
+      });
+
+      test("does not terminate iterator before EOF", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("foo bar baz");
+        for (let i = 0; i < 3; i++) {
+          lexer.next();
+        }
+
+        // Act
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const token: IteratorYieldResult<Token> | IteratorReturnResult<any> =
+          lexer.next();
+
+        // Assert
+        expect(token).toStrictEqual({
+          done: false,
+          value: { type: TokenType.EOF, value: null },
+        });
+      });
+
+      test("terminates iterator after EOF", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("foo bar baz");
+        for (let i = 0; i < 4; i++) {
+          lexer.next();
+        }
+
+        // Act
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const token: IteratorYieldResult<Token> | IteratorReturnResult<any> =
+          lexer.next();
+
+        // Assert
+        expect(token).toStrictEqual({ done: true, value: undefined });
+      });
+
+      test("continues producing a terminated iterator after calls after initial termination", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("foo bar baz");
+        for (let i = 0; i < 10; i++) {
+          lexer.next();
+        }
+
+        // Act
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const token: IteratorYieldResult<Token> | IteratorReturnResult<any> =
+          lexer.next();
+
+        // Assert
+        expect(token).toStrictEqual({ done: true, value: undefined });
+      });
+    });
+
+    describe("peek", () => {
+      test("peeks at the next token without consuming it", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("foo bar baz");
+        const expectedTokens = [
+          { type: TokenType.WORD, value: "foo" },
+          { type: TokenType.WORD, value: "bar" },
+          { type: TokenType.WORD, value: "baz" },
+        ];
+
+        // Act & Assert
+        expect(lexer.peek()).toStrictEqual(expectedTokens.at(0));
+        expect(lexer.next().value).toStrictEqual(expectedTokens.at(0));
+
+        expect(lexer.next().value).toStrictEqual(expectedTokens.at(1));
+
+        expect(lexer.peek()).toStrictEqual(expectedTokens.at(2));
+        expect(lexer.peek()).toStrictEqual(expectedTokens.at(2));
+        expect(lexer.next().value).toStrictEqual(expectedTokens.at(2));
+      });
+
+      test("returns the same token for repeated peeks", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("foo bar baz");
+
+        // Act & Assert
+        let previous: Token = lexer.peek();
+        for (let i = 0; i < 100; i++) {
+          const current = lexer.peek();
+          expect(current).toEqual(previous);
+          previous = current;
+        }
+      });
+    });
+
+    describe("lexing", () => {
+      [
         {
-        type: "a command with multiple arguments",
-        commandString: "mycommand foo -m bar",
-        expectedCommand: "mycommand",
-        expectedArgs: ["foo", "-m", "bar"],
-      },
-      {
-        type: "a command with no arguments",
-        commandString: "mycommand",
-        expectedCommand: "mycommand",
-        expectedArgs: [],
-      },
-      {
-        type: "an empty command",
-        commandString: "",
-        expectedCommand: "",
-        expectedArgs: [],
-      },
-      {
-        type: "a complex command",
-        commandString: "git commit -m \"foo 'bar'\" and 'baz \"gaz'",
-        expectedCommand: "git",
-        expectedArgs: ["commit", "-m", "foo 'bar'", "and", "baz \"gaz"],
-      },
-      {
-        type: "a command with arguments with double quoted spaces",
-        commandString: "mycommand \"foo bar\"",
-        expectedCommand: "mycommand",
-        expectedArgs: ["foo bar"],
-      },
-      {
-        type: "a command with arguments with single quoted spaces",
-        commandString: "mycommand 'foo bar'",
-        expectedCommand: "mycommand",
-        expectedArgs: ["foo bar"],
-      },
-      {
-        type: "a command with excessive whitespace",
-        commandString: "mycommand  ab \r  'foo \tbar' \n ",
-        expectedCommand: "mycommand",
-        expectedArgs: ["ab", "foo \tbar"],
-      },
-      {
-        type: "a command with newlines and ignores them",
-        commandString: "mycommand foo\nbar baz \ngaz",
-        expectedCommand: "mycommand",
-        expectedArgs: ["foobar", "baz", "gaz"],
-      },
-   */
+          input: "echo hello",
+          expected: [
+            { type: TokenType.WORD, value: "echo" },
+            { type: TokenType.WORD, value: "hello" },
+            { type: TokenType.EOF, value: null },
+          ],
+        },
+        {
+          input: "echo \"hello world\"",
+          expected: [
+            { type: TokenType.WORD, value: "echo" },
+            { type: TokenType.WORD, value: "\"hello world\"" },
+            { type: TokenType.EOF, value: null },
+          ],
+        },
+        {
+          input: "echo 'hello world'",
+          expected: [
+            { type: TokenType.WORD, value: "echo" },
+            { type: TokenType.WORD, value: "'hello world'" },
+            { type: TokenType.EOF, value: null },
+          ],
+        },
+        {
+          input: "echo foo\"bar\"baz",
+          expected: [
+            { type: TokenType.WORD, value: "echo" },
+            { type: TokenType.WORD, value: "foo\"bar\"baz" },
+            { type: TokenType.EOF, value: null },
+          ],
+        },
+        {
+          input: "mycommand foo -m bar",
+          expected: [
+            { type: TokenType.WORD, value: "mycommand" },
+            { type: TokenType.WORD, value: "foo" },
+            { type: TokenType.WORD, value: "-m" },
+            { type: TokenType.WORD, value: "bar" },
+            { type: TokenType.EOF, value: null },
+          ],
+        },
+        {
+          input: "mycommand",
+          expected: [
+            { type: TokenType.WORD, value: "mycommand" },
+            { type: TokenType.EOF, value: null },
+          ],
+        },
+        {
+          input: "mycommand  ab \\r  'foo \\tbar' \\n ",
+          expected: [
+            { type: TokenType.WORD, value: "mycommand" },
+            { type: TokenType.WORD, value: "ab" },
+            { type: TokenType.WORD, value: "\\r" },
+            { type: TokenType.WORD, value: "'foo \\tbar'" },
+            { type: TokenType.WORD, value: "\\n" },
+            { type: TokenType.TRAILING_WHITESPACE, value: null },
+            { type: TokenType.EOF, value: null },
+          ],
+        },
+      ].forEach(({ input, expected }) => {
+        test(`lexes multiple words: ${input}`, () => {
+          // Arrange
+          const lexer: Lexer = new Lexer(input);
 
-  // TODO: delete me!
-  test("WORKSHOP", () => {
-    // Arrange
-    const lexer: Lexer = new Lexer("echo -e 'foo'");
-    console.log(lexer.next().value);
-    console.log(lexer.next().value);
+          // Act
+          const tokens: Token[] = [...lexer];
 
-    // Act
-    for (let i = 0; i < 5; i++) {
-      const token = lexer.peek();
-      console.log(token);
-    }
+          // Assert
+          expect(tokens).toStrictEqual(expected);
+        });
+      });
 
-    // Assert
+      test("ignores whitespace between words", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("   hello       \tworld    ");
+
+        // Act
+        const tokens: Token[] = [...lexer];
+
+        // Assert
+        expect(tokens).toStrictEqual([
+          { type: TokenType.WORD, value: "hello" },
+          { type: TokenType.WORD, value: "world" },
+          { type: TokenType.TRAILING_WHITESPACE, value: null },
+          { type: TokenType.EOF, value: null },
+        ]);
+      });
+
+      test("throws an error when a handler does not set the token type", () => {
+        // Arrange
+        vi.spyOn(WordHandler.prototype, "nextToken").mockImplementation(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          (lexer, _token) => {
+            // Emulating 'foo ' being consumed
+            for (let i = 0; i < 4; i++) {
+              lexer.nextChar();
+            }
+          },
+        );
+        const lexer: Lexer = new Lexer("foo bar");
+
+        // Act & Assert
+        expect(() => lexer.next()).toThrow(
+          new LexerError(
+            "cannot return a token with an undefined type; did a handler forget to set this? Starting character " +
+              "before processing was f and the remaining stream after processing is [r, a, b]",
+          ),
+        );
+      });
+    });
   });
 
-  // TODO: fix test naming
-  // TODO: aggregate tests into rules?
+  describe("char", () => {
+    describe("nextChar", () => {
+      test("returns each character in order", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("foo bar baz");
 
-  describe("next", () => {
-    test("empty input > just EOF token", () => {
-      // Arrange
-      const lexer: Lexer = new Lexer("");
+        // Act & Assert
+        expect(lexer.nextChar()).toStrictEqual("f");
+        expect(lexer.nextChar()).toStrictEqual("o");
+        expect(lexer.nextChar()).toStrictEqual("o");
+        expect(lexer.nextChar()).toStrictEqual(" ");
+        expect(lexer.nextChar()).toStrictEqual("b");
+      });
 
-      // Act
-      const tokens = [...lexer];
+      test("produces undefined for an empty stream", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("");
 
-      // Assert
-      console.log(tokens);
-      expect(tokens).toStrictEqual([{ type: TokenType.EOF, value: null }]);
+        // Act
+        const char = lexer.nextChar();
+
+        // Assert
+        expect(char).toBeUndefined();
+      });
+
+      test("produces undefined once all characters have been provided", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("abc");
+        for (let i = 0; i < 3; i++) {
+          lexer.nextChar();
+        }
+
+        // Act
+        const char = lexer.nextChar();
+
+        // Assert
+        expect(char).toBeUndefined();
+      });
     });
 
-    test("single word input > word, eof", () => {
-      // Arrange
-      const lexer: Lexer = new Lexer("foo");
+    describe("peekChar", () => {
+      test("peeks at the next character without consuming it", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("foo bar baz");
+        const expectedChars = ["f", "o", "o"];
 
-      // Act
-      const tokens = [...lexer];
+        // Act & Assert
+        expect(lexer.peekChar()).toStrictEqual(expectedChars.at(0));
+        expect(lexer.nextChar()).toStrictEqual(expectedChars.at(0));
 
-      // Assert
-      console.log(tokens);
-      expect(tokens).toStrictEqual([
-        { type: TokenType.WORD, value: "foo" },
-        { type: TokenType.EOF, value: null },
-      ]);
+        expect(lexer.nextChar()).toStrictEqual(expectedChars.at(1));
+
+        expect(lexer.peekChar()).toStrictEqual(expectedChars.at(2));
+        expect(lexer.peekChar()).toStrictEqual(expectedChars.at(2));
+        expect(lexer.nextChar()).toStrictEqual(expectedChars.at(2));
+      });
+
+      test("returns the same character for repeated peeks", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("foo bar baz");
+
+        // Act & Assert
+        let previous = lexer.peekChar();
+        for (let i = 0; i < 100; i++) {
+          const current = lexer.peekChar();
+          expect(current).toEqual(previous);
+          previous = current;
+        }
+      });
     });
-
-    test("multiple words > word, word, word, eof", () => {
-      // Arrange
-      const lexer: Lexer = new Lexer("foo bar baz");
-
-      // Act
-      const tokens = [...lexer];
-
-      // Assert
-      console.log(tokens);
-      expect(tokens).toStrictEqual([
-        { type: TokenType.WORD, value: "foo" },
-        { type: TokenType.WORD, value: "bar" },
-        { type: TokenType.WORD, value: "baz" },
-        { type: TokenType.EOF, value: null },
-      ]);
-    });
-
-    test("multiple words with multiple spaces", () => {
-      // Arrange
-      const lexer: Lexer = new Lexer("foo  bar \tbaz");
-
-      // Act
-      const tokens = [...lexer];
-
-      // Assert
-      console.log(tokens);
-      expect(tokens).toStrictEqual([
-        { type: TokenType.WORD, value: "foo" },
-        { type: TokenType.WORD, value: "bar" },
-        { type: TokenType.WORD, value: "baz" },
-        { type: TokenType.EOF, value: null },
-      ]);
-    });
-
-    // TODO: impl!
-    /*    test("single quotes", () => {
-      // Arrange
-      const lexer: Lexer = new Lexer("foo 'ba'r 'baz gaz' 'daz''");
-
-      // Act
-      const tokens = [...lexer];
-
-      // Assert
-      expect(tokens).toStrictEqual([
-        { type: TokenType.WORD, value: "foo" },
-        { type: TokenType.WORD, value: "bar" },
-        { type: TokenType.WORD, value: "baz gaz" },
-        { type: TokenType.WORD, value: "daz'" },
-        { type: TokenType.EOF, value: null },
-      ]);
-    });*/
   });
 
-  describe("peek", () => {
-    // TODO: tests!
-
-    test("empty input > EOF", () => {
+  describe("consumeExcessWhitespace", () => {
+    test("consumes all excess whitespace that exists", () => {
       // Arrange
-      const lexer: Lexer = new Lexer("");
+      const lexer = new Lexer("    \t  \rbar");
 
       // Act
-      const token: Token = lexer.peek();
+      lexer.consumeExcessWhitespace();
 
       // Assert
-      expect(token).toStrictEqual({ type: TokenType.EOF, value: null });
+      expect(lexer.peekChar()).toStrictEqual("b");
     });
 
-    test("one word input > word", () => {
+    test("consumes all characters when only whitespace exists", () => {
       // Arrange
-      const lexer: Lexer = new Lexer("foo");
+      const lexer = new Lexer("    \t  \r");
 
       // Act
-      const token: Token = lexer.peek();
+      lexer.consumeExcessWhitespace();
 
       // Assert
-      expect(token).toStrictEqual({ type: TokenType.WORD, value: "foo" });
+      expect(lexer.peekChar()).toBeUndefined();
+    });
+  });
+
+  describe("isWhitespace", () => {
+    [" ", "\t", "\r"].forEach((character: string) => {
+      test(`returns true for whitespace character '${escape(character)}'`, () => {
+        // Act
+        const result: boolean = Lexer.isWhitespace(character);
+
+        // Assert
+        expect(result).toBeTruthy();
+      });
     });
 
-    test("multi word input > first word", () => {
+    ["a", "!", "*"].forEach((character: string) => {
+      test(`returns false for non-whitespace character '${escape(character)}'`, () => {
+        // Act
+        const result: boolean = Lexer.isWhitespace(character);
+
+        // Assert
+        expect(result).toBeFalsy();
+      });
+    });
+  });
+
+  describe("appendTokenValue", () => {
+    test("appends to an existing value", () => {
       // Arrange
-      const lexer: Lexer = new Lexer("foo bar baz");
+      const token: Token = { type: TokenType.WORD, value: "foo" };
 
       // Act
-      const token: Token = lexer.peek();
+      Lexer.appendTokenValue(token, "bar");
 
       // Assert
-      expect(token).toStrictEqual({ type: TokenType.WORD, value: "foo" });
+      expect(token.value).toStrictEqual("foobar");
     });
 
-    test("multi word input + next > second word", () => {
+    test("appends to an empty value", () => {
       // Arrange
-      const lexer: Lexer = new Lexer("foo bar baz");
+      const token: Token = { type: TokenType.WORD, value: "" };
 
       // Act
-      lexer.next();
-      const token: Token = lexer.peek();
+      Lexer.appendTokenValue(token, "foo");
 
       // Assert
-      expect(token).toStrictEqual({ type: TokenType.WORD, value: "bar" });
+      expect(token.value).toStrictEqual("foo");
     });
 
-    test("multi word input + fully consumed next > eof", () => {
+    test("appends to an undefined value", () => {
       // Arrange
-      const lexer: Lexer = new Lexer("foo bar baz");
+      const token: Token = { type: TokenType.WORD, value: undefined };
 
       // Act
-      lexer.next();
-      lexer.next();
-      lexer.next();
-      const token: Token = lexer.peek();
+      Lexer.appendTokenValue(token, "foo");
 
       // Assert
-      expect(token).toStrictEqual({ type: TokenType.EOF, value: null });
-    });
-
-    test("multi word input + next + multi peeks > second word", () => {
-      // Arrange
-      const lexer: Lexer = new Lexer("foo bar baz");
-
-      // Act
-      lexer.next();
-      lexer.peek();
-      lexer.peek();
-      lexer.peek();
-      const token: Token = lexer.peek();
-
-      // Assert
-      expect(token).toStrictEqual({ type: TokenType.WORD, value: "bar" });
+      expect(token.value).toStrictEqual("foo");
     });
   });
 });

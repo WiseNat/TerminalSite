@@ -13,6 +13,7 @@ export default class Parser {
    * @param lexer a lexer to parse
    * @returns a populated {@link TokenisedCommand} with an empty name if the there are 0 non-{@link TokenType.EOF}
    * tokens in the `lexer` and an empty args array if there are 1 or 0 tokens non-{@link TokenType.EOF} in the `lexer`
+   * @throws an error if the {@link Lexer} fails to retrieve tokens
    */
   public static parse(lexer: Lexer): TokenisedCommand {
     const tokens: Token[] = this.getAllTokens(lexer);
@@ -23,12 +24,16 @@ export default class Parser {
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
 
-      if (token.value !== undefined && token.value !== null) {
-        if (i === 0) {
-          name = token.value;
-        } else {
-          args.push(token.value);
-        }
+      // TODO: "consume" quotes
+      const value: string | undefined | null = this.getTokenValue(token);
+      if (value === undefined || value === null) {
+        continue;
+      }
+
+      if (i === 0) {
+        name = value;
+      } else {
+        args.push(value);
       }
     }
 
@@ -50,5 +55,18 @@ export default class Parser {
     }
 
     return tokens;
+  }
+
+  /**
+   * Converts {@link Token} values into parser friendly values.
+   * @param token
+   * @private
+   */
+  private static getTokenValue(token: Token): string | null | undefined {
+    if (token.type === TokenType.TRAILING_WHITESPACE) {
+      return "";
+    }
+
+    return token.value;
   }
 }
