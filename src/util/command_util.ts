@@ -1,12 +1,12 @@
 // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
 import getopts, { Options, ParsedOptions } from "getopts";
-import TokenisedCommand from "../dto/tokenised_command.ts";
+import Expander, { ExecutionCommand } from "../shell/expander.ts";
 import { CommandScript } from "../command/command_script.ts";
 import TerminalUtil from "./terminal_util.ts";
 import CommandImportUtil from "./command_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import { escape } from "lodash-es";
-import Parser from "../shell/parser.ts";
+import Parser, { SimpleCommand } from "../shell/parser.ts";
 import Lexer, { LexerError } from "../shell/lexer.ts";
 
 export default class CommandUtil {
@@ -21,13 +21,13 @@ export default class CommandUtil {
    */
   public static async executeCommand(command: string) {
     // TODO: Follow shell ordering (https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html#tag_19)
-    //  1. Read in input... already done at this point
-    //  2. Break input into tokens (words & operators)
-    //  3. Parse tokenised input into simple/compound commands (just simple for this)
-    //  4. For each word, process backslash escaped sequences & word expansion
-    //  5. Perform redirection (piping and redirect in/out, redundant for now)
-    //  6. Execute a command, providing the relevant arguments
-    //  7. Optionally (always) wait for the command to complete and collect the exit status (redundant)
+    //  1. [enter] Read in input...
+    //  2. [Lexer] Break input into tokens (words & operators)
+    //  3. [Parser] Parse tokenised input into simple/compound commands (just simple for this)
+    //  4. [Expander] For each word, process backslash escaped sequences & word expansion
+    //  5. [CommandUtil] Perform redirection (piping and redirect in/out, redundant for now)
+    //  6. [CommandUtil] Execute a command, providing the relevant arguments
+    //  7. [CommandUtil] Optionally (always) wait for the command to complete and collect the exit status (redundant)
 
     // TODO: make "tokenise" resolve ~ to ${HOME}
     // TODO: make "tokenise" resolve variable substitutions
@@ -36,11 +36,12 @@ export default class CommandUtil {
     TerminalUtil.appendRawOutput(prompt + escape(command), true);
     TerminalUtil.setInput("");
 
-    let tokenisedCommand: TokenisedCommand;
+    let executionCommand: ExecutionCommand;
 
     try {
       const lexer: Lexer = new Lexer(command);
-      tokenisedCommand = Parser.parse(lexer);
+      const simpleCommand: SimpleCommand = Parser.parse(lexer);
+      executionCommand = Expander.expand(simpleCommand);
     } catch (error) {
       if (error instanceof LexerError) {
         TerminalUtil.appendOutput("syntax error: " + error.message);
@@ -51,21 +52,21 @@ export default class CommandUtil {
       return;
     }
 
-    if (tokenisedCommand.name !== "") {
-      const commandScript = this.getCommandScript(tokenisedCommand.name);
+    if (executionCommand.name !== "") {
+      const commandScript = this.getCommandScript(executionCommand.name);
 
       if (commandScript === null) {
         TerminalUtil.appendOutput(
-          `${tokenisedCommand.name}: command not found`,
+          `${executionCommand.name}: command not found`,
         );
       } else {
         // Fixes visual issues with non-instant commands
         TerminalUtil.setPrompt("");
 
         console.info(
-          `Running command '${tokenisedCommand.name}' with args '${tokenisedCommand.args}'`,
+          `Running command '${executionCommand.name}' with args '${executionCommand.args}'`,
         );
-        await commandScript.run(tokenisedCommand.args);
+        await commandScript.run(executionCommand.args);
 
         if (TerminalUtil.getPrompt() === "") {
           TerminalUtil.setRawPrompt(prompt);
