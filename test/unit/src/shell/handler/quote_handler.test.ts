@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import QuoteHandler from "../../../../src/shell/handler/quote_handler.ts";
+import QuoteHandler from "../../../../../src/shell/handler/quote_handler.ts";
 import Lexer, {
   LexerError,
   Token,
   TokenType,
-} from "../../../../src/shell/lexer.ts";
+} from "../../../../../src/shell/lexer.ts";
 
 describe("Quote Handler", () => {
   ["\"", "'"].forEach((quoteChar) => {

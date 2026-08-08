@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import Lexer, { Token, TokenType } from "../../../../src/shell/lexer.ts";
-import WordHandler from "../../../../src/shell/handler/word_handler.ts";
+import Lexer, { Token, TokenType } from "../../../../../src/shell/lexer.ts";
+import WordHandler from "../../../../../src/shell/handler/word_handler.ts";
 
 describe("WordHandler", () => {
   // Other
