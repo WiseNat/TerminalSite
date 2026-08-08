@@ -252,6 +252,10 @@ export default class TerminalUtil {
       text = `\n${text}`;
     }
 
+    if (text.endsWith("\n")) {
+      text += " ";
+    }
+
     this.setRawOutput(this.output.innerHTML + text);
   }
 

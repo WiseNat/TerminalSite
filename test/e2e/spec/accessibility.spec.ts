@@ -6,6 +6,8 @@ import {
   PROMPT_SELECTOR,
 } from "../helper/constant/generic";
 import { runCommand } from "../helper/util/terminal_util.ts";
+import { isMobileProject } from "../helper/util/playwright_util.ts";
+import { MOBILE_SAFARI } from "../helper/constant/project.ts";
 
 test.describe("homepage", () => {
   test("should not have any automatically detectable accessibility issues", async ({
@@ -44,7 +46,7 @@ test.describe("homepage", () => {
 test.describe("focus", () => {
   test("clicking anywhere on the web page focuses the terminal", async ({
     page,
-  }) => {
+  }, testInfo) => {
     // Arrange
     const viewportSize = page.viewportSize();
     const maxWidth = viewportSize!.width - 1;
@@ -61,7 +63,12 @@ test.describe("focus", () => {
     // Act & Assert
     const input = page.locator(INPUT_SELECTOR);
     for (const corner of corners) {
-      await page.mouse.click(corner.x, corner.y);
+      if (isMobileProject(testInfo)) {
+        await page.touchscreen.tap(corner.x, corner.y);
+      } else {
+        await page.mouse.click(corner.x, corner.y);
+      }
+
       await expect(
         input,
         `Page clicked in the ${corner.type} to have the terminal focussed`,
@@ -85,7 +92,14 @@ test.describe("focus", () => {
     expect(newPage.url()).toBe("https://github.com/WiseNat/TerminalSite/");
   });
 
-  test("selecting text does not focus the terminal", async ({ page }) => {
+  test("selecting text does not focus the terminal", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === MOBILE_SAFARI,
+      `Skip on ${MOBILE_SAFARI} due to iOS deferred focus constraint`,
+    );
+
     // Arrange
     const input = "cat ~/help.md";
     await runCommand(page, input);
@@ -107,7 +121,12 @@ test.describe("focus", () => {
 
   test("selecting text and clicking the selected text focuses the terminal", async ({
     page,
-  }) => {
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === MOBILE_SAFARI,
+      `Skip on ${MOBILE_SAFARI} due to iOS deferred focus constraint`,
+    );
+
     // Arrange
     const input = "cat ~/help.md";
     await runCommand(page, input);
@@ -131,7 +150,12 @@ test.describe("focus", () => {
 
   test("selecting text and clicking the terminal focuses the terminal", async ({
     page,
-  }) => {
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === MOBILE_SAFARI,
+      `Skip on ${MOBILE_SAFARI} due to iOS deferred focus constraint`,
+    );
+
     // Arrange
     const input = "cat ~/help.md";
     await runCommand(page, input);
