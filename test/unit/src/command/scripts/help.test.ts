@@ -154,8 +154,7 @@ describe("Help", () => {
         },
       });
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+      // @ts-expect-error @typescript-eslint/ban-ts-comment
       vi.mocked(CssUtil.getStyle).mockReturnValue({ font: "" });
       vi.mocked(CssUtil.getCharacterWidth).mockReturnValue(1);
       vi.mocked(CssUtil.getElementWidth).mockReturnValue(50);

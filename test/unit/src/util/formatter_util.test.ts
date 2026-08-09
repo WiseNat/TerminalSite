@@ -225,8 +225,7 @@ describe("FormatterUtil", () => {
   });
 
   describe("toDynamicGrid", () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+    // @ts-expect-error @typescript-eslint/ban-ts-comment
     vi.mocked(CssUtil.getStyle).mockReturnValue({ font: "" });
 
     test("one item should return the same value", () => {
