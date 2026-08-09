@@ -1,10 +1,13 @@
 import TerminalUtil from "../../util/terminal_util.ts";
 import CommandUtil from "../../util/command_util.ts";
 import AutocompleteUtil from "../../util/autocomplete_util.ts";
-import TokenisedCommand from "../../dto/tokenised_command.ts";
+import Expander from "../../shell/expander/expander.ts";
 import { Suggestion } from "../../command/command_script.ts";
 import { ZERO_WIDTH_SPACE } from "../../constant/char.ts";
 import HtmlUtil from "../../util/html_util.ts";
+import Lexer from "../../shell/lexer/lexer.ts";
+import Parser from "../../shell/parser/parser.ts";
+import { SimpleCommand, ExecutionCommand } from "../../shell/common.ts";
 
 /**
  * Processes the 'Tab' key event. This will perform autocompletion of values in the terminal, either
@@ -30,15 +33,18 @@ export async function processTab(event: KeyboardEvent) {
     return;
   }
 
-  const tokenisedCommand = CommandUtil.tokenise(beforeCaret);
+  const lexer = new Lexer(beforeCaret);
+  const simpleCommand: SimpleCommand = Parser.parse(lexer);
+  const executionCommand: ExecutionCommand = Expander.expand(simpleCommand);
+
   let suggestions: Suggestion[];
 
-  if (tokenisedCommand.args.length === 0 && !beforeCaret.endsWith(" ")) {
-    suggestions = defaultAutocomplete(tokenisedCommand);
+  if (executionCommand.args.length === 0 && !beforeCaret.endsWith(" ")) {
+    suggestions = defaultAutocomplete(executionCommand);
   } else {
     suggestions = await customCommandAutocomplete(
       beforeCaret,
-      tokenisedCommand,
+      executionCommand,
     );
   }
 
@@ -49,21 +55,21 @@ export async function processTab(event: KeyboardEvent) {
  * Handles custom command autocompletion.
  *
  * @param beforeCaret
- * @param tokenisedCommand
+ * @param executionCommand
  *
  * @returns values from the custom command autocomplete or directory & file suggestions if the method returns null or
  * doesn't exist.
  */
 async function customCommandAutocomplete(
   beforeCaret: string,
-  tokenisedCommand: TokenisedCommand,
+  executionCommand: ExecutionCommand,
 ): Promise<Suggestion[]> {
-  const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
+  const commandScript = CommandUtil.getCommandScript(executionCommand.name);
 
   if (commandScript?.autocomplete) {
     const suggestions = await commandScript.autocomplete(
       beforeCaret,
-      tokenisedCommand.args,
+      executionCommand.args,
     );
 
     if (suggestions != null) {
@@ -72,27 +78,26 @@ async function customCommandAutocomplete(
   }
 
   console.info(
-    `'${tokenisedCommand.name}' command or it's autocomplete were not found, resorting to file & directory autocompletion`,
+    `'${executionCommand.name}' command or it's autocomplete were not found, resorting to file & directory autocompletion`,
   );
 
-  if (tokenisedCommand.args.length === 0 || beforeCaret.endsWith(" ")) {
+  if (executionCommand.args.length === 0 || beforeCaret.endsWith(" ")) {
     return [];
   }
 
-  const searchValue = tokenisedCommand.args.at(-1)!;
+  const searchValue = executionCommand.args.at(-1)!;
   return AutocompleteUtil.getFileAndDirectorySuggestions(searchValue);
 }
 
 /**
  * Handles default autocompletion.
  *
- * @param beforeCaret
- * @param tokenisedCommand
+ * @param executionCommand
  *
  * @returns command name, directory, and file suggestions
  */
-function defaultAutocomplete(tokenisedCommand: TokenisedCommand): Suggestion[] {
-  const searchTerm = tokenisedCommand.name;
+function defaultAutocomplete(executionCommand: ExecutionCommand): Suggestion[] {
+  const searchTerm = executionCommand.name;
 
   const suggestions: Suggestion[] =
     AutocompleteUtil.getCommandSuggestions(searchTerm);

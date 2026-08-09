@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import CommandUtil from "../../../../src/util/command_util";
 import { CommandScript } from "../../../../src/command/command_script";
-import TokenisedCommand from "../../../../src/dto/tokenised_command";
 import TerminalUtil from "../../../../src/util/terminal_util";
 import { unmock } from "../../helper/unmock";
 import CommandImportUtil from "../../../../src/util/command_import_util.ts";
@@ -93,68 +92,6 @@ describe("CommandUtil", () => {
     });
   });
 
-  describe("tokenise", () => {
-    [
-      {
-        type: "a command with multiple arguments",
-        commandString: "mycommand foo -m bar",
-        expectedCommand: "mycommand",
-        expectedArgs: ["foo", "-m", "bar"],
-      },
-      {
-        type: "a command with no arguments",
-        commandString: "mycommand",
-        expectedCommand: "mycommand",
-        expectedArgs: [],
-      },
-      {
-        type: "an empty command",
-        commandString: "",
-        expectedCommand: "",
-        expectedArgs: [],
-      },
-      {
-        type: "a complex command",
-        commandString: "git commit -m \"foo 'bar'\" and 'baz \"gaz'",
-        expectedCommand: "git",
-        expectedArgs: ["commit", "-m", "foo 'bar'", "and", "baz \"gaz"],
-      },
-      {
-        type: "a command with arguments with double quoted spaces",
-        commandString: "mycommand \"foo bar\"",
-        expectedCommand: "mycommand",
-        expectedArgs: ["foo bar"],
-      },
-      {
-        type: "a command with arguments with single quoted spaces",
-        commandString: "mycommand 'foo bar'",
-        expectedCommand: "mycommand",
-        expectedArgs: ["foo bar"],
-      },
-      {
-        type: "a command with excessive whitespace",
-        commandString: "mycommand  ab \r  'foo \tbar' \n ",
-        expectedCommand: "mycommand",
-        expectedArgs: ["ab", "foo \tbar"],
-      },
-      {
-        type: "a command with newlines and ignores them",
-        commandString: "mycommand foo\nbar baz \ngaz",
-        expectedCommand: "mycommand",
-        expectedArgs: ["foobar", "baz", "gaz"],
-      },
-    ].forEach(({ type, commandString, expectedCommand, expectedArgs }) => {
-      test(`correctly tokenises ${type}`, () => {
-        // Arrange & Act
-        const command = CommandUtil.tokenise(commandString);
-
-        // Assert
-        expect(command.name).toBe(expectedCommand);
-        expect(command.args).toStrictEqual(expectedArgs);
-      });
-    });
-  });
-
   describe("getCommandScripts", () => {
     beforeEach(async () => {
       await unmock("../../../src/util/command_import_util", [
@@ -169,13 +106,10 @@ describe("CommandUtil", () => {
       vi.mocked(CommandImportUtil.getCommandScripts).mockReturnValue({
         test: { default: mockCommandFile },
       });
-      const commandDetails: TokenisedCommand = new TokenisedCommand(
-        "./test.ts",
-        [],
-      );
+      const commandName: string = "./test.ts";
 
       // Act
-      const result = CommandUtil.getCommandScript(commandDetails);
+      const result = CommandUtil.getCommandScript(commandName);
 
       // Assert
       expect(result).toBeNull();
@@ -187,10 +121,10 @@ describe("CommandUtil", () => {
       vi.mocked(CommandImportUtil.getCommandScripts).mockReturnValue({
         test: { default: mockCommandFile },
       });
-      const commandDetails: TokenisedCommand = new TokenisedCommand("test", []);
+      const commandName: string = "test";
 
       // Act
-      const result = CommandUtil.getCommandScript(commandDetails);
+      const result = CommandUtil.getCommandScript(commandName);
 
       // Assert
       expect(result).not.toBeNull();
@@ -200,10 +134,10 @@ describe("CommandUtil", () => {
     test("should return undefined if command does not exist", async () => {
       // Arrange
       vi.mocked(CommandImportUtil.getCommandScripts).mockReturnValue({});
-      const commandDetails: TokenisedCommand = new TokenisedCommand("test", []);
+      const commandName: string = "test";
 
       // Act
-      const result = CommandUtil.getCommandScript(commandDetails);
+      const result = CommandUtil.getCommandScript(commandName);
 
       // Assert
       expect(result).toBeNull();

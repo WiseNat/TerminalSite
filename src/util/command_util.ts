@@ -1,43 +1,68 @@
 // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
 import getopts, { Options, ParsedOptions } from "getopts";
-import TokenisedCommand from "../dto/tokenised_command.ts";
+import Expander from "../shell/expander/expander.ts";
 import { CommandScript } from "../command/command_script.ts";
 import TerminalUtil from "./terminal_util.ts";
 import CommandImportUtil from "./command_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import { escape } from "lodash-es";
+import Parser from "../shell/parser/parser.ts";
+import Lexer, { LexerError } from "../shell/lexer/lexer.ts";
+import { SimpleCommand, ExecutionCommand } from "../shell/common.ts";
 
 export default class CommandUtil {
   /**
    * Executes a command using the given command string.
    * Will output to the terminal if no command is found.
+   * <p>
+   * Follows the shell command language guidelines where relevant -
+   * https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html#tag_19
+   * 1. Read in input (received in this method as `command`)
+   * 2. [Lexer] Break input into tokens (words & operators)
+   * 3. [Parser] Parse tokenised input into simple/compound commands
+   * 4. [Expander] For each word, process backslash escaped sequences & word expansion
+   * 5. [CommandUtil] Perform redirection (piping and redirect in/out, redundant for now)
+   * 6. [CommandUtil] Execute a command, providing the relevant arguments
+   * 7. [CommandUtil] Optionally (always) wait for the command to complete and collect the exit status (redundant)
    *
    * @param command a command string, e.g. 'echo foo bar'
    */
   public static async executeCommand(command: string) {
-    const tokenisedCommand: TokenisedCommand = this.tokenise(command);
     const prompt = TerminalUtil.getRawPrompt();
+    TerminalUtil.appendRawOutput(prompt + escape(command), true);
+    TerminalUtil.setInput("");
 
-    if (tokenisedCommand.name === "") {
-      TerminalUtil.appendRawOutput(prompt, true);
-    } else {
-      TerminalUtil.appendRawOutput(prompt + escape(command), true);
-      TerminalUtil.setInput("");
+    let executionCommand: ExecutionCommand;
 
-      const commandScript = this.getCommandScript(tokenisedCommand);
+    try {
+      const lexer: Lexer = new Lexer(command);
+      const simpleCommand: SimpleCommand = Parser.parse(lexer);
+      executionCommand = Expander.expand(simpleCommand);
+    } catch (error) {
+      if (error instanceof LexerError) {
+        TerminalUtil.appendOutput("syntax error: " + error.message);
+      } else {
+        console.warn("Unexpected error occurred: " + error);
+      }
+
+      return;
+    }
+
+    if (executionCommand.name !== "") {
+      const commandScript = this.getCommandScript(executionCommand.name);
 
       if (commandScript === null) {
         TerminalUtil.appendOutput(
-          `${tokenisedCommand.name}: command not found`,
+          `${executionCommand.name}: command not found`,
         );
       } else {
         // Fixes visual issues with non-instant commands
         TerminalUtil.setPrompt("");
 
         console.info(
-          `Running command '${tokenisedCommand.name}' with args '${tokenisedCommand.args}'`,
+          `Running command '${executionCommand.name}' with args '${executionCommand.args}'`,
         );
-        await commandScript.run(tokenisedCommand.args);
+        await commandScript.run(executionCommand.args);
 
         if (TerminalUtil.getPrompt() === "") {
           TerminalUtil.setRawPrompt(prompt);
@@ -47,92 +72,16 @@ export default class CommandUtil {
   }
 
   /**
-   * Tokenises a command string and transforms it into a {@link TokenisedCommand}.
+   * Gets the command script with a name that resolves to the `commandName`.
    *
-   * @param command string containing space separated tokens, e.g. "git commit -m 'foo'"
-   * @returns a new {@link TokenisedCommand} containing the command tokens.
-   */
-  public static tokenise(command: string): TokenisedCommand {
-    const tokens: string[] = this.split(command);
-    const name = tokens.length === 0 ? "" : tokens[0];
-    const args: string[] =
-      tokens.length > 1 ? tokens.slice(1, tokens.length) : [];
-
-    return new TokenisedCommand(name, args);
-  }
-
-  /**
-   * Splits the given command String into a list of strings using whitespace as a delimiter. This takes into account
-   * quotations and will ensure values encased in quotations retain whitespace.
-   * <p>
-   * E.g. passing "git commit -m 'foo bar'" will return ["git", "commit", "-m", "foo bar"]
-   *
-   * @param command string to split
-   * @returns split command strings
-   * @private
-   */
-  // prettier-ignore
-  private static split(command: string): string[] {  // NOSONAR: reducing cognitive complexity for this is difficult
-    const quotes = "\"'";
-    const whitespace = " \t\r";
-
-    const values: string[] = [];
-    let buffer = "";
-
-    let insideQuotes = false;
-    let currentQuoteChar = "";
-
-    for (const char of command) {
-      // Ignore newlines, treat them as line continuations
-      if (char === "\n") {
-        continue;
-      }
-
-      // Check if inside of quotes to allow an argument with spaces, e.g. echo 'foo bar' baz
-      if (quotes.includes(char)) {
-        if (!insideQuotes) {
-          insideQuotes = true;
-          currentQuoteChar = char;
-          continue;
-        } else if (char === currentQuoteChar) {
-          insideQuotes = false;
-          continue;
-        }
-      }
-
-      if (!insideQuotes && whitespace.includes(char)) {
-        if (buffer.length > 0) {
-          values.push(buffer);
-          buffer = "";
-        }
-
-        continue;
-      }
-
-      buffer += char;
-    }
-
-    if (buffer.length > 0) {
-      values.push(buffer);
-    }
-
-    return values;
-  }
-
-  /**
-   * Gets the command script with a name that resolves to the {@link TokenisedCommand} name.
-   *
-   * @param tokenisedCommand details of the command.
+   * @param commandName name of the command, e.g. `terminal`
    * @returns the {@link CommandScript} if it is found, null otherwise.
    */
-  public static getCommandScript(
-    tokenisedCommand: TokenisedCommand,
-  ): CommandScript | null {
-    const commandScript =
-      CommandImportUtil.getCommandScripts()[tokenisedCommand.name];
+  public static getCommandScript(commandName: string): CommandScript | null {
+    const commandScript = CommandImportUtil.getCommandScripts()[commandName];
 
     if (commandScript === undefined) {
-      console.warn(`Command "${tokenisedCommand.name}" not found.`);
+      console.warn(`Command "${commandName}" not found.`);
       return null;
     }
 

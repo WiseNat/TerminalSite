@@ -146,6 +146,12 @@ test.describe("Help", () => {
         "\nbash: help: no help topics match 'someFakeCommand'. Try 'help' to view a list of available help topics.",
     },
     {
+      type: "an unknown command and an empty string are provided",
+      args: ["foo", ""],
+      expected:
+        "\nbash: help: no help topics match 'foo'. Try 'help' to view a list of available help topics.",
+    },
+    {
       type: "multiple unknown commands are provided",
       args: ["foo", "bar", "baz"],
       expected:
