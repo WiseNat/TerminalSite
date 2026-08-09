@@ -58,7 +58,7 @@ export default class Lexer implements IterableIterator<Token> {
    * Consumes the next valid {@link Token} in the `stream` provided to the constructor.
    *
    * @returns the next {@link Token} or a {@link TokenType.EOF} if the `stream` has been fully consumed.
-   * @see {@link Lexer.peek} for peeking at the next {@link Token}
+   * @see {@link peek} for peeking at the next {@link Token}
    * @throws Error if the provided `stream` has invalid contents
    */
   public next(): IteratorResult<Token> {
@@ -86,10 +86,10 @@ export default class Lexer implements IterableIterator<Token> {
    * Peeks at the next valid {@link Token} in the `stream` provided to the constructor.
    * <p>
    * This is not a pure method call as handlers downstream will consume from the Lexer's `stream`. This means that calls
-   * to {@link Lexer.peekChar} before and after a {@link Lexer.peek} call will differ.
+   * to {@link peekChar} before and after a {@link peek} call will differ.
    *
    * @returns the next {@link Token} or a {@link TokenType.EOF} if the `stream` has been fully consumed.
-   * @see {@link Lexer.next} for consuming the next {@link Token}
+   * @see {@link next} for consuming the next {@link Token}
    * @throws Error if the provided `stream` has invalid contents
    */
   public peek(): Token {
@@ -103,7 +103,7 @@ export default class Lexer implements IterableIterator<Token> {
   /**
    * Consumes and returns the next character in the `stream`
    *
-   * @see {@link Lexer.peekChar} for peeking at the next character
+   * @see {@link peekChar} for peeking at the next character
    * @returns the next char if available or undefined if the `stream` has been fully consumed
    */
   public nextChar(): string | undefined {
@@ -113,11 +113,35 @@ export default class Lexer implements IterableIterator<Token> {
   /**
    * Gets the next character in the provided `stream`.
    *
-   * @see {@link Lexer.nextChar} for consuming the next character
+   * @see {@link nextChar} for consuming the next character
    * @returns the next char if available or undefined if the `stream` has been fully consumed
    */
   public peekChar(): string | undefined {
     return this.charStream.at(-1);
+  }
+
+  /**
+   * Gets the next character or escape sequence in the provided `stream`.
+   *
+   * @see {@link nextChar} for consuming the next character
+   * @returns the next char or escape sequence if available or undefined if the `stream` has been fully consumed
+   */
+  public nextCharOrEscapeSequence(): string | undefined {
+    const char: string | undefined = this.nextChar();
+
+    if (char === undefined || char !== "\\") {
+      return char;
+    }
+
+    const nextChar = this.nextChar();
+
+    if (nextChar === undefined) {
+      throw new LexerError(
+        "incomplete escape sequence, expected character after '\\'",
+      );
+    }
+
+    return char + nextChar;
   }
 
   /**
@@ -152,8 +176,8 @@ export default class Lexer implements IterableIterator<Token> {
 
     // TODO: add additional lexer rules! e.g.
     //  - Parameterisation '$', '${', "$(", "$((" ?
-    //  - Escaping Chars
-    //  - Ignore newlines?
+    //  - Escaping Chars - need e2e tests for this!
+    //  - Ignore newlines? need e2e tests for this!
 
     const nextChar: string = this.peekChar()!;
     const token: Token = { type: undefined, parts: undefined };

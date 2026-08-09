@@ -26,8 +26,6 @@ export default class WordHandler implements Handler {
     let tokenPart: TokenPart | undefined = undefined;
 
     while (this.isValidChar((nextChar = lexer.peekChar()))) {
-      // TODO: handle escaped chars? - will come in as \ and <char> separately
-
       switch (nextChar) {
         case this.SINGLE_QUOTE:
           this.singleQuoteHandler.nextToken(lexer, token);
@@ -54,7 +52,6 @@ export default class WordHandler implements Handler {
    * @return `true` if the character provided is valid, false otherwise
    */
   private isValidChar(char: string | undefined): boolean {
-    // TODO: escaped whitespace?..
     return char !== undefined && !Lexer.isWhitespace(char);
   }
 
@@ -74,7 +71,7 @@ export default class WordHandler implements Handler {
     token: Token,
     tokenPart: TokenPart | undefined,
   ): TokenPart {
-    const char: string = lexer.nextChar()!;
+    const char: string = lexer.nextCharOrEscapeSequence()!; // cannot be undefined, we know a char exists in the stream
 
     if (tokenPart === undefined) {
       tokenPart = {

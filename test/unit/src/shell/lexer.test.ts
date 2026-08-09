@@ -412,6 +412,47 @@ describe("Lexer", () => {
         }
       });
     });
+
+    describe("nextCharOrEscapeSequence", () => {
+      test("returns the next character if it's not an escape sequence", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("a");
+
+        // Act & Assert
+        expect(lexer.nextCharOrEscapeSequence()).toStrictEqual("a");
+      });
+
+      test("returns the next escape sequence if it's an escape sequence", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("\\a");
+
+        // Act & Assert
+        expect(lexer.nextCharOrEscapeSequence()).toStrictEqual("\\a");
+      });
+
+      test("returns undefined once all characters have been provided", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("abc");
+        lexer.nextChar();
+        lexer.nextChar();
+        lexer.nextChar();
+
+        // Act & Assert
+        expect(lexer.nextCharOrEscapeSequence()).toBeUndefined();
+      });
+
+      test("throws an error if the escape sequence is incomplete", () => {
+        // Arrange
+        const lexer: Lexer = new Lexer("\\");
+
+        // Act & Assert
+        expect(() => lexer.nextCharOrEscapeSequence()).toThrow(
+          new LexerError(
+            "incomplete escape sequence, expected character after '\\'",
+          ),
+        );
+      });
+    });
   });
 
   describe("consumeExcessWhitespace", () => {

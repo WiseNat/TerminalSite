@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test } from "vitest";
 import Lexer, {
+  LexerError,
   Token,
   TokenPartType,
   TokenType,
@@ -126,6 +127,19 @@ describe("WordHandler", () => {
       ],
     },
     {
+      input: "f\\\"oo ba\\'r",
+      expected: [
+        {
+          type: TokenType.WORD,
+          parts: [{ type: TokenPartType.LITERAL, value: "f\\\"oo" }],
+        },
+        {
+          type: TokenType.WORD,
+          parts: [{ type: TokenPartType.LITERAL, value: "ba\\'r" }],
+        },
+      ],
+    },
+    {
       input: "\"foo bar\" baz",
       expected: [
         {
@@ -184,15 +198,15 @@ describe("WordHandler", () => {
       ],
     },
     {
-      input: "foo\\ bar baz gaz",
+      input: "foo\\ bar ba\\z gaz",
       expected: [
         {
           type: TokenType.WORD,
-          parts: [{ type: TokenPartType.LITERAL, value: "foo bar" }],
+          parts: [{ type: TokenPartType.LITERAL, value: "foo\\ bar" }],
         },
         {
           type: TokenType.WORD,
-          parts: [{ type: TokenPartType.LITERAL, value: "baz" }],
+          parts: [{ type: TokenPartType.LITERAL, value: "ba\\z" }],
         },
         {
           type: TokenType.WORD,
@@ -235,5 +249,17 @@ describe("WordHandler", () => {
       type: TokenType.WORD,
       parts: [{ type: TokenPartType.LITERAL, value: "foo" }],
     });
+  });
+
+  test("throws an error for an incomplete escape sequence", () => {
+    // Arrange
+    const lexer: Lexer = new Lexer("foo\\");
+
+    // Act & Assert
+    expect(() => getNextToken(lexer)).toThrow(
+      new LexerError(
+        "incomplete escape sequence, expected character after '\\'",
+      ),
+    );
   });
 });

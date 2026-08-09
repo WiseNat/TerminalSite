@@ -40,9 +40,8 @@ export default class QuoteHandler implements Handler {
       );
     }
 
-    // TODO: special logic for escaped quote!
     while (this.isValidChar(lexer.peekChar())) {
-      char = lexer.nextChar()!;
+      char = lexer.nextCharOrEscapeSequence()!; // cannot be undefined, we know a char exists in the stream
       tokenPart.value += char;
     }
 
