@@ -77,11 +77,8 @@ describe("Download", () => {
 
       vi.stubGlobal(
         "fetch",
-        vi.fn(() => {
-          return new Response("example body data", {
-            status: 200,
-            headers: { "Content-Type": "text/plain" },
-          });
+        vi.fn().mockResolvedValue({
+          ok: true,
         }),
       );
 
