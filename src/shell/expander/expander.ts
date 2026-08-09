@@ -7,14 +7,22 @@ import {
   TokenType,
 } from "../common.ts";
 
+export type ExpanderConfig = {
+  returnTrailingWhitespace?: boolean;
+};
+
 export default class Expander {
   /**
    * Converts a single {@link CommandNode} into an {@link ExecutionCommandNode}.
    *
    * @param commandNode
+   * @param expanderConfig
    * @throws Error if any {@link CommandNode} other than a {@link SimpleCommand} is provided
    */
-  public static expand(commandNode: CommandNode): ExecutionCommandNode {
+  public static expand(
+    commandNode: CommandNode,
+    expanderConfig?: ExpanderConfig,
+  ): ExecutionCommandNode {
     if (commandNode.type !== "SimpleCommand") {
       throw new Error(`Unsupported Command Type '${commandNode.type}'`);
     }
@@ -23,7 +31,7 @@ export default class Expander {
     // TODO: resolve variable substitutions
 
     // Browsing the tree is not required as we currently can only ever have a single node
-    return this.expandSimpleCommand(commandNode);
+    return this.expandSimpleCommand(commandNode, expanderConfig);
   }
 
   /**
@@ -36,10 +44,12 @@ export default class Expander {
    * This will also 'consume' available quotes when converting tokens into the `name` and `args`.
    *
    * @param simpleCommand the {@link SimpleCommand} to expand & convert
+   * @param expanderConfig
    * @private
    */
   private static expandSimpleCommand(
     simpleCommand: SimpleCommand,
+    expanderConfig?: ExpanderConfig,
   ): ExecutionCommand {
     let name: string = "";
     const args: string[] = [];
@@ -49,7 +59,10 @@ export default class Expander {
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
 
-      const value: string | undefined | null = this.getTokenValue(token);
+      const value: string | undefined | null = this.getTokenValue(
+        token,
+        expanderConfig,
+      );
       if (value === undefined || value === null) {
         continue;
       }
@@ -67,12 +80,16 @@ export default class Expander {
   /**
    * Converts {@link Token} values into expander friendly values.
    * @param token
+   * @param expanderConfig
    * @private
    */
-  private static getTokenValue(token: Token): string | null | undefined {
+  private static getTokenValue(
+    token: Token,
+    expanderConfig?: ExpanderConfig,
+  ): string | null | undefined {
     switch (token.type) {
       case TokenType.TRAILING_WHITESPACE:
-        return "";
+        return expanderConfig?.returnTrailingWhitespace ? "" : null;
       case TokenType.EOF:
         return null;
       case TokenType.WORD:
