@@ -16,22 +16,17 @@ export default class CommandUtil {
    * <p>
    * Follows the shell command language guidelines where relevant -
    * https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html#tag_19
+   * 1. Read in input (received in this method as `command`)
+   * 2. [Lexer] Break input into tokens (words & operators)
+   * 3. [Parser] Parse tokenised input into simple/compound commands
+   * 4. [Expander] For each word, process backslash escaped sequences & word expansion
+   * 5. [CommandUtil] Perform redirection (piping and redirect in/out, redundant for now)
+   * 6. [CommandUtil] Execute a command, providing the relevant arguments
+   * 7. [CommandUtil] Optionally (always) wait for the command to complete and collect the exit status (redundant)
    *
    * @param command a command string, e.g. 'echo foo bar'
    */
   public static async executeCommand(command: string) {
-    // TODO: Follow shell ordering (https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html#tag_19)
-    //  1. [enter] Read in input...
-    //  2. [Lexer] Break input into tokens (words & operators)
-    //  3. [Parser] Parse tokenised input into simple/compound commands (just simple for this)
-    //  4. [Expander] For each word, process backslash escaped sequences & word expansion
-    //  5. [CommandUtil] Perform redirection (piping and redirect in/out, redundant for now)
-    //  6. [CommandUtil] Execute a command, providing the relevant arguments
-    //  7. [CommandUtil] Optionally (always) wait for the command to complete and collect the exit status (redundant)
-
-    // TODO: make "tokenise" resolve ~ to ${HOME}
-    // TODO: make "tokenise" resolve variable substitutions
-
     const prompt = TerminalUtil.getRawPrompt();
     TerminalUtil.appendRawOutput(prompt + escape(command), true);
     TerminalUtil.setInput("");

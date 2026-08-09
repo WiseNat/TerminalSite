@@ -21,6 +21,9 @@ export default class Expander {
       throw new Error(`Unsupported Command Type '${commandNode.type}'`);
     }
 
+    // TODO: resolve ~ to ${HOME}
+    // TODO: resolve variable substitutions
+
     // Browsing the tree is not required as we currently can only ever have a single node
     return this.expandSimpleCommand(commandNode);
   }
