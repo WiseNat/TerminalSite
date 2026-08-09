@@ -1,7 +1,6 @@
 import { CommandScript, Suggestion } from "../command_script.ts";
 import CommandUtil from "../../util/command_util.ts";
 import TerminalUtil from "../../util/terminal_util.ts";
-import TokenisedCommand from "../../dto/tokenised_command.ts";
 import FormatterUtil from "../../util/formatter_util.ts";
 import CommandImportUtil from "../../util/command_import_util.ts";
 import AutocompleteUtil from "../../util/autocomplete_util.ts";
@@ -24,6 +23,10 @@ export interface HelpInformation {
 
 const HELP: CommandScript = {
   async run(args: string[]): Promise<void> {
+    if (args.at(-1) === "") {
+      args.pop();
+    }
+
     const parsedOptions = CommandUtil.parseArgs("help", args, {
       boolean: ["d", "s"],
     });
@@ -147,8 +150,7 @@ function getFirstValidCommand(
   commands: string[],
 ): { name: string; script: CommandScript } | null {
   for (const command of commands) {
-    const tokenisedCommand: TokenisedCommand = CommandUtil.tokenise(command);
-    const commandScript = CommandUtil.getCommandScript(tokenisedCommand);
+    const commandScript = CommandUtil.getCommandScript(command);
 
     if (commandScript !== null) {
       return { name: command, script: commandScript };

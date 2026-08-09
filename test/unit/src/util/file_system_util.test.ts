@@ -2,10 +2,10 @@ import { describe, expect, test, vi } from "vitest";
 import FileSystemUtil from "../../../../src/util/file_system_util";
 import { FileTreeNode } from "virtual:file-tree";
 
-describe("FileSystemUtil", () => {
-  // Mocks
-  vi.mock("../../../../src/util/terminal_util");
+// Mocks
+vi.mock("../../../../src/util/terminal_util");
 
+describe("FileSystemUtil", () => {
   describe("joinPaths", () => {
     [
       {

@@ -2,12 +2,12 @@ import { describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../../src/util/terminal_util.ts";
 import UNAME from "../../../../../src/command/scripts/uname.ts";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+
 describe("Hostname", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
 
   // Other
   const kernelName = "Linux";

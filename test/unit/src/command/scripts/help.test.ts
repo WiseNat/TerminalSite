@@ -7,16 +7,18 @@ import CommandImportUtil from "../../../../../src/util/command_import_util.ts";
 import { mockExtractVisibleText } from "../../../helper/mocks.ts";
 import CssUtil from "../../../../../src/util/css_util.ts";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/command_import_util");
+vi.mock("../../../../../src/util/html_util");
+vi.mock("../../../../../src/util/css_util");
+
 describe("Help", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
   // Mock
   mockExtractVisibleText();
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/command_import_util");
-  vi.mock("../../../../../src/util/html_util");
-  vi.mock("../../../../../src/util/css_util");
 
   describe("run", async () => {
     beforeEach(() => {
@@ -154,8 +156,7 @@ describe("Help", () => {
         },
       });
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+      // @ts-expect-error @typescript-eslint/ban-ts-comment
       vi.mocked(CssUtil.getStyle).mockReturnValue({ font: "" });
       vi.mocked(CssUtil.getCharacterWidth).mockReturnValue(1);
       vi.mocked(CssUtil.getElementWidth).mockReturnValue(50);

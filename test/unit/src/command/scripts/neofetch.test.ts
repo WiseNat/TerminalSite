@@ -57,22 +57,22 @@ function containsInfoText(text: string) {
   return true;
 }
 
+// Mock
+mockExtractVisibleText();
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/html_util");
+vi.mock("../../../../../src/util/time_util", () => ({
+  default: {
+    loadTime: 0,
+  },
+}));
+vi.mock("../../../../../src/util/theme_util");
+vi.mock("../../../../../src/util/flavour_util");
+
 describe("Neofetch", () => {
   // Spy
   const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
   vi.spyOn(navigator, "hardwareConcurrency", "get").mockReturnValue(8);
-
-  // Mock
-  mockExtractVisibleText();
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/html_util");
-  vi.mock("../../../../../src/util/time_util", () => ({
-    default: {
-      loadTime: 0,
-    },
-  }));
-  vi.mock("../../../../../src/util/theme_util");
-  vi.mock("../../../../../src/util/flavour_util");
 
   beforeEach(() => {
     vi.unstubAllGlobals();
@@ -250,7 +250,7 @@ describe("Neofetch", () => {
         test("given navigator.hardwareConcurrency does not exist, should show ? cores", async () => {
           // Arrange
           vi.spyOn(navigator, "hardwareConcurrency", "get").mockReturnValue(
-            // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error @typescript-eslint/ban-ts-comment
             undefined,
           );
 
@@ -313,7 +313,7 @@ describe("Neofetch", () => {
                   },
                 });
               } else {
-                // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error @typescript-eslint/ban-ts-comment
                 delete performance["memory"];
               }
 
@@ -325,7 +325,7 @@ describe("Neofetch", () => {
                   },
                 });
               } else {
-                // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error @typescript-eslint/ban-ts-comment
                 delete navigator["deviceMemory"];
               }
 

@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import fs from "fs";
 import { walk } from "../../../../src/plugins/vite_plugin_file_tree";
 import { sortBy } from "lodash-es";
 import { FileTreeNode } from "virtual:file-tree";
@@ -35,7 +34,7 @@ describe("VitePluginTree", () => {
 
       // Act
       const tree = walk(testRootDir);
-      fs.rmSync(testRootDir, { recursive: true, force: true });
+      vol.rmSync(testRootDir, { recursive: true, force: true });
 
       // Assert
       expect(deepSortTree(tree)).toMatchInlineSnapshot(`
@@ -140,7 +139,7 @@ describe("VitePluginTree", () => {
 
       // Act
       const tree = walk(testRootDir);
-      fs.rmSync(testRootDir, { recursive: true, force: true });
+      vol.rmSync(testRootDir, { recursive: true, force: true });
 
       // Assert
       expect(deepSortTree(tree)).toMatchInlineSnapshot(`
@@ -179,7 +178,7 @@ describe("VitePluginTree", () => {
 
       // Act
       const tree = walk(testRootDir);
-      fs.rmSync(testRootDir, { recursive: true, force: true });
+      vol.rmSync(testRootDir, { recursive: true, force: true });
 
       // Assert
       expect(deepSortTree(tree)).toMatchInlineSnapshot(`
@@ -204,7 +203,6 @@ describe("VitePluginTree", () => {
       `);
     });
 
-    // TODO: home dir test
     test("should return a valid file tree with a default owner/root based on the home directory", () => {
       // Arrange
       const testRootDir = "/walk-test-";
@@ -221,7 +219,7 @@ describe("VitePluginTree", () => {
 
       // Act
       const tree = walk(testRootDir, "some/home");
-      fs.rmSync(testRootDir, { recursive: true, force: true });
+      vol.rmSync(testRootDir, { recursive: true, force: true });
 
       // Assert
       expect(deepSortTree(tree)).toMatchInlineSnapshot(`
@@ -401,7 +399,7 @@ describe("VitePluginTree", () => {
 
       // Act
       const tree = walk(testRootDir);
-      fs.rmSync(testRootDir, { recursive: true, force: true });
+      vol.rmSync(testRootDir, { recursive: true, force: true });
 
       // Assert
       expect(deepSortTree(tree)).toMatchInlineSnapshot(`

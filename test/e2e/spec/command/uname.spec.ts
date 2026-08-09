@@ -151,8 +151,8 @@ test.describe("Uname", () => {
   });
 
   ["-o", "--operating-system"].forEach((flag) => {
-    test.describe(`TODO flag: ${flag}`, () => {
-      test("should output the TODO", async ({ page }) => {
+    test.describe(`operating system flag: ${flag}`, () => {
+      test("should output the operating system", async ({ page }) => {
         // Arrange
         const input = `uname ${flag}`;
 

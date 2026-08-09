@@ -3,13 +3,13 @@ import TerminalUtil from "../../../../src/util/terminal_util";
 import { click } from "../../../../src/event/click";
 import Bowser, { Parser } from "bowser";
 
+// Mocks
+vi.mock("bowser");
+
 describe("Click Event", () => {
   // Spy
   const cursorToEnd = vi.spyOn(TerminalUtil, "cursorToEnd");
   let focus: MockInstance<(options?: FocusOptions) => void>;
-
-  // Mock
-  vi.mock("bowser");
 
   // Other
   let inputElement: HTMLElement;
@@ -41,8 +41,7 @@ describe("Click Event", () => {
         value: document.createElement("div"),
       });
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+      // @ts-expect-error @typescript-eslint/ban-ts-comment
       vi.spyOn(globalThis, "getSelection").mockReturnValue({
         isCollapsed: true,
       });
@@ -79,8 +78,7 @@ describe("Click Event", () => {
         value: document.createElement("div"),
       });
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+      // @ts-expect-error @typescript-eslint/ban-ts-comment
       vi.spyOn(globalThis, "getSelection").mockReturnValue({
         isCollapsed: false,
       });
@@ -106,8 +104,7 @@ describe("Click Event", () => {
         value: document.createElement("div"),
       });
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+      // @ts-expect-error @typescript-eslint/ban-ts-comment
       vi.spyOn(globalThis, "getSelection").mockReturnValue({
         isCollapsed: false,
       });

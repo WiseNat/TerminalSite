@@ -5,6 +5,9 @@ import CD, {
 import FileSystemUtil from "../../../../../src/util/file_system_util";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+
 describe("Cd", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
@@ -12,9 +15,6 @@ describe("Cd", () => {
     FileSystemUtil,
     "setCurrentWorkingDirectory",
   );
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
 
   const homeDirectory = "/src/main";
 

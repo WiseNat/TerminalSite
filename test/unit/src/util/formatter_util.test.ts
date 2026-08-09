@@ -35,12 +35,12 @@ function createNode(
   };
 }
 
-describe("FormatterUtil", () => {
-  // Mock
-  vi.mock("../../../../src/util/terminal_util");
-  vi.mock("../../../../src/util/css_util");
-  vi.mock("../../../../src/util/html_util");
+// Mocks
+vi.mock("../../../../src/util/terminal_util");
+vi.mock("../../../../src/util/css_util");
+vi.mock("../../../../src/util/html_util");
 
+describe("FormatterUtil", () => {
   mockExtractVisibleText();
 
   describe("getFileSystemEntry", () => {
@@ -225,8 +225,7 @@ describe("FormatterUtil", () => {
   });
 
   describe("toDynamicGrid", () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+    // @ts-expect-error @typescript-eslint/ban-ts-comment
     vi.mocked(CssUtil.getStyle).mockReturnValue({ font: "" });
 
     test("one item should return the same value", () => {

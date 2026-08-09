@@ -5,6 +5,11 @@ import FlavourUtil from "../../../../../src/util/flavour_util.ts";
 import { Flavour } from "../../../../../src/flavour/flavour.ts";
 import ThemeUtil from "../../../../../src/util/theme_util.ts";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/flavour_util");
+vi.mock("../../../../../src/util/theme_util");
+
 describe("Terminal", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
@@ -13,11 +18,6 @@ describe("Terminal", () => {
     "setCurrentShellFlavour",
   );
   const setTheme = vi.spyOn(ThemeUtil, "setTheme");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/flavour_util");
-  vi.mock("../../../../../src/util/theme_util");
 
   describe("run", async () => {
     describe("No flags", () => {

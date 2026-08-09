@@ -8,10 +8,10 @@ let inputElement: HTMLElement;
 let promptElement: HTMLElement;
 let outputElement: HTMLElement;
 
-describe("TerminalUtil", () => {
-  // Mocks
-  vi.mock("../../../../src/util/flavour_util");
+// Mocks
+vi.mock("../../../../src/util/flavour_util");
 
+describe("TerminalUtil", () => {
   beforeEach(() => {
     // Mock terminal elements
     document.body.innerHTML =

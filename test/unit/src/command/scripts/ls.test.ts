@@ -4,15 +4,15 @@ import LS from "../../../../../src/command/scripts/ls";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 import FormatterUtil from "../../../../../src/util/formatter_util.ts";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/formatter_util");
+vi.mock("../../../../src/util/formatter_util");
+
 describe("Ls", () => {
   // Spy
   const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/formatter_util");
-  vi.mock("../../../../src/util/formatter_util");
 
   // Mocked
   vi.mocked(FormatterUtil.getFileSystemEntryStyle).mockReturnValue({
@@ -452,11 +452,42 @@ describe("Ls", () => {
           expect(appendOutput).not.toHaveBeenCalled();
         });
 
-        // TODO: -l flag
+        test(`\`Given a directory arugment with the ${flag} and -l flag, outputs human readable files sizes of files and directories`, async () => {
+          // Arrange
+          const args: string[] = [
+            flag,
+            "-l",
+            "/some/fake/path",
+            "/src/main/foo",
+            "/src/index.ts",
+            "/some/other/fake/path",
+            "/test",
+            "/src/main/.testing",
+          ];
+
+          // Act
+          await LS.run(args);
+
+          // Assert
+          const expected =
+            "ls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Jan 1 00:00 /src/index.ts" +
+            "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Jan 1 00:00 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 22K" +
+            "\ndrw-rw-r-- 2 nathanwise nathanwise\t1K Jan 1 00:00 bar" +
+            "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Jan 1 00:00 bazzing.gaz" +
+            "\n-rw-rw-r-- 1 nathanwise nathanwise\t1K Jan 1 00:00 daz" +
+            "\n\n/test:" +
+            "\ntotal: 1K";
+
+          expect(appendRawOutput).toHaveBeenCalledExactlyOnceWith(expected);
+          expect(appendOutput).not.toHaveBeenCalled();
+        });
       });
     });
 
-    // TODO: -l flag for some of these
     describe("block-size flag: --block-size", () => {
       [
         {
@@ -495,6 +526,22 @@ describe("Ls", () => {
             "\n\n/src/main/foo:" +
             "\ntotal: 11" +
             "\n2 bar\t6 bazzing.gaz\t3 daz" +
+            "\n\n/test:" +
+            "\ntotal: 0",
+        },
+        {
+          flags: ["-l"],
+          blockSize: 2048,
+          expected:
+            "ls: cannot access '/some/fake/path': No such file or directory" +
+            "\nls: cannot access '/some/other/fake/path': No such file or directory" +
+            "\n-rw-rw-r-- 1 nathanwise nathanwise\t0 Jan 1 00:00 /src/index.ts" +
+            "\n-rw-rw-r-- 1 nathanwise nathanwise\t0 Jan 1 00:00 /src/main/.testing" +
+            "\n\n/src/main/foo:" +
+            "\ntotal: 11" +
+            "\ndrw-rw-r-- 2 nathanwise nathanwise\t0 Jan 1 00:00 bar" +
+            "\n-rw-rw-r-- 1 nathanwise nathanwise\t0 Jan 1 00:00 bazzing.gaz" +
+            "\n-rw-rw-r-- 1 nathanwise nathanwise\t0 Jan 1 00:00 daz" +
             "\n\n/test:" +
             "\ntotal: 0",
         },

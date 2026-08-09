@@ -4,14 +4,14 @@ import FileSystemUtil from "../../../../../src/util/file_system_util.ts";
 import TerminalUtil from "../../../../../src/util/terminal_util.ts";
 import FormatterUtil from "../../../../../src/util/formatter_util.ts";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/formatter_util");
+
 describe("Tree", () => {
   // Spy
   const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/formatter_util");
 
   vi.mocked(FormatterUtil.getFileSystemEntry).mockImplementation(
     (node, useShortName) => {
