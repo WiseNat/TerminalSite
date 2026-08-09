@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
+import Expander from "../../../../../src/shell/expander/expander.ts";
 import {
   Token,
   TokenPartType,
   TokenType,
-} from "../../../../../src/shell/lexer/lexer.ts";
-import { SimpleCommand } from "../../../../../src/shell/parser/parser.ts";
-import Expander from "../../../../../src/shell/expander/expander.ts";
+  SimpleCommand,
+} from "../../../../../src/shell/common.ts";
 
 describe("Expander", () => {
   describe("expand", () => {

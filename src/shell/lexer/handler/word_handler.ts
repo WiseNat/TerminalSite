@@ -1,6 +1,7 @@
 import { Handler } from "./handler.ts";
-import Lexer, { Token, TokenPart, TokenPartType, TokenType } from "../lexer.ts";
+import { Token, TokenType, TokenPartType, TokenPart } from "../../common.ts";
 import QuoteHandler from "./quote_handler.ts";
+import Lexer from "../lexer.ts";
 
 export default class WordHandler implements Handler {
   private readonly SINGLE_QUOTE: string = "'";

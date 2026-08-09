@@ -1,26 +1,5 @@
 import WordHandler from "./handler/word_handler.ts";
-
-export enum TokenType {
-  WORD,
-  TRAILING_WHITESPACE,
-  EOF,
-}
-
-export enum TokenPartType {
-  LITERAL,
-  SINGLE_QUOTED,
-  DOUBLE_QUOTED,
-}
-
-export type TokenPart = {
-  type: TokenPartType;
-  value: string | undefined;
-};
-
-export type Token = {
-  type: TokenType | undefined;
-  parts: TokenPart[] | null | undefined;
-};
+import { Token, TokenType, TokenPart } from "../common.ts";
 
 export class LexerError extends Error {
   constructor(message: string) {

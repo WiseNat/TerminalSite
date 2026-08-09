@@ -1,10 +1,6 @@
-import Lexer, {
-  LexerError,
-  Token,
-  TokenPart,
-  TokenPartType,
-} from "../lexer.ts";
 import { Handler } from "./handler.ts";
+import Lexer, { LexerError } from "../lexer.ts";
+import { Token, TokenPart, TokenPartType } from "../../common.ts";
 
 export default class QuoteHandler implements Handler {
   private readonly quoteChar: string;

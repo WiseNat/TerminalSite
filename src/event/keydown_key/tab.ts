@@ -1,12 +1,13 @@
 import TerminalUtil from "../../util/terminal_util.ts";
 import CommandUtil from "../../util/command_util.ts";
 import AutocompleteUtil from "../../util/autocomplete_util.ts";
-import Expander, { ExecutionCommand } from "../../shell/expander/expander.ts";
+import Expander from "../../shell/expander/expander.ts";
 import { Suggestion } from "../../command/command_script.ts";
 import { ZERO_WIDTH_SPACE } from "../../constant/char.ts";
 import HtmlUtil from "../../util/html_util.ts";
 import Lexer from "../../shell/lexer/lexer.ts";
-import Parser, { SimpleCommand } from "../../shell/parser/parser.ts";
+import Parser from "../../shell/parser/parser.ts";
+import { SimpleCommand, ExecutionCommand } from "../../shell/common.ts";
 
 /**
  * Processes the 'Tab' key event. This will perform autocompletion of values in the terminal, either

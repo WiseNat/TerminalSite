@@ -1,15 +1,5 @@
-import Lexer, { Token } from "../lexer/lexer.ts";
-
-export type AstNode = {
-  readonly type: string;
-};
-
-export interface SimpleCommand extends AstNode {
-  readonly type: "SimpleCommand";
-  readonly words: Token[];
-}
-
-export type CommandNode = SimpleCommand;
+import Lexer from "../lexer/lexer.ts";
+import { CommandNode } from "../common.ts";
 
 export default class Parser {
   /**

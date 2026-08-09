@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from "vitest";
 import QuoteHandler from "../../../../../../src/shell/lexer/handler/quote_handler.ts";
-import Lexer, {
-  LexerError,
+import Lexer, { LexerError } from "../../../../../../src/shell/lexer/lexer.ts";
+import {
   Token,
   TokenPartType,
   TokenType,
-} from "../../../../../../src/shell/lexer/lexer.ts";
+} from "../../../../../../src/shell/common.ts";
 
 describe("Quote Handler", () => {
   [
