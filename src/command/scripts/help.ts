@@ -23,10 +23,6 @@ export interface HelpInformation {
 
 const HELP: CommandScript = {
   async run(args: string[]): Promise<void> {
-    if (args.at(-1) === "") {
-      args.pop();
-    }
-
     const parsedOptions = CommandUtil.parseArgs("help", args, {
       boolean: ["d", "s"],
     });

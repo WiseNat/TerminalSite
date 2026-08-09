@@ -35,7 +35,9 @@ export async function processTab(event: KeyboardEvent) {
 
   const lexer = new Lexer(beforeCaret);
   const simpleCommand: SimpleCommand = Parser.parse(lexer);
-  const executionCommand: ExecutionCommand = Expander.expand(simpleCommand);
+  const executionCommand: ExecutionCommand = Expander.expand(simpleCommand, {
+    returnTrailingWhitespace: true,
+  });
 
   let suggestions: Suggestion[];
 
