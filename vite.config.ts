@@ -1,5 +1,5 @@
 /// <reference types="vitest/config" />
-import { defineConfig } from "vite";
+import { defineConfig, UserConfig } from "vite";
 import autoprefixer from "autoprefixer";
 import FileTree from "./src/plugins/vite_plugin_file_tree";
 import BuildChildRemover from "./src/plugins/vite_plugin_build_child_remover";
@@ -39,6 +39,15 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       cssMinify: "lightningcss",
+      rolldownOptions: {
+        output: {
+          minify: {
+            compress: {
+              dropConsole: mode === "production",
+            },
+          },
+        },
+      },
     },
     css: {
       postcss: {
@@ -46,8 +55,5 @@ export default defineConfig(({ mode }) => {
       },
     },
     test: {},
-    esbuild: {
-      drop: mode === "production" ? ["console"] : [],
-    },
-  };
+  } as UserConfig;
 });
