@@ -8,6 +8,18 @@ const INTRODUCTION_STORAGE_KEY = "introductionShown";
  * users.
  */
 export async function helpUser() {
+  await runIntroduction();
+
+  // Enable text editing and focus the input
+  const inputElement: HTMLElement = TerminalUtil.getInputElement();
+  inputElement.setAttribute("contenteditable", "plaintext-only");
+  inputElement.focus();
+}
+
+/**
+ * Executes the introduction if the introduction hasn't already been shown this session.
+ */
+async function runIntroduction() {
   if (sessionStorage.getItem(INTRODUCTION_STORAGE_KEY)) {
     return;
   }
@@ -17,9 +29,11 @@ export async function helpUser() {
   const text = "cat ~/help.md";
 
   for (const char of text) {
+    await sleep(random(110, 240));
     TerminalUtil.appendInput(char);
-    await sleep(random(75, 300));
   }
+
+  await sleep(random(650));
 
   const inputElement = TerminalUtil.getInputElement();
   triggerEnterKey(inputElement);
