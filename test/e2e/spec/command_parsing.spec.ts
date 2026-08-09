@@ -75,6 +75,29 @@ test("Typing a command with lexer issues and pressing Enter should output an err
   );
 });
 
+test("Typing a command with newlines treats and pressing Enter should include those newlines", async ({
+  page,
+}) => {
+  // Arrange
+  const insertNewline = async () => {
+    await page.keyboard.down("Shift");
+    await page.locator(INPUT_SELECTOR).press("Enter");
+    await page.keyboard.up("Shift");
+  };
+
+  // Act
+  // Cannot use runCommand as to enter newlines you need to use Shift+Return
+  await page.locator(INPUT_SELECTOR).pressSequentially("echo foo");
+  await insertNewline();
+  await page.locator(INPUT_SELECTOR).pressSequentially("bar");
+  await insertNewline();
+  await page.locator(INPUT_SELECTOR).pressSequentially("baz");
+  await page.locator(INPUT_SELECTOR).press("Enter");
+
+  // Assert
+  await assertOutputInTerminal(page, "echo foo\nbar\nbaz\nfoo\nbar\nbaz");
+});
+
 test("Pressing Enter should run a command & prevent a newline being inserted in the user input", async ({
   page,
 }) => {

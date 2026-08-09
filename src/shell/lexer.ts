@@ -174,11 +174,6 @@ export default class Lexer implements IterableIterator<Token> {
       };
     }
 
-    // TODO: add additional lexer rules! e.g.
-    //  - Parameterisation '$', '${', "$(", "$((" ?
-    //  - Escaping Chars - need e2e tests for this!
-    //  - Ignore newlines? need e2e tests for this!
-
     const nextChar: string = this.peekChar()!;
     const token: Token = { type: undefined, parts: undefined };
 

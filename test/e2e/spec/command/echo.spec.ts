@@ -38,4 +38,15 @@ test.describe("Echo", () => {
     // Assert
     await assertOutputInTerminal(page, `${input}\n-a sadoas dasa as "`);
   });
+
+  test("should not process escaped characters", async ({ page }) => {
+    // Arrange
+    const input = "echo \\n\\t\\r\\b";
+
+    // Act
+    await runCommand(page, input);
+
+    // Assert
+    await assertOutputInTerminal(page, `${input}\n\\n\\t\\r\\b`);
+  });
 });
