@@ -4,15 +4,15 @@ import CAT from "../../../../../src/command/scripts/cat";
 import FileImportUtil from "../../../../../src/util/file_import_util";
 import FileSystemUtil from "../../../../../src/util/file_system_util";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/file_import_util");
+
 describe("Cat", () => {
   // Spy
   const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
   const readFile = vi.spyOn(FileImportUtil, "readFile");
   const resolvePathParts = vi.spyOn(FileSystemUtil, "resolvePathParts");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/file_import_util");
 
   describe("run", async () => {
     test("should output nothing when no args are passed", async () => {

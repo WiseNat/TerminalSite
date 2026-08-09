@@ -3,13 +3,13 @@ import TerminalUtil from "../../../../../src/util/terminal_util.ts";
 import DOWNLOAD from "../../../../../src/command/scripts/download.ts";
 import FileImportUtil from "../../../../../src/util/file_import_util.ts";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/file_import_util");
+
 describe("Download", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/file_import_util");
 
   beforeEach(() => {
     vi.unstubAllGlobals();

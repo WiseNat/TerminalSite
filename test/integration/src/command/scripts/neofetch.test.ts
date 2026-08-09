@@ -3,14 +3,15 @@ import CommandUtil from "../../../../../src/util/command_util";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 import { mockExtractVisibleText } from "../../../../unit/helper/mocks.ts";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/html_util");
+
 describe("Neofetch", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
 
-  // Mock
   mockExtractVisibleText();
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/html_util");
 
   test("should run with CommandUtil", () => {
     // Arrange

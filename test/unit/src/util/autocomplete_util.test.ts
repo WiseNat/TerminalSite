@@ -7,15 +7,15 @@ import { Suggestion } from "../../../../src/command/command_script";
 import { ZERO_WIDTH_SPACE } from "../../helper/constant.ts";
 import FormatterUtil from "../../../../src/util/formatter_util.ts";
 
+// Mocks
+vi.mock("../../../../src/util/terminal_util");
+vi.mock("../../../../src/util/command_import_util");
+vi.mock("../../../../src/util/formatter_util");
+
 describe("AutocompleteUtil", () => {
   // Spy
   const setInput = vi.spyOn(TerminalUtil, "setInput");
   const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
-
-  // Mock
-  vi.mock("../../../../src/util/terminal_util");
-  vi.mock("../../../../src/util/command_import_util");
-  vi.mock("../../../../src/util/formatter_util");
 
   const prompt = "C:\\home\\nathanwise>";
 

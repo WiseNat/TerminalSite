@@ -2,12 +2,12 @@ import { describe, expect, test, vi } from "vitest";
 import ECHO from "../../../../../src/command/scripts/echo";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+
 describe("Echo", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
 
   describe("run", async () => {
     test("should join and append all args", async () => {

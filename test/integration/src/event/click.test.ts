@@ -3,13 +3,13 @@ import TerminalUtil from "../../../../src/util/terminal_util";
 import { click } from "../../../../src/event/click";
 import Bowser, { Parser } from "bowser";
 
+// Mocks
+vi.mock("bowser");
+
 describe("Click Event", () => {
   // Spy
   const cursorToEnd = vi.spyOn(TerminalUtil, "cursorToEnd");
   let focus: MockInstance<(options?: FocusOptions) => void>;
-
-  // Mock
-  vi.mock("bowser");
 
   // Other
   let inputElement: HTMLElement;

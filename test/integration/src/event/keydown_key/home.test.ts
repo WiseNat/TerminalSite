@@ -3,13 +3,13 @@ import { processHome } from "../../../../../src/event/keydown_key/home";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 import { ZERO_WIDTH_SPACE } from "../../../../e2e/helper/constant/generic";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+
 describe("Home", () => {
   describe("processHome", () => {
     // Spy
     const cursorToIndex = vi.spyOn(TerminalUtil, "cursorToIndex");
-
-    // Mock
-    vi.mock("../../../../../src/util/terminal_util");
 
     const event = new KeyboardEvent("keydown");
 

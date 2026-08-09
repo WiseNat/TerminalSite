@@ -2,13 +2,13 @@ import { describe, expect, test, vi } from "vitest";
 import CommandUtil from "../../../../../src/util/command_util";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/formatter_util");
+
 describe("Help", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/formatter_util");
 
   test("should run with CommandUtil", () => {
     // Arrange

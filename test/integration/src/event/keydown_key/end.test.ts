@@ -2,12 +2,12 @@ import { describe, expect, test, vi } from "vitest";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 import { processEnd } from "../../../../../src/event/keydown_key/end";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+
 describe("End", () => {
   // Spy
   const cursorToEnd = vi.spyOn(TerminalUtil, "cursorToEnd");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
 
   const event = new KeyboardEvent("keydown");
 

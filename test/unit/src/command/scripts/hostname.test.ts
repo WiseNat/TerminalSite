@@ -2,12 +2,12 @@ import { describe, expect, vi, test } from "vitest";
 import TerminalUtil from "../../../../../src/util/terminal_util.ts";
 import HOSTNAME_COMMAND from "../../../../../src/command/scripts/hostname.ts";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+
 describe("Hostname", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
 
   describe("run", () => {
     test("should output the hostname when no arguments are provided", async () => {

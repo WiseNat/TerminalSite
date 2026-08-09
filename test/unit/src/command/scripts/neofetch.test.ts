@@ -57,22 +57,22 @@ function containsInfoText(text: string) {
   return true;
 }
 
+// Mock
+mockExtractVisibleText();
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/html_util");
+vi.mock("../../../../../src/util/time_util", () => ({
+  default: {
+    loadTime: 0,
+  },
+}));
+vi.mock("../../../../../src/util/theme_util");
+vi.mock("../../../../../src/util/flavour_util");
+
 describe("Neofetch", () => {
   // Spy
   const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
   vi.spyOn(navigator, "hardwareConcurrency", "get").mockReturnValue(8);
-
-  // Mock
-  mockExtractVisibleText();
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/html_util");
-  vi.mock("../../../../../src/util/time_util", () => ({
-    default: {
-      loadTime: 0,
-    },
-  }));
-  vi.mock("../../../../../src/util/theme_util");
-  vi.mock("../../../../../src/util/flavour_util");
 
   beforeEach(() => {
     vi.unstubAllGlobals();
