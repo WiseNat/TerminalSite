@@ -204,7 +204,6 @@ describe("VitePluginTree", () => {
       `);
     });
 
-    // TODO: home dir test
     test("should return a valid file tree with a default owner/root based on the home directory", () => {
       // Arrange
       const testRootDir = "/walk-test-";
