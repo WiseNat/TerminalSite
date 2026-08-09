@@ -105,11 +105,11 @@ function isIgnoredFile(entry: fs.Dirent): boolean {
  */
 function getLastModifiedTime(path: string): Date {
   try {
-    const date = new Date(
-      execSync(`git log -1 --format=%ci -- "${path}"`, {
-        encoding: "utf-8",
-      }).trim(),
-    );
+    const output = execSync(`git log -1 --format=%ci -- "${path}"`, {
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"], // silence stderr
+    });
+    const date = new Date(output.trim());
 
     if (!Number.isNaN(date.getTime())) {
       return date;

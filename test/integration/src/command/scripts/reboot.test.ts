@@ -4,6 +4,7 @@ import TerminalUtil from "../../../../../src/util/terminal_util";
 
 // Mocks
 vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/html_util");
 
 describe("Reboot", () => {
   // Spy
