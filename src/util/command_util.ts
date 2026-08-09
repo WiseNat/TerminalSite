@@ -1,13 +1,13 @@
 // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
 import getopts, { Options, ParsedOptions } from "getopts";
-import Expander, { ExecutionCommand } from "../shell/expander.ts";
+import Expander, { ExecutionCommand } from "../shell/expander/expander.ts";
 import { CommandScript } from "../command/command_script.ts";
 import TerminalUtil from "./terminal_util.ts";
 import CommandImportUtil from "./command_import_util.ts";
 import FileSystemUtil from "./file_system_util.ts";
 import { escape } from "lodash-es";
-import Parser, { SimpleCommand } from "../shell/parser.ts";
-import Lexer, { LexerError } from "../shell/lexer.ts";
+import Parser, { SimpleCommand } from "../shell/parser/parser.ts";
+import Lexer, { LexerError } from "../shell/lexer/lexer.ts";
 
 export default class CommandUtil {
   /**

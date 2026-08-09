@@ -4,8 +4,8 @@ import Lexer, {
   Token,
   TokenPartType,
   TokenType,
-} from "../../../../../src/shell/lexer.ts";
-import WordHandler from "../../../../../src/shell/handler/word_handler.ts";
+} from "../../../../../../src/shell/lexer/lexer.ts";
+import WordHandler from "../../../../../../src/shell/lexer/handler/word_handler.ts";
 
 describe("WordHandler", () => {
   // Other

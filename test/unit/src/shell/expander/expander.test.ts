@@ -3,9 +3,9 @@ import {
   Token,
   TokenPartType,
   TokenType,
-} from "../../../../src/shell/lexer.ts";
-import { SimpleCommand } from "../../../../src/shell/parser.ts";
-import Expander from "../../../../src/shell/expander.ts";
+} from "../../../../../src/shell/lexer/lexer.ts";
+import { SimpleCommand } from "../../../../../src/shell/parser/parser.ts";
+import Expander from "../../../../../src/shell/expander/expander.ts";
 
 describe("Expander", () => {
   describe("expand", () => {

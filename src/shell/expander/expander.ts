@@ -1,5 +1,5 @@
-import { Token, TokenType } from "./lexer.ts";
-import { AstNode, CommandNode, SimpleCommand } from "./parser.ts";
+import { Token, TokenType } from "../lexer/lexer.ts";
+import { AstNode, CommandNode, SimpleCommand } from "../parser/parser.ts";
 
 export type ExecutionCommandNode = ExecutionCommand;
 

@@ -1,4 +1,4 @@
-import Lexer, { Token } from "./lexer.ts";
+import Lexer, { Token } from "../lexer/lexer.ts";
 
 export type AstNode = {
   readonly type: string;

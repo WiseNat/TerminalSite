@@ -1,6 +1,11 @@
 import { describe, expect, test } from "vitest";
-import Lexer, { Token, TokenType } from "../../../../src/shell/lexer.ts";
-import Parser, { SimpleCommand } from "../../../../src/shell/parser.ts";
+import Lexer, {
+  Token,
+  TokenType,
+} from "../../../../../src/shell/lexer/lexer.ts";
+import Parser, {
+  SimpleCommand,
+} from "../../../../../src/shell/parser/parser.ts";
 
 describe("Parser", () => {
   describe("parse", () => {

@@ -4,9 +4,9 @@ import Lexer, {
   Token,
   TokenPartType,
   TokenType,
-} from "../../../../src/shell/lexer.ts";
+} from "../../../../../src/shell/lexer/lexer.ts";
 import { escape } from "lodash-es";
-import WordHandler from "../../../../src/shell/handler/word_handler.ts";
+import WordHandler from "../../../../../src/shell/lexer/handler/word_handler.ts";
 
 describe("Lexer", () => {
   describe("token", () => {
