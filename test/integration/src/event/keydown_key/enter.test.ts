@@ -4,16 +4,16 @@ import CommandUtil from "../../../../../src/util/command_util";
 import { processEnter } from "../../../../../src/event/keydown_key/enter";
 import CommandHistoryUtil from "../../../../../src/util/command_history_util";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/command_util");
+
 describe("Enter", () => {
   // Spy
   const executeCommand = vi.spyOn(CommandUtil, "executeCommand");
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
   const addToHistory = vi.spyOn(CommandHistoryUtil, "addToHistory");
   const setHistoricCommand = vi.spyOn(CommandHistoryUtil, "setHistoricCommand");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/command_util");
 
   beforeEach(() => {
     CommandHistoryUtil._resetHistory();

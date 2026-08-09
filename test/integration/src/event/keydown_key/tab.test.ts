@@ -6,6 +6,11 @@ import CommandUtil from "../../../../../src/util/command_util";
 import AutocompleteUtil from "../../../../../src/util/autocomplete_util";
 import HtmlUtil from "../../../../../src/util/html_util.ts";
 
+// Mock
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/command_import_util");
+vi.mock("../../../../../src/util/html_util");
+
 describe("Tab", () => {
   // Spy
   const getCommandScript = vi.spyOn(CommandUtil, "getCommandScript");
@@ -18,11 +23,6 @@ describe("Tab", () => {
     "getFileAndDirectorySuggestions",
   );
   const autocomplete = vi.spyOn(AutocompleteUtil, "autocomplete");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/command_import_util");
-  vi.mock("../../../../../src/util/html_util");
 
   const event = new KeyboardEvent("keydown");
 

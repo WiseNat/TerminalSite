@@ -4,15 +4,15 @@ import LS from "../../../../../src/command/scripts/ls";
 import TerminalUtil from "../../../../../src/util/terminal_util";
 import FormatterUtil from "../../../../../src/util/formatter_util.ts";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/formatter_util");
+vi.mock("../../../../src/util/formatter_util");
+
 describe("Ls", () => {
   // Spy
   const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/formatter_util");
-  vi.mock("../../../../src/util/formatter_util");
 
   // Mocked
   vi.mocked(FormatterUtil.getFileSystemEntryStyle).mockReturnValue({

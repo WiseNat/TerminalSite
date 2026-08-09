@@ -6,14 +6,14 @@ import { unmock } from "../../helper/unmock";
 import CommandImportUtil from "../../../../src/util/command_import_util.ts";
 import { Options } from "getopts";
 
+// Mocks
+vi.mock("../../../../src/util/terminal_util");
+vi.mock("../../../../src/util/command_import_util");
+
 describe("CommandUtil", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
   const appendRawOutput = vi.spyOn(TerminalUtil, "appendRawOutput");
-
-  // Mock
-  vi.mock("../../../../src/util/terminal_util");
-  vi.mock("../../../../src/util/command_import_util");
 
   beforeEach(async () => {
     await unmock("../../../src/util/command_import_util", [

@@ -21,12 +21,12 @@ import SYNC from "../../../../../../src/command/scripts/fake/sync.ts";
 import UNMOUNT from "../../../../../../src/command/scripts/fake/unmount.ts";
 import SUDO from "../../../../../../src/command/scripts/fake/sudo.ts";
 
+// Mocks
+vi.mock("../../../../../../src/util/terminal_util");
+
 describe("Commands that the User has no Permissions to Execute", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../../src/util/terminal_util");
 
   [
     { command: "chgrp", commandScript: CHGRP },

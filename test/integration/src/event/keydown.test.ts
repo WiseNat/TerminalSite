@@ -9,6 +9,16 @@ import * as homeModule from "../../../../src/event/keydown_key/home";
 import * as aModule from "../../../../src/event/keydown_key/a";
 import * as eModule from "../../../../src/event/keydown_key/e";
 
+// Mocks
+vi.mock("../../../../src/event/keydown_key/a");
+vi.mock("../../../../src/event/keydown_key/arrow_down");
+vi.mock("../../../../src/event/keydown_key/arrow_up");
+vi.mock("../../../../src/event/keydown_key/e");
+vi.mock("../../../../src/event/keydown_key/end");
+vi.mock("../../../../src/event/keydown_key/enter");
+vi.mock("../../../../src/event/keydown_key/home");
+vi.mock("../../../../src/event/keydown_key/tab");
+
 describe("Keydown Event", () => {
   // Spy
   const processA = vi.spyOn(aModule, "processA");
@@ -19,16 +29,6 @@ describe("Keydown Event", () => {
   const processEnter = vi.spyOn(enterModule, "processEnter");
   const processHome = vi.spyOn(homeModule, "processHome");
   const processTab = vi.spyOn(tabModule, "processTab");
-
-  // Mock
-  vi.mock("../../../../src/event/keydown_key/a");
-  vi.mock("../../../../src/event/keydown_key/arrow_down");
-  vi.mock("../../../../src/event/keydown_key/arrow_up");
-  vi.mock("../../../../src/event/keydown_key/e");
-  vi.mock("../../../../src/event/keydown_key/end");
-  vi.mock("../../../../src/event/keydown_key/enter");
-  vi.mock("../../../../src/event/keydown_key/home");
-  vi.mock("../../../../src/event/keydown_key/tab");
 
   describe("keydown", () => {
     // Other

@@ -3,6 +3,11 @@ import { resolve } from "node:path";
 
 export default defineConfig({
   test: {
+    reporters: ["minimal"],
+
+    // Only enable when debugging as this massively slows down tests - https://vitest.dev/config/detectasyncleaks.html#detectasyncleaks
+    // detectAsyncLeaks: true,
+
     projects: [
       defineConfig({
         test: {

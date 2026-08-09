@@ -3,14 +3,14 @@ import TerminalUtil from "../../../../../src/util/terminal_util";
 import { processArrowDown } from "../../../../../src/event/keydown_key/arrow_down";
 import CommandHistoryUtil from "../../../../../src/util/command_history_util";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+vi.mock("../../../../../src/util/command_history_util");
+
 describe("ArrowDown", () => {
   // Spy
   const setHistoricCommand = vi.spyOn(CommandHistoryUtil, "setHistoricCommand");
   const setInput = vi.spyOn(TerminalUtil, "setInput");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
-  vi.mock("../../../../../src/util/command_history_util");
 
   describe("without 'Shift'", () => {
     // Other

@@ -7,12 +7,12 @@ import DATE from "../../../../../../src/command/scripts/fake/date.ts";
 import DF from "../../../../../../src/command/scripts/fake/df.ts";
 import PS from "../../../../../../src/command/scripts/fake/ps.ts";
 
+// Mocks
+vi.mock("../../../../../../src/util/terminal_util");
+
 describe("Commands that Output Nothing", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../../src/util/terminal_util");
 
   [
     { command: "date", commandScript: DATE },

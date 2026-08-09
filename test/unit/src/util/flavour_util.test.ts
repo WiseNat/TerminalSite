@@ -5,6 +5,10 @@ import FlavourUtil from "../../../../src/util/flavour_util.ts";
 import TerminalUtil from "../../../../src/util/terminal_util.ts";
 import UNIX from "../../../../src/flavour/implementation/Unix.ts";
 
+// Mocks
+vi.mock("../../../../src/util/flavour_import_util");
+vi.mock("../../../../src/util/terminal_util");
+
 describe("FlavourUtil", () => {
   // Spy
   const setPromptPath = vi.spyOn(TerminalUtil, "setPromptPath");
@@ -14,10 +18,6 @@ describe("FlavourUtil", () => {
     FlavourUtil,
     "setCurrentShellFlavour",
   );
-
-  // Mock
-  vi.mock("../../../../src/util/flavour_import_util");
-  vi.mock("../../../../src/util/terminal_util");
 
   beforeEach(() => {
     FlavourUtil._resetCurrentShellFlavour();

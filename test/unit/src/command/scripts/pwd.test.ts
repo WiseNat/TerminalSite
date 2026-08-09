@@ -3,12 +3,12 @@ import TerminalUtil from "../../../../../src/util/terminal_util";
 import FileSystemUtil from "../../../../../src/util/file_system_util";
 import PWD from "../../../../../src/command/scripts/pwd";
 
+// Mocks
+vi.mock("../../../../../src/util/terminal_util");
+
 describe("Pwd", () => {
   // Spy
   const appendOutput = vi.spyOn(TerminalUtil, "appendOutput");
-
-  // Mock
-  vi.mock("../../../../../src/util/terminal_util");
 
   describe("run", () => {
     test("should output the current working directory", async () => {
