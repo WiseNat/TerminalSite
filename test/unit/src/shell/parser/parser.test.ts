@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import Lexer, {
   Token,
+  TokenPartType,
   TokenType,
 } from "../../../../../src/shell/lexer/lexer.ts";
 import Parser, {
@@ -12,10 +13,19 @@ describe("Parser", () => {
     test("returns a simple command with tokens when given a lexer that has tokens", () => {
       // Arrange
       const tokens: Token[] = [
-        { type: TokenType.WORD, value: "echo" },
-        { type: TokenType.WORD, value: "foo" },
-        { type: TokenType.WORD, value: "bar" },
-        { type: TokenType.EOF, value: null },
+        {
+          type: TokenType.WORD,
+          parts: [{ type: TokenPartType.LITERAL, value: "echo" }],
+        },
+        {
+          type: TokenType.WORD,
+          parts: [{ type: TokenPartType.LITERAL, value: "foo" }],
+        },
+        {
+          type: TokenType.WORD,
+          parts: [{ type: TokenPartType.LITERAL, value: "bar" }],
+        },
+        { type: TokenType.EOF, parts: null },
       ];
 
       const lexer = {
