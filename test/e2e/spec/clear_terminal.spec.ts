@@ -21,7 +21,6 @@ import {
       await page.locator(INPUT_SELECTOR).press(key);
 
       // Assert
-      // TODO: confirm this is correct
       const fullExpected = `${DEFAULT_USER_PROMPT}${defaultInput}\nfoo,${COMMAND_NOT_FOUND}`;
       await assertExactTextInTerminal(page, fullExpected, undefined, key);
     });
