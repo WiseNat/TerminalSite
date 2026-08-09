@@ -6,9 +6,20 @@ export enum TokenType {
   EOF,
 }
 
+export enum TokenPartType {
+  LITERAL,
+  SINGLE_QUOTED,
+  DOUBLE_QUOTED,
+}
+
+export type TokenPart = {
+  type: TokenPartType;
+  value: string | undefined;
+};
+
 export type Token = {
   type: TokenType | undefined;
-  value: string | null | undefined;
+  parts: TokenPart[] | null | undefined;
 };
 
 export class LexerError extends Error {
@@ -125,7 +136,7 @@ export default class Lexer implements IterableIterator<Token> {
     if (this.charStream.length === 0) {
       return {
         type: TokenType.EOF,
-        value: null,
+        parts: null,
       };
     }
 
@@ -135,7 +146,7 @@ export default class Lexer implements IterableIterator<Token> {
     if (this.charStream.length === 0) {
       return {
         type: TokenType.TRAILING_WHITESPACE,
-        value: null,
+        parts: null,
       };
     }
 
@@ -145,7 +156,7 @@ export default class Lexer implements IterableIterator<Token> {
     //  - Ignore newlines?
 
     const nextChar: string = this.peekChar()!;
-    const token: Token = { type: undefined, value: undefined };
+    const token: Token = { type: undefined, parts: undefined };
 
     // No other handlers required as of now. The 'switch' is here for when functionality such as pipelines or IO
     // redirections are implemented, in which case handlers should be added below.
@@ -189,12 +200,16 @@ export default class Lexer implements IterableIterator<Token> {
   }
 
   /**
-   * Safely appends a `value` to the provided {@link Token} value. Useful for when the token value could be undefined.
+   * Safely appends a `part` to the provided {@link Token} `parts`. Useful for when the token parts value is unknown.
    *
    * @param token the {@link Token} to modify
-   * @param value the value to append
+   * @param part the part to append
    */
-  public static appendTokenValue(token: Token, value: string) {
-    token.value = (token.value ?? "") + value;
+  public static appendPart(token: Token, part: TokenPart) {
+    if (token.parts === undefined || token.parts === null) {
+      token.parts = [part];
+    } else {
+      token.parts.push(part);
+    }
   }
 }

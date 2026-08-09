@@ -1,14 +1,22 @@
-import Lexer, { LexerError, Token } from "../lexer.ts";
+import Lexer, {
+  LexerError,
+  Token,
+  TokenPart,
+  TokenPartType,
+} from "../lexer.ts";
 import { Handler } from "./handler.ts";
 
 export default class QuoteHandler implements Handler {
   private readonly quoteChar: string;
+  private readonly tokenPartType: TokenPartType;
 
   /**
    * @param quoteChar the quotation character this should expect, typically either `'` or `"`
+   * @param tokenPartType the {@link TokenPartType} the {@link Token} parts in {@link nextToken} should be set to
    */
-  constructor(quoteChar: string) {
+  constructor(quoteChar: string, tokenPartType: TokenPartType) {
     this.quoteChar = quoteChar;
+    this.tokenPartType = tokenPartType;
   }
 
   /**
@@ -21,6 +29,9 @@ export default class QuoteHandler implements Handler {
    * @param token the {@link Token} to write the result to
    */
   public nextToken(lexer: Lexer, token: Token): void {
+    const tokenPart: TokenPart = { type: this.tokenPartType, value: "" };
+    Lexer.appendPart(token, tokenPart);
+
     // Consume initial quote char
     let char = lexer.nextChar();
     if (char !== this.quoteChar) {
@@ -28,12 +39,11 @@ export default class QuoteHandler implements Handler {
         `expected an initial ${this.quoteChar} when parsing - has this accidentally been consumed`,
       );
     }
-    Lexer.appendTokenValue(token, char);
 
     // TODO: special logic for escaped quote!
     while (this.isValidChar(lexer.peekChar())) {
       char = lexer.nextChar()!;
-      Lexer.appendTokenValue(token, char);
+      tokenPart.value += char;
     }
 
     // Consume terminating quote char
@@ -47,7 +57,6 @@ export default class QuoteHandler implements Handler {
         `unexpected character "${char}" while looking for a matching ${this.quoteChar}`,
       );
     }
-    Lexer.appendTokenValue(token, char);
   }
 
   /**

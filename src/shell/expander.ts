@@ -48,7 +48,6 @@ export default class Expander {
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
 
-      // TODO: "consume" quotes
       const value: string | undefined | null = this.getTokenValue(token);
       if (value === undefined || value === null) {
         continue;
@@ -70,10 +69,32 @@ export default class Expander {
    * @private
    */
   private static getTokenValue(token: Token): string | null | undefined {
-    if (token.type === TokenType.TRAILING_WHITESPACE) {
-      return "";
+    switch (token.type) {
+      case TokenType.TRAILING_WHITESPACE:
+        return "";
+      case TokenType.EOF:
+        return null;
+      case TokenType.WORD:
+        return this.getWordTokenValue(token);
     }
 
-    return token.value;
+    throw new Error(`Unsupported Token Type '${token.type}'`);
+  }
+
+  /**
+   * Aggregates all the `parts` of the `token` into a single value
+   *
+   * @param token
+   * @private
+   */
+  private static getWordTokenValue(token: Token) {
+    let value: string = "";
+
+    for (const part of token.parts ?? []) {
+      // We don't care about part type right now as we don't do anything special based on them
+      value += part.value;
+    }
+
+    return value;
   }
 }

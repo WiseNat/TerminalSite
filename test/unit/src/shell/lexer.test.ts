@@ -2,6 +2,7 @@ import { describe, expect, test, vi } from "vitest";
 import Lexer, {
   LexerError,
   Token,
+  TokenPartType,
   TokenType,
 } from "../../../../src/shell/lexer.ts";
 import { escape } from "lodash-es";
@@ -20,12 +21,18 @@ describe("Lexer", () => {
         const third: Token = lexer.next().value;
 
         // Assert
-        expect(first).toStrictEqual({ type: TokenType.WORD, value: "foo" });
+        expect(first).toStrictEqual({
+          type: TokenType.WORD,
+          parts: [{ type: TokenPartType.LITERAL, value: "foo" }],
+        });
         expect(second).toStrictEqual({
           type: TokenType.WORD,
-          value: "\"hello bar\"",
+          parts: [{ type: TokenPartType.DOUBLE_QUOTED, value: "hello bar" }],
         });
-        expect(third).toStrictEqual({ type: TokenType.WORD, value: "baz" });
+        expect(third).toStrictEqual({
+          type: TokenType.WORD,
+          parts: [{ type: TokenPartType.LITERAL, value: "baz" }],
+        });
       });
 
       test("produces EOF for an empty input", () => {
@@ -36,7 +43,7 @@ describe("Lexer", () => {
         const token: Token = lexer.next().value;
 
         // Assert
-        expect(token).toStrictEqual({ type: TokenType.EOF, value: null });
+        expect(token).toStrictEqual({ type: TokenType.EOF, parts: null });
       });
 
       test("produces EOF once all other tokens have been provided", () => {
@@ -50,7 +57,7 @@ describe("Lexer", () => {
         const token: Token = lexer.next().value;
 
         // Assert
-        expect(token).toStrictEqual({ type: TokenType.EOF, value: null });
+        expect(token).toStrictEqual({ type: TokenType.EOF, parts: null });
       });
 
       test("does not terminate iterator before EOF", () => {
@@ -68,7 +75,7 @@ describe("Lexer", () => {
         // Assert
         expect(token).toStrictEqual({
           done: false,
-          value: { type: TokenType.EOF, value: null },
+          value: { type: TokenType.EOF, parts: null },
         });
       });
 
@@ -110,9 +117,18 @@ describe("Lexer", () => {
         // Arrange
         const lexer: Lexer = new Lexer("foo bar baz");
         const expectedTokens = [
-          { type: TokenType.WORD, value: "foo" },
-          { type: TokenType.WORD, value: "bar" },
-          { type: TokenType.WORD, value: "baz" },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: TokenPartType.LITERAL, value: "foo" }],
+          },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: TokenPartType.LITERAL, value: "bar" }],
+          },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: TokenPartType.LITERAL, value: "baz" }],
+          },
         ];
 
         // Act & Assert
@@ -145,62 +161,126 @@ describe("Lexer", () => {
         {
           input: "echo hello",
           expected: [
-            { type: TokenType.WORD, value: "echo" },
-            { type: TokenType.WORD, value: "hello" },
-            { type: TokenType.EOF, value: null },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "echo" }],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "hello" }],
+            },
+            { type: TokenType.EOF, parts: null },
           ],
         },
         {
           input: "echo \"hello world\"",
           expected: [
-            { type: TokenType.WORD, value: "echo" },
-            { type: TokenType.WORD, value: "\"hello world\"" },
-            { type: TokenType.EOF, value: null },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "echo" }],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [
+                { type: TokenPartType.DOUBLE_QUOTED, value: "hello world" },
+              ],
+            },
+            { type: TokenType.EOF, parts: null },
           ],
         },
         {
           input: "echo 'hello world'",
           expected: [
-            { type: TokenType.WORD, value: "echo" },
-            { type: TokenType.WORD, value: "'hello world'" },
-            { type: TokenType.EOF, value: null },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "echo" }],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [
+                { type: TokenPartType.SINGLE_QUOTED, value: "hello world" },
+              ],
+            },
+            { type: TokenType.EOF, parts: null },
           ],
         },
         {
           input: "echo foo\"bar\"baz",
           expected: [
-            { type: TokenType.WORD, value: "echo" },
-            { type: TokenType.WORD, value: "foo\"bar\"baz" },
-            { type: TokenType.EOF, value: null },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "echo" }],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [
+                { type: TokenPartType.LITERAL, value: "foo" },
+                { type: TokenPartType.DOUBLE_QUOTED, value: "bar" },
+                { type: TokenPartType.LITERAL, value: "baz" },
+              ],
+            },
+            { type: TokenType.EOF, parts: null },
           ],
         },
         {
           input: "mycommand foo -m bar",
           expected: [
-            { type: TokenType.WORD, value: "mycommand" },
-            { type: TokenType.WORD, value: "foo" },
-            { type: TokenType.WORD, value: "-m" },
-            { type: TokenType.WORD, value: "bar" },
-            { type: TokenType.EOF, value: null },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "mycommand" }],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "foo" }],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "-m" }],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "bar" }],
+            },
+            { type: TokenType.EOF, parts: null },
           ],
         },
         {
           input: "mycommand",
           expected: [
-            { type: TokenType.WORD, value: "mycommand" },
-            { type: TokenType.EOF, value: null },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "mycommand" }],
+            },
+            { type: TokenType.EOF, parts: null },
           ],
         },
         {
           input: "mycommand  ab \\r  'foo \\tbar' \\n ",
           expected: [
-            { type: TokenType.WORD, value: "mycommand" },
-            { type: TokenType.WORD, value: "ab" },
-            { type: TokenType.WORD, value: "\\r" },
-            { type: TokenType.WORD, value: "'foo \\tbar'" },
-            { type: TokenType.WORD, value: "\\n" },
-            { type: TokenType.TRAILING_WHITESPACE, value: null },
-            { type: TokenType.EOF, value: null },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "mycommand" }],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "ab" }],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "\\r" }],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [
+                { type: TokenPartType.SINGLE_QUOTED, value: "foo \\tbar" },
+              ],
+            },
+            {
+              type: TokenType.WORD,
+              parts: [{ type: TokenPartType.LITERAL, value: "\\n" }],
+            },
+            { type: TokenType.TRAILING_WHITESPACE, parts: null },
+            { type: TokenType.EOF, parts: null },
           ],
         },
       ].forEach(({ input, expected }) => {
@@ -225,10 +305,16 @@ describe("Lexer", () => {
 
         // Assert
         expect(tokens).toStrictEqual([
-          { type: TokenType.WORD, value: "hello" },
-          { type: TokenType.WORD, value: "world" },
-          { type: TokenType.TRAILING_WHITESPACE, value: null },
-          { type: TokenType.EOF, value: null },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: TokenPartType.LITERAL, value: "hello" }],
+          },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: TokenPartType.LITERAL, value: "world" }],
+          },
+          { type: TokenType.TRAILING_WHITESPACE, parts: null },
+          { type: TokenType.EOF, parts: null },
         ]);
       });
 
@@ -374,38 +460,77 @@ describe("Lexer", () => {
     });
   });
 
-  describe("appendTokenValue", () => {
-    test("appends to an existing value", () => {
+  describe("appendPart", () => {
+    test("appends to an existing list", () => {
       // Arrange
-      const token: Token = { type: TokenType.WORD, value: "foo" };
+      const token: Token = {
+        type: TokenType.WORD,
+        parts: [
+          { type: TokenPartType.LITERAL, value: "foo" },
+          { type: TokenPartType.SINGLE_QUOTED, value: "bar" },
+        ],
+      };
 
       // Act
-      Lexer.appendTokenValue(token, "bar");
+      Lexer.appendPart(token, {
+        type: TokenPartType.DOUBLE_QUOTED,
+        value: "baz",
+      });
 
       // Assert
-      expect(token.value).toStrictEqual("foobar");
+      expect(token.parts).toStrictEqual([
+        { type: TokenPartType.LITERAL, value: "foo" },
+        { type: TokenPartType.SINGLE_QUOTED, value: "bar" },
+        { type: TokenPartType.DOUBLE_QUOTED, value: "baz" },
+      ]);
     });
 
-    test("appends to an empty value", () => {
+    test("appends to an empty list", () => {
       // Arrange
-      const token: Token = { type: TokenType.WORD, value: "" };
+      const token: Token = {
+        type: TokenType.WORD,
+        parts: [],
+      };
 
       // Act
-      Lexer.appendTokenValue(token, "foo");
+      Lexer.appendPart(token, { type: TokenPartType.LITERAL, value: "foo" });
 
       // Assert
-      expect(token.value).toStrictEqual("foo");
+      expect(token.parts).toStrictEqual([
+        { type: TokenPartType.LITERAL, value: "foo" },
+      ]);
     });
 
-    test("appends to an undefined value", () => {
+    test("appends to an undefined list", () => {
       // Arrange
-      const token: Token = { type: TokenType.WORD, value: undefined };
+      const token: Token = {
+        type: TokenType.WORD,
+        parts: undefined,
+      };
 
       // Act
-      Lexer.appendTokenValue(token, "foo");
+      Lexer.appendPart(token, { type: TokenPartType.LITERAL, value: "foo" });
 
       // Assert
-      expect(token.value).toStrictEqual("foo");
+      expect(token.parts).toStrictEqual([
+        { type: TokenPartType.LITERAL, value: "foo" },
+      ]);
+    });
+
+    test("appends to an null list", () => {
+      // Arrange
+      const token: Token = {
+        type: TokenType.WORD,
+        parts: null,
+      };
+
+      // Act
+      Lexer.appendPart(token, { type: TokenPartType.LITERAL, value: "foo" });
+
+      // Assert
+      expect(token.parts).toStrictEqual([
+        { type: TokenPartType.LITERAL, value: "foo" },
+      ]);
     });
   });
 });

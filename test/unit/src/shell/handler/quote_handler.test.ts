@@ -3,16 +3,20 @@ import QuoteHandler from "../../../../../src/shell/handler/quote_handler.ts";
 import Lexer, {
   LexerError,
   Token,
+  TokenPartType,
   TokenType,
 } from "../../../../../src/shell/lexer.ts";
 
 describe("Quote Handler", () => {
-  ["\"", "'"].forEach((quoteChar) => {
+  [
+    { quoteChar: "\"", tokenPartType: TokenPartType.DOUBLE_QUOTED },
+    { quoteChar: "'", tokenPartType: TokenPartType.SINGLE_QUOTED },
+  ].forEach(({ quoteChar, tokenPartType }) => {
     // Other
     let quoteHandler: QuoteHandler;
 
     beforeEach(() => {
-      quoteHandler = new QuoteHandler(quoteChar);
+      quoteHandler = new QuoteHandler(quoteChar, tokenPartType);
     });
 
     /**
@@ -21,7 +25,7 @@ describe("Quote Handler", () => {
      * @param token
      */
     function getNextToken(lexer: Lexer, token?: Token): Token {
-      token = token ?? { type: TokenType.WORD, value: "" };
+      token = token ?? { type: TokenType.WORD, parts: [] };
       lexer.consumeExcessWhitespace();
       quoteHandler.nextToken(lexer, token);
       return token;
@@ -31,51 +35,74 @@ describe("Quote Handler", () => {
       {
         input: `${quoteChar}hello${quoteChar}`,
         expected: [
-          { type: TokenType.WORD, value: `${quoteChar}hello${quoteChar}` },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: tokenPartType, value: "hello" }],
+          },
         ],
       },
       {
         input: `${quoteChar}${quoteChar}`,
-        expected: [{ type: TokenType.WORD, value: `${quoteChar}${quoteChar}` }],
+        expected: [
+          { type: TokenType.WORD, parts: [{ type: tokenPartType, value: "" }] },
+        ],
       },
       {
         input: `${quoteChar}hello world${quoteChar}`,
         expected: [
           {
             type: TokenType.WORD,
-            value: `${quoteChar}hello world${quoteChar}`,
+            parts: [{ type: tokenPartType, value: "hello world" }],
           },
         ],
       },
       {
         input: `${quoteChar}$foo${quoteChar}`,
         expected: [
-          { type: TokenType.WORD, value: `${quoteChar}$foo${quoteChar}` },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: tokenPartType, value: "$foo" }],
+          },
         ],
       },
       {
         input: `${quoteChar}$(foo)${quoteChar}`,
         expected: [
-          { type: TokenType.WORD, value: `${quoteChar}$(foo)${quoteChar}` },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: tokenPartType, value: "$(foo)" }],
+          },
         ],
       },
       {
         input: `${quoteChar}test\\"ing${quoteChar}`,
         expected: [
-          { type: TokenType.WORD, value: `${quoteChar}test\\"ing${quoteChar}` },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: tokenPartType, value: "test\\\"ing" }],
+          },
         ],
       },
       {
         input: `${quoteChar}test\\'ing${quoteChar}`,
         expected: [
-          { type: TokenType.WORD, value: `${quoteChar}test\\'ing${quoteChar}` },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: tokenPartType, value: "test\\'ing" }],
+          },
         ],
       },
       {
         input: `${quoteChar}the first${quoteChar}${quoteChar}word${quoteChar}`,
         expected: [
-          { type: TokenType.WORD, value: `${quoteChar}the first${quoteChar}` },
-          { type: TokenType.WORD, value: `${quoteChar}word${quoteChar}` },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: tokenPartType, value: "the first" }],
+          },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: tokenPartType, value: "word" }],
+          },
         ],
       },
     ].forEach(({ input, expected }) => {
@@ -96,10 +123,10 @@ describe("Quote Handler", () => {
       });
     });
 
-    test("an undefined token value is overwritten", () => {
+    test("an undefined token part is appended to", () => {
       // Arrange
       const lexer: Lexer = new Lexer(`${quoteChar}foo bar${quoteChar}`);
-      const token = { type: TokenType.WORD, value: undefined };
+      const token = { type: TokenType.WORD, parts: undefined };
 
       // Act
       getNextToken(lexer, token);
@@ -107,14 +134,14 @@ describe("Quote Handler", () => {
       // Assert
       expect(token).toStrictEqual({
         type: TokenType.WORD,
-        value: `${quoteChar}foo bar${quoteChar}`,
+        parts: [{ type: tokenPartType, value: "foo bar" }],
       });
     });
 
     test("missing quotation character at the start throws an error", () => {
       // Arrange
       const lexer: Lexer = new Lexer(`foo bar${quoteChar}`);
-      const token = { type: TokenType.WORD, value: undefined };
+      const token = { type: TokenType.WORD, parts: undefined };
 
       // Act & Assert
       expect(() => getNextToken(lexer, token)).toThrow(
@@ -127,7 +154,7 @@ describe("Quote Handler", () => {
     test("missing quotation character at the end throws an error", () => {
       // Arrange
       const lexer: Lexer = new Lexer(`${quoteChar}foo bar`);
-      const token = { type: TokenType.WORD, value: undefined };
+      const token = { type: TokenType.WORD, parts: undefined };
 
       // Act & Assert
       expect(() => getNextToken(lexer, token)).toThrow(
