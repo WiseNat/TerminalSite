@@ -35,7 +35,7 @@ describe("Commands that the User has no Permissions to Execute", () => {
       // Act & Assert
       expect(
         async () => await CommandUtil.executeCommand(commandName),
-      ).not.toThrowError();
+      ).not.toThrow();
 
       expect(appendOutput).not.toHaveBeenCalledWith(
         `\n${commandName}: command not found`,

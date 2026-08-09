@@ -288,7 +288,7 @@ describe("CommandHistoryUtil", () => {
       // Act & Assert
       expect(() => {
         CommandHistoryUtil.setHistoricCommand(overwrittenValue);
-      }).not.toThrowError();
+      }).not.toThrow();
 
       const historicCommand = CommandHistoryUtil.getHistoricCommand();
       expect(historicCommand).toEqual(overwrittenValue);

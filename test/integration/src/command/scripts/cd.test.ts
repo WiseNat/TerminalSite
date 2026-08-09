@@ -16,7 +16,7 @@ describe("Cd", () => {
     // Act & Assert
     expect(
       async () => await CommandUtil.executeCommand(commandName),
-    ).not.toThrowError();
+    ).not.toThrow();
 
     expect(appendOutput).not.toHaveBeenCalledWith(
       `\n${commandName}: command not found`,
