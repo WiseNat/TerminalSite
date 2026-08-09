@@ -100,7 +100,7 @@ describe("Expander", () => {
       expect(command.args).toStrictEqual([]);
     });
 
-    test("returns an execution command with an empty string as the last element in args when given a simple command with trailing whitespace", () => {
+    test("returns an execution command with an empty string as the last element in args when given a simple command with trailing whitespace and returnTrailingWhitespace=true in the expander config", () => {
       // Arrange
       const tokens: Token[] = [
         {
@@ -115,18 +115,6 @@ describe("Expander", () => {
           type: TokenType.WORD,
           parts: [{ type: TokenPartType.LITERAL, value: "bar" }],
         },
-        {
-          type: TokenType.WORD,
-          parts: [{ type: TokenPartType.LITERAL, value: "baz" }],
-        },
-        {
-          type: TokenType.WORD,
-          parts: [{ type: TokenPartType.LITERAL, value: "gaz" }],
-        },
-        {
-          type: TokenType.WORD,
-          parts: [{ type: TokenPartType.LITERAL, value: "daz" }],
-        },
         { type: TokenType.TRAILING_WHITESPACE, parts: null },
         { type: TokenType.EOF, parts: null },
       ];
@@ -136,18 +124,59 @@ describe("Expander", () => {
       };
 
       // Act
-      const command = Expander.expand(simpleCommand);
+      const command = Expander.expand(simpleCommand, {
+        returnTrailingWhitespace: true,
+      });
 
       // Assert
       expect(command.name).toBe("echo");
-      expect(command.args).toStrictEqual([
-        "foo",
-        "bar",
-        "baz",
-        "gaz",
-        "daz",
-        "",
-      ]);
+      expect(command.args).toStrictEqual(["foo", "bar", ""]);
+    });
+
+    [
+      {
+        type: "returnTrailingWhitespace=false in the expander config",
+        config: { returnTrailingWhitespace: false },
+      },
+      {
+        type: "an empty expander config",
+        config: {},
+      },
+      {
+        type: "an undefined expander confiog",
+        config: undefined,
+      },
+    ].forEach(({ type, config }) => {
+      test(`returns an execution command without an empty string as the last element in args when given a simple command with trailing whitespace and ${type}`, () => {
+        // Arrange
+        const tokens: Token[] = [
+          {
+            type: TokenType.WORD,
+            parts: [{ type: TokenPartType.LITERAL, value: "echo" }],
+          },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: TokenPartType.LITERAL, value: "foo" }],
+          },
+          {
+            type: TokenType.WORD,
+            parts: [{ type: TokenPartType.LITERAL, value: "bar" }],
+          },
+          { type: TokenType.TRAILING_WHITESPACE, parts: null },
+          { type: TokenType.EOF, parts: null },
+        ];
+        const simpleCommand: SimpleCommand = {
+          type: "SimpleCommand",
+          words: tokens,
+        };
+
+        // Act
+        const command = Expander.expand(simpleCommand, config);
+
+        // Assert
+        expect(command.name).toBe("echo");
+        expect(command.args).toStrictEqual(["foo", "bar"]);
+      });
     });
 
     test("returns an execution command with no quotation marks when given a simple command with quotation mark tokens", () => {
