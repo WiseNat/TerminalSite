@@ -1,4 +1,4 @@
-// @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error @typescript-eslint/ban-ts-comment
 import getopts, { Options, ParsedOptions } from "getopts";
 import Expander from "../shell/expander/expander.ts";
 import { CommandScript } from "../command/command_script.ts";

@@ -14,7 +14,7 @@ export default class FlavourUtil {
    * @internal **intended to be solely used by Tests**
    */
   public static _resetCurrentShellFlavour() {
-    // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error @typescript-eslint/ban-ts-comment
     this.currentShellFlavour = undefined;
   }
 

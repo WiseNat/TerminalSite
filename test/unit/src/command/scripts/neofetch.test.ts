@@ -250,7 +250,7 @@ describe("Neofetch", () => {
         test("given navigator.hardwareConcurrency does not exist, should show ? cores", async () => {
           // Arrange
           vi.spyOn(navigator, "hardwareConcurrency", "get").mockReturnValue(
-            // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error @typescript-eslint/ban-ts-comment
             undefined,
           );
 
@@ -313,7 +313,7 @@ describe("Neofetch", () => {
                   },
                 });
               } else {
-                // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error @typescript-eslint/ban-ts-comment
                 delete performance["memory"];
               }
 
@@ -325,7 +325,7 @@ describe("Neofetch", () => {
                   },
                 });
               } else {
-                // @ts-expect-error eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error @typescript-eslint/ban-ts-comment
                 delete navigator["deviceMemory"];
               }
 

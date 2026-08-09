@@ -41,8 +41,7 @@ describe("Click Event", () => {
         value: document.createElement("div"),
       });
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+      // @ts-expect-error @typescript-eslint/ban-ts-comment
       vi.spyOn(globalThis, "getSelection").mockReturnValue({
         isCollapsed: true,
       });
@@ -79,8 +78,7 @@ describe("Click Event", () => {
         value: document.createElement("div"),
       });
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+      // @ts-expect-error @typescript-eslint/ban-ts-comment
       vi.spyOn(globalThis, "getSelection").mockReturnValue({
         isCollapsed: false,
       });
@@ -106,8 +104,7 @@ describe("Click Event", () => {
         value: document.createElement("div"),
       });
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+      // @ts-expect-error @typescript-eslint/ban-ts-comment
       vi.spyOn(globalThis, "getSelection").mockReturnValue({
         isCollapsed: false,
       });
